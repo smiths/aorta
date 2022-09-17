@@ -1,10 +1,10 @@
-# Project Name
+# Aorta Geometry Reconstruction
 
-Developer Names:
+Developer Names: Jingyi Lin
 
-Date of project start:
+Date of project start: 2022/09/12
 
-This project is ...
+This project is to genearte 3D aorta geometry (.vtk) from CT scans (.dicom).
 
 The folders and files for this project are as follows:
 
