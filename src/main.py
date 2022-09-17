@@ -2,6 +2,7 @@ import AortaSegmenter
 from datetime import datetime
 import os
 import SimpleITK as sitk
+import numpy as np
 
 """Return sitk.image by reading source .dcm files."""
 
