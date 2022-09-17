@@ -1,0 +1,32 @@
+folder_paths = ["../sample-dicom/43681283", "../sample-dicom/05937785", "../sample-dicom/07323651", 
+                    "../sample-dicom/75962810", "../sample-dicom/62023082", "../sample-dicom/22429388"]
+
+num_slices = [376, 423, 195, 188, 225, 447]
+
+# stores all of the .dcm files within each folder
+dcm_series = []
+
+# setting indexes and sizes corresponding to dicom images
+indexes = [(190, 165, 40),
+           (152,168,24),
+           (191,184,22),
+           (124,113,7),
+           (207, 194,10),
+           (189,140,60)]
+           
+sizes = [(191, 216, 335),
+         (217,178,391),
+         (159,177,169),
+         (186,259,180),
+         (113, 134, 212),
+         (226,277,382)]
+
+ascendingAorta
+
+# curve_seeds = [
+        # [40, 40, 114], [
+        #     52, 37, 82], [
+        #         50, 41, 81], [
+        #             58, 44, 56], [
+        #                 56, 29, 35], [
+        #                     68, 46, 155]]
