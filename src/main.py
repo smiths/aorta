@@ -4,6 +4,7 @@ import os
 import SimpleITK as sitk
 
 """Return sitk.image by reading source .dcm files."""
+
 def get_images(path, num_slices):
     # list of the number of slices in the z direction for each dicom image
     # these are manually entered as each dicom folder has far more .dcm files than slices
