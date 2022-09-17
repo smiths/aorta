@@ -26,7 +26,7 @@ def get_images(path, num_slices):
 
 if __name__ == '__main__':
 
-    os.environ["SITK_SHOW_COMMAND"] = 'C:\\Program Files\\ITK-SNAP 3.8\\bin\\ITK-SNAP'
+    #os.environ["SITK_SHOW_COMMAND"] = 'C:\\Program Files\\ITK-SNAP 3.8\\bin\\ITK-SNAP'
 
     #work on image 0
     image = get_images("../sample-dicom/43681283", 376)
