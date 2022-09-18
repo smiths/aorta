@@ -2,10 +2,12 @@ from AortaSegmenter import AortaSegmenter
 import SimpleITK as sitk
 import numpy as np
 
+
 class AortaSagitalSegmenter(AortaSegmenter):
     """This class performs Aorta Sagital segmentation"""
 
-    def __init__(self, segmentationFactor, segmentedImage, original_cropped_image):
+    def __init__(self, segmentationFactor, segmentedImage,
+            original_cropped_image):
         self._segmented_image = segmentedImage
         super().__init__(original_cropped_image, segmentationFactor)
 
@@ -15,19 +17,22 @@ class AortaSagitalSegmenter(AortaSegmenter):
         stats = sitk.LabelStatisticsImageFilter()
         stats.Execute(imgSlice, axial_seg)
 
-        lower_threshold = stats.GetMean(1) - factor * stats.GetSigma(1)
-        upper_threshold = stats.GetMean(1) + factor * stats.GetSigma(1)
+        lower_threshold = stats.GetMean(1) - factor*stats.GetSigma(1)
+        upper_threshold = stats.GetMean(1) + factor*stats.GetSigma(1)
 
         # use filter to apply threshold to image
-        init_ls = sitk.SignedMaurerDistanceMap(axial_seg, insideIsPositive=True, useImageSpacing=True)
+        init_ls = sitk.SignedMaurerDistanceMap(
+            axial_seg, insideIsPositive=True, useImageSpacing=True)
 
         # segment the aorta using the seed values and threshold values
         self._segment_filter.SetLowerThreshold(lower_threshold)
         self._segment_filter.SetUpperThreshold(upper_threshold)
 
-        ls = self._segment_filter.Execute(init_ls, sitk.Cast(imgSlice, sitk.sitkFloat32))
+        ls = self._segment_filter.Execute(
+            init_ls, sitk.Cast(imgSlice, sitk.sitkFloat32))
 
-        # set segmentation to both the sagittal segmentation and the original axial segmentation
+        # set segmentation to both the sagittal segmentation
+        # and the original axial segmentation
         sag_seg = ls > 0 
         new_seg = axial_seg | sag_seg
 
@@ -36,10 +41,11 @@ class AortaSagitalSegmenter(AortaSegmenter):
         else:
             new_size = np.count_nonzero(sag_seg)
 
-        # make sure there is no drastic size difference. otherwise change the factor and re-run this function
-        if(new_size < current_size * size_factor):
+        # make sure there is no drastic size difference.
+        # otherwise change the factor and re-run this function
+        if (new_size < current_size * size_factor):
             return new_seg
-        elif(factor > 0.5):
+        elif (factor > 0.5):
             return self.__segment_sag(sliceNum, factor - 0.5, size_factor,
                                       current_size, imgSlice, axial_seg, seg_type)
 
@@ -54,32 +60,39 @@ class AortaSagitalSegmenter(AortaSegmenter):
         self._total_pixels = self._segmented_image.GetHeight() \
             * self._segmented_image.GetDepth()
 
-        # minimum number of pixels on a slice for us to run the sagittal function
+        # minimum number of pixels on a slice for us 
+        # to run the sagittal function
         self._base_pixel_value = self._total_pixels / 5000
 
-        # goes through all the sagittal slices and fills in any gaps from the
-        # axial segmentation
+        # goes through all the sagittal slices and fills in any gaps from
+        # the-axial segmentation
         print("Sagital segmentation started")
         for sliceNum in range(1, self._segmenting_image.GetWidth()):
-            # only do segmentation if there is something on the slice. This
-            # prevents the function from segmenting the whole thing
-            current_size = np.count_nonzero(self._segmented_image[sliceNum, :, :])
+            # only do segmentation if there is something on the slice. 
+            # This prevents the function from segmenting the whole thing
+            current_size = np.count_nonzero(
+                self._segmented_image[sliceNum, :, :])
             if (current_size > self._base_pixel_value):
                 # Recursive function
                 imgSlice = self._segmenting_image[sliceNum, :, :]
                 axial_seg = self._segmented_image[sliceNum, :, :]
                 self._segmented_image[sliceNum, :, :] = self.__segment_sag(
-                    sliceNum, self._segmentation_factor, 1.4, current_size, imgSlice, axial_seg, None)
+                    sliceNum, self._segmentation_factor, 1.4,
+                    current_size, imgSlice, axial_seg, None)
         print("Sagital segmentation finished")
 
-        # goes through all the frontal slices and fills in any gaps from the axial/sagittal segmentations
+        # goes through all the frontal slices and fills in any gaps 
+        # from the axial/sagittal segmentations
         print("Sagital segmentation - frontally started")
         for sliceNum in range(1, self._segmenting_image.GetHeight()):
-            # only do segmentation if there is something on the slice. This prevents the function from segmenting the whole thing
-            current_size = np.count_nonzero(self._segmented_image[:,sliceNum,:])
+            # only do segmentation if there is something on the slice. 
+            # This prevents the function from segmenting the whole thing
+            current_size = np.count_nonzero(
+                self._segmented_image[:, sliceNum, :])
             if (current_size > self._base_pixel_value):
                 imgSlice = self._segmenting_image[:, sliceNum, :]
                 axial_seg = self._segmented_image[:, sliceNum, :]
                 self._segmented_image[:, sliceNum, :] = self.__segment_sag(
-                    sliceNum, self._segmentation_factor, 1.1, current_size, imgSlice, axial_seg, "frontally")
+                    sliceNum, self._segmentation_factor, 1.1, current_size,
+                    imgSlice, axial_seg, "frontally")
         print("Sagital segmentation - frontally finished")
