@@ -35,11 +35,14 @@ sitk_show_pos = (label_pos_x + 60, x_pos_y)
 inputpath = Label(root, text="dicoms file path")
 inputpath.place(x=file_label_pos[0], y=file_label_pos[1])
 
-dicoms_path="."
-def askinput():
+dicoms_path = "."
+
+
+def askinput(): 
     dicoms_path = filedialog.askdirectory(initialdir=path.dirname(__file__))
     inputpath.configure(text=dicoms_path)
     print(dicoms_path)
+
 
 btn = Button(root, text="Click to choose your input folder",
              command=askinput)
@@ -52,8 +55,6 @@ separator.place(x=crap_sep_pos[0], y=crap_sep_pos[1], relwidth=1)
 
 crapped_label = Label(root, text="Crapped images inputs")
 crapped_label.place(x=crapped_label_pos[0], y=crapped_label_pos[1])
-
-
 
 X_label = Label(root, text="X index")
 X_label.place(x=0, y=x_pos_y)
@@ -91,8 +92,10 @@ Z_size.place(x=label_pos_x, y=z_pos_y)
 
 #############################################################################
 
+
 def sitk_show():
     pass
+
 
 sitk_btn = Button(root, text="Click to use SITK see the CT scan",
                   command=sitk_show)
