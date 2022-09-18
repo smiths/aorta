@@ -33,11 +33,11 @@ if __name__ == '__main__':
     # work on image 0
     image = get_images("../sample-dicom/43681283", 376)
     desc_axial_segmenter = AortaSegmenter.AortaDescendingAxialSegmenter(
-        startingSlice=86, aortaCentre=[112, 151], numSliceSkipping=3, 
+        startingSlice=86, aortaCentre=[112, 151], numSliceSkipping=3,
         segmentationFactor=2.2, segmentingImage=image)
 
-    desc_axial_segmenter.prepared_segmenting_image(image=image,
-        index=(190, 165, 40), size=(191, 216, 335))
+    desc_axial_segmenter.prepared_segmenting_image(
+        image=image, index=(190, 165, 40), size=(191, 216, 335))
     desc_axial_segmenter.begin_segmentation()
 
     cropped_image = desc_axial_segmenter.segmenting_image
