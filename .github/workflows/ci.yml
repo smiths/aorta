@@ -15,5 +15,6 @@ jobs:
       - name: Checkout master code
         uses: actions/checkout@v3
       - name: Install pytest
+        run: pip3 install pytest
       - name: Test with Pytest
         run: pytest
