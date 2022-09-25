@@ -38,7 +38,7 @@ inputpath.place(x=file_label_pos[0], y=file_label_pos[1])
 dicoms_path = "."
 
 
-def askinput(): 
+def askinput():
     dicoms_path = filedialog.askdirectory(initialdir=path.dirname(__file__))
     inputpath.configure(text=dicoms_path)
     print(dicoms_path)
