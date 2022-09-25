@@ -241,7 +241,7 @@ class AortaDescendingAxialSegmenter(AortaAxialSegmenter):
                 if (len(self._skipped_slices) > next_index):
                     next_slice = self._skipped_slices[next_index]
 
-                    if(next_slice == slice_num + 1 and next_slice
+                    if (next_slice == slice_num + 1 and next_slice
                             < self._segmenting_image.GetDepth() - 1):
                         self._segmented_image[:, :, slice_num] = (
                             self._segmented_image[:, :, slice_num - 1]
