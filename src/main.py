@@ -31,7 +31,7 @@ if __name__ == '__main__':
     # 'C:\\Program Files\\ITK-SNAP 3.8\\bin\\ITK-SNAP'
 
     # work on image 0
-    image = get_images("../sample-dicom/43681283", 376)
+    image = get_images("./sample-dicom/43681283", 376)
     desc_axial_segmenter = AortaSegmenter.AortaDescendingAxialSegmenter(
         startingSlice=86, aortaCentre=[112, 151], numSliceSkipping=3,
         segmentationFactor=2.2, segmentingImage=image)
