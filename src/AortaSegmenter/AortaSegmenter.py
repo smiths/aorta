@@ -38,10 +38,10 @@ class AortaSegmenter():
         crop_filter.SetSize(size)
 
         cropped_image = crop_filter.Execute(image)
- 
+
         # change intensity range to go from 0-255   +++++++
         cropped_image_255 = sitk.Cast(sitk.RescaleIntensity(image),
-            sitk.sitkUInt8)
+                                      sitk.sitkUInt8)
 
         # ensure that the spacing in the image is correct
         cropped_image.SetOrigin(image.GetOrigin())
@@ -53,7 +53,7 @@ class AortaSegmenter():
         img_array = sitk.GetArrayFromImage(
             (sitk.Cast(sitk.RescaleIntensity(cropped_image), sitk.sitkUInt8))
         )
-        
+
         # flatten image array and calculate histogram via binning
         histogram_array = np.bincount(img_array.flatten(), minlength=256)
 
