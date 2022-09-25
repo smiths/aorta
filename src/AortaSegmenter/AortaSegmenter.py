@@ -2,9 +2,10 @@ import abc
 import numpy as np
 import SimpleITK as sitk
 
+
 class AortaSegmenter():
-    
-    def __init__(self, segmentingImage, segmentationFactor = 2.2):
+
+    def __init__(self, segmentingImage, segmentationFactor=2.2):
         self._segmentation_factor = segmentationFactor
         self._segmenting_image = segmentingImage
 
@@ -15,11 +16,11 @@ class AortaSegmenter():
     @property
     def segmenting_image(self):
         return self._segmenting_image
-    
+
     @segmentation_factor.setter
     def segmentation_factor(self, segmentationFactor):
         self._segmentation_factor = segmentationFactor
-    
+
     @property
     def segmented_image(self):
         return self._segmented_image
@@ -36,13 +37,11 @@ class AortaSegmenter():
         crop_filter.SetIndex(index)
         crop_filter.SetSize(size)
 
-        try:
-            cropped_image = crop_filter.Execute(image)
-        except:
-            traceback.print_exc()
-            
-        # change intensity range to go from 0-255   
-        cropped_image_255 = sitk.Cast(sitk.RescaleIntensity(image), sitk.sitkUInt8)
+        cropped_image = crop_filter.Execute(image)
+ 
+        # change intensity range to go from 0-255   +++++++
+        cropped_image_255 = sitk.Cast(sitk.RescaleIntensity(image),
+            sitk.sitkUInt8)
 
         # ensure that the spacing in the image is correct
         cropped_image.SetOrigin(image.GetOrigin())
@@ -68,7 +67,8 @@ class AortaSegmenter():
         # create pixel mapping lookup table
         transform_map = np.floor(255 * chistogram_array).astype(np.uint8)
 
-        # flatten image array into 1D list so they can be used with the pixel mapping table
+        # flatten image array into 1D list
+        # so they can be used with the pixel mapping table
         img_list = list(img_array.flatten())
 
         # transform pixel values to equalize

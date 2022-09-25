@@ -4,7 +4,7 @@ Developer Names: Jingyi Lin
 
 Date of project start: 2022/09/12
 
-This project is to genearte 3D aorta geometry (.vtk) from CT scans (.dicom).
+This project is to generate 3D aorta geometry (.vtk) from CT scans (.dicom).
 
 The folders and files for this project are as follows:
 
