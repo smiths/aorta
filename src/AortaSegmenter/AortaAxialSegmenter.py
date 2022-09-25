@@ -1,10 +1,12 @@
 from AortaSegmenter import AortaSegmenter
 import abc
 
+
 class AortaAxialSegmenter(AortaSegmenter):
 
-    def __init__(self, startingSlice, aortaCentre, numSliceSkipping, segmentationFactor,
-                 segmentingImage, normalized = False, outputBinary = True):
+    def __init__(self, startingSlice, aortaCentre, numSliceSkipping,
+                 segmentationFactor, segmentingImage, normalized=False,
+                 outputBinary=True):
         self._starting_slice = startingSlice
         self._aorta_centre = aortaCentre
         self._num_slice_skipping = numSliceSkipping
