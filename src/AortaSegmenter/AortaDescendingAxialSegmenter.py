@@ -91,7 +91,7 @@ class AortaDescendingAxialSegmenter(AortaAxialSegmenter):
         # (opposite direction from the arch)
 
         for sliceNum in range(self._starting_slice+1,
-            self._segmenting_image.GetDepth()):
+                              self._segmenting_image.GetDepth()):
 
             if (more_circles):
 
@@ -107,7 +107,7 @@ class AortaDescendingAxialSegmenter(AortaAxialSegmenter):
 
                 is_new_center_qualified = is_new_center_qualified \
                     and (total_coord <
-                    self._segmentation_factor * self._original_size) \
+                         self._segmentation_factor * self._original_size) \
                     and (total_coord < 2 * previous_size)
 
                 if is_new_center_qualified:
@@ -169,7 +169,7 @@ class AortaDescendingAxialSegmenter(AortaAxialSegmenter):
                 fully_seg_slice, total_coord, centre = self.__circle_filter(
                     sliceNum, centre_previous)
                 is_new_center_qualified = (
-                    total_coord > \
+                    total_coord >
                     1/self._segmentation_factor * previous_size) \
                     and (total_coord < factor_size_up * self._original_size) \
                     and (total_coord < 2*previous_size)
@@ -221,7 +221,7 @@ class AortaDescendingAxialSegmenter(AortaAxialSegmenter):
         self.__top_to_bottom_segmentation()
         print("Descending aorta segmentation - top to bottom finished")
 
-        print("Descending aorta segmentation - bottom to top started")      
+        print("Descending aorta segmentation - bottom to top started")
         self.__bottom_to_top_segmentation()
         print("Descending aorta segmentation - bottom to top finished")
 
@@ -251,10 +251,10 @@ class AortaDescendingAxialSegmenter(AortaAxialSegmenter):
                             self._segmented_image[:, :, slice_num]
                     else:
                         self._segmented_image[:, :, slice_num] = (
-                            self._segmented_image[:, :, slice_num - 1] 
+                            self._segmented_image[:, :, slice_num - 1]
                             + self._segmented_image[:, :, slice_num + 1] > 1
                         )
                 else:
                     self._segmented_image[:, :, slice_num] = (
                         self._segmented_image[:, :, slice_num - 1]
-                            + self._segmented_image[:, :, slice_num + 1] > 1)
+                        + self._segmented_image[:, :, slice_num + 1] > 1)
