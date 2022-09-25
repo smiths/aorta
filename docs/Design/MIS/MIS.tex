@@ -40,7 +40,7 @@ urlcolor=cyan          % color of external links
 
 \title{Module Interface Specification for \progname{}}
 
-\author{Author Name}
+\author{\authname{}}
 
 \date{\today}
 
@@ -76,8 +76,8 @@ See SRS Documentation at \wss{give url}
 
 \section{Introduction}
 
-The following document details the Module Interface Specifications for
-\wss{Fill in your project name and description}
+The following document details the Module Interface Specifications for Aorta GeomRecon software. This software aims to provide Aorta 3D gemoetry reconstruction by processing .dicom files (CT scans), it provides a user-friendly user interface where users can select the region to segment out Aorta from other parts of the organs.
+%\wss{Fill in your project name and description}
 
 Complementary documents include the System Requirement Specifications
 and Module Guide.  The full documentation and implementation can be
@@ -156,18 +156,27 @@ The following table is taken directly from the Module Guide document for this pr
 \newpage
 ~\newpage
 
-\section{MIS of \wss{Module Name}} \label{Module} \wss{Use labels for
-  cross-referencing}
+\section{MIS of AortaSegmenter%\wss{Module Name}
+} \label{Module} %\wss{Use labels forcross-referencing}
 
-\wss{You can reference SRS labels, such as R\ref{R_Inputs}.}
+Label - AS
 
-\wss{It is also possible to use \LaTeX for hypperlinks to external documents.}
+%\wss{You can reference SRS labels, such as R\ref{R_Inputs}.}
+
+%\wss{It is also possible to use \LaTeX for hypperlinks to external documents.}
 
 \subsection{Module}
+\begin{description}
+  \item[$\bullet$ Type] Abstract Object
+\end{description}
 
-\wss{Short name for the module}
+
+%\wss{Short name for the module}
 
 \subsection{Uses}
+\begin{description}
+  \item[$\bullet$ SITK] Open source interface to the Insight Segmentation and Registration Toolkit (ITK).
+\end{description}
 
 
 \subsection{Syntax}
@@ -189,9 +198,10 @@ The following table is taken directly from the Module Guide document for this pr
 \subsection{Semantics}
 
 \subsubsection{State Variables}
-
-\wss{Not all modules will have state variables.  State variables give the module
-  a memory.}
+segmentation\_factor: real \\
+segmenting\_image: SITK.image \\
+segmenting\_image\_255: SITK.image \\
+% \wss{Not all modules will have state variables.  State variables give the module a memory.}
 
 \subsubsection{Environment Variables}
 
