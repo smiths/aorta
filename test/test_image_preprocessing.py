@@ -17,8 +17,8 @@ def test_get_images():
     """
     # num_slices = [376, 423, 195, 188, 225, 447]
     # reading_image = driver.get_images(path, slice_num)
-    assert(1)
+    assert (1)
 
 
 def test_prepared_segmenting_image():
-    assert(1)
+    assert (1)
