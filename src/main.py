@@ -1,4 +1,6 @@
-import AortaSegmenter
+from AortaSegmenter.AortaDescendingAxialSegmenter import AortaDescendingAxialSegmenter
+from AortaSegmenter.AortaAscendingAxialSegmenter import AortaAscendingAxialSegmenter
+from AortaSegmenter.AortaSagitalSegmenter import AortaSagitalSegmenter
 from datetime import datetime
 import os
 import SimpleITK as sitk
@@ -32,7 +34,7 @@ if __name__ == '__main__':
 
     # work on image 0
     image = get_images("./sample-dicom/43681283", 376)
-    desc_axial_segmenter = AortaSegmenter.AortaDescendingAxialSegmenter(
+    desc_axial_segmenter = AortaDescendingAxialSegmenter(
         startingSlice=86, aortaCentre=[112, 151], numSliceSkipping=3,
         segmentationFactor=2.2, segmentingImage=image)
 
@@ -44,11 +46,11 @@ if __name__ == '__main__':
     processed_image = desc_axial_segmenter.segmented_image
     writer = sitk.ImageFileWriter()
     writer.SetImageIO("VTKImageIO")
-    outFilePath = "../result/result_desc_0_.vtk"
+    outFilePath = "result/result_desc_0_.vtk"
     writer.SetFileName(outFilePath)
     writer.Execute(processed_image)
 
-    asc_axial_segmenter = AortaSegmenter.AortaAscendingAxialSegmenter(
+    asc_axial_segmenter = AortaAscendingAxialSegmenter(
         startingSlice=114, aortaCentre=[40, 40], numSliceSkipping=3,
         segmentationFactor=2.2, segmentingImage=cropped_image,
         segmentedImage=processed_image)
@@ -58,11 +60,11 @@ if __name__ == '__main__':
 
     writer = sitk.ImageFileWriter()
     writer.SetImageIO("VTKImageIO")
-    outFilePath = "../result/result_asc_0_.vtk"
+    outFilePath = "result/result_asc_0_.vtk"
     writer.SetFileName(outFilePath)
     writer.Execute(processed_image)
 
-    sag_segmenter = AortaSegmenter.AortaSagitalSegmenter(
+    sag_segmenter = AortaSagitalSegmenter(
         segmentationFactor=3.5, segmentedImage=processed_image,
         original_cropped_image=cropped_image)
 
@@ -70,7 +72,7 @@ if __name__ == '__main__':
 
     writer = sitk.ImageFileWriter()
     writer.SetImageIO("VTKImageIO")
-    outFilePath = "../result/result_{datetime}_.vtk".format(
+    outFilePath = "result/result_{datetime}_.vtk".format(
         datetime=datetime.now().strftime("%Y-%m-%d_%H%M"))
     writer.SetFileName(outFilePath)
     writer.Execute(sag_segmenter.segmented_image)

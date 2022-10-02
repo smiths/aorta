@@ -1,8 +1,8 @@
-from AortaSegmenter import AortaSegmenter
+from AortaSegmenter.AortaSegmenterBase import AortaSegmenterBase
 import abc
 
 
-class AortaAxialSegmenter(AortaSegmenter):
+class AortaAxialSegmenter(AortaSegmenterBase):
 
     def __init__(self, startingSlice, aortaCentre, numSliceSkipping,
                  segmentationFactor, segmentingImage, normalized=False,

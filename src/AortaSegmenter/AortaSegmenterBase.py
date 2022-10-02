@@ -3,7 +3,7 @@ import numpy as np
 import SimpleITK as sitk
 
 
-class AortaSegmenter():
+class AortaSegmenterBase():
 
     def __init__(self, segmentingImage, segmentationFactor=2.2):
         self._segmentation_factor = segmentationFactor
