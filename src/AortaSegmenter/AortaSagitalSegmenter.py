@@ -1,9 +1,9 @@
-from AortaSegmenter import AortaSegmenter
+from AortaSegmenter.AortaSegmenterBase import AortaSegmenterBase
 import SimpleITK as sitk
 import numpy as np
 
 
-class AortaSagitalSegmenter(AortaSegmenter):
+class AortaSagitalSegmenter(AortaSegmenterBase):
     """This class performs Aorta Sagital segmentation"""
 
     def __init__(self, segmentationFactor, segmentedImage,
