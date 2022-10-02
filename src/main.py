@@ -1,5 +1,7 @@
-from AortaSegmenter.AortaDescendingAxialSegmenter import AortaDescendingAxialSegmenter
-from AortaSegmenter.AortaAscendingAxialSegmenter import AortaAscendingAxialSegmenter
+from AortaSegmenter.AortaDescendingAxialSegmenter \
+    import AortaDescendingAxialSegmenter
+from AortaSegmenter.AortaAscendingAxialSegmenter \
+    import AortaAscendingAxialSegmenter
 from AortaSegmenter.AortaSagitalSegmenter import AortaSagitalSegmenter
 from datetime import datetime
 import os
