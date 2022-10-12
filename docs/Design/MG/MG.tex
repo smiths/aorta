@@ -34,7 +34,7 @@
 \begin{document}
 
 \title{Module Guide for \progname{}} 
-\author{Author Name}
+\author{\authname}
 \date{\today}
 
 \maketitle
@@ -77,7 +77,6 @@ This section records information for easy reference.
   DAS & Descending Aorta Segmenter\\
   AAS & Ascending Aorta Segmenter\\
   ASS &  Aorta Sagital Segmenter\\
-  \wss{etc.} & \wss{...}\\
   \bottomrule
 \end{tabular}\\
 
@@ -160,10 +159,12 @@ adapted here is called design for
 change.
 
 \begin{description}
-\item[\refstepcounter{acnum} \actheacnum \label{acHardware}:] The specific
-  hardware on which the software is running.
-\item[\refstepcounter{acnum} \actheacnum \label{acInput}:] The format of the
-  initial input data.
+\item[\refstepcounter{acnum} \actheacnum \label{acHardware}:] The specific hardware on which the software is running.
+\item[\refstepcounter{acnum} \actheacnum \label{acInput}:] The format of the initial input data.
+\item[\refstepcounter{acnum} \actheacnum \label{acAlgo}:] The algorithm to segment the aorta out of other organs from ct scans.
+\item[\refstepcounter{acnum} \actheacnum \label{acInputParams}:] The input parameters required to execute the algorithm.
+\item[\refstepcounter{acnum} \actheacnum \label{acGetInput}:] The methods to get input from the user.
+
 \item ...
 \end{description}
 
@@ -205,28 +206,28 @@ actually be implemented.
 
 \begin{table}[h!]
 \centering
-\begin{tabular}{p{0.3\textwidth} p{0.6\textwidth}}
+\begin{tabular}{p{0.3\textwidth} p{0.4\textwidth}p{0.3\textwidth}}
 \toprule
-\textbf{Level 1} & \textbf{Level 2}\\
+\textbf{Level 1} & \textbf{Level 2} & \textbf{Level 3}\\
 \midrule
 
 {Hardware-Hiding Module} & ~ \\
 \midrule
 
-\multirow{7}{0.3\textwidth}{Behaviour-Hiding Module} &  Input Parameter Module\\
-& Control Module\\
-& Display Module\\
-& ?\\
-& ?\\
-& ?\\
-& ?\\ 
-& ?\\
+\multirow{7}{0.3\textwidth}{Behaviour-Hiding Module} &  Input Parameter Module & \\
+& Control Module  & \\
+& Display Module  & \\
+& Aorta Segmentation Module & ASS\\
+&  &  AAS\\
+&  &  DAS\\
+& ? & \\
+& ? & \\
 \midrule
 
-\multirow{3}{0.3\textwidth}{Software Decision Module} & Aorta Segmentation Module\\
-& Descending Aorta Segmentation Module\\
-& Ascending Aorta Segmentation Module\\
-& Aorta Sagital Segmentation Module\\
+\multirow{3}{0.3\textwidth}{Software Decision Module} & Display Module \\
+& \\ 
+& \\
+& \\
 \bottomrule
 
 \end{tabular}
@@ -239,15 +240,6 @@ actually be implemented.
 The design of the system is intended to satisfy the requirements developed in
 the SRS. In this stage, the system is decomposed into modules. The connection
 between requirements and modules is listed in Table \ref{TblRT}.
-
-\wss{The intention of this section is to document decisions that are made
-  ``between'' the requirements and the design.  To satisfy some requirements,
-  design decisions need to be made.  Rather than make these decisions implicit,
-  they are explicitly recorded here.  For instance, if a program has security
-  requirements, a specific design decision may be made to satisfy those
-  requirements with a password.  In scientific examples, the choice of algorithm
-could potentially go here, if that is a decision that is exposed by the
-interface.}
 
 \section{Module Decomposition} \label{SecMD}
 
@@ -323,7 +315,6 @@ are isolated to their own access programs.
 \end{description}
 
 \subsubsection{Display Module (\mref{mDisplay})}
-
 \begin{description}
 \item[Secrets:]The methods by which it displays input data and output data, along 
 with any other info to the screen.
@@ -331,30 +322,11 @@ with any other info to the screen.
 \item[Implemented By:] \progname
 \end{description}
 
-
-
-\subsubsection{Etc.}
-
-
-\subsection{Software Decision Module}
-
+\subsubsection{Aorta Segmentation Module (\mref{mAortaSeg})}
 \begin{description}
-\item[Secrets:] The design decision based on mathematical theorems, physical
-  facts, or programming considerations. The secrets of this module are
-  \emph{not} described in the SRS.
-\item[Services:] Includes data structure and algorithms used in the system that
-  do not provide direct interaction with the user. 
-  % Changes in these modules are more likely to be motivated by a desire to
-  % improve performance than by externally imposed changes.
-\item[Implemented By:] --
-\end{description}
-
-\subsubsection{Aorta Segmentation Module (\mref{mAS})}
-\begin{description}
-\item[Secrets:] The abstract class for an Aorta segmenter.
-\item[Services:] Includes the common attributes and function signatures of any Aorta segmenter.
-\item[Use case:] When declare a new segmenter class, AS is used as the base class for reference to know what an Aorta segmenter must have.
- It must have an original image, a segmented image and a \emph{begin\_segmentation} method public to the control module to start the segmentation. 
+\item[Secrets:] The algorithm to fully segment the aorta parts out of other internal organs from ct scans.
+\item[Services:] Includes the common class, attributes, functions of any Aorta segmenter.
+\item[Use case:] This module should always have a \emph{begin\_segmentation} function available for the developer to begin the arota segmentation.
 \end{description}
 
 \subsubsection{Descending Aorta Segmentation Module (\mref{mDAS})}
@@ -386,6 +358,31 @@ to get the segmented result, a SITK image object.
 \item[Use case:] Pass in the segmentation seeds and \emph{segmented image} from previous step and call AortaSagitalSegmenter constructor to initialize an object. 
 Finally, call \emph{begin\_segmentation} function and read \emph{segmented\_image}
 to get the segmented result, a SITK image object.
+\end{description}
+
+
+\subsubsection{Etc.}
+
+
+\subsection{Software Decision Module}
+
+\begin{description}
+\item[Secrets:] The design decision based on mathematical theorems, physical
+  facts, or programming considerations. The secrets of this module are
+  \emph{not} described in the SRS.
+\item[Services:] Includes data structure and algorithms used in the system that
+  do not provide direct interaction with the user. 
+  % Changes in these modules are more likely to be motivated by a desire to
+  % improve performance than by externally imposed changes.
+\item[Implemented By:] --
+\end{description}
+
+\subsubsection{Display Module (\mref{mDisplay})}
+\begin{description}
+\item[Secrets:] The implementation of GUI framework
+\item[Services:] Includes rendering a windows, inputs, keyboard and mouse interaction with the GUI elements.
+\item[Use case:] This will be the entry point of Aorta software. It starts by displaying the name of the software and provide the important input to continue the progress of the aorta software (file path to the .dicom files). Then it will provide a window with different elements where user can interact with to input some variables. 
+\item[Implemented By:] QT
 \end{description}
 
 \section{Traceability Matrix} \label{SecTM}
