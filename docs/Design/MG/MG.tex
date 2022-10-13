@@ -62,7 +62,7 @@ This section records information for easy reference.
 \renewcommand{\arraystretch}{1.2}
 \begin{tabular}{l l} 
   \toprule		
-  \textbf{symbol} & \textbf{description}\\
+  \textbf{Symbol} & \textbf{description}\\
   \midrule 
   AC & Anticipated Change\\
   DAG & Directed Acyclic Graph \\
@@ -76,7 +76,7 @@ This section records information for easy reference.
   UC & Unlikely Change \\
   DAS & Descending Aorta Segmenter\\
   AAS & Ascending Aorta Segmenter\\
-  ASS &  Aorta Sagital Segmenter\\
+  ASS &  Aorta Sagittal Segmenter\\
   \bottomrule
 \end{tabular}\\
 
@@ -103,7 +103,7 @@ hides represent likely future changes.  Design for change is valuable in SC,
 where modifications are frequent, especially during initial development as the
 solution space is explored.  
 
-Our design follows the rules layed out by \citet{ParnasEtAl1984}, as follows:
+Our design follows the rules laid out by \citet{ParnasEtAl1984}, as follows:
 \begin{itemize}
 \item System details that are likely to change independently should be the
   secrets of separate modules.
@@ -199,7 +199,7 @@ actually be implemented.
 \item [\refstepcounter{mnum} \mthemnum \label{mAortaSeg}:] Aorta Segmentation Module
 \item [\refstepcounter{mnum} \mthemnum \label{mDAS}:] Descending Aorta Segmentation Module
 \item [\refstepcounter{mnum} \mthemnum \label{mAAS}:] Ascending Aorta Segmentation Module
-\item [\refstepcounter{mnum} \mthemnum \label{mASS}:] Aorta Sagital Segmentation Module
+\item [\refstepcounter{mnum} \mthemnum \label{mSAS}:] Sagittal Aorta Segmentation Module
 \item ...
 \end{description}
 
@@ -271,8 +271,8 @@ to be implemented.
 \subsection{Behaviour-Hiding Module}
 
 \begin{description}
-\item[Secrets:]The contents of the required behaviours.
-\item[Services:]Includes programs that provide externally visible behaviour of
+\item[Secrets:]The contents of the required behaviors.
+\item[Services:]Includes programs that provide externally visible behavior of
   the system as specified in the software requirements specification (SRS)
   documents. This module serves as a communication layer between the
   hardware-hiding module and the software decision module. The programs in this
@@ -296,8 +296,8 @@ to be implemented.
 \item[Secrets:] The data structure for input parameters, how the
 values are input and how the values are verified.  The load and verify secrets
 are isolated to their own access programs.
-\item[Services:] Gets input from user (including the starting slice of the segmentation, the center of the circle
-, segmentation factor that is used to determined a good segmentation slice), stores input and verifies that the
+\item[Services:] Gets input from user (including the starting slice of the segmentation, the center of the circle,
+ segmentation factor that is used to determined a good segmentation slice), stores input and verifies that the
   input parameters comply with physical and software constraints. Throws an
   error if a parameter violates a physical constraint. Throws a warning if a
   parameter violates a software constraint.  Stored parameters can be read
@@ -326,7 +326,7 @@ with any other info to the screen.
 \begin{description}
 \item[Secrets:] The algorithm to fully segment the aorta parts out of other internal organs from ct scans.
 \item[Services:] Includes the common class, attributes, functions of any Aorta segmenter.
-\item[Use case:] This module should always have a \emph{begin\_segmentation} function available for the developer to begin the arota segmentation.
+\item[Use case:] This module should always have a \emph{begin\_segmentation} function available for the developer to begin the aorta segmentation.
 \end{description}
 
 \subsubsection{Descending Aorta Segmentation Module (\mref{mDAS})}
@@ -335,7 +335,7 @@ with any other info to the screen.
 \item[Services:] Includes data structure and algorithms used in the system that
   do not provide direct interaction with the user. 
 \item[Use case:] Pass in the segmentation seeds and \emph{original image} and call AortaDescendingSegmenter constructor to initialize an object.
-Call the method \emph{prepared\_image} from DAS objecet to crop the image into desired size.
+Call the method \emph{prepared\_image} from DAS object to crop the image into desired size.
 Finally, call \emph{begin\_segmentation} function and read \emph{segmented\_image}
 to get the segmented result, a SITK image object.
 \end{description}
@@ -350,9 +350,9 @@ Finally, call \emph{begin\_segmentation} function and read \emph{segmented\_imag
 to get the segmented result, a SITK image object.
 \end{description}
 
-\subsubsection{Aorta Sagital Segmentation Module (\mref{mASS})}
+\subsubsection{Sagittal Aorta Segmentation Module (\mref{mSAS})}
 \begin{description}
-\item[Secrets:] The algorithm to segment the Aorta from sagital plane, this can segment out the curve part of the Aorta.
+\item[Secrets:] The algorithm to segment the Aorta from sagittal plane, this can segment out the curve part of the Aorta.
 \item[Services:] Includes data structure and algorithms used in the system that
   do not provide direct interaction with the user. 
 \item[Use case:] Pass in the segmentation seeds and \emph{segmented image} from previous step and call AortaSagitalSegmenter constructor to initialize an object. 
@@ -443,7 +443,7 @@ R11 & \mref{mOutput}, \mref{mODEs}, \mref{mEnergy}, \mref{mControl}\\
 
 \section{Use Hierarchy Between Modules} \label{SecUse}
 
-In this section, the uses hierarchy between modules is
+In this section, the uses' hierarchy between modules is
 provided. \citet{Parnas1978} said of two programs A and B that A {\em uses} B if
 correct execution of B may be necessary for A to complete the task described in
 its specification. That is, A {\em uses} B if there exist situations in which
