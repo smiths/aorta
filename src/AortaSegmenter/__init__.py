@@ -1,5 +1,4 @@
-# from .AortaSegmenter import AortaSegmenter
-# from .AortaAxialSegmenter import AortaAxialSegmenter
-# from .AortaSagitalSegmenter import AortaSagitalSegmenter
-# from .AortaAscendingAxialSegmenter import AortaAscendingAxialSegmenter
-# from .AortaDescendingAxialSegmenter import AortaDescendingAxialSegmenter
+# import AortaSegmenter.AortaAxialSegmenter
+# import AortaSegmenter.AortaSagitalSegmenter
+# import AortaSegmenter.AortaAscendingAxialSegmenter
+# import AortaSegmenter.AortaDescendingAxialSegmenter
