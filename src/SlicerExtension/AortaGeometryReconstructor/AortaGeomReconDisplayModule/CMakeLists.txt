@@ -4,6 +4,12 @@ set(MODULE_NAME AortaGeomReconDisplayModule)
 #-----------------------------------------------------------------------------
 set(MODULE_PYTHON_SCRIPTS
   ${MODULE_NAME}.py
+  ${MODULE_NAME}Lib/__init__.py
+  ${MODULE_NAME}Lib/AortaSegmenterBase.py
+  ${MODULE_NAME}Lib/AortaAxialSegmenter.py
+  ${MODULE_NAME}Lib/AortaSagitalSegmenter.py
+  ${MODULE_NAME}Lib/AortaAscendingAxialSegmenter.py
+  ${MODULE_NAME}Lib/AortaDescendingAxialSegmenter.py
   )
 
 set(MODULE_PYTHON_RESOURCES

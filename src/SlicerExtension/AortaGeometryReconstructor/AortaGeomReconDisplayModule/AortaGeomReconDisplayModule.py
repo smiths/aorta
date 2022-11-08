@@ -118,6 +118,8 @@ class AortaGeomReconDisplayModuleWidget(ScriptedLoadableModuleWidget, VTKObserva
         uiWidget = slicer.util.loadUI(self.resourcePath('UI/AortaGeomReconDisplayModule.ui'))
         self.layout.addWidget(uiWidget)
         self.ui = slicer.util.childWidgetVariables(uiWidget)
+        # self.ui.applyButton.toolTip = "Compute output volume"
+        self.ui.clearButton.enabled = True
 
         # Set scene in MRML widgets. Make sure that in Qt designer the top-level qMRMLWidget's
         # "mrmlSceneChanged(vtkMRMLScene*)" signal in is connected to each MRML widget's.
@@ -134,16 +136,18 @@ class AortaGeomReconDisplayModuleWidget(ScriptedLoadableModuleWidget, VTKObserva
         self.addObserver(slicer.mrmlScene, slicer.mrmlScene.StartCloseEvent, self.onSceneStartClose)
         self.addObserver(slicer.mrmlScene, slicer.mrmlScene.EndCloseEvent, self.onSceneEndClose)
 
-        print(slicer.mrmlScene.GetSubjectHierarchyNode())
+        # This will get Scene's all node objects
 
         # These connections ensure that whenever user changes some settings on the GUI, that is saved in the MRML scene
         # (in the selected parameter node).
-        # self.ui.inputSelector.connect("currentNodeChanged(vtkMRMLNode*)", self.updateParameterNodeFromGUI)
-        self.ui.outputSelector.connect("currentNodeChanged(vtkMRMLNode*)", self.updateParameterNodeFromGUI)
-        self.ui.invertedOutputSelector.connect("currentNodeChanged(vtkMRMLNode*)", self.updateParameterNodeFromGUI)
+        self.ui.cropIndex.connect("coordinatesChanged(double*)", self.updateParameterNodeFromGUI)
+        self.ui.cropSize.connect("coordinatesChanged(double*)", self.updateParameterNodeFromGUI)
+        self.ui.curveSeeds.connect("coordinatesChanged(double*)", self.updateParameterNodeFromGUI)
+        self.ui.segmentationFactor.connect("valueChanged(double)", self.updateParameterNodeFromGUI)
 
         # Buttons
         self.ui.applyButton.connect('clicked(bool)', self.onApplyButton)
+        self.ui.clearButton.connect('clicked(bool)', self.onClearButton)
 
         # Make sure parameter node is initialized (needed for module reload)
         self.initializeParameterNode()
@@ -193,10 +197,17 @@ class AortaGeomReconDisplayModuleWidget(ScriptedLoadableModuleWidget, VTKObserva
         self.setParameterNode(self.logic.getParameterNode())
 
         # Select default input nodes if nothing is selected yet to save a few clicks for the user
-        if not self._parameterNode.GetNodeReference("InputVolume"):
-            firstVolumeNode = slicer.mrmlScene.GetFirstNodeByClass("vtkMRMLScalarVolumeNode")
-            if firstVolumeNode:
-                self._parameterNode.SetNodeReferenceID("InputVolume", firstVolumeNode.GetID())
+        # if not self._parameterNode.GetNodeReference("cropIndex"):
+        #     first_widget = slicer.mrmlScene.GetFirstNodeByName("cropIndex")
+        #     if first_widget:
+        #         self._parameterNode.SetNodeReferenceID("cropIndex", first_widget.GetID())
+
+        # if not self._parameterNode.GetNodeReference("cropSize"):
+        #     second_widget = slicer.mrmlScene.GetFirstNodeByName("cropSize")
+        #     if second_widget:
+        #         self._parameterNode.SetNodeReferenceID("cropSize", second_widget.GetID())
+
+        # print(self._parameterNode)
 
     def setParameterNode(self, inputParameterNode):
         """
@@ -210,6 +221,7 @@ class AortaGeomReconDisplayModuleWidget(ScriptedLoadableModuleWidget, VTKObserva
         # Unobserve previously selected parameter node and add an observer to the newly selected.
         # Changes of parameter node are observed so that whenever parameters are changed by a script or any other module
         # those are reflected immediately in the GUI.
+
         if self._parameterNode is not None:
             self.removeObserver(self._parameterNode, vtk.vtkCommand.ModifiedEvent, self.updateGUIFromParameterNode)
         self._parameterNode = inputParameterNode
@@ -218,6 +230,13 @@ class AortaGeomReconDisplayModuleWidget(ScriptedLoadableModuleWidget, VTKObserva
 
         # Initial GUI update
         self.updateGUIFromParameterNode()
+
+    def anyEmptySeed(self):
+        emptyCropSize = (self.ui.cropSize.coordinates == "0,0,0")
+        emptyCropIndex = (self.ui.cropIndex.coordinates == "0,0,0")
+        emptyCurveSeeds = (self.ui.curveSeeds.coordinates == "0,0,0")
+        return emptyCurveSeeds or emptyCropIndex or emptyCropSize
+
 
     def updateGUIFromParameterNode(self, caller=None, event=None):
         """
@@ -231,20 +250,27 @@ class AortaGeomReconDisplayModuleWidget(ScriptedLoadableModuleWidget, VTKObserva
         # Make sure GUI changes do not call updateParameterNodeFromGUI (it could cause infinite loop)
         self._updatingGUIFromParameterNode = True
 
+        self.ui.cropSize.coordinates = self._parameterNode.GetParameter("cropSize")
+        self.ui.cropIndex.coordinates = self._parameterNode.GetParameter("cropIndex")
+        self.ui.curveSeeds.coordinates = self._parameterNode.GetParameter("curveSeeds")
+        self.ui.segmentationFactor.value = float(self._parameterNode.GetParameter("segmentationFactor"))
+        self.ui.applyButton.enabled = (not self.anyEmptySeed())
+
         # Update node selectors and sliders
-        # self.ui.inputSelector.setCurrentNode(self._parameterNode.GetNodeReference("InputVolume"))
-        self.ui.outputSelector.setCurrentNode(self._parameterNode.GetNodeReference("OutputVolume"))
-        self.ui.invertedOutputSelector.setCurrentNode(self._parameterNode.GetNodeReference("OutputVolumeInverse"))
+        # self.ui.inputSelector.setCurrentNode(self._parameterNode.GetParameter("InputVolume"))
+        # self.ui.outputSelector.setCurrentNode(self._parameterNode.GetNodeReference("OutputVolume"))
+        # self.ui.invertedOutputSelector.setCurrentNode(self._parameterNode.GetNodeReference("OutputVolumeInverse"))
+
         # self.ui.imageThresholdSliderWidget.value = float(self._parameterNode.GetParameter("Threshold"))
         # self.ui.invertOutputCheckBox.checked = (self._parameterNode.GetParameter("Invert") == "true")
 
         # Update buttons states and tooltips
-        if self._parameterNode.GetNodeReference("InputVolume") and self._parameterNode.GetNodeReference("OutputVolume"):
-            self.ui.applyButton.toolTip = "Compute output volume"
-            self.ui.applyButton.enabled = True
-        else:
-            self.ui.applyButton.toolTip = "Select input and output volume nodes"
-            self.ui.applyButton.enabled = False
+        # if self._parameterNode.GetNodeReference("InputVolume") and self._parameterNode.GetNodeReference("OutputVolume"):
+        #     self.ui.applyButton.toolTip = "Compute output volume"
+        #     self.ui.applyButton.enabled = True
+        # else:
+        #     self.ui.applyButton.toolTip = "Select input and output volume nodes"
+        #     self.ui.applyButton.enabled = False
 
         # All the GUI updates are done
         self._updatingGUIFromParameterNode = False
@@ -254,35 +280,47 @@ class AortaGeomReconDisplayModuleWidget(ScriptedLoadableModuleWidget, VTKObserva
         This method is called when the user makes any change in the GUI.
         The changes are saved into the parameter node (so that they are restored when the scene is saved and loaded).
         """
-
         if self._parameterNode is None or self._updatingGUIFromParameterNode:
             return
-
         wasModified = self._parameterNode.StartModify()  # Modify all properties in a single batch
+        self._parameterNode.SetParameter("cropIndex", self.ui.cropIndex.coordinates)
+        self._parameterNode.SetParameter("cropSize", self.ui.cropSize.coordinates)
+        self._parameterNode.SetParameter("curveSeeds", self.ui.curveSeeds.coordinates)
+        self._parameterNode.SetParameter("segmentationFactor", str(self.ui.segmentationFactor.value))
+        self.ui.applyButton.enabled = (not self.anyEmptySeed())
 
         # self._parameterNode.SetNodeReferenceID("InputVolume", self.ui.inputSelector.currentNodeID)
-        self._parameterNode.SetNodeReferenceID("OutputVolume", self.ui.outputSelector.currentNodeID)
-        self._parameterNode.SetParameter("Threshold", str(self.ui.imageThresholdSliderWidget.value))
-        # self._parameterNode.SetParameter("Invert", "true" if self.ui.invertOutputCheckBox.checked else "false")
-        self._parameterNode.SetNodeReferenceID("OutputVolumeInverse", self.ui.invertedOutputSelector.currentNodeID)
+        # self._parameterNode.SetNodeReferenceID("OutputVolume", self.ui.outputSelector.currentNodeID)
+        # self._parameterNode.SetNodeReferenceID("OutputVolumeInverse", self.ui.invertedOutputSelector.currentNodeID)
 
         self._parameterNode.EndModify(wasModified)
+
+    def onClearButton(self):
+        """
+        Run processing when user clicks "Apply" button.
+        """
+        with slicer.util.tryWithErrorDisplay("Failed to clear inputs", waitCursor=True):
+            self.logic.setDefaultParameters(self.logic.getParameterNode())
 
     def onApplyButton(self):
         """
         Run processing when user clicks "Apply" button.
         """
         with slicer.util.tryWithErrorDisplay("Failed to compute results.", waitCursor=True):
-
             # Compute output
-            self.logic.process(self.ui.inputSelector.currentNode(), self.ui.outputSelector.currentNode(),
-                               self.ui.imageThresholdSliderWidget.value, self.ui.invertOutputCheckBox.checked)
+            self.logic.process(self._parameterNode.GetParameter("cropIndex"),
+                               self._parameterNode.GetParameter("cropSize"),
+                               self._parameterNode.GetParameter("curveSeeds"),
+                               self._parameterNode.GetParameter("segmentationFactor"))
+            if "Phase 1" in self.ui.phaseLabel.text:
+                self.ui.phaseLabel.text = "Phase 2"
+                
 
             # Compute inverted output (if needed)
-            if self.ui.invertedOutputSelector.currentNode():
-                # If additional output volume is selected then result with inverted threshold is written there
-                self.logic.process(self.ui.inputSelector.currentNode(), self.ui.invertedOutputSelector.currentNode(),
-                                   self.ui.imageThresholdSliderWidget.value, not self.ui.invertOutputCheckBox.checked, showResult=False)
+            # if self.ui.invertedOutputSelector.currentNode():
+            #     # If additional output volume is selected then result with inverted threshold is written there
+            #     self.logic.process(self.ui.inputSelector.currentNode(), self.ui.invertedOutputSelector.currentNode(),
+            #                        self.ui.imageThresholdSliderWidget.value, not self.ui.invertOutputCheckBox.checked, showResult=False)
 
 
 #
@@ -304,47 +342,60 @@ class AortaGeomReconDisplayModuleLogic(ScriptedLoadableModuleLogic):
         Called when the logic class is instantiated. Can be used for initializing member variables.
         """
         ScriptedLoadableModuleLogic.__init__(self)
-
+    
     def setDefaultParameters(self, parameterNode):
         """
         Initialize parameter node with default settings.
         """
-        if not parameterNode.GetParameter("Threshold"):
-            parameterNode.SetParameter("Threshold", "100.0")
-        if not parameterNode.GetParameter("Invert"):
-            parameterNode.SetParameter("Invert", "false")
+        # if not parameterNode.GetParameter("Threshold"):
+        #     parameterNode.SetParameter("Threshold", "100.0")
+        # if not parameterNode.GetParameter("Invert"):
+        #     parameterNode.SetParameter("Invert", "false")
+        if not parameterNode.GetParameter("cropIndex"):
+            parameterNode.SetParameter("cropIndex", "0,0,0")
+        if not parameterNode.GetParameter("cropSize"):
+            parameterNode.SetParameter("cropSize", "0,0,0")
+        if not parameterNode.GetParameter("curveSeeds"):
+            parameterNode.SetParameter("curveSeeds", "0,0,0")
+        if not parameterNode.GetParameter("segmentationFactor"):
+            parameterNode.SetParameter("segmentationFactor", "0.0")
+        
 
-    def process(self, inputVolume, outputVolume, imageThreshold, invert=False, showResult=True):
+    def process(self, cropSize, cropIndex, curveSeeds, segmentationFactor):
         """
         Run the processing algorithm.
         Can be used without GUI widget.
         :param inputVolume: volume to be thresholded
-        :param outputVolume: thresholding result
-        :param imageThreshold: values above/below this threshold will be set to 0
-        :param invert: if True then values above the threshold will be set to 0, otherwise values below are set to 0
-        :param showResult: show output volume in slice viewers
         """
 
-        if not inputVolume or not outputVolume:
-            raise ValueError("Input or output volume is invalid")
+        # cropSize = parameterNodes.GetParameter("cropSize")
+        # cropIndex = parameterNodes.GetParameter("cropIndex")
+        # curveSeeds = parameterNodes.GetParameter("curveSeeds")
+        # segmentationFactor = parameterNodes.GetParameter("segmentationFactor")
 
-        import time
-        startTime = time.time()
-        logging.info('Processing started')
+        print(cropSize, cropIndex)
 
-        # Compute the thresholded output volume using the "Threshold Scalar Volume" CLI module
-        cliParams = {
-            'InputVolume': inputVolume.GetID(),
-            'OutputVolume': outputVolume.GetID(),
-            'ThresholdValue': imageThreshold,
-            'ThresholdType': 'Above' if invert else 'Below'
-        }
-        cliNode = slicer.cli.run(slicer.modules.thresholdscalarvolume, None, cliParams, wait_for_completion=True, update_display=showResult)
-        # We don't need the CLI module node anymore, remove it to not clutter the scene with it
-        slicer.mrmlScene.RemoveNode(cliNode)
+        logging.info(f'Processing completed')
+        # if not inputVolume or not outputVolume:
+        #     raise ValueError("Input or output volume is invalid")
 
-        stopTime = time.time()
-        logging.info(f'Processing completed in {stopTime-startTime:.2f} seconds')
+        # import time
+        # startTime = time.time()
+        # logging.info('Processing started')
+
+        # # Compute the thresholded output volume using the "Threshold Scalar Volume" CLI module
+        # cliParams = {
+        #     'InputVolume': inputVolume.GetID(),
+        #     'OutputVolume': outputVolume.GetID(),
+        #     'ThresholdValue': imageThreshold,
+        #     'ThresholdType': 'Above' if invert else 'Below'
+        # }
+        # cliNode = slicer.cli.run(slicer.modules.thresholdscalarvolume, None, cliParams, wait_for_completion=True, update_display=showResult)
+        # # We don't need the CLI module node anymore, remove it to not clutter the scene with it
+        # slicer.mrmlScene.RemoveNode(cliNode)
+
+        # stopTime = time.time()
+        # logging.info(f'Processing completed in {stopTime-startTime:.2f} seconds')
 
 
 #

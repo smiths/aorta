@@ -1,4 +1,4 @@
-from AortaSegmenter.AortaSegmenterBase import AortaSegmenterBase
+from AortaGeomReconDisplayModuleLib.AortaSegmenterBase import AortaSegmenterBase
 import SimpleITK as sitk
 import numpy as np
 

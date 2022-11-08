@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>902</width>
+    <width>549</width>
     <height>634</height>
    </rect>
   </property>
@@ -15,7 +15,25 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <widget class="qSlicerMarkupsPlaceWidget" name="MarkupsPlaceWidget"/>
+    <widget class="QLabel" name="phaseLabel">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>16</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Phase 1 Crop Aorta</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
    </item>
    <item>
     <widget class="ctkCollapsibleButton" name="inputsCollapsibleButton">
@@ -30,90 +48,49 @@
         </property>
        </widget>
       </item>
-      <item row="3" column="0" colspan="2">
+      <item row="5" column="0" colspan="2">
        <widget class="qMRMLSubjectHierarchyTreeView" name="SubjectHierarchyTreeView"/>
       </item>
       <item row="1" column="1">
-       <widget class="qMRMLCoordinatesWidget" name="MRMLCoordinatesWidget"/>
+       <widget class="qMRMLCoordinatesWidget" name="cropIndex"/>
       </item>
       <item row="2" column="0">
        <widget class="QLabel" name="label_3">
         <property name="text">
-         <string>Crop Size</string>
+         <string>Crop Size:</string>
         </property>
        </widget>
       </item>
       <item row="2" column="1">
-       <widget class="qMRMLCoordinatesWidget" name="MRMLCoordinatesWidget_2"/>
+       <widget class="qMRMLCoordinatesWidget" name="cropSize"/>
       </item>
-     </layout>
-    </widget>
-   </item>
-   <item>
-    <widget class="ctkCollapsibleButton" name="outputsCollapsibleButton">
-     <property name="text">
-      <string>Outputs</string>
-     </property>
-     <layout class="QFormLayout" name="formLayout_4">
-      <item row="0" column="0">
-       <widget class="QLabel" name="label_2">
+      <item row="3" column="0">
+       <widget class="QLabel" name="label_4">
         <property name="text">
-         <string>Thresholded volume:</string>
+         <string>Curve seeds:</string>
         </property>
        </widget>
       </item>
-      <item row="0" column="1">
-       <widget class="qMRMLNodeComboBox" name="outputSelector">
-        <property name="toolTip">
-         <string>Pick the output to the algorithm.</string>
-        </property>
-        <property name="nodeTypes">
-         <stringlist>
-          <string>vtkMRMLScalarVolumeNode</string>
-         </stringlist>
-        </property>
-        <property name="showChildNodeTypes">
-         <bool>false</bool>
-        </property>
-        <property name="noneEnabled">
-         <bool>true</bool>
-        </property>
-        <property name="addEnabled">
-         <bool>true</bool>
-        </property>
-        <property name="removeEnabled">
-         <bool>true</bool>
-        </property>
-       </widget>
+      <item row="3" column="1">
+       <widget class="qMRMLCoordinatesWidget" name="curveSeeds"/>
       </item>
-      <item row="1" column="0">
-       <widget class="QLabel" name="label_5">
+      <item row="4" column="0">
+       <widget class="QLabel" name="label_6">
         <property name="text">
-         <string>Inverted volume:</string>
+         <string>Segmentation Factor:</string>
         </property>
        </widget>
       </item>
-      <item row="1" column="1">
-       <widget class="qMRMLNodeComboBox" name="invertedOutputSelector">
-        <property name="toolTip">
-         <string>Result with inverted threshold will be written into this volume</string>
+      <item row="4" column="1">
+       <widget class="qMRMLSliderWidget" name="segmentationFactor">
+        <property name="singleStep">
+         <double>0.100000000000000</double>
         </property>
-        <property name="nodeTypes">
-         <stringlist>
-          <string>vtkMRMLScalarVolumeNode</string>
-         </stringlist>
+        <property name="minimum">
+         <double>1.000000000000000</double>
         </property>
-        <property name="showChildNodeTypes">
-         <bool>false</bool>
-        </property>
-        <property name="noneEnabled">
-         <bool>true</bool>
-        </property>
-        <property name="addEnabled">
-         <bool>true</bool>
-        </property>
-        <property name="removeEnabled">
-         <bool>true</bool>
+        <property name="maximum">
+         <double>3.000000000000000</double>
         </property>
        </widget>
       </item>
@@ -130,6 +107,19 @@
      </property>
      <property name="text">
       <string>Apply</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QPushButton" name="clearButton">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
+     <property name="toolTip">
+      <string>Clear all user inputs</string>
+     </property>
+     <property name="text">
+      <string>Clear</string>
      </property>
     </widget>
    </item>
@@ -161,31 +151,25 @@
    <header>ctkCoordinatesWidget.h</header>
   </customwidget>
   <customwidget>
+   <class>ctkSliderWidget</class>
+   <extends>QWidget</extends>
+   <header>ctkSliderWidget.h</header>
+  </customwidget>
+  <customwidget>
    <class>qMRMLCoordinatesWidget</class>
    <extends>ctkCoordinatesWidget</extends>
    <header>qMRMLCoordinatesWidget.h</header>
   </customwidget>
   <customwidget>
-   <class>qMRMLNodeComboBox</class>
-   <extends>QWidget</extends>
-   <header>qMRMLNodeComboBox.h</header>
+   <class>qMRMLSliderWidget</class>
+   <extends>ctkSliderWidget</extends>
+   <header>qMRMLSliderWidget.h</header>
   </customwidget>
   <customwidget>
    <class>qMRMLWidget</class>
    <extends>QWidget</extends>
    <header>qMRMLWidget.h</header>
    <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>qSlicerWidget</class>
-   <extends>QWidget</extends>
-   <header>qSlicerWidget.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>qSlicerMarkupsPlaceWidget</class>
-   <extends>qSlicerWidget</extends>
-   <header>qSlicerMarkupsPlaceWidget.h</header>
   </customwidget>
   <customwidget>
    <class>qMRMLSubjectHierarchyTreeView</class>
@@ -195,38 +179,6 @@
  </customwidgets>
  <resources/>
  <connections>
-  <connection>
-   <sender>AortaGeomReconDisplayModule</sender>
-   <signal>mrmlSceneChanged(vtkMRMLScene*)</signal>
-   <receiver>outputSelector</receiver>
-   <slot>setMRMLScene(vtkMRMLScene*)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>82</x>
-     <y>135</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>344</x>
-     <y>371</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>AortaGeomReconDisplayModule</sender>
-   <signal>mrmlSceneChanged(vtkMRMLScene*)</signal>
-   <receiver>invertedOutputSelector</receiver>
-   <slot>setMRMLScene(vtkMRMLScene*)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>161</x>
-     <y>8</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>297</x>
-     <y>397</y>
-    </hint>
-   </hints>
-  </connection>
   <connection>
    <sender>AortaGeomReconDisplayModule</sender>
    <signal>mrmlSceneChanged(vtkMRMLScene*)</signal>
@@ -244,34 +196,66 @@
    </hints>
   </connection>
   <connection>
-   <sender>MarkupsPlaceWidget</sender>
+   <sender>AortaGeomReconDisplayModule</sender>
    <signal>mrmlSceneChanged(vtkMRMLScene*)</signal>
-   <receiver>MarkupsPlaceWidget</receiver>
+   <receiver>cropIndex</receiver>
    <slot>setMRMLScene(vtkMRMLScene*)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>162</x>
-     <y>18</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>162</x>
-     <y>18</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>MRMLCoordinatesWidget</sender>
-   <signal>mrmlSceneChanged(vtkMRMLScene*)</signal>
-   <receiver>MRMLCoordinatesWidget</receiver>
-   <slot>setMRMLScene(vtkMRMLScene*)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>231</x>
-     <y>86</y>
+     <x>450</x>
+     <y>316</y>
     </hint>
     <hint type="destinationlabel">
      <x>243</x>
      <y>86</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>AortaGeomReconDisplayModule</sender>
+   <signal>mrmlSceneChanged(vtkMRMLScene*)</signal>
+   <receiver>cropSize</receiver>
+   <slot>setMRMLScene(vtkMRMLScene*)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>450</x>
+     <y>316</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>481</x>
+     <y>110</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>AortaGeomReconDisplayModule</sender>
+   <signal>mrmlSceneChanged(vtkMRMLScene*)</signal>
+   <receiver>curveSeeds</receiver>
+   <slot>setMRMLScene(vtkMRMLScene*)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>274</x>
+     <y>316</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>309</x>
+     <y>136</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>AortaGeomReconDisplayModule</sender>
+   <signal>mrmlSceneChanged(vtkMRMLScene*)</signal>
+   <receiver>segmentationFactor</receiver>
+   <slot>setMRMLScene(vtkMRMLScene*)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>274</x>
+     <y>316</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>329</x>
+     <y>162</y>
     </hint>
    </hints>
   </connection>
