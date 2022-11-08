@@ -43,7 +43,7 @@ if __name__ == '__main__':
 
     desc_axial_segmenter.prepared_segmenting_image(
         image=image, index=(190, 165, 40), size=(191, 216, 335))
-    
+
     desc_axial_segmenter.begin_segmentation()
 
     cropped_image = desc_axial_segmenter.segmenting_image

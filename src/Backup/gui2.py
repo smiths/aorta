@@ -1,6 +1,7 @@
 import tkinter.filedialog
 import tkinter as tk
 
+
 class Aorta_Starter_frame(object):
     def __init__(self, master, **kwargs):
         frame = tk.Frame(master, width=400, height=200)
@@ -13,12 +14,12 @@ class Aorta_Starter_frame(object):
         self.directory = ""
         canvas = tk.Canvas(
             frame,
-            bg = "#FFFFFF",
-            height = 720,
-            width = 1280,
-            bd = 0,
-            highlightthickness = 0,
-            relief = "ridge"
+            bg="#FFFFFF",
+            height=720,
+            width=1280,
+            bd=0,
+            highlightthickness=0,
+            relief="ridge"
         )
 
         # canvas.place(x = 0, y = 0)
@@ -42,13 +43,12 @@ class Aorta_Starter_frame(object):
         canvas.pack()
         frame.pack()
         # folder_label.pack()
-        
 
     def get_source_folder(self):
         self.directory = tk.filedialog.askdirectory()
         print(self.directory)
 
-        
+
 if __name__ == "__main__":
     display_module_root = tk.Tk()
     display_module_root.title("Aorta GeomRecon")

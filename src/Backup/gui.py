@@ -7,7 +7,8 @@ from pathlib import Path
 
 # from tkinter import *
 # Explicit imports to satisfy Flake8
-from tkinter import Tk, Canvas, Entry, Text, Button, PhotoImage
+from tkinter import Tk, Canvas, Entry, Text, \
+    Button, PhotoImage  # noqa: F403,F401
 
 
 OUTPUT_PATH = Path(__file__).parent
@@ -21,20 +22,20 @@ def relative_to_assets(path: str) -> Path:
 window = Tk()
 
 window.geometry("1280x720")
-window.configure(bg = "#FFFFFF")
+window.configure(bg="#FFFFFF")
 
 
 canvas = Canvas(
     window,
-    bg = "#FFFFFF",
-    height = 720,
-    width = 1280,
-    bd = 0,
-    highlightthickness = 0,
-    relief = "ridge"
+    bg="#FFFFFF",
+    height=720,
+    width=1280,
+    bd=0,
+    highlightthickness=0,
+    relief="ridge"
 )
 
-canvas.place(x = 0, y = 0)
+canvas.place(x=0, y=0)
 canvas.create_rectangle(
     521.0,
     0.0,
@@ -47,7 +48,11 @@ canvas.create_text(
     227.0,
     547.0,
     anchor="nw",
-    text="Segmentation Phase\n(Descending Aorta segmentation\nAscending Aorta segmentation\nSagittal segmentation)",
+    text="""
+        Segmentation Phase\n
+        (Descending Aorta segmentation\n
+        Ascending Aorta segmentation\n
+        Sagittal segmentation)""",
     fill="#000000",
     font=("Inter", 12 * -1)
 )
