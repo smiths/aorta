@@ -531,7 +531,7 @@ class AortaGeomReconDisplayModuleTest(ScriptedLoadableModuleTest):  # noqa: F405
         self.test_AortaGeomReconDisplayModule1()
 
     def test_AortaGeomReconDisplayModule1(self):
-        """ Ideally you should have several levels of tests. 
+        """ Ideally you should have several levels of tests.
         At the lowest level tests should exercise
         the functionality of the logic
         with different inputs (both valid and invalid).
