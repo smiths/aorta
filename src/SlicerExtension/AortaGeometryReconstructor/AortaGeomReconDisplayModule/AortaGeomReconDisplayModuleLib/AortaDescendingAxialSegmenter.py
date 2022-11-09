@@ -1,4 +1,5 @@
-from AortaSegmenter.AortaAxialSegmenter import AortaAxialSegmenter
+from AortaGeomReconDisplayModuleLib.AortaAxialSegmenter \
+    import AortaAxialSegmenter
 import SimpleITK as sitk
 import numpy as np
 
