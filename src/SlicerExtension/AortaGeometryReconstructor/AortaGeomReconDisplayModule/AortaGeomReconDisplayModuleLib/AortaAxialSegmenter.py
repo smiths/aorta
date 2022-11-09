@@ -1,4 +1,5 @@
-from AortaSegmenter.AortaSegmenterBase import AortaSegmenterBase
+from AAortaGeomReconDisplayModuleLib.AortaSegmenterBase \
+    import AortaSegmenterBase
 import abc
 
 
