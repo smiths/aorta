@@ -7,7 +7,19 @@ import slicer
 from slicer.ScriptedLoadableModule import *  # noqa: F403
 from slicer.util import VTKObservationMixin
 
+from AortaGeomReconDisplayModuleLib.AortaDescendingAxialSegmenter \
+    import AortaDescendingAxialSegmenter
+
+from AortaGeomReconDisplayModuleLib.AortaAscendingAxialSegmenter \
+    import AortaAscendingAxialSegmenter
+
+from AortaGeomReconDisplayModuleLib.AortaSagitalSegmenter \
+    import AortaSagitalSegmenter
+
+
 import sitkUtils
+import numpy as np
+import SimpleITK as sitk
 
 
 #
@@ -148,7 +160,9 @@ class AortaGeomReconDisplayModuleWidget(ScriptedLoadableModuleWidget, VTKObserva
         self.layout.addWidget(uiWidget)
         self.ui = slicer.util.childWidgetVariables(uiWidget)
         # self.ui.applyButton.toolTip = "Compute output volume"
+        self.ui.applyButton.enabled = False
         self.ui.clearButton.enabled = True
+        self.ui.resetButton.enabled = True
 
         # Set scene in MRML widgets.
         # Make sure that in Qt designer the top-level qMRMLWidget's
@@ -183,15 +197,22 @@ class AortaGeomReconDisplayModuleWidget(ScriptedLoadableModuleWidget, VTKObserva
         self.ui.cropSize.connect(
             "coordinatesChanged(double*)", self.updateParameterNodeFromGUI)
 
-        self.ui.curveSeeds.connect(
+        self.ui.ascAortaSeeds.connect(
+            "coordinatesChanged(double*)", self.updateParameterNodeFromGUI)
+
+        self.ui.descAortaSeeds.connect(
             "coordinatesChanged(double*)", self.updateParameterNodeFromGUI)
 
         self.ui.segmentationFactor.connect(
             "valueChanged(double)", self.updateParameterNodeFromGUI)
 
+        self.ui.numOfSkippingSlice.connect(
+            "valueChanged(double)", self.updateParameterNodeFromGUI)
+
         # Buttons
         self.ui.applyButton.connect('clicked(bool)', self.onApplyButton)
         self.ui.clearButton.connect('clicked(bool)', self.onClearButton)
+        self.ui.resetButton.connect('clicked(bool)', self.onResetButton)
 
         # Make sure parameter node is initialized (needed for module reload)
         self.initializeParameterNode()
@@ -248,21 +269,6 @@ class AortaGeomReconDisplayModuleWidget(ScriptedLoadableModuleWidget, VTKObserva
 
         self.setParameterNode(self.logic.getParameterNode())
 
-# Select default input nodes
-# if nothing is selected yet to save a few clicks for the user
-# if not self._parameterNode.GetNodeReference("cropIndex"):
-#     first_widget = slicer.mrmlScene.GetFirstNodeByName("cropIndex")
-#     if first_widget:
-#         self._parameterNode.SetNodeReferenceID(
-#             "cropIndex", first_widget.GetID())
-
-# if not self._parameterNode.GetNodeReference("cropSize"):
-#     second_widget = slicer.mrmlScene.GetFirstNodeByName("cropSize")
-#     if second_widget:
-#         self._parameterNode.SetNodeReferenceID(
-#             "cropSize", second_widget.GetID())
-
-        # print(self._parameterNode)
 
     def setParameterNode(self, inputParameterNode):
         """
@@ -299,12 +305,6 @@ class AortaGeomReconDisplayModuleWidget(ScriptedLoadableModuleWidget, VTKObserva
         # Initial GUI update
         self.updateGUIFromParameterNode()
 
-    def anyEmptySeed(self):
-        emptyCropSize = (self.ui.cropSize.coordinates == "0,0,0")
-        emptyCropIndex = (self.ui.cropIndex.coordinates == "0,0,0")
-        emptyCurveSeeds = (self.ui.curveSeeds.coordinates == "0,0,0")
-        return emptyCurveSeeds or emptyCropIndex or emptyCropSize
-
     def updateGUIFromParameterNode(self, caller=None, event=None):
         """
         This method is called whenever parameter node is changed.
@@ -325,32 +325,22 @@ class AortaGeomReconDisplayModuleWidget(ScriptedLoadableModuleWidget, VTKObserva
         self.ui.cropIndex.coordinates = self._parameterNode.GetParameter(
             "cropIndex")
 
-        self.ui.curveSeeds.coordinates = self._parameterNode.GetParameter(
-            "curveSeeds")
+        self.ui.ascAortaSeeds.coordinates = self._parameterNode.GetParameter(
+            "ascAortaSeeds")
+
+        self.ui.descAortaSeeds.coordinates = self._parameterNode.GetParameter(
+            "descAortaSeeds")
 
         self.ui.segmentationFactor.value = float(
             self._parameterNode.GetParameter("segmentationFactor"))
-        self.ui.applyButton.enabled = (not self.anyEmptySeed())
 
-# Update node selectors and sliders
-# self.ui.inputSelector.setCurrentNode(self._parameterNode.GetParameter("InputVolume"))
-# self.ui.outputSelector.setCurrentNode(self._parameterNode.GetNodeReference("OutputVolume"))
-# self.ui.invertedOutputSelector.setCurrentNode(
-#     self._parameterNode.GetNodeReference("OutputVolumeInverse"))
+        self.ui.numOfSkippingSlice.value = int(
+            float(self._parameterNode.GetParameter("numOfSkippingSlice")))
 
-# self.ui.imageThresholdSliderWidget.value = float(
-#     self._parameterNode.GetParameter("Threshold"))
-# self.ui.invertOutputCheckBox.checked = (
-#     self._parameterNode.GetParameter("Invert") == "true")
-
-# Update buttons states and tooltips
-# if self._parameterNode.GetNodeReference("InputVolume")
-#    and self._parameterNode.GetNodeReference("OutputVolume"):
-#     self.ui.applyButton.toolTip = "Compute output volume"
-#     self.ui.applyButton.enabled = True
-# else:
-#     self.ui.applyButton.toolTip = "Select input and output volume nodes"
-#     self.ui.applyButton.enabled = False
+        self.ui.applyButton.enabled = not self.logic.anyEmptySeed(
+            self.ui,
+            self._parameterNode.GetParameter("phase")
+        )
 
         # All the GUI updates are done
         self._updatingGUIFromParameterNode = False
@@ -373,20 +363,21 @@ class AortaGeomReconDisplayModuleWidget(ScriptedLoadableModuleWidget, VTKObserva
             "cropSize", self.ui.cropSize.coordinates)
 
         self._parameterNode.SetParameter(
-            "curveSeeds", self.ui.curveSeeds.coordinates)
+            "ascAortaSeeds", self.ui.ascAortaSeeds.coordinates)
+
+        self._parameterNode.SetParameter(
+            "descAortaSeeds", self.ui.descAortaSeeds.coordinates)
 
         self._parameterNode.SetParameter(
             "segmentationFactor", str(self.ui.segmentationFactor.value))
 
-        self.ui.applyButton.enabled = (not self.anyEmptySeed())
+        self._parameterNode.SetParameter(
+            "numOfSkippingSlice", str(self.ui.numOfSkippingSlice.value))
 
-
-# self._parameterNode.SetNodeReferenceID(
-#     "InputVolume", self.ui.inputSelector.currentNodeID)
-# self._parameterNode.SetNodeReferenceID(
-#     "OutputVolume", self.ui.outputSelector.currentNodeID)
-# self._parameterNode.SetNodeReferenceID(
-#     "OutputVolumeInverse", self.ui.invertedOutputSelector.currentNodeID)
+        self.ui.applyButton.enabled = not self.logic.anyEmptySeed(
+            self.ui, 
+            self._parameterNode.GetParameter("phase")
+        )
 
         self._parameterNode.EndModify(wasModified)
 
@@ -398,35 +389,45 @@ class AortaGeomReconDisplayModuleWidget(ScriptedLoadableModuleWidget, VTKObserva
         with slicer.util.tryWithErrorDisplay(errorMessage, waitCursor=True):
             self.logic.setDefaultParameters(self.logic.getParameterNode())
 
+    def onResetButton(self):
+        """
+        Run processing when user clicks "Apply" button.
+        """
+        errorMessage = "Failed to clear inputs"
+        with slicer.util.tryWithErrorDisplay(errorMessage, waitCursor=True):
+            self.logic.resetDefaultParameters(self.logic.getParameterNode())
+            self.ui.phaseLabel.text = "Phase 1 Crop Aorta"
+
     def onApplyButton(self):
         """
         Run processing when user clicks "Apply" button.
         """
         errorMessage = "Failed to compute results."
-        
+        sceneObj = slicer.mrmlScene
         with slicer.util.tryWithErrorDisplay(errorMessage, waitCursor=True):
             # Compute output
-            self.logic.process(
-                self._parameterNode.GetParameter("cropIndex"),
-                self._parameterNode.GetParameter("cropSize"),
-                self._parameterNode.GetParameter("curveSeeds"),
-                self._parameterNode.GetParameter("segmentationFactor")
-            )
-            if "Phase 1" in self.ui.phaseLabel.text:
+            if self._parameterNode.GetParameter("phase") == "1":
+                cropIndex = self._parameterNode.GetParameter("cropIndex")
+                cropSize = self._parameterNode.GetParameter("cropSize")
+                volume = sceneObj.GetFirstNodeByClass(
+                    "vtkMRMLMultiVolumeNode")
+                self.logic.processCropImage(cropIndex, cropSize, volume)
+
+                # Update phase
+                self._parameterNode.SetParameter("phase", "2")
                 self.ui.phaseLabel.text = "Phase 2"
 
-# Compute inverted output (if needed)
-# if self.ui.invertedOutputSelector.currentNode():
-#     # If additional output volume is selected
-#     # then result with inverted threshold is written there
-#     self.logic.process(
-#                        self.ui.inputSelector.currentNode(),
-#                        self.ui.invertedOutputSelector.currentNode(),
-#                        self.ui.imageThresholdSliderWidget.value,
-#                        not self.ui.invertOutputCheckBox.checked,
-#                        showResult=False
-#     )
+            elif "Phase 2" in self.ui.phaseLabel.text:
+                AscAortaSeeds = self._parameterNode.GetParameter(
+                    "AscAortaSeeds")
 
+                segmentationFactor = self._parameterNode.GetParameter(
+                    "segmentationFactor")
+
+                self.logic.processDescendingAorta(
+                    AscAortaSeeds,
+                    segmentationFactor
+                )
 
 #
 # AortaGeomReconDisplayModuleLogic
@@ -449,27 +450,17 @@ class AortaGeomReconDisplayModuleLogic(ScriptedLoadableModuleLogic):  # noqa: F4
         """
         ScriptedLoadableModuleLogic.__init__(self)  # noqa: F405
 
-    def get_images(self, num_slices):
-        # list of the number of slices in the z direction for each dicom image
-        # these are manually entered as each dicom folder has far more .dcm files
-        # than slices. If you do not manually enter these values,
-        # the images will have many repeats of a singular CT
-
-        list_dcm = os.listdir(path)
-        list_dcm.sort()
-
-        list_dcm = list_dcm[1:num_slices:]
-        # change list to include path of .dcm files instead of just their names
-        s = path + "/{0}"
-        list_dcm = [s.format(dcm) for dcm in list_dcm]
-
-        # convert the .dcm files to 3D images
-        image = sitk.ReadImage(list_dcm)
-        return image
+    def anyEmptySeed(self, ui, phase):
+        if phase == "1":
+            emptyCropSize = (ui.cropSize.coordinates == "0,0,0")
+            emptyCropIndex = (ui.cropIndex.coordinates == "0,0,0")
+            return emptyCropIndex or emptyCropSize
+        elif phase == "2":
+            return (ui.descAortaSeeds.coordinates == "0,0,0")
 
     """Get cropped and normalized image and stored as self._segmenting_image
     """
-    def prepared_segmenting_image(self, image, index, size):
+    def prepareSegmentingImage(self, image, index, size):
         # crop the image
         crop_filter = sitk.ExtractImageFilter()
         crop_filter.SetIndex(index)
@@ -477,20 +468,13 @@ class AortaGeomReconDisplayModuleLogic(ScriptedLoadableModuleLogic):  # noqa: F4
 
         cropped_image = crop_filter.Execute(image)
 
-        # change intensity range to go from 0-255   +++++++
-        cropped_image_255 = sitk.Cast(sitk.RescaleIntensity(image),
-                                      sitk.sitkUInt8)
-
         # ensure that the spacing in the image is correct
         cropped_image.SetOrigin(image.GetOrigin())
         cropped_image.SetSpacing(image.GetSpacing())
         cropped_image.SetDirection(image.GetDirection())
-
-        # Contrast Enhancement
-        # Histogram Equalization
-        img_array = sitk.GetArrayFromImage(
-            (sitk.Cast(sitk.RescaleIntensity(cropped_image), sitk.sitkUInt8))
-        )
+        os.environ["SITK_SHOW_COMMAND"] = 'C:\\Program Files\\ITK-SNAP 3.8\\bin\\ITK-SNAP'
+        sitk.Show(cropped_image)
+        #img_array = sitk.GetArrayFromImage(cropped_image)
 
         # flatten image array and calculate histogram via binning
         histogram_array = np.bincount(img_array.flatten(), minlength=256)
@@ -524,78 +508,71 @@ class AortaGeomReconDisplayModuleLogic(ScriptedLoadableModuleLogic):  # noqa: F4
         median_img = sitk.Cast(median.Execute(eq_img), sitk.sitkUInt8)
 
         self._segmenting_image = median_img
-        self._segmenting_image_255 = cropped_image_255
 
     def createDefaultParameters(self, parameterNode):
         """
         Initialize parameter node with default settings.
         """
-        # if not parameterNode.GetParameter("Threshold"):
-        #     parameterNode.SetParameter("Threshold", "100.0")
-        # if not parameterNode.GetParameter("Invert"):
-        #     parameterNode.SetParameter("Invert", "false")
         if not parameterNode.GetParameter("cropIndex"):
             parameterNode.SetParameter("cropIndex", "0,0,0")
         if not parameterNode.GetParameter("cropSize"):
             parameterNode.SetParameter("cropSize", "0,0,0")
-        if not parameterNode.GetParameter("curveSeeds"):
-            parameterNode.SetParameter("curveSeeds", "0,0,0")
+        if not parameterNode.GetParameter("AscAortaSeeds"):
+            parameterNode.SetParameter("ascAortaSeeds", "0,0,0")
         if not parameterNode.GetParameter("segmentationFactor"):
             parameterNode.SetParameter("segmentationFactor", "0.0")
+        if not parameterNode.GetParameter("phase"):
+            parameterNode.SetParameter("phase", "1")
+        if not parameterNode.GetParameter("descAortaSeeds"):
+            parameterNode.SetParameter("descAortaSeeds", "0,0,0")
+        if not parameterNode.GetParameter("numOfSkippingSlice"):
+            parameterNode.SetParameter("numOfSkippingSlice", "0")
 
     def setDefaultParameters(self, parameterNode):
         if parameterNode.GetParameter("cropIndex"):
             parameterNode.SetParameter("cropIndex", "0,0,0")
         if parameterNode.GetParameter("cropSize"):
             parameterNode.SetParameter("cropSize", "0,0,0")
-        if parameterNode.GetParameter("curveSeeds"):
-            parameterNode.SetParameter("curveSeeds", "0,0,0")
+        if parameterNode.GetParameter("ascAortaSeeds"):
+            parameterNode.SetParameter("ascAortaSeeds", "0,0,0")
         if parameterNode.GetParameter("segmentationFactor"):
             parameterNode.SetParameter("segmentationFactor", "0.0")
+        if parameterNode.GetParameter("descAortaSeeds"):
+            parameterNode.SetParameter("descAortaSeeds", "0,0,0")
+        if parameterNode.GetParameter("numOfSkippingSlice"):
+            parameterNode.SetParameter("numOfSkippingSlice", "0")
 
-    def process(self, cropSize, cropIndex, curveSeeds, segmentationFactor):
+    def resetDefaultParameters(self, parameterNode):
+        self.setDefaultParameters(parameterNode)
+        if parameterNode.GetParameter("phase"):
+            parameterNode.SetParameter("phase", "1")
+
+    def processCropImage(self, cropIndex, cropSize, volume):
+
+        indexStr = cropIndex.split(",")
+        sizeStr = cropSize.split(",")
+        index = [int(i) for i in indexStr]
+        size = [int(i) for i in sizeStr]
+        sitkImage = sitkUtils.PullVolumeFromSlicer(volume)
+        logging.info(sitkImage)
+        outputImage = self.prepareSegmentingImage(sitkImage, index, size)
+        logging.info(outputImage)
+
+        
+
+    def processDescendingAorta(self, AscAortaSeeds, segmentationFactor):
+        pass
+
+    def process(self, cropSize, cropIndex, AscAortaSeeds, segmentationFactor):
         """
         Run the processing algorithm.
         Can be used without GUI widget.
         :param inputVolume: volume to be thresholded
         """
 
-        # cropSize = parameterNodes.GetParameter("cropSize")
-        # cropIndex = parameterNodes.GetParameter("cropIndex")
-        # curveSeeds = parameterNodes.GetParameter("curveSeeds")
-
         print(cropSize, cropIndex)
 
         logging.info('Processing completed')
-        # if not inputVolume or not outputVolume:
-        #     raise ValueError("Input or output volume is invalid")
-
-        # import time
-        # startTime = time.time()
-        # logging.info('Processing started')
-
-        # # Compute the thresholded output volume using
-        # # the "Threshold Scalar Volume" CLI module
-        # cliParams = {
-        #     'InputVolume': inputVolume.GetID(),
-        #     'OutputVolume': outputVolume.GetID(),
-        #     'ThresholdValue': imageThreshold,
-        #     'ThresholdType': 'Above' if invert else 'Below'
-        # }
-        # cliNode = slicer.cli.run(
-        #     slicer.modules.thresholdscalarvolume,
-        #     None,
-        #     cliParams,
-        #     wait_for_completion=True,
-        #     update_display=showResult
-        # )
-        # # We don't need the CLI module node anymore,
-        # # remove it to not clutter the scene with it
-        # slicer.mrmlScene.RemoveNode(cliNode)
-
-        # stopTime = time.time()
-        # logging.info(
-        #     f'Processing completed in {stopTime-startTime:.2f} seconds')
 
 
 #
