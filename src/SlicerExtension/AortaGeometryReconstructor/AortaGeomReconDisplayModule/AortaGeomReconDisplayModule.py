@@ -7,6 +7,8 @@ import slicer
 from slicer.ScriptedLoadableModule import *  # noqa: F403
 from slicer.util import VTKObservationMixin
 
+import sitkUtils
+
 
 #
 # AortaGeomReconDisplayModule
@@ -271,7 +273,7 @@ class AortaGeomReconDisplayModuleWidget(ScriptedLoadableModuleWidget, VTKObserva
         """
 
         if inputParameterNode:
-            self.logic.setDefaultParameters(inputParameterNode)
+            self.logic.createDefaultParameters(inputParameterNode)
 
         # Unobserve previously selected parameter node
         # and add an observer to the newly selected.
@@ -378,6 +380,7 @@ class AortaGeomReconDisplayModuleWidget(ScriptedLoadableModuleWidget, VTKObserva
 
         self.ui.applyButton.enabled = (not self.anyEmptySeed())
 
+
 # self._parameterNode.SetNodeReferenceID(
 #     "InputVolume", self.ui.inputSelector.currentNodeID)
 # self._parameterNode.SetNodeReferenceID(
@@ -400,6 +403,7 @@ class AortaGeomReconDisplayModuleWidget(ScriptedLoadableModuleWidget, VTKObserva
         Run processing when user clicks "Apply" button.
         """
         errorMessage = "Failed to compute results."
+        
         with slicer.util.tryWithErrorDisplay(errorMessage, waitCursor=True):
             # Compute output
             self.logic.process(
@@ -445,7 +449,84 @@ class AortaGeomReconDisplayModuleLogic(ScriptedLoadableModuleLogic):  # noqa: F4
         """
         ScriptedLoadableModuleLogic.__init__(self)  # noqa: F405
 
-    def setDefaultParameters(self, parameterNode):
+    def get_images(self, num_slices):
+        # list of the number of slices in the z direction for each dicom image
+        # these are manually entered as each dicom folder has far more .dcm files
+        # than slices. If you do not manually enter these values,
+        # the images will have many repeats of a singular CT
+
+        list_dcm = os.listdir(path)
+        list_dcm.sort()
+
+        list_dcm = list_dcm[1:num_slices:]
+        # change list to include path of .dcm files instead of just their names
+        s = path + "/{0}"
+        list_dcm = [s.format(dcm) for dcm in list_dcm]
+
+        # convert the .dcm files to 3D images
+        image = sitk.ReadImage(list_dcm)
+        return image
+
+    """Get cropped and normalized image and stored as self._segmenting_image
+    """
+    def prepared_segmenting_image(self, image, index, size):
+        # crop the image
+        crop_filter = sitk.ExtractImageFilter()
+        crop_filter.SetIndex(index)
+        crop_filter.SetSize(size)
+
+        cropped_image = crop_filter.Execute(image)
+
+        # change intensity range to go from 0-255   +++++++
+        cropped_image_255 = sitk.Cast(sitk.RescaleIntensity(image),
+                                      sitk.sitkUInt8)
+
+        # ensure that the spacing in the image is correct
+        cropped_image.SetOrigin(image.GetOrigin())
+        cropped_image.SetSpacing(image.GetSpacing())
+        cropped_image.SetDirection(image.GetDirection())
+
+        # Contrast Enhancement
+        # Histogram Equalization
+        img_array = sitk.GetArrayFromImage(
+            (sitk.Cast(sitk.RescaleIntensity(cropped_image), sitk.sitkUInt8))
+        )
+
+        # flatten image array and calculate histogram via binning
+        histogram_array = np.bincount(img_array.flatten(), minlength=256)
+
+        # normalize image
+        num_pixels = np.sum(histogram_array)
+        histogram_array = histogram_array/num_pixels
+
+        # normalized cumulative histogram
+        chistogram_array = np.cumsum(histogram_array)
+
+        # create pixel mapping lookup table
+        transform_map = np.floor(255 * chistogram_array).astype(np.uint8)
+
+        # flatten image array into 1D list
+        # so they can be used with the pixel mapping table
+        img_list = list(img_array.flatten())
+
+        # transform pixel values to equalize
+        eq_img_list = [transform_map[p] for p in img_list]
+
+        # reshape and write back into img_array
+        eq_img_array = np.reshape(np.asarray(eq_img_list), img_array.shape)
+
+        # save image
+        eq_img = sitk.GetImageFromArray(eq_img_array)
+        eq_img.CopyInformation(cropped_image)
+
+        # Median Image Filter
+        median = sitk.MedianImageFilter()
+        median_img = sitk.Cast(median.Execute(eq_img), sitk.sitkUInt8)
+
+        self._segmenting_image = median_img
+        self._segmenting_image_255 = cropped_image_255
+
+    def createDefaultParameters(self, parameterNode):
         """
         Initialize parameter node with default settings.
         """
@@ -460,6 +541,16 @@ class AortaGeomReconDisplayModuleLogic(ScriptedLoadableModuleLogic):  # noqa: F4
         if not parameterNode.GetParameter("curveSeeds"):
             parameterNode.SetParameter("curveSeeds", "0,0,0")
         if not parameterNode.GetParameter("segmentationFactor"):
+            parameterNode.SetParameter("segmentationFactor", "0.0")
+
+    def setDefaultParameters(self, parameterNode):
+        if parameterNode.GetParameter("cropIndex"):
+            parameterNode.SetParameter("cropIndex", "0,0,0")
+        if parameterNode.GetParameter("cropSize"):
+            parameterNode.SetParameter("cropSize", "0,0,0")
+        if parameterNode.GetParameter("curveSeeds"):
+            parameterNode.SetParameter("curveSeeds", "0,0,0")
+        if parameterNode.GetParameter("segmentationFactor"):
             parameterNode.SetParameter("segmentationFactor", "0.0")
 
     def process(self, cropSize, cropIndex, curveSeeds, segmentationFactor):
