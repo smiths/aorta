@@ -269,7 +269,6 @@ class AortaGeomReconDisplayModuleWidget(ScriptedLoadableModuleWidget, VTKObserva
 
         self.setParameterNode(self.logic.getParameterNode())
 
-
     def setParameterNode(self, inputParameterNode):
         """
         Set and observe parameter node.
@@ -375,7 +374,7 @@ class AortaGeomReconDisplayModuleWidget(ScriptedLoadableModuleWidget, VTKObserva
             "numOfSkippingSlice", str(self.ui.numOfSkippingSlice.value))
 
         self.ui.applyButton.enabled = not self.logic.anyEmptySeed(
-            self.ui, 
+            self.ui,
             self._parameterNode.GetParameter("phase")
         )
 
@@ -433,6 +432,7 @@ class AortaGeomReconDisplayModuleWidget(ScriptedLoadableModuleWidget, VTKObserva
 # AortaGeomReconDisplayModuleLogic
 #
 
+
 class AortaGeomReconDisplayModuleLogic(ScriptedLoadableModuleLogic):  # noqa: F405,E501
     """This class should implement all the actual
     computation done by your module.  The interface
@@ -472,9 +472,10 @@ class AortaGeomReconDisplayModuleLogic(ScriptedLoadableModuleLogic):  # noqa: F4
         cropped_image.SetOrigin(image.GetOrigin())
         cropped_image.SetSpacing(image.GetSpacing())
         cropped_image.SetDirection(image.GetDirection())
-        os.environ["SITK_SHOW_COMMAND"] = 'C:\\Program Files\\ITK-SNAP 3.8\\bin\\ITK-SNAP'
+        os.environ["SITK_SHOW_COMMAND"] = \
+            'C:\\Program Files\\ITK-SNAP 3.8\\bin\\ITK-SNAP'
         sitk.Show(cropped_image)
-        #img_array = sitk.GetArrayFromImage(cropped_image)
+        img_array = sitk.GetArrayFromImage(cropped_image)
 
         # flatten image array and calculate histogram via binning
         histogram_array = np.bincount(img_array.flatten(), minlength=256)
@@ -558,10 +559,14 @@ class AortaGeomReconDisplayModuleLogic(ScriptedLoadableModuleLogic):  # noqa: F4
         outputImage = self.prepareSegmentingImage(sitkImage, index, size)
         logging.info(outputImage)
 
-        
+    def processDescendingAorta(self, descAortaSeeds, segmentationFactor):
+        logging.info(AortaDescendingAxialSegmenter)
 
-    def processDescendingAorta(self, AscAortaSeeds, segmentationFactor):
-        pass
+    def processAscendingAorta(self, ascAortaSeeds, segmentationFactor):
+        logging.info(AortaAscendingAxialSegmenter)
+
+    def processSagittalAorta(self, segmentationFactor):
+        logging.info(AortaSagitalSegmenter)
 
     def process(self, cropSize, cropIndex, AscAortaSeeds, segmentationFactor):
         """
