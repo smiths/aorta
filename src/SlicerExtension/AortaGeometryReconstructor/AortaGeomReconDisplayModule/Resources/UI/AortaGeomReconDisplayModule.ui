@@ -42,7 +42,11 @@
      </property>
      <layout class="QFormLayout" name="formLayout_2">
       <item row="1" column="1">
-       <widget class="qMRMLCoordinatesWidget" name="cropIndex"/>
+       <widget class="qMRMLCoordinatesWidget" name="cropIndex">
+        <property name="decimals">
+         <number>0</number>
+        </property>
+       </widget>
       </item>
       <item row="2" column="0">
        <widget class="QLabel" name="label_3">
@@ -52,7 +56,11 @@
        </widget>
       </item>
       <item row="2" column="1">
-       <widget class="qMRMLCoordinatesWidget" name="cropSize"/>
+       <widget class="qMRMLCoordinatesWidget" name="cropSize">
+        <property name="decimals">
+         <number>0</number>
+        </property>
+       </widget>
       </item>
       <item row="4" column="0">
        <widget class="QLabel" name="label_4">
@@ -62,7 +70,11 @@
        </widget>
       </item>
       <item row="4" column="1">
-       <widget class="qMRMLCoordinatesWidget" name="ascAortaSeeds"/>
+       <widget class="qMRMLCoordinatesWidget" name="ascAortaSeeds">
+        <property name="decimals">
+         <number>0</number>
+        </property>
+       </widget>
       </item>
       <item row="5" column="0">
        <widget class="QLabel" name="label_6">
@@ -73,6 +85,9 @@
       </item>
       <item row="5" column="1">
        <widget class="qMRMLSliderWidget" name="segmentationFactor">
+        <property name="decimals">
+         <number>1</number>
+        </property>
         <property name="singleStep">
          <double>0.100000000000000</double>
         </property>
@@ -119,7 +134,11 @@
        </widget>
       </item>
       <item row="3" column="1">
-       <widget class="qMRMLCoordinatesWidget" name="descAortaSeeds"/>
+       <widget class="qMRMLCoordinatesWidget" name="descAortaSeeds">
+        <property name="decimals">
+         <number>0</number>
+        </property>
+       </widget>
       </item>
      </layout>
     </widget>
