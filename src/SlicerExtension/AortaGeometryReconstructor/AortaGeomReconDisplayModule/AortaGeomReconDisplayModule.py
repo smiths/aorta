@@ -410,8 +410,9 @@ class AortaGeomReconDisplayModuleWidget(ScriptedLoadableModuleWidget, VTKObserva
                 cropSize = self._parameterNode.GetParameter("cropSize")
                 volume = sceneObj.GetFirstNodeByClass(
                     "vtkMRMLMultiVolumeNode")
-                self.logic.processCropImage(cropIndex, cropSize, volume)
-
+                image = self.logic.processCropImage(cropIndex, cropSize, volume)
+                # Push new volume
+                sitkUtils.PushVolumeToSlicer(image, className="vtkMRMLMultiVolumeNode")
                 # Update phase
                 self._parameterNode.SetParameter("phase", "2")
                 self.ui.phaseLabel.text = "Phase 2"
@@ -472,43 +473,44 @@ class AortaGeomReconDisplayModuleLogic(ScriptedLoadableModuleLogic):  # noqa: F4
         cropped_image.SetOrigin(image.GetOrigin())
         cropped_image.SetSpacing(image.GetSpacing())
         cropped_image.SetDirection(image.GetDirection())
-        os.environ["SITK_SHOW_COMMAND"] = \
-            'C:\\Program Files\\ITK-SNAP 3.8\\bin\\ITK-SNAP'
-        sitk.Show(cropped_image)
-        img_array = sitk.GetArrayFromImage(cropped_image)
+        # os.environ["SITK_SHOW_COMMAND"] = \
+        #     'C:\\Program Files\\ITK-SNAP 3.8\\bin\\ITK-SNAP'
+        # sitk.Show(cropped_image)
+        # img_array = sitk.GetArrayFromImage(cropped_image)
 
-        # flatten image array and calculate histogram via binning
-        histogram_array = np.bincount(img_array.flatten(), minlength=256)
+        # # flatten image array and calculate histogram via binning
+        # histogram_array = np.bincount(img_array.flatten(), minlength=256)
 
-        # normalize image
-        num_pixels = np.sum(histogram_array)
-        histogram_array = histogram_array/num_pixels
+        # # normalize image
+        # num_pixels = np.sum(histogram_array)
+        # histogram_array = histogram_array/num_pixels
 
-        # normalized cumulative histogram
-        chistogram_array = np.cumsum(histogram_array)
+        # # normalized cumulative histogram
+        # chistogram_array = np.cumsum(histogram_array)
 
-        # create pixel mapping lookup table
-        transform_map = np.floor(255 * chistogram_array).astype(np.uint8)
+        # # create pixel mapping lookup table
+        # transform_map = np.floor(255 * chistogram_array).astype(np.uint8)
 
-        # flatten image array into 1D list
-        # so they can be used with the pixel mapping table
-        img_list = list(img_array.flatten())
+        # # flatten image array into 1D list
+        # # so they can be used with the pixel mapping table
+        # img_list = list(img_array.flatten())
 
-        # transform pixel values to equalize
-        eq_img_list = [transform_map[p] for p in img_list]
+        # # transform pixel values to equalize
+        # eq_img_list = [transform_map[p] for p in img_list]
 
-        # reshape and write back into img_array
-        eq_img_array = np.reshape(np.asarray(eq_img_list), img_array.shape)
+        # # reshape and write back into img_array
+        # eq_img_array = np.reshape(np.asarray(eq_img_list), img_array.shape)
 
-        # save image
-        eq_img = sitk.GetImageFromArray(eq_img_array)
-        eq_img.CopyInformation(cropped_image)
+        # # save image
+        # eq_img = sitk.GetImageFromArray(eq_img_array)
+        # eq_img.CopyInformation(cropped_image)
 
-        # Median Image Filter
-        median = sitk.MedianImageFilter()
-        median_img = sitk.Cast(median.Execute(eq_img), sitk.sitkUInt8)
+        # # Median Image Filter
+        # median = sitk.MedianImageFilter()
+        # median_img = sitk.Cast(median.Execute(eq_img), sitk.sitkUInt8)
 
-        self._segmenting_image = median_img
+        self._segmenting_image = cropped_image
+        return cropped_image
 
     def createDefaultParameters(self, parameterNode):
         """
@@ -522,8 +524,7 @@ class AortaGeomReconDisplayModuleLogic(ScriptedLoadableModuleLogic):  # noqa: F4
             parameterNode.SetParameter("ascAortaSeeds", "0,0,0")
         if not parameterNode.GetParameter("segmentationFactor"):
             parameterNode.SetParameter("segmentationFactor", "0.0")
-        if not parameterNode.GetParameter("phase"):
-            parameterNode.SetParameter("phase", "1")
+        parameterNode.SetParameter("phase", "1")
         if not parameterNode.GetParameter("descAortaSeeds"):
             parameterNode.SetParameter("descAortaSeeds", "0,0,0")
         if not parameterNode.GetParameter("numOfSkippingSlice"):
@@ -555,9 +556,10 @@ class AortaGeomReconDisplayModuleLogic(ScriptedLoadableModuleLogic):  # noqa: F4
         index = [int(i) for i in indexStr]
         size = [int(i) for i in sizeStr]
         sitkImage = sitkUtils.PullVolumeFromSlicer(volume)
-        logging.info(sitkImage)
+        # logging.info(sitkImage)
         outputImage = self.prepareSegmentingImage(sitkImage, index, size)
-        logging.info(outputImage)
+        # logging.info(outputImage)
+        return outputImage
 
     def processDescendingAorta(self, descAortaSeeds, segmentationFactor):
         logging.info(AortaDescendingAxialSegmenter)
