@@ -23,13 +23,12 @@ def prepared_segmenting_image(image, index, size):
 
     # Contrast Enhancement
     # Histogram Equalization
+
     img_array = sitk.GetArrayFromImage(
-        (sitk.Cast(sitk.RescaleIntensity(cropped_image), sitk.sitkUInt8))
-    )
+        (sitk.Cast(sitk.RescaleIntensity(cropped_image), sitk.sitkUInt8)))
 
     # flatten image array and calculate histogram via binning
     histogram_array = np.bincount(img_array.flatten(), minlength=256)
-
     # normalize image
     num_pixels = np.sum(histogram_array)
     histogram_array = histogram_array/num_pixels
@@ -90,14 +89,14 @@ if __name__ == '__main__':
 
     # work on image 0
     image = get_images("../sample-dicom/43681283", 376)
-    print(image)
     image = prepared_segmenting_image(
         image=image,
         index=(190, 165, 40),
         size=(191, 216, 335)
     )
-    print(image)
-    exit(0)
+    # print("here")
+    print(image.GetNumberOfPixels())
+    # exit(0)
     # desc_axial_segmenter.prepared_segmenting_image(
     #     image=image, index=(190, 165, 40), size=(191, 216, 335))
 
