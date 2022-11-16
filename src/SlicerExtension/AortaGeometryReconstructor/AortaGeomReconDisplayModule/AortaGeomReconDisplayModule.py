@@ -18,7 +18,7 @@ from AortaGeomReconDisplayModuleLib.AortaSagitalSegmenter \
 
 
 import sitkUtils
-import numpy as np
+import numpy as np  # noqa: F401
 import SimpleITK as sitk
 
 
@@ -410,7 +410,8 @@ class AortaGeomReconDisplayModuleWidget(ScriptedLoadableModuleWidget, VTKObserva
                 cropSize = self._parameterNode.GetParameter("cropSize")
                 volume = sceneObj.GetFirstNodeByClass(
                     "vtkMRMLMultiVolumeNode")
-                image = self.logic.processCropImage(cropIndex, cropSize, volume)
+                image = self.logic.processCropImage(
+                    cropIndex, cropSize, volume)
                 # Push new volume
                 sitkUtils.PushVolumeToSlicer(
                     image, name="Cropped Volume",
@@ -584,7 +585,7 @@ class AortaGeomReconDisplayModuleLogic(ScriptedLoadableModuleLogic):  # noqa: F4
                 numSliceSkipping
             ):
 
-        logging.info(f'Begin processing Descending Aorta Segmentation')
+        logging.info('Begin processing Descending Aorta Segmentation')
 
         desc_axial_segmenter = AortaDescendingAxialSegmenter(
             startingSlice=descAortaSeeds[2],
@@ -594,7 +595,7 @@ class AortaGeomReconDisplayModuleLogic(ScriptedLoadableModuleLogic):  # noqa: F4
             segmentingImage=self._cropped_image
         )
         desc_axial_segmenter.begin_segmentation()
-        logging.info(f'Finished processing Descending Aorta Segmentation')
+        logging.info('Finished processing Descending Aorta Segmentation')
         self._segmenting_image = desc_axial_segmenter._segmented_image
         return self._segmenting_image
 
