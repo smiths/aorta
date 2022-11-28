@@ -30,9 +30,14 @@ etc.
     - Once loaded, 3D Slicer will keep the patient record in the DICOM database, and the user can easily reload DICOM data from the DICOM database.
 
 ### To use Volume Rendering to crop image:
-1. Load the dicom files as described above.
-2. Notices that the uploaded volume must be a scalar volume object to be view in Volume Rendering module(the sample can have repeated slices, we need to find the maximum depth and select the first max number of files).
-    - For example, sample 43681283 has 376 as depth, we only need the first 376 files (in sorted file by name).
+1. Load the dicom files as described in the section To load DICOM data.
+2. Notices that the uploaded volume must be a scalar volume object to be view in Volume Rendering module
+    - Some of the current samples contain repeated slices. When loading this dicom data to Slicer, the result volume will automatically becomes a multi volume object. 
+![Screenshot 2022-11-28 154534](https://user-images.githubusercontent.com/63418020/204377349-ed4fe11f-cc42-49b8-9175-27cbb6895f33.png)
+    - For example, sample 22429388 has 1341 .dicom files, but when loaded as a volume, it has a depth of 447 (slice 0 to 446). You can verify it by inspecting the axial axis (Red window by Slicer's default). Drag the axial high and low to see the maximum depth. 
+![Screenshot 2022-11-28 154816](https://user-images.githubusercontent.com/63418020/204378395-cba96ad0-70b2-4756-bb9f-a43ab9b3f174.png)
+![Screenshot 2022-11-28 154901](https://user-images.githubusercontent.com/63418020/204378397-1ed83a9e-9354-4e81-907e-f6fdf6b62022.png)
+    - Sort the folder containing the sample, and copy the first 447 dicom files to a new folder. Then load the new folder as dicom data.
 3. Once loaded, select Volume Rendering module. Select the volume that you want to crop, and click on the eye icon on the left.  
 ![Screenshot 2022-11-28 095731](https://user-images.githubusercontent.com/63418020/204309728-c9ca1470-c9cd-4f6a-89f7-e3c2f4155fb5.png)
 ![Screenshot 2022-11-28 100009](https://user-images.githubusercontent.com/63418020/204309912-12301994-1d9a-4b96-9868-c1ad35eb1443.png)
