@@ -164,6 +164,7 @@ class AortaGeomReconDisplayModuleWidget(ScriptedLoadableModuleWidget, VTKObserva
         self.ui.applyButton.enabled = False
         self.ui.clearButton.enabled = True
         self.ui.resetButton.enabled = True
+        self.ui.skipButton.enabled = True
 
         # Set scene in MRML widgets.
         # Make sure that in Qt designer the top-level qMRMLWidget's
@@ -214,6 +215,7 @@ class AortaGeomReconDisplayModuleWidget(ScriptedLoadableModuleWidget, VTKObserva
         self.ui.applyButton.connect('clicked(bool)', self.onApplyButton)
         self.ui.clearButton.connect('clicked(bool)', self.onClearButton)
         self.ui.resetButton.connect('clicked(bool)', self.onResetButton)
+        self.ui.skipButton.connect('clicked(bool)', self.onSkipButton)
 
         # Make sure parameter node is initialized (needed for module reload)
         self.initializeParameterNode()
@@ -397,6 +399,20 @@ class AortaGeomReconDisplayModuleWidget(ScriptedLoadableModuleWidget, VTKObserva
         with slicer.util.tryWithErrorDisplay(errorMessage, waitCursor=True):
             self.logic.resetDefaultParameters(self.logic.getParameterNode())
             self.ui.phaseLabel.text = "Phase 1 Crop Aorta"
+            self.ui.skipButton.enabled = True
+
+    def onSkipButton(self):
+        errorMessage = "Failed to skip this phase"
+        with slicer.util.tryWithErrorDisplay(errorMessage, waitCursor=True):
+            if self._parameterNode.GetParameter("phase") == "1":
+                # Update phase
+                self._parameterNode.SetParameter("phase", "2")
+                self.ui.phaseLabel.text = "Phase 2"
+
+            elif self._parameterNode.GetParameter("phase") == "2":
+                self._parameterNode.SetParameter("phase", "3")
+                self.ui.phaseLabel.text = "Phase 3"
+                self.ui.skipButton.enabled = False
 
     def onApplyButton(self):
         """
@@ -416,7 +432,7 @@ class AortaGeomReconDisplayModuleWidget(ScriptedLoadableModuleWidget, VTKObserva
                 # Push new volume
                 sitkUtils.PushVolumeToSlicer(
                     image, name="Cropped Volume",
-                    className="vtkMRMLMultiVolumeNode"
+                    className="vtkMRMLScalarVolumeNode"
                 )
                 # Update phase
                 self._parameterNode.SetParameter("phase", "2")
@@ -431,19 +447,22 @@ class AortaGeomReconDisplayModuleWidget(ScriptedLoadableModuleWidget, VTKObserva
 
                 numSliceSkipping = self._parameterNode.GetParameter(
                     "numOfSkippingSlice")
-
+                volume = slicer.mrmlScene.GetFirstNode(
+                    "cropped", None, None, False)
                 image = self.logic.processDescendingAorta(
                     descAortaSeeds,
                     segmentationFactor,
-                    numSliceSkipping
+                    numSliceSkipping,
+                    volume
                 )
                 sitkUtils.PushVolumeToSlicer(
                     image,
                     name="Segmented Descending Aorta Volume",
-                    className="vtkMRMLMultiVolumeNode"
+                    className="vtkMRMLScalarVolumeNode"
                 )
                 self._parameterNode.SetParameter("phase", "3")
                 self.ui.phaseLabel.text = "Phase 3"
+                self.ui.skipButton.enabled = False
 
 #
 # AortaGeomReconDisplayModuleLogic
@@ -496,11 +515,12 @@ class AortaGeomReconDisplayModuleLogic(ScriptedLoadableModuleLogic):  # noqa: F4
         selectCastFilter.SetIndex(0)
         selectCastFilter.SetOutputPixelType(sitk.sitkUInt32)
         cropped_image = selectCastFilter.Execute(cropped_image)
+        return cropped_image
 
+    def transform_image(self, cropped_image):
         logging.info("Transformed to 32 bits unsigned")
         img_array = sitk.GetArrayFromImage(
             (sitk.Cast(sitk.RescaleIntensity(cropped_image), sitk.sitkUInt8)))
-        img_array = np.invert(img_array)
         logging.info("Transformed to 8 bits unsigned")
 
         # flatten image array and calculate histogram via binning
@@ -534,7 +554,6 @@ class AortaGeomReconDisplayModuleLogic(ScriptedLoadableModuleLogic):  # noqa: F4
         median = sitk.MedianImageFilter()
         median_img = sitk.Cast(median.Execute(eq_img), sitk.sitkUInt8)
 
-        self._cropped_image = median_img
         return median_img
 
     def createDefaultParameters(self, parameterNode):
@@ -575,7 +594,6 @@ class AortaGeomReconDisplayModuleLogic(ScriptedLoadableModuleLogic):  # noqa: F4
             parameterNode.SetParameter("phase", "1")
 
     def processCropImage(self, cropIndex, cropSize, volume):
-
         indexStr = cropIndex.split(",")
         sizeStr = cropSize.split(",")
         index = [int(i) for i in indexStr]
@@ -594,7 +612,8 @@ class AortaGeomReconDisplayModuleLogic(ScriptedLoadableModuleLogic):  # noqa: F4
                 self,
                 descAortaSeeds,
                 segmentationFactor,
-                numSliceSkipping
+                numSliceSkipping,
+                volume
             ):
         descAortaSeedsStr = descAortaSeeds.split(",")
         dASnumber = [int(i) for i in descAortaSeedsStr]
@@ -603,20 +622,20 @@ class AortaGeomReconDisplayModuleLogic(ScriptedLoadableModuleLogic):  # noqa: F4
         print("startingSlice", dASnumber[2])
         print("aortaCentre", dASnumber[:2])
 
-        print("numSliceSkipping", int(float(numSliceSkipping)))
-        print("segmentationFactor", float(segmentationFactor))
+        image = sitkUtils.PullVolumeFromSlicer(volume)
+        image = self.transform_image(image)
 
         desc_axial_segmenter = AortaDescendingAxialSegmenter(
             startingSlice=dASnumber[2],
             aortaCentre=dASnumber[:2],
             numSliceSkipping=int(float(numSliceSkipping)),
             segmentationFactor=float(segmentationFactor),
-            segmentingImage=self._cropped_image
+            segmentingImage=image
         )
         desc_axial_segmenter.begin_segmentation()
         logging.info(
             f"{now} Finished processing Descending Aorta Segmentation")
-        self._segmenting_image = desc_axial_segmenter._segmented_image
+        self._segmenting_image = desc_axial_segmenter.segmented_image
         return self._segmenting_image
 
     def processAscendingAorta(self, ascAortaSeeds, segmentationFactor):

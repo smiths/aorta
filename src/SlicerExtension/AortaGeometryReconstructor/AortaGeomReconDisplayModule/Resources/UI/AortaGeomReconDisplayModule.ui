@@ -183,6 +183,19 @@
     </widget>
    </item>
    <item>
+    <widget class="QPushButton" name="skipButton">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
+     <property name="toolTip">
+      <string>Skip current phase</string>
+     </property>
+     <property name="text">
+      <string>Skip to next phase</string>
+     </property>
+    </widget>
+   </item>
+   <item>
     <spacer name="verticalSpacer">
      <property name="orientation">
       <enum>Qt::Vertical</enum>
