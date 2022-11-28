@@ -34,15 +34,17 @@ etc.
 2. Notices that the uploaded volume must be a scalar volume object to be view in Volume Rendering module(the sample can have repeated slices, we need to find the maximum depth and select the first max number of files).
     - For example, sample 43681283 has 376 as depth, we only need the first 376 files (in sorted file by name).
 3. Once loaded, select Volume Rendering module. Select the volume that you want to crop, and click on the eye icon on the left.
-![image]
-4. Within the module UI, under Display, enable Crop Display ROI, then select CT-Bones for preset. You should be able to see the 3D rendering on top right corner. You can use the points controls to crop.
-![image]
+![Screenshot 2022-11-28 095731](https://user-images.githubusercontent.com/63418020/204309728-c9ca1470-c9cd-4f6a-89f7-e3c2f4155fb5.png)
+![Screenshot 2022-11-28 100009](https://user-images.githubusercontent.com/63418020/204309912-12301994-1d9a-4b96-9868-c1ad35eb1443.png)
+4. Within the module UI, under Display, enable Crop Display ROI, then select CT-Bones for preset. You should be able to see the 3D rendering on top right corner. You can use the points controls to crop.  
+![Screenshot 2022-11-28 100107](https://user-images.githubusercontent.com/63418020/204310154-9fd8df58-021d-416b-b64a-80f01ed7f49a.png)
+![Screenshot 2022-11-28 100255](https://user-images.githubusercontent.com/63418020/204310637-f0c16410-0ad6-40ec-853e-9bbd993ed4ff.png)
 5. Change back to AortaGeomReconDisplayModule, you should also have a Volume rendering ROI, or vtkMRMLMarkupsROINode object.
-6. Select a new module, Crop volume sequence, in Sequences category. Click on the green button which has an arrow pointing right.
-![image]
+6. Select a new module, Crop volume sequence, in Sequences category. Click on the green button which has an arrow pointing right.  
+![Screenshot 2022-11-28 100408](https://user-images.githubusercontent.com/63418020/204310886-322c9e33-a13e-42b4-aded-060dd229d71b.png)
+![Screenshot 2022-11-28 100449](https://user-images.githubusercontent.com/63418020/204311044-bb3d4f10-ee01-4fcd-8a63-6ce4b879cec1.png)
 7. For Input volume, select the volume to crop. For Input ROI, select the ROI we created with Volume Rendering module. For output volume, you can select create new volume or modify the original volume.
 8. Click on Apply, and change back to AortaGeomReconDisplayModule, you shoule be able to find a new volume or the cropped volume.
-
 ### Tips to use this application:
 1. The user can save and load an MRML scene object, which is used to store all types of data, including the loaded Dicom data, any inputs by the user on the UI, markups, etc.
 2. We can use 3D Slicer's "Markups" module to draw control points and planes. These markup data are stored based on the Anatomical coordinate system, which can be independent of the Dicom data.
