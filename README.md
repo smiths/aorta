@@ -29,6 +29,20 @@ etc.
 2. Select "Import DICOM files", and select one of the patient's folders.
     - Once loaded, 3D Slicer will keep the patient record in the DICOM database, and the user can easily reload DICOM data from the DICOM database.
 
+### To use Volume Rendering to crop image:
+1. Load the dicom files as described above.
+2. Notices that the uploaded volume must be a scalar volume object to be view in Volume Rendering module(the sample can have repeated slices, we need to find the maximum depth and select the first max number of files).
+    - For example, sample 43681283 has 376 as depth, we only need the first 376 files (in sorted file by name).
+3. Once loaded, select Volume Rendering module. Select the volume that you want to crop, and click on the eye icon on the left.
+![image]
+4. Within the module UI, under Display, enable Crop Display ROI, then select CT-Bones for preset. You should be able to see the 3D rendering on top right corner. You can use the points controls to crop.
+![image]
+5. Change back to AortaGeomReconDisplayModule, you should also have a Volume rendering ROI, or vtkMRMLMarkupsROINode object.
+6. Select a new module, Crop volume sequence, in Sequences category. Click on the green button which has an arrow pointing right.
+![image]
+7. For Input volume, select the volume to crop. For Input ROI, select the ROI we created with Volume Rendering module. For output volume, you can select create new volume or modify the original volume.
+8. Click on Apply, and change back to AortaGeomReconDisplayModule, you shoule be able to find a new volume or the cropped volume.
+
 ### Tips to use this application:
 1. The user can save and load an MRML scene object, which is used to store all types of data, including the loaded Dicom data, any inputs by the user on the UI, markups, etc.
 2. We can use 3D Slicer's "Markups" module to draw control points and planes. These markup data are stored based on the Anatomical coordinate system, which can be independent of the Dicom data.
