@@ -33,7 +33,7 @@ etc.
 1. Load the dicom files as described above.
 2. Notices that the uploaded volume must be a scalar volume object to be view in Volume Rendering module(the sample can have repeated slices, we need to find the maximum depth and select the first max number of files).
     - For example, sample 43681283 has 376 as depth, we only need the first 376 files (in sorted file by name).
-3. Once loaded, select Volume Rendering module. Select the volume that you want to crop, and click on the eye icon on the left.
+3. Once loaded, select Volume Rendering module. Select the volume that you want to crop, and click on the eye icon on the left.  
 ![Screenshot 2022-11-28 095731](https://user-images.githubusercontent.com/63418020/204309728-c9ca1470-c9cd-4f6a-89f7-e3c2f4155fb5.png)
 ![Screenshot 2022-11-28 100009](https://user-images.githubusercontent.com/63418020/204309912-12301994-1d9a-4b96-9868-c1ad35eb1443.png)
 4. Within the module UI, under Display, enable Crop Display ROI, then select CT-Bones for preset. You should be able to see the 3D rendering on top right corner. You can use the points controls to crop.  
