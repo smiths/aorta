@@ -50,9 +50,10 @@ class AortaSegmenterBase():
 
         # Contrast Enhancement
         # Histogram Equalization
-        img_array = sitk.GetArrayFromImage(
-            (sitk.Cast(sitk.RescaleIntensity(cropped_image), sitk.sitkUInt8))
-        )
+        # img_array = sitk.GetArrayFromImage(
+        #     (sitk.Cast(sitk.RescaleIntensity(cropped_image), sitk.sitkUInt8))
+        # )
+        img_array = sitk.GetArrayFromImage(cropped_image)
 
         # flatten image array and calculate histogram via binning
         histogram_array = np.bincount(img_array.flatten(), minlength=256)
