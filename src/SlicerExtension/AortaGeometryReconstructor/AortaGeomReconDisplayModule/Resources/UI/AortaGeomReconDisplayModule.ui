@@ -41,49 +41,73 @@
       <string>Inputs</string>
      </property>
      <layout class="QFormLayout" name="formLayout_2">
-      <item row="1" column="1">
+      <item row="3" column="1">
+       <widget class="qSlicerVolumeDisplayWidget" name="VolumeDisplayWidget"/>
+      </item>
+      <item row="4" column="0">
+       <widget class="QLabel" name="label">
+        <property name="text">
+         <string>Crop index:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="1">
        <widget class="qMRMLCoordinatesWidget" name="cropIndex">
         <property name="decimals">
          <number>0</number>
         </property>
        </widget>
       </item>
-      <item row="2" column="0">
+      <item row="5" column="0">
        <widget class="QLabel" name="label_3">
         <property name="text">
          <string>Crop Size:</string>
         </property>
        </widget>
       </item>
-      <item row="2" column="1">
+      <item row="5" column="1">
        <widget class="qMRMLCoordinatesWidget" name="cropSize">
         <property name="decimals">
          <number>0</number>
         </property>
        </widget>
       </item>
-      <item row="4" column="0">
+      <item row="6" column="0">
+       <widget class="QLabel" name="label_5">
+        <property name="text">
+         <string>DesAortaSeeds:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="6" column="1">
+       <widget class="qMRMLCoordinatesWidget" name="descAortaSeeds">
+        <property name="decimals">
+         <number>0</number>
+        </property>
+       </widget>
+      </item>
+      <item row="7" column="0">
        <widget class="QLabel" name="label_4">
         <property name="text">
          <string>AscAortaSeeds:</string>
         </property>
        </widget>
       </item>
-      <item row="4" column="1">
+      <item row="7" column="1">
        <widget class="qMRMLCoordinatesWidget" name="ascAortaSeeds">
         <property name="decimals">
          <number>0</number>
         </property>
        </widget>
       </item>
-      <item row="5" column="0">
+      <item row="8" column="0">
        <widget class="QLabel" name="label_6">
         <property name="text">
          <string>Segmentation Factor:</string>
         </property>
        </widget>
       </item>
-      <item row="5" column="1">
+      <item row="8" column="1">
        <widget class="qMRMLSliderWidget" name="segmentationFactor">
         <property name="decimals">
          <number>1</number>
@@ -99,24 +123,14 @@
         </property>
        </widget>
       </item>
-      <item row="9" column="0" colspan="2">
-       <widget class="qMRMLSubjectHierarchyTreeView" name="SubjectHierarchyTreeView"/>
-      </item>
-      <item row="1" column="0">
-       <widget class="QLabel" name="label">
-        <property name="text">
-         <string>Crop index:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="7" column="0">
+      <item row="10" column="0">
        <widget class="QLabel" name="label_2">
         <property name="text">
          <string>Number of skipping slices:</string>
         </property>
        </widget>
       </item>
-      <item row="7" column="1">
+      <item row="10" column="1">
        <widget class="qMRMLSpinBox" name="numOfSkippingSlice">
         <property name="decimals">
          <number>0</number>
@@ -126,19 +140,8 @@
         </property>
        </widget>
       </item>
-      <item row="3" column="0">
-       <widget class="QLabel" name="label_5">
-        <property name="text">
-         <string>DesAortaSeeds:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="1">
-       <widget class="qMRMLCoordinatesWidget" name="descAortaSeeds">
-        <property name="decimals">
-         <number>0</number>
-        </property>
-       </widget>
+      <item row="12" column="0" colspan="2">
+       <widget class="qMRMLSubjectHierarchyTreeView" name="SubjectHierarchyTreeView"/>
       </item>
      </layout>
     </widget>
@@ -257,6 +260,11 @@
    <class>qMRMLSubjectHierarchyTreeView</class>
    <extends>QTreeView</extends>
    <header>qMRMLSubjectHierarchyTreeView.h</header>
+  </customwidget>
+  <customwidget>
+   <class>qSlicerVolumeDisplayWidget</class>
+   <extends>qMRMLWidget</extends>
+   <header>qSlicerVolumeDisplayWidget.h</header>
   </customwidget>
  </customwidgets>
  <resources/>
