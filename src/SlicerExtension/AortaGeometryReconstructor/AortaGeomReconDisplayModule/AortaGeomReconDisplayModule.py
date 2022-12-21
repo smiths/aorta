@@ -35,6 +35,7 @@ class AortaGeomReconDisplayModule(ScriptedLoadableModule):  # noqa: F405
     def __init__(self, parent):
         ScriptedLoadableModule.__init__(self, parent)  # noqa: F405
 
+        self.crosshairNode = None
         # TODO: make this more human readable by adding spaces
         self.parent.title = "AortaGeomReconDisplayModule"
 
@@ -128,6 +129,7 @@ def registerSampleData():
 # AortaGeomReconDisplayModuleWidget
 #
 
+
 class AortaGeomReconDisplayModuleWidget(ScriptedLoadableModuleWidget, VTKObservationMixin):  # noqa: F405,E501
     """Uses ScriptedLoadableModuleWidget base class, available at:
     https://github.com/Slicer/Slicer/blob/master/Base/Python/slicer/ScriptedLoadableModule.py
@@ -183,6 +185,9 @@ class AortaGeomReconDisplayModuleWidget(ScriptedLoadableModuleWidget, VTKObserva
         # These connections ensure that we update parameter node
         # when scene is closed
         scene = slicer.mrmlScene
+        self.crosshairNode=slicer.util.getNode("Crosshair")
+        self.crosshairNode.AddObserver(slicer.vtkMRMLCrosshairNode.CursorPositionModifiedEvent, self.onMouseMoved)
+        
         self.addObserver(scene, scene.StartCloseEvent, self.onSceneStartClose)
         self.addObserver(scene, scene.EndCloseEvent, self.onSceneEndClose)
 
@@ -497,6 +502,16 @@ class AortaGeomReconDisplayModuleWidget(ScriptedLoadableModuleWidget, VTKObserva
                 self.ui.phaseLabel.text = "Phase 3"
                 self.ui.skipButton.enabled = False
 
+    def onMouseMoved(self, observer, eventid):
+        ras=[0,0,0]
+        self.crosshairNode.GetCursorPositionRAS(ras)
+        ras = ",".join([str(int(i)) for i in ras])
+        if self._parameterNode.GetParameter("phase") == "2":
+            self._parameterNode.SetParameter(
+                "descAortaSeeds", ras)
+        elif self._parameterNode.GetParameter("phase") == "3":
+            self._parameterNode.SetParameter(
+                "ascAortaSeeds", ras)
 #
 # AortaGeomReconDisplayModuleLogic
 #
