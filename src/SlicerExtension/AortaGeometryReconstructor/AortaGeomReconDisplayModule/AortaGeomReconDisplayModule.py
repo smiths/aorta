@@ -506,15 +506,22 @@ class AortaGeomReconDisplayModuleWidget(ScriptedLoadableModuleWidget, VTKObserva
                 self.ui.skipButton.enabled = False
 
     def onMouseMoved(self, observer, eventid):
-        ras = [0, 0, 0]
-        self.crosshairNode.GetCursorPositionRAS(ras)
-        ras = ",".join([str(int(i)) for i in ras])
+        # ras = [0, 0, 0]
+        volume = slicer.mrmlScene.GetFirstNode("cropped", None, None, False)
+        axialNode = slicer.mrmlScene.GetNodeByID('vtkMRMLSliceNodeRed')
+        ortho1Node = slicer.mrmlScene.GetNodeByID('vtkMRMLSliceNodeYellow')
+        ortho2Node = slicer.mrmlScene.GetNodeByID('vtkMRMLSliceNodeGreen')
+        point_Ijk = self.logic.getPlaneIntersectionPoint(
+            volume, axialNode, ortho1Node, ortho2Node)
+        # infoWidget = slicer.modules.DataProbeInstance.infoWidget
+        # self.crosshairNode.GetCursorPositionRAS(ras)
+        ijk = ",".join([str(int(i)) for i in point_Ijk])
         if self._parameterNode.GetParameter("phase") == "2":
             self._parameterNode.SetParameter(
-                "descAortaSeeds", ras)
+                "descAortaSeeds", ijk)
         elif self._parameterNode.GetParameter("phase") == "3":
             self._parameterNode.SetParameter(
-                "ascAortaSeeds", ras)
+                "ascAortaSeeds", ijk)
 #
 # AortaGeomReconDisplayModuleLogic
 #
@@ -538,6 +545,109 @@ class AortaGeomReconDisplayModuleLogic(ScriptedLoadableModuleLogic):  # noqa: F4
         self._cropped_image = None
         self._processing_image = None
         ScriptedLoadableModuleLogic.__init__(self)  # noqa: F405
+
+    def getPlaneIntersectionPoint(
+        self,
+        volumeNode,
+        axialNode,
+        ortho1Node,
+        ortho2Node
+    ):
+        # Compute the center of rotation
+        # (common intersection point of the three planes)
+        # http://mathworld.wolfram.com/Plane-PlaneIntersection.html
+
+        axialSliceToRas = axialNode.GetSliceToRAS()
+        n1 = [
+            axialSliceToRas.GetElement(0, 2),
+            axialSliceToRas.GetElement(1, 2),
+            axialSliceToRas.GetElement(2, 2)
+        ]
+        x1 = [
+            axialSliceToRas.GetElement(0, 3),
+            axialSliceToRas.GetElement(1, 3),
+            axialSliceToRas.GetElement(2, 3)
+        ]
+
+        ortho1SliceToRas = ortho1Node.GetSliceToRAS()
+        n2 = [
+            ortho1SliceToRas.GetElement(0, 2),
+            ortho1SliceToRas.GetElement(1, 2),
+            ortho1SliceToRas.GetElement(2, 2)
+        ]
+        x2 = [
+            ortho1SliceToRas.GetElement(0, 3),
+            ortho1SliceToRas.GetElement(1, 3),
+            ortho1SliceToRas.GetElement(2, 3)
+        ]
+
+        ortho2SliceToRas = ortho2Node.GetSliceToRAS()
+        n3 = [
+            ortho2SliceToRas.GetElement(0, 2),
+            ortho2SliceToRas.GetElement(1, 2),
+            ortho2SliceToRas.GetElement(2, 2)
+        ]
+        x3 = [
+            ortho2SliceToRas.GetElement(0, 3),
+            ortho2SliceToRas.GetElement(1, 3),
+            ortho2SliceToRas.GetElement(2, 3)
+        ]
+
+        # Computed intersection point of all planes
+        x = [0, 0, 0]
+
+        n2_xp_n3 = [0, 0, 0]
+        x1_dp_n1 = vtk.vtkMath.Dot(x1, n1)
+        vtk.vtkMath.Cross(n2, n3, n2_xp_n3)
+        vtk.vtkMath.MultiplyScalar(n2_xp_n3, x1_dp_n1)
+        vtk.vtkMath.Add(x, n2_xp_n3, x)
+
+        n3_xp_n1 = [0, 0, 0]
+        x2_dp_n2 = vtk.vtkMath.Dot(x2, n2)
+        vtk.vtkMath.Cross(n3, n1, n3_xp_n1)
+        vtk.vtkMath.MultiplyScalar(n3_xp_n1, x2_dp_n2)
+        vtk.vtkMath.Add(x, n3_xp_n1, x)
+
+        n1_xp_n2 = [0, 0, 0]
+        x3_dp_n3 = vtk.vtkMath.Dot(x3, n3)
+        vtk.vtkMath.Cross(n1, n2, n1_xp_n2)
+        vtk.vtkMath.MultiplyScalar(n1_xp_n2, x3_dp_n3)
+        vtk.vtkMath.Add(x, n1_xp_n2, x)
+
+        normalMatrix = vtk.vtkMatrix3x3()
+        normalMatrix.SetElement(0, 0, n1[0])
+        normalMatrix.SetElement(1, 0, n1[1])
+        normalMatrix.SetElement(2, 0, n1[2])
+        normalMatrix.SetElement(0, 1, n2[0])
+        normalMatrix.SetElement(1, 1, n2[1])
+        normalMatrix.SetElement(2, 1, n2[2])
+        normalMatrix.SetElement(0, 2, n3[0])
+        normalMatrix.SetElement(1, 2, n3[1])
+        normalMatrix.SetElement(2, 2, n3[2])
+        normalMatrixDeterminant = normalMatrix.Determinant()
+
+        if abs(normalMatrixDeterminant) > 0.01:
+            # there is an intersection point
+            vtk.vtkMath.MultiplyScalar(x, 1 / normalMatrixDeterminant)
+        else:
+            # no intersection point can be determined,
+            # use just the position of the axial slice
+            x = x1
+
+        transformRasToVolumeRas = vtk.vtkGeneralTransform()
+        volumeRasToIjk = vtk.vtkMatrix4x4()
+        volumeNode.GetRASToIJKMatrix(volumeRasToIjk)
+
+        point_Ijk = [0, 0, 0, 1]
+        # >>> x
+        # [-30.069400063396387, -55.78618109487266, -44.595018435746994]
+        point_VolumeRas = transformRasToVolumeRas.TransformPoint(x)
+        volumeRasToIjk.MultiplyPoint(
+            np.append(point_VolumeRas, 1.0), point_Ijk)
+
+        point_Ijk = [int(round(c)) for c in point_Ijk[0:3]]
+
+        return point_Ijk
 
     def anyEmptySeed(self, ui, phase):
         if phase == "1":
