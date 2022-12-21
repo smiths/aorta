@@ -6,13 +6,13 @@ import numpy as np
 
 class AortaDescendingAxialSegmenter(AortaAxialSegmenter):
 
-    def __init__(self, startingSlice, aortaCentre, numSliceSkipping,
-                 segmentationFactor, segmentingImage,
+    def __init__(self, starting_slice, aorta_centre, num_slice_skipping,
+                 segmentation_factor, cropped_image,
                  normalized=False, outputBinary=True):
-        super().__init__(startingSlice=startingSlice, aortaCentre=aortaCentre,
-                         numSliceSkipping=numSliceSkipping,
-                         segmentationFactor=segmentationFactor,
-                         segmentingImage=segmentingImage,
+        super().__init__(starting_slice=starting_slice, aorta_centre=aorta_centre,
+                         num_slice_skipping=num_slice_skipping,
+                         segmentation_factor=segmentation_factor,
+                         cropped_image=cropped_image,
                          normalized=normalized,
                          outputBinary=outputBinary)
 
@@ -20,7 +20,7 @@ class AortaDescendingAxialSegmenter(AortaAxialSegmenter):
        and new aorta centre.
     """
     def __circle_filter(self, sliceNum, centre):
-        imgSlice = self._segmenting_image[:, :, sliceNum]
+        imgSlice = self._cropped_image[:, :, sliceNum]
 
         if self._normalized:
             imgSlice = sitk.Cast(
@@ -61,7 +61,7 @@ class AortaDescendingAxialSegmenter(AortaAxialSegmenter):
             fully_seg_slice = ls > 0
         else:
             fully_seg_slice = sitk.LabelOverlay(
-                self._segmenting_image[:, :, sliceNum], ls > 0)
+                self._cropped_image[:, :, sliceNum], ls > 0)
 
         # get array from segmentation
         ndimension_array = sitk.GetArrayFromImage(ls > 0)
@@ -80,17 +80,17 @@ class AortaDescendingAxialSegmenter(AortaAxialSegmenter):
             fully_seg_slice, total_coord, _ = self.__circle_filter(
                 self._starting_slice, self._aorta_centre)
 
-            self._segmented_image[:, :, self._starting_slice] = fully_seg_slice
+            self._processing_image[:, :, self._starting_slice] = fully_seg_slice
             self._original_size = total_coord
             previous_size = total_coord
             # counts how many slices have been skipped
             counter = 0
-            startingSlice = self._starting_slice
+            starting_slice = self._starting_slice
             endingSlice = -1
             step = -1
         else:
-            startingSlice = self._starting_slice
-            endingSlice = self._segmenting_image.GetDepth()
+            starting_slice = self._starting_slice
+            endingSlice = self._cropped_image.GetDepth()
             previous_size = self._original_size
             step = 1
 
@@ -98,7 +98,7 @@ class AortaDescendingAxialSegmenter(AortaAxialSegmenter):
         more_circles = True
         counter = len(self._skipped_slices)
 
-        for sliceNum in range(startingSlice, endingSlice, step):
+        for sliceNum in range(starting_slice, endingSlice, step):
             if (more_circles):
 
                 # perform segmentation on slice i
@@ -124,7 +124,7 @@ class AortaDescendingAxialSegmenter(AortaAxialSegmenter):
                 if is_new_center_qualified:
                     counter = 0
                     # add slice to new_image
-                    self._segmented_image[:, :, sliceNum] = fully_seg_slice
+                    self._processing_image[:, :, sliceNum] = fully_seg_slice
                     centre_previous = centre
                 else:
                     counter += 1
@@ -143,8 +143,8 @@ class AortaDescendingAxialSegmenter(AortaAxialSegmenter):
                     total_coord = previous_size
 
             elif not self._is_output_binary:
-                self._segmented_image[:, :, sliceNum] = sitk.Cast(
-                    self._segmenting_image_255[:, :, sliceNum],
+                self._processing_image[:, :, sliceNum] = sitk.Cast(
+                    self._cropped_image_255[:, :, sliceNum],
                     sitk.sitkVectorUInt8)
 
             previous_size = total_coord
@@ -158,10 +158,10 @@ class AortaDescendingAxialSegmenter(AortaAxialSegmenter):
         self._segment_filter.SetPropagationScaling(1)
         self._segment_filter.ReverseExpansionDirectionOn()
         self._skipped_slices = []
-        self._segmented_image = sitk.Image(
-            self._segmenting_image.GetSize(), sitk.sitkUInt8)
-        self._segmented_image.CopyInformation(self._segmenting_image)
-        print(self._segmenting_image.GetSize())
+        self._processing_image = sitk.Image(
+            self._cropped_image.GetSize(), sitk.sitkUInt8)
+        self._processing_image.CopyInformation(self._cropped_image)
+        print(self._cropped_image.GetSize())
         print("Descending aorta segmentation - top to bottom started")
         self.segmentation(self._segmentation_factor, True)
         print("Descending aorta segmentation - top to bottom finished")
@@ -176,7 +176,7 @@ class AortaDescendingAxialSegmenter(AortaAxialSegmenter):
             # before and after the skipped slice
             slice_num = self._skipped_slices[index]
             if (slice_num > 0 and slice_num <
-                    self._segmenting_image.GetDepth() - 1):
+                    self._cropped_image.GetDepth() - 1):
                 next_index = index + 1
 
                 # if there are two skipped slices in a row,
@@ -187,19 +187,19 @@ class AortaDescendingAxialSegmenter(AortaAxialSegmenter):
                     next_slice = self._skipped_slices[next_index]
 
                     if (next_slice == slice_num + 1 and next_slice
-                            < self._segmenting_image.GetDepth() - 1):
-                        self._segmented_image[:, :, slice_num] = (
-                            self._segmented_image[:, :, slice_num - 1]
-                            + self._segmented_image[:, :, next_slice + 1] > 1
+                            < self._cropped_image.GetDepth() - 1):
+                        self._processing_image[:, :, slice_num] = (
+                            self._processing_image[:, :, slice_num - 1]
+                            + self._processing_image[:, :, next_slice + 1] > 1
                         )
-                        self._segmented_image[:, :, next_slice] = \
-                            self._segmented_image[:, :, slice_num]
+                        self._processing_image[:, :, next_slice] = \
+                            self._processing_image[:, :, slice_num]
                     else:
-                        self._segmented_image[:, :, slice_num] = (
-                            self._segmented_image[:, :, slice_num - 1]
-                            + self._segmented_image[:, :, slice_num + 1] > 1
+                        self._processing_image[:, :, slice_num] = (
+                            self._processing_image[:, :, slice_num - 1]
+                            + self._processing_image[:, :, slice_num + 1] > 1
                         )
                 else:
-                    self._segmented_image[:, :, slice_num] = (
-                        self._segmented_image[:, :, slice_num - 1]
-                        + self._segmented_image[:, :, slice_num + 1] > 1)
+                    self._processing_image[:, :, slice_num] = (
+                        self._processing_image[:, :, slice_num - 1]
+                        + self._processing_image[:, :, slice_num + 1] > 1)

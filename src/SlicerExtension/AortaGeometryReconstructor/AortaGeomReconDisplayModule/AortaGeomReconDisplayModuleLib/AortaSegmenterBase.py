@@ -3,29 +3,29 @@ import abc
 
 class AortaSegmenterBase():
 
-    def __init__(self, segmentingImage, segmentationFactor=2.2):
-        self._segmentation_factor = segmentationFactor
-        self._segmenting_image = segmentingImage
+    def __init__(self, cropped_image, segmentation_factor=2.2):
+        self._segmentation_factor = segmentation_factor
+        self._cropped_image = cropped_image
 
     @property
     def segmentation_factor(self):
         return self._segmentation_factor
 
     @property
-    def segmenting_image(self):
-        return self._segmenting_image
+    def cropped_image(self):
+        return self._cropped_image
 
     @segmentation_factor.setter
-    def segmentation_factor(self, segmentationFactor):
-        self._segmentation_factor = segmentationFactor
+    def segmentation_factor(self, segmentation_factor):
+        self._segmentation_factor = segmentation_factor
 
     @property
-    def segmented_image(self):
-        return self._segmented_image
+    def processing_image(self):
+        return self._processing_image
 
-    @segmenting_image.setter
-    def segmenting_image(self, image):
-        self._segmenting_image = image
+    @cropped_image.setter
+    def cropped_image(self, image):
+        self._cropped_image = image
 
     @abc.abstractmethod
     def begin_segmentation(self):
