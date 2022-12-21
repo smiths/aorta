@@ -185,9 +185,12 @@ class AortaGeomReconDisplayModuleWidget(ScriptedLoadableModuleWidget, VTKObserva
         # These connections ensure that we update parameter node
         # when scene is closed
         scene = slicer.mrmlScene
-        self.crosshairNode=slicer.util.getNode("Crosshair")
-        self.crosshairNode.AddObserver(slicer.vtkMRMLCrosshairNode.CursorPositionModifiedEvent, self.onMouseMoved)
-        
+        self.crosshairNode = slicer.util.getNode("Crosshair")
+        self.crosshairNode.AddObserver(
+            slicer.vtkMRMLCrosshairNode.CursorPositionModifiedEvent,
+            self.onMouseMoved
+        )
+
         self.addObserver(scene, scene.StartCloseEvent, self.onSceneStartClose)
         self.addObserver(scene, scene.EndCloseEvent, self.onSceneEndClose)
 
@@ -503,7 +506,7 @@ class AortaGeomReconDisplayModuleWidget(ScriptedLoadableModuleWidget, VTKObserva
                 self.ui.skipButton.enabled = False
 
     def onMouseMoved(self, observer, eventid):
-        ras=[0,0,0]
+        ras = [0, 0, 0]
         self.crosshairNode.GetCursorPositionRAS(ras)
         ras = ",".join([str(int(i)) for i in ras])
         if self._parameterNode.GetParameter("phase") == "2":
