@@ -9,7 +9,8 @@ class AortaDescendingAxialSegmenter(AortaAxialSegmenter):
     def __init__(self, starting_slice, aorta_centre, num_slice_skipping,
                  segmentation_factor, cropped_image,
                  normalized=False, outputBinary=True):
-        super().__init__(starting_slice=starting_slice, aorta_centre=aorta_centre,
+        super().__init__(starting_slice=starting_slice,
+                         aorta_centre=aorta_centre,
                          num_slice_skipping=num_slice_skipping,
                          segmentation_factor=segmentation_factor,
                          cropped_image=cropped_image,
@@ -80,7 +81,9 @@ class AortaDescendingAxialSegmenter(AortaAxialSegmenter):
             fully_seg_slice, total_coord, _ = self.__circle_filter(
                 self._starting_slice, self._aorta_centre)
 
-            self._processing_image[:, :, self._starting_slice] = fully_seg_slice
+            self._processing_image[
+                :, :, self._starting_slice] = fully_seg_slice
+
             self._original_size = total_coord
             previous_size = total_coord
             # counts how many slices have been skipped

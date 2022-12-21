@@ -33,8 +33,8 @@ class AortaAscendingAxialSegmenter(AortaAxialSegmenter):
     def __segmentation(self, top_to_bottom):
         if top_to_bottom:
             fully_seg_slice, self._original_size, centre_previous, _, _, \
-            self._seeds = self.__circle_filter(
-                self._starting_slice, self._aorta_centre, [])
+                self._seeds = self.__circle_filter(
+                    self._starting_slice, self._aorta_centre, [])
 
             previous_size = self._original_size
             seeds_previous = self._seeds
@@ -82,12 +82,13 @@ class AortaAscendingAxialSegmenter(AortaAxialSegmenter):
                     else:
                         factor_size_overlap = self._segmentation_factor
                     if (decreasing_size):
-                        # if size of segmentation is decreasing, try to maintain
-                        # decreasing nature
+                        # if size of segmentation is decreasing,
+                        # try to maintain decreasing nature
                         factor_size_overlap = 1.2
-                    is_new_center_qualified = (total_coord >
-                                           1 / self._segmentation_factor
-                                           * previous_size)
+                    is_new_center_qualified = (
+                        total_coord >
+                        1 / self._segmentation_factor * previous_size
+                    )
                     is_new_center_qualified = (
                         is_new_center_qualified
                         and (total_coord < factor_size_overlap * previous_size)
@@ -100,16 +101,16 @@ class AortaAscendingAxialSegmenter(AortaAxialSegmenter):
                                                * self._original_size)
                     is_new_center_qualified = (
                         is_new_center_qualified
-                        and (total_coord < self._segmentation_factor
-                             * self._original_size) \
-                        and (total_coord < 2 * previous_size)
+                        and total_coord < self._segmentation_factor
+                        * self._original_size
+                        and total_coord < 2 * previous_size
                     )
 
                 if is_new_center_qualified:
                     counter = 0
                     self._processing_image[:, :, sliceNum] = (
                         (seg > 0)
-                            | self._processing_image[:, :, sliceNum]
+                        | self._processing_image[:, :, sliceNum]
                     )
                     centre_previous = centre
                     seeds_previous = seeds
@@ -129,7 +130,8 @@ class AortaAscendingAxialSegmenter(AortaAxialSegmenter):
                         if not self._is_output_binary:
                             self._processing_image[:, :, sliceNum] = sitk.Cast(
                                 self._cropped_image_255[:, :, sliceNum],
-                                sitk.sitkVectorUInt8)
+                                sitk.sitkVectorUInt8
+                            )
 
             elif not self._is_output_binary:
                 self._processing_image[:, :, sliceNum] = sitk.Cast(
