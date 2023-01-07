@@ -5,15 +5,15 @@ import abc
 
 class AortaAxialSegmenter(AortaSegmenterBase):
 
-    def __init__(self, startingSlice, aortaCentre, numSliceSkipping,
-                 segmentationFactor, segmentingImage, normalized=False,
-                 outputBinary=True):
-        self._starting_slice = startingSlice
-        self._aorta_centre = aortaCentre
-        self._num_slice_skipping = numSliceSkipping
+    def __init__(self, starting_slice, aorta_centre, num_slice_skipping,
+                 segmentation_factor, cropped_image, normalized=False,
+                 output_binary=True):
+        self._starting_slice = starting_slice
+        self._aorta_centre = aorta_centre
+        self._num_slice_skipping = num_slice_skipping
         self._normalized = normalized
-        self._is_output_binary = outputBinary
-        super().__init__(segmentingImage, segmentationFactor)
+        self._is_output_binary = output_binary
+        super().__init__(cropped_image, segmentation_factor)
 
     @abc.abstractmethod
     def circle_filter(self):
