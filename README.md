@@ -4,15 +4,29 @@ Developer Names: Jingyi Lin
 
 Date of project start: 2022/09/12
 
-This project is to generate 3D aorta geometry (.vtk) from CT scans (.dicom).
+This project aims to provides a software tool to semi-automatically segment out a 3D aorta geometry from a chest CT scans. It uses the [3D Slicer software](https://www.slicer.org/), and provides a 3D Slicer extension in the source folder (SlicerExtension/AortaGeometryReconstructor) to accomplish the goal.
+
+User must first install the 3D Slicer software, import the extension in the source folder, and load the CT scans in DICOM file format to 3D Slicer.
+
+### Overview:
+Automatic aorta segmentation in thoracic computed tomography (CT) scans is important for aortic calcification quantification and to guide the segmentation of other central vessels. The work to manually segmented region of interest can be time-consuming and repeatitve, and there are many automatic aorta segmentation algorithms posted.
+
+![Picture of the overview workflow]
+
+This project implemented one of the aorta segmentation algorithm as 3D Slicer extension module. The algorithm first need user to crop the volume of interest (VOI) by using 3D Slicer' volume rendering module. Next, user needs to provide two important seeds, the centre point of descending Aorta and the centre point of the asceding Aorta, as shown on the image below.
+
+![To be uploaded]
+
+#### About 3D Slicer
+3D Slicer is a open-sourced Desktop software that solves advanced image computing challenges with a focus on clinical and biomedical applications. 3D Slicer software provides a clean user-interface and a clear guide to develop highly customizable extension and modules. 
 
 The folders and files for this project are as follows:
 
-docs - Documentation for the project
-refs - Reference material used for the project, including papers
-src - Source code
-test - Test cases
-etc.
+docs - Documentation for the project  
+refs - Reference material used for the project, including papers  
+src - Source code   
+test - Test cases  
+etc.  
 
 
 ### To install 3D Slicer and import an extension:
@@ -30,6 +44,7 @@ etc.
     - Once loaded, 3D Slicer will keep the patient record in the DICOM database, and the user can easily reload DICOM data from the DICOM database.
 
 ### To use Volume Rendering to crop image:
+The tutorial about use [Volume Rendering module](https://slicer.readthedocs.io/en/latest/user_guide/modules/volumerendering.html).
 1. Load the dicom files as described in the section To load DICOM data.
 2. Notices that the uploaded volume must be a scalar volume object to be view in Volume Rendering module
     - Some of the current samples contain repeated slices. When loading this dicom data to Slicer, the result volume will automatically becomes a multi volume object. 
@@ -50,6 +65,7 @@ etc.
 ![Screenshot 2022-11-28 100449](https://user-images.githubusercontent.com/63418020/204311044-bb3d4f10-ee01-4fcd-8a63-6ce4b879cec1.png)
 7. For Input volume, select the volume to crop. For Input ROI, select the ROI we created with Volume Rendering module. For output volume, you can select create new volume or modify the original volume.
 8. Click on Apply, and change back to AortaGeomReconDisplayModule, you shoule be able to find a new volume or the cropped volume.
+
 ### Tips to use this application:
 1. The user can save and load an MRML scene object, which is used to store all types of data, including the loaded Dicom data, any inputs by the user on the UI, markups, etc.
 2. We can use 3D Slicer's "Markups" module to draw control points and planes. These markup data are stored based on the Anatomical coordinate system, which can be independent of the Dicom data.
