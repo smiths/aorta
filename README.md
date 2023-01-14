@@ -25,7 +25,7 @@ This project implemented one of the aorta segmentation algorithm as 3D Slicer ex
 <img src="https://user-images.githubusercontent.com/63418020/211897759-c54ffa90-760f-492f-8331-1e046ece35a7.png" height=300 width=400>
 
 A simple diagram about the workflow:
-![Untitled Diagram drawio](https://user-images.githubusercontent.com/63418020/211897588-eb7da723-919d-4c4d-b06a-8fefb9c8dd0b.png)
+![Untitled Diagram drawio (1)](https://user-images.githubusercontent.com/63418020/212496091-1d2b64e4-afc5-49e0-b758-07bf8b8d2798.png)
 
 
 #### About 3D Slicer
@@ -53,8 +53,7 @@ etc.
 1. Select "File" from the bar menu, then "Add DICOM Data".
 2. Notices that the uploaded volume must be a scalar volume object to be view in Volume Rendering module. 
     - To make sure that we are uploading volume as a scalar volume, in "Add DICOM data" module, unselected the plugin MultiVolumeImporterPlugin as shown below
-![screenshot]()
-
+![Screenshot 2023-01-14 150336](https://user-images.githubusercontent.com/63418020/212496107-dcfc6d3f-ac41-483d-81fb-19faa40761b5.png)
 3. Select "Import DICOM files", and select one of the patient's folders.
     - Once loaded, 3D Slicer will keep the patient record in the DICOM database, and the user can easily reload DICOM data from the DICOM database.
 
@@ -77,8 +76,9 @@ The tutorial about use [Volume Rendering module](https://slicer.readthedocs.io/e
 ### To get descending aorta seeds and ascending aorta seeds in phase 2 and phase 3
 1. Make sure that you have done the cropping and have a cropped volume. If you are in phase 1 Crop Aorta, click on Skip to next phase to be at phase 2.
 2. Right click on one of the red, green or yello window image area, you should see a list of options as shown below.
-![Screenshot 2022-11-28 100408](https://user-images.githubusercontent.com/63418020/204310886-322c9e33-a13e-42b4-aded-060dd229d71b.png)
+![Screenshot 2023-01-14 152212](https://user-images.githubusercontent.com/63418020/212496141-9a6118c9-f235-4137-86e4-47bf4eac00a6.png)
 3. First check on "Slice intersection" option. Right click again and check Interaction.
+![Screenshot 2023-01-14 152226](https://user-images.githubusercontent.com/63418020/212496147-be5f060b-16a2-458f-98d6-411a88898b93.png)
 4. Hold on Mouse left button to drag and place the intersection point on the point of interest, as described in the image from Overview section. 
 5. If in phase 2, you should see that the value of DesAortaSeeds is changing when moving the intersection point. In phse 3, AscAortaSeeds should be changing.
 
