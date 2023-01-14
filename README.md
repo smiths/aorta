@@ -19,12 +19,14 @@ The 3D Slicer's [developer guide](https://slicer.readthedocs.io/en/latest/develo
 ### Overview:
 Automatic aorta segmentation in thoracic computed tomography (CT) scans is important for aortic calcification quantification and to guide the segmentation of other central vessels. The work to manually segmented region of interest can be time-consuming and repeatitve, and there are many automatic aorta segmentation algorithms posted.
 
+
 This project implemented one of the aorta segmentation algorithm as 3D Slicer extension module. The algorithm first need user to crop the volume of interest (VOI) by using 3D Slicer' volume rendering module. Next, user needs to provide two important seeds, the centre point of descending Aorta and the centre point of the asceding Aorta, as shown on the image below.
 
 <img src="https://user-images.githubusercontent.com/63418020/211897759-c54ffa90-760f-492f-8331-1e046ece35a7.png" height=300 width=400>
 
 A simple diagram about the workflow:
 ![Untitled Diagram drawio](https://user-images.githubusercontent.com/63418020/211897588-eb7da723-919d-4c4d-b06a-8fefb9c8dd0b.png)
+
 
 #### About 3D Slicer
 3D Slicer is a open-sourced Desktop software that solves advanced image computing challenges with a focus on clinical and biomedical applications. 3D Slicer software provides a clean user-interface and a clear guide to develop highly customizable extension and modules. 
