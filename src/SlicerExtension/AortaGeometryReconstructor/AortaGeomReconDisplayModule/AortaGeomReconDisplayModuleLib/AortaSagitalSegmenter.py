@@ -81,11 +81,11 @@ class AortaSagitalSegmenter(AortaSegmenterBase):
                 self._segmented_image[sliceNum, :, :] = self.__segment_sag(
                     sliceNum, self._segmentation_factor, 1.4,
                     current_size, imgSlice, axial_seg, None)
-        print("Sagital segmentation finished")
+        print("Sagittal segmentation finished")
 
         # goes through all the frontal slices and fills in any gaps
         # from the axial/sagittal segmentations
-        print("Sagital segmentation - frontally started")
+        print("Sagittal segmentation - frontally started")
         for sliceNum in range(1, self._segmenting_image.GetHeight()):
             # only do segmentation if there is something on the slice.
             # This prevents the function from segmenting the whole thing
@@ -97,4 +97,4 @@ class AortaSagitalSegmenter(AortaSegmenterBase):
                 self._segmented_image[:, sliceNum, :] = self.__segment_sag(
                     sliceNum, self._segmentation_factor, 1.1, current_size,
                     imgSlice, axial_seg, "frontally")
-        print("Sagital segmentation - frontally finished")
+        print("Sagittal segmentation - frontally finished")

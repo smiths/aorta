@@ -201,12 +201,6 @@ class AortaGeomReconDisplayModuleWidget(ScriptedLoadableModuleWidget, VTKObserva
         # that is saved in the MRML scene
         # (in the selected parameter node).
 
-        self.ui.cropIndex.connect(
-            "coordinatesChanged(double*)", self.updateParameterNodeFromGUI)
-
-        self.ui.cropSize.connect(
-            "coordinatesChanged(double*)", self.updateParameterNodeFromGUI)
-
         self.ui.ascAortaSeeds.connect(
             "coordinatesChanged(double*)", self.updateParameterNodeFromGUI)
 
@@ -329,12 +323,6 @@ class AortaGeomReconDisplayModuleWidget(ScriptedLoadableModuleWidget, VTKObserva
         # (it could cause infinite loop)
         self._updatingGUIFromParameterNode = True
 
-        self.ui.cropSize.coordinates = self._parameterNode.GetParameter(
-            "cropSize")
-
-        self.ui.cropIndex.coordinates = self._parameterNode.GetParameter(
-            "cropIndex")
-
         self.ui.ascAortaSeeds.coordinates = self._parameterNode.GetParameter(
             "ascAortaSeeds")
 
@@ -366,11 +354,6 @@ class AortaGeomReconDisplayModuleWidget(ScriptedLoadableModuleWidget, VTKObserva
         wasModified = self._parameterNode.StartModify()
 
         # Modify all properties in a single batch
-        self._parameterNode.SetParameter(
-            "cropIndex", self.ui.cropIndex.coordinates)
-
-        self._parameterNode.SetParameter(
-            "cropSize", self.ui.cropSize.coordinates)
 
         self._parameterNode.SetParameter(
             "ascAortaSeeds", self.ui.ascAortaSeeds.coordinates)
@@ -431,21 +414,14 @@ class AortaGeomReconDisplayModuleWidget(ScriptedLoadableModuleWidget, VTKObserva
         with slicer.util.tryWithErrorDisplay(errorMessage, waitCursor=True):
             # Compute output
             if self._parameterNode.GetParameter("phase") == "1":
-                cropIndex = self._parameterNode.GetParameter("cropIndex")
-                cropSize = self._parameterNode.GetParameter("cropSize")
-                volume = sceneObj.GetFirstNodeByClass(
-                    "vtkMRMLMultiVolumeNode")
-
-                image = self.logic.processCropImage(
-                    cropIndex, cropSize, volume)
-                # Push new volume
-                sitkUtils.PushVolumeToSlicer(
-                    image, name="Cropped Volume",
-                    className="vtkMRMLScalarVolumeNode"
-                )
-                # Update phase
-                self._parameterNode.SetParameter("phase", "2")
-                self.ui.phaseLabel.text = "Phase 2"
+                size = len(slicer.util.getNodes("*cropped*", useLists=True))
+                if not size:
+                    logging.info("Cannot found cropped volume")
+                elif size == 1:
+                    self._parameterNode.SetParameter("phase", "2")
+                    self.ui.phaseLabel.text = "Phase 2"
+                else:
+                    logging.info("Found multiple cropped volumes")
 
             elif self._parameterNode.GetParameter("phase") == "2":
                 descAortaSeeds = self._parameterNode.GetParameter(
@@ -508,20 +484,21 @@ class AortaGeomReconDisplayModuleWidget(ScriptedLoadableModuleWidget, VTKObserva
     def onMouseMoved(self, observer, eventid):
         # ras = [0, 0, 0]
         volume = slicer.mrmlScene.GetFirstNode("cropped", None, None, False)
-        axialNode = slicer.mrmlScene.GetNodeByID('vtkMRMLSliceNodeRed')
-        ortho1Node = slicer.mrmlScene.GetNodeByID('vtkMRMLSliceNodeYellow')
-        ortho2Node = slicer.mrmlScene.GetNodeByID('vtkMRMLSliceNodeGreen')
-        point_Ijk = self.logic.getPlaneIntersectionPoint(
-            volume, axialNode, ortho1Node, ortho2Node)
-        # infoWidget = slicer.modules.DataProbeInstance.infoWidget
-        # self.crosshairNode.GetCursorPositionRAS(ras)
-        ijk = ",".join([str(int(i)) for i in point_Ijk])
-        if self._parameterNode.GetParameter("phase") == "2":
-            self._parameterNode.SetParameter(
-                "descAortaSeeds", ijk)
-        elif self._parameterNode.GetParameter("phase") == "3":
-            self._parameterNode.SetParameter(
-                "ascAortaSeeds", ijk)
+        if volume:
+            axialNode = slicer.mrmlScene.GetNodeByID('vtkMRMLSliceNodeRed')
+            ortho1Node = slicer.mrmlScene.GetNodeByID('vtkMRMLSliceNodeYellow')
+            ortho2Node = slicer.mrmlScene.GetNodeByID('vtkMRMLSliceNodeGreen')
+            point_Ijk = self.logic.getPlaneIntersectionPoint(
+                volume, axialNode, ortho1Node, ortho2Node)
+            # infoWidget = slicer.modules.DataProbeInstance.infoWidget
+            # self.crosshairNode.GetCursorPositionRAS(ras)
+            ijk = ",".join([str(int(i)) for i in point_Ijk])
+            if self._parameterNode.GetParameter("phase") == "2":
+                self._parameterNode.SetParameter(
+                    "descAortaSeeds", ijk)
+            elif self._parameterNode.GetParameter("phase") == "3":
+                self._parameterNode.SetParameter(
+                    "ascAortaSeeds", ijk)
 #
 # AortaGeomReconDisplayModuleLogic
 #
@@ -650,14 +627,11 @@ class AortaGeomReconDisplayModuleLogic(ScriptedLoadableModuleLogic):  # noqa: F4
         return point_Ijk
 
     def anyEmptySeed(self, ui, phase):
-        if phase == "1":
-            emptyCropSize = (ui.cropSize.coordinates == "0,0,0")
-            emptyCropIndex = (ui.cropIndex.coordinates == "0,0,0")
-            return emptyCropIndex or emptyCropSize
-        elif phase == "2":
+        if phase == "2":
             return (ui.descAortaSeeds.coordinates == "0,0,0")
-        else:
+        elif phase == "3":
             return (ui.ascAortaSeeds.coordinates == "0,0,0")
+        return False
 
     """Get cropped and normalized image and stored as self._segmenting_image
     """

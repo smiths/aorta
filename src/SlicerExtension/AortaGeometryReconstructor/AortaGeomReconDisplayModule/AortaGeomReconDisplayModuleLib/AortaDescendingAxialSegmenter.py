@@ -15,7 +15,7 @@ class AortaDescendingAxialSegmenter(AortaAxialSegmenter):
                          segmentation_factor=segmentation_factor,
                          cropped_image=cropped_image,
                          normalized=normalized,
-                         outputBinary=outputBinary)
+                         output_binary=outputBinary)
 
     """Segmentation helper function, return filtered slice
        and new aorta centre.
