@@ -433,8 +433,7 @@ class AortaGeomReconDisplayModuleWidget(ScriptedLoadableModuleWidget, VTKObserva
                 num_slice_skipping = self._parameterNode.GetParameter(
                     "numOfSkippingSlice")
 
-                volume = slicer.mrmlScene.GetFirstNode(
-                    "cropped", None, None, False)
+                volume = sceneObj.GetFirstNode("cropped", None, None, False)
 
                 self.logic.transform_image(volume)
 
@@ -463,8 +462,7 @@ class AortaGeomReconDisplayModuleWidget(ScriptedLoadableModuleWidget, VTKObserva
                 num_slice_skipping = self._parameterNode.GetParameter(
                     "numOfSkippingSlice")
 
-                volume = slicer.mrmlScene.GetFirstNode(
-                    "cropped", None, None, False)
+                volume = sceneObj.GetFirstNode("cropped", None, None, False)
 
                 image = self.logic.processAscendingAorta(
                     ascAortaSeeds,
