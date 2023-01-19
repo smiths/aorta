@@ -32,8 +32,8 @@ class AortaAscendingAxialSegmenter(AortaAxialSegmenter):
 
     def __segmentation(self, top_to_bottom):
         if top_to_bottom:
-            fully_seg_slice, self._original_size, centre_previous, _, _, \
-                self._seeds = self.__circle_filter(
+            fully_seg_slice, self._original_size, \
+                centre_previous, self._seeds = self.__circle_filter(
                     self._starting_slice, self._aorta_centre, [])
 
             previous_size = self._original_size
@@ -59,7 +59,6 @@ class AortaAscendingAxialSegmenter(AortaAxialSegmenter):
             decreasing_size = False
             start = self._starting_slice
             end = self._cropped_image.GetDepth()
-            previous_size = self._original_size
             step = 1
 
         # counts how many slices have been skipped
@@ -73,7 +72,7 @@ class AortaAscendingAxialSegmenter(AortaAxialSegmenter):
             if (more_circles):
                 # perform segmentation on slice i
 
-                seg, total_coord, centre, l, u, seeds = self.__circle_filter(
+                seg, total_coord, centre, _, _, seeds = self.__circle_filter(
                     sliceNum, centre_previous, seeds_previous)
 
                 if not top_to_bottom:
@@ -174,7 +173,6 @@ class AortaAscendingAxialSegmenter(AortaAxialSegmenter):
 
         # add original seed and additional seeds three pixels apart
         spacing = 3
-
         for j in range(-1, 2):
             seed_with_space = centre[0] + spacing * j
             seg_2d[(seed_with_space, centre[1])] = 1
@@ -189,9 +187,9 @@ class AortaAscendingAxialSegmenter(AortaAxialSegmenter):
         stats = sitk.LabelStatisticsImageFilter()
         stats.Execute(imgSlice, seg_2d)
 
-        factor = 3.5
-        lower_threshold = stats.GetMean(1) - factor*stats.GetSigma(1)
-        upper_threshold = stats.GetMean(1) + factor*stats.GetSigma(1)
+        # factor = 3.5
+        lower_threshold = stats.GetMean(1) - 3.5*stats.GetSigma(1)
+        upper_threshold = stats.GetMean(1) + 3.5*stats.GetSigma(1)
 
         # use filter to apply threshold to image
         init_ls = sitk.SignedMaurerDistanceMap(
@@ -277,5 +275,4 @@ class AortaAscendingAxialSegmenter(AortaAxialSegmenter):
         if (height4 > height / 2):
             seeds.append([x4, int(np.average(next_seed_y4_list))])
 
-        return ls, total_coord, centre_new, \
-            lower_threshold, upper_threshold, seeds
+        return ls, total_coord, centre_new, seeds

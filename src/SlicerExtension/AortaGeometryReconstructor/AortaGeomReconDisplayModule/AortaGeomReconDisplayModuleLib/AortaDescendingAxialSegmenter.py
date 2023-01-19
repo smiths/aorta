@@ -40,11 +40,11 @@ class AortaDescendingAxialSegmenter(AortaAxialSegmenter):
         seg_2d = sitk.BinaryDilate(seg_2d, [3] * 2)
 
         # determine threshold values based on seed location
-        factor = 3.5
         stats = sitk.LabelStatisticsImageFilter()
         stats.Execute(imgSlice, seg_2d)
-        lower_threshold = stats.GetMean(1) - factor*stats.GetSigma(1)
-        upper_threshold = stats.GetMean(1) + factor*stats.GetSigma(1)
+
+        lower_threshold = stats.GetMean(1) - 3.5*stats.GetSigma(1)
+        upper_threshold = stats.GetMean(1) + 3.5*stats.GetSigma(1)
 
         # use filter to apply threshold to image
         init_ls = sitk.SignedMaurerDistanceMap(
@@ -65,18 +65,18 @@ class AortaDescendingAxialSegmenter(AortaAxialSegmenter):
                 self._cropped_image[:, :, sliceNum], ls > 0)
 
         # get array from segmentation
-        ndimension_array = sitk.GetArrayFromImage(ls > 0)
+        nda = sitk.GetArrayFromImage(ls > 0)
 
         # calculate average x and average y values,
         # to get the new centre value
-        list_x, list_y = np.where(ndimension_array == 1)
+        list_x, list_y = np.where(nda == 1)
 
         centre_new = (int(np.average(list_y)), int(np.average(list_x)))
 
         return fully_seg_slice, len(list_x), centre_new
 
-    def segmentation(self, factor, top_to_bottom):
-
+    def segmentation(self, starting_slice, endingSlice, step,
+                     factor, top_to_bottom):
         if top_to_bottom:
             fully_seg_slice, total_coord, _ = self.__circle_filter(
                 self._starting_slice, self._aorta_centre)
