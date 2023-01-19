@@ -12,18 +12,21 @@ class AortaSagitalSegmenter(AortaSegmenterBase):
         self._segmented_image = segmentedImage
         super().__init__(original_cropped_image, segmentationFactor)
 
-    def __segment_sag(self, sliceNum, factor, size_factor,
-                      current_size, imgSlice, axial_seg, seg_type):
+    def __segment_sag(self, factor, size_factor,
+                      current_size, imgSlice, seed, seg_type):
+
+        # seg_type = {"axial_desc", "axial_asc", "sag_frontally"}
+        # if seg_type = "axial_desc":
         # determine threshold values based on seed location
         stats = sitk.LabelStatisticsImageFilter()
-        stats.Execute(imgSlice, axial_seg)
+        stats.Execute(imgSlice, seed)
 
         lower_threshold = stats.GetMean(1) - factor*stats.GetSigma(1)
         upper_threshold = stats.GetMean(1) + factor*stats.GetSigma(1)
 
         # use filter to apply threshold to image
         init_ls = sitk.SignedMaurerDistanceMap(
-            axial_seg, insideIsPositive=True, useImageSpacing=True)
+            seed, insideIsPositive=True, useImageSpacing=True)
 
         # segment the aorta using the seed values and threshold values
         self._segment_filter.SetLowerThreshold(lower_threshold)
@@ -35,7 +38,7 @@ class AortaSagitalSegmenter(AortaSegmenterBase):
         # set segmentation to both the sagittal segmentation
         # and the original axial segmentation
         sag_seg = ls > 0
-        new_seg = axial_seg | sag_seg
+        new_seg = seed | sag_seg
 
         if seg_type != "frontally":
             new_size = np.count_nonzero(new_seg)
@@ -48,8 +51,8 @@ class AortaSagitalSegmenter(AortaSegmenterBase):
             return new_seg
         elif (factor > 0.5):
             return self.__segment_sag(
-                sliceNum, factor - 0.5, size_factor, current_size, imgSlice,
-                axial_seg, seg_type)
+                factor - 0.5, size_factor, current_size, imgSlice,
+                seed, seg_type)
 
     def begin_segmentation(self):
         self._segment_filter = sitk.ThresholdSegmentationLevelSetImageFilter()
@@ -77,10 +80,10 @@ class AortaSagitalSegmenter(AortaSegmenterBase):
             if (current_size > self._base_pixel_value):
                 # Recursive function
                 imgSlice = self._segmenting_image[sliceNum, :, :]
-                axial_seg = self._segmented_image[sliceNum, :, :]
+                seed = self._segmented_image[sliceNum, :, :]
                 self._segmented_image[sliceNum, :, :] = self.__segment_sag(
                     sliceNum, self._segmentation_factor, 1.4,
-                    current_size, imgSlice, axial_seg, None)
+                    current_size, imgSlice, seed, None)
         print("Sagittal segmentation finished")
 
         # goes through all the frontal slices and fills in any gaps
@@ -93,8 +96,8 @@ class AortaSagitalSegmenter(AortaSegmenterBase):
                 self._segmented_image[:, sliceNum, :])
             if (current_size > self._base_pixel_value):
                 imgSlice = self._segmenting_image[:, sliceNum, :]
-                axial_seg = self._segmented_image[:, sliceNum, :]
+                seed = self._segmented_image[:, sliceNum, :]
                 self._segmented_image[:, sliceNum, :] = self.__segment_sag(
                     sliceNum, self._segmentation_factor, 1.1, current_size,
-                    imgSlice, axial_seg, "frontally")
+                    imgSlice, seed, "frontally")
         print("Sagittal segmentation - frontally finished")
