@@ -11,15 +11,8 @@ from slicer.util import VTKObservationMixin
 from AortaGeomReconDisplayModuleLib.AortaSegmenter \
     import AortaSegmenter
 
-# from AortaGeomReconDisplayModuleLib.AortaDescendingAxialSegmenter \
-#     import AortaDescendingAxialSegmenter
-
-# from AortaGeomReconDisplayModuleLib.AortaAscendingAxialSegmenter \
-#     import AortaAscendingAxialSegmenter
-
-# from AortaGeomReconDisplayModuleLib.AortaSagitalSegmenter \
-#     import AortaSagitalSegmenter
-
+from AortaGeomReconDisplayModuleLib.AortaSegmenter \
+    import SegmentType
 
 import sitkUtils
 import numpy as np  # noqa: F401
@@ -478,8 +471,8 @@ class AortaGeomReconDisplayModuleWidget(ScriptedLoadableModuleWidget, VTKObserva
                     name="Segmented Ascending Aorta Volume",
                     className="vtkMRMLScalarVolumeNode"
                 )
-                self._parameterNode.SetParameter("phase", "3")
-                self.ui.phaseLabel.text = "Phase 3"
+                self._parameterNode.SetParameter("phase", "4")
+                self.ui.phaseLabel.text = "Phase 4"
                 self.ui.skipButton.enabled = False
 
     def onMouseMoved(self, observer, eventid):
@@ -766,16 +759,9 @@ class AortaGeomReconDisplayModuleLogic(ScriptedLoadableModuleLogic):  # noqa: F4
             num_slice_skipping=int(float(num_slice_skipping)),
             segmentation_factor=float(segmentation_factor),
             processing_image=None,
-            seg_type=1
+            seg_type=SegmentType.descending_aorta
         )
 
-        # desc_axial_segmenter = AortaDescendingAxialSegmenter(
-        #     starting_slice=dASnumber[2],
-        #     aorta_centre=dASnumber[:2],
-        #     num_slice_skipping=int(float(num_slice_skipping)),
-        #     segmentation_factor=float(segmentation_factor),
-        #     cropped_image=self._cropped_image
-        # )
         desc_axial_segmenter.begin_segmentation()
         logging.info(
             f"{now} Finished processing Descending Aorta Segmentation")
@@ -812,17 +798,9 @@ class AortaGeomReconDisplayModuleLogic(ScriptedLoadableModuleLogic):  # noqa: F4
             num_slice_skipping=int(float(num_slice_skipping)),
             segmentation_factor=float(segmentation_factor),
             processing_image=self._processing_image,
-            seg_type=2
+            seg_type=SegmentType.ascending_aorta
         )
 
-        # asc_axial_segmenter = AortaAscendingAxialSegmenter(
-        #     starting_slice=aASnumber[2],
-        #     aorta_centre=aASnumber[:2],
-        #     num_slice_skipping=int(float(num_slice_skipping)),
-        #     segmentation_factor=float(segmentation_factor),
-        #     cropped_image=self._cropped_image,
-        #     processing_image=self._processing_image
-        # )
         asc_axial_segmenter.begin_segmentation()
         logging.info(
             f"{now} Finished processing Ascending Aorta Segmentation")
