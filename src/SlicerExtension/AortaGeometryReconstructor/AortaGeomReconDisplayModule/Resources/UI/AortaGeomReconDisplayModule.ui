@@ -132,15 +132,15 @@
     </widget>
    </item>
    <item>
-    <widget class="QPushButton" name="clearButton">
+    <widget class="QPushButton" name="revertButton">
      <property name="enabled">
       <bool>false</bool>
      </property>
      <property name="toolTip">
-      <string>Clear all user inputs</string>
+      <string>Delete the last phase result and place back to previous phase</string>
      </property>
      <property name="text">
-      <string>Clear</string>
+      <string>Revert to previous phase</string>
      </property>
     </widget>
    </item>
@@ -150,7 +150,7 @@
       <bool>false</bool>
      </property>
      <property name="toolTip">
-      <string>Reset current work to phase 1</string>
+      <string>Remove all processed data and reset to phase 1</string>
      </property>
      <property name="text">
       <string>Reset</string>
