@@ -1,7 +1,7 @@
 # Aorta Geometry Reconstruction
 
 Developer Names: Jingyi Lin,   
-> *Algorithm implemented based on the work from Kailin Chu
+> *Segmentation algorithm implemented based on the work from Kailin Chu
 
 Date of project update: 2022/09/12
 
@@ -75,6 +75,10 @@ For this step we use the [Volume Rendering module](https://slicer.readthedocs.io
 ![Screenshot 2023-01-14 152226](https://user-images.githubusercontent.com/63418020/212496147-be5f060b-16a2-458f-98d6-411a88898b93.png)
 4. Hold on Mouse left button to drag and place the intersection point on the point of interest, as described in the image from Overview section. 
 5. If in phase 2, you should see that the value of DesAortaSeeds is changing when moving the intersection point. In phase 3, AscAortaSeeds should be changing.
+
+### To display the segmentation result
+1. Use Volume Rendering Module and follow the [step 2](https://github.com/smiths/aorta/tree/update-README#to-use-volume-rendering-to-crop-a-voi) to display the segmented volume.
+2. You can select the original volume and the segmented volume to see the overlaps between the two volumes.
 
 ### Additional tips to use this application:
 1. The user can save and load an MRML scene object, which is used to store all types of data, including the loaded Dicom data, any inputs by the user on the UI, markups, etc.
