@@ -22,7 +22,7 @@ A simple diagram of the workflow:
 
 
 #### About 3D Slicer
-3D Slicer is a open-sourced desktop software that solves advanced image computing challenges with a focus on clinical and biomedical applications. 3D Slicer software provides a clean user interface and a clear guide to developing highly customizable extensions and modules.  
+3D Slicer is an open-sourced desktop software that solves advanced image computing challenges with a focus on clinical and biomedical applications. 3D Slicer software provides a clean user interface and a clear guide to developing highly customizable extensions and modules.  
 
 The folders and files for this project are as follows:
 
@@ -45,10 +45,11 @@ Instructions for installing and using Aorta Geometry Reconstruction (AGR) are pr
 
 ### To load DICOM data:
 1. Select "File" from the bar menu, then "Add DICOM Data".
-2. The uploaded volume must be a scalar volume object to be viewed in the Volume Rendering module. Therefore, to make sure that we are uploading volume as a scalar volume, in "Add DICOM data" module, unselected the plugin MultiVolumeImporterPlugin as shown below,
+2. The uploaded volume must be a scalar volume object to be viewed in the Volume Rendering module. Therefore, to make sure that we are uploading volume as a scalar volume, in "Add DICOM data" module, unselect the plugin MultiVolumeImporterPlugin as shown below,
 ![MultiVolumePlugin](https://user-images.githubusercontent.com/63418020/215304072-f8575886-3667-4eef-8d8b-17fd6b0dba4b.png)
 3. Select "Import DICOM files", and select one of the patient's folders.
     - Once loaded, 3D Slicer will keep the patient record in the DICOM database, and the user can easily reload DICOM data from the DICOM database.
+4. Select the patient file, click "load" button or double-click on the patient file to load the data into the program.
 
 
 ### To use Volume Rendering to crop a VOI:
@@ -56,7 +57,7 @@ For this step we use the [Volume Rendering module](https://slicer.readthedocs.io
 1. Load the Dicom files as described in the section To load DICOM [data](https://github.com/smiths/aorta#to-load-dicom-data).
 2. Once loaded, select the Volume Rendering module. Select the volume that you want to crop, and click on the eye icon on the left.  
 ![Volume Rendering](https://user-images.githubusercontent.com/63418020/215304104-6d467cf7-8d71-4491-8d89-fbb4d0e6c834.png)
-3. Within the module UI, under Display, enable Crop Display ROI, open the eye for ROI, and select CT-Bones for the preset. You should be able to see the 3D rendering in the top right corner. You can drag the points controls to control the crop. You can use the slides at the top of the image to scroll through the slice.  
+3. Within the module UI, under Display, enable Crop Display ROI, open the eye for ROI, and select CT-Bones for the preset. You should be able to see the 3D rendering in the top right corner. You can drag the points controls to control the crop, and use the sliders at the top of the image to scroll through the slice.  
 ![Volume Rendering UI](https://user-images.githubusercontent.com/63418020/215304132-72dfa530-d875-4b7f-9afa-546867204dd9.png)
 ![Crop](https://user-images.githubusercontent.com/63418020/215304142-9e8fcddd-69f6-4197-8c1c-3a0d8e46bf6e.png)
 4. Change back to AortaGeomReconDisplayModule, you should also have a Volume rendering ROI or vtkMRMLMarkupsROINode object.
@@ -65,15 +66,15 @@ For this step we use the [Volume Rendering module](https://slicer.readthedocs.io
 ![Crop volume sequence](https://user-images.githubusercontent.com/63418020/215304168-c737cd7b-ecc9-49e5-a8de-043d6d0c601b.png)
 6. For Input volume, select the volume to crop. For Input ROI, select the ROI we created with Volume Rendering module. The default name of the ROI is "Volume rendering ROI". For output volume, you can select create new volume or modify the original volume.  
 ![Crop volume sequence 2](https://user-images.githubusercontent.com/63418020/215304173-b4353e4d-0100-44b6-a190-c3640443e65c.png)
-7. Click on Apply, and change back to AortaGeomReconDisplayModule, you shoule be able to find a new volume or the cropped volume.
+7. Clicks on "Apply", and change back to AortaGeomReconDisplayModule, you should be able to find a new volume or the cropped volume.
 
 ### To get descending aorta seeds and ascending aorta seeds in phase 2 and phase 3
 1. Make sure that you have done the cropping and have a cropped volume. If you are in phase 1 Crop Aorta, click on Skip to next phase to be at phase 2.
-2. Right click on one of the red, green or yello window image area, you should see a list of options as shown below.
+2. Right click on one of the red, green or yellow window image area, you should see a list of options as shown below.
 3. "Slice intersection" option is selected once you have loaded AGR module. Right click and check "Interaction" option.
 ![Screenshot 2023-01-14 152226](https://user-images.githubusercontent.com/63418020/212496147-be5f060b-16a2-458f-98d6-411a88898b93.png)
 4. Hold on Mouse left button to drag and place the intersection point on the point of interest, as described in the image from Overview section. 
-5. If in phase 2, you should see that the value of DesAortaSeeds is changing when moving the intersection point. In phse 3, AscAortaSeeds should be changing.
+5. If in phase 2, you should see that the value of DesAortaSeeds is changing when moving the intersection point. In phase 3, AscAortaSeeds should be changing.
 
 ### Additional tips to use this application:
 1. The user can save and load an MRML scene object, which is used to store all types of data, including the loaded Dicom data, any inputs by the user on the UI, markups, etc.
