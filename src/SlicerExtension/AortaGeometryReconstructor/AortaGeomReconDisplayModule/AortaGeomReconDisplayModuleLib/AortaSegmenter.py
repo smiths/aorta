@@ -1,7 +1,6 @@
 import SimpleITK as sitk
 import numpy as np
 from enum import Enum
-import logging
 
 
 class SegmentType(Enum):
@@ -37,15 +36,16 @@ class AortaSegmenter():
     def __init__(
             self, cropped_image, starting_slice, aorta_centre,
             num_slice_skipping, processing_image, seg_type,
-            is_normalized=False, segmentation_factor=2.2,
-            is_output_binary=True
+            is_normalized=False, qualified_slice_factor=2.2,
+            filter_factor=3.5, is_output_binary=True
     ):
         self._starting_slice = starting_slice
         self._aorta_centre = aorta_centre
         self._num_slice_skipping = num_slice_skipping
         self._seg_type = seg_type
         self._processing_image = processing_image
-        self._segmentation_factor = segmentation_factor
+        self._qualified_slice_factor = qualified_slice_factor
+        self._filter_factor = filter_factor
         self._cropped_image = cropped_image
         self._normalized = is_normalized
         self._is_output_binary = is_output_binary
@@ -64,7 +64,7 @@ class AortaSegmenter():
 
     @property
     def segmentation_factor(self):
-        return self._segmentation_factor
+        return self._qualified_slice_factor
 
     @property
     def cropped_image(self):
@@ -72,7 +72,7 @@ class AortaSegmenter():
 
     @segmentation_factor.setter
     def segmentation_factor(self, segmentation_factor):
-        self._segmentation_factor = segmentation_factor
+        self._qualified_slice_factor = segmentation_factor
 
     @property
     def processing_image(self):
@@ -84,7 +84,6 @@ class AortaSegmenter():
 
     def begin_segmentation(self):
         # Initializing filter
-
         rms_error = 0.02
         no_iteration = 1000
         curvature_scaling = 0.5
@@ -163,13 +162,11 @@ class AortaSegmenter():
             step = -1
             skipped_slice_counter = 0
             start = self._starting_slice
-            factor = self._segmentation_factor
         elif self._seg_dir == SegmentDirection.I_to_S:
             end = self._cropped_image.GetDepth()
             step = 1
             skipped_slice_counter = len(self._skipped_slices)
             start = self._starting_slice
-            factor = self._segmentation_factor
 
         self._decreasing_size = False
         centre_previous = self._aorta_centre
@@ -196,7 +193,7 @@ class AortaSegmenter():
                 # perform segmentation on slice i
                 # Get new filtered slice and the seed slice
                 ls, new_filtered_slice, seed_slice = self.__circle_filter(
-                    sliceNum, centre_previous, seeds_previous, factor)
+                    sliceNum, centre_previous, seeds_previous)
 
                 # Get more determinants
                 # [total_coord, new_size, new_centre, new_seeds]
@@ -266,7 +263,7 @@ class AortaSegmenter():
     ):
         is_new_slice_qualified = False
         if self._seg_type == SegmentType.descending_aorta:
-            factor = self._segmentation_factor
+            factor = self._qualified_slice_factor
             if self._seg_dir == SegmentDirection.I_to_S:
                 factor += 0.3
 
@@ -289,19 +286,16 @@ class AortaSegmenter():
         elif self._seg_type == SegmentType.ascending_aorta:
             if self._seg_dir == SegmentDirection.I_to_S:
                 if (self.__get_overlap(new_filtered_slice, slice_num)):
-                    # We are going to accept a larger slice
-                    # because overlap still exists from current slice
-                    # to next two slices
+                    # Accepted this larger slice b/c overlap still exists
                     factor_size_overlap = 2.8
                 else:
-                    factor_size_overlap = self._segmentation_factor
+                    factor_size_overlap = self._qualified_slice_factor
                 if self._decreasing_size:
-                    # if size of segmentation is decreasing,
-                    # try to maintain decreasing nature
+                    # Decreasing size, maintain the decreasing nature.
                     factor_size_overlap = 1.2
                 is_new_slice_qualified = (
                     total_coord >
-                    1 / self._segmentation_factor * previous_size
+                    1 / self._qualified_slice_factor * previous_size
                 ) and (
                     (total_coord < factor_size_overlap * previous_size)
                     and (total_coord < 4 * self._original_size)
@@ -309,11 +303,11 @@ class AortaSegmenter():
             elif self._seg_dir == SegmentDirection.S_to_I:
                 is_new_slice_qualified = (
                     total_coord >
-                    (1 / self._segmentation_factor)
+                    (1 / self._qualified_slice_factor)
                     * self._original_size
                 ) and (
                     total_coord <
-                    self._segmentation_factor * self._original_size
+                    self._qualified_slice_factor * self._original_size
                     and total_coord < 2 * previous_size
                 )
         else:
@@ -322,13 +316,13 @@ class AortaSegmenter():
             )
         return is_new_slice_qualified
 
-    def __circle_filter(self, slice_num, centre, seeds_previous, factor):
+    def __circle_filter(self, slice_num, centre, seeds_previous):
         if SegmentType.is_axial_seg(self._seg_type):
             img_slice = self._cropped_image[:, :, slice_num]
         elif self._seg_type == SegmentType.sagittal:
-            img_slice = self._cropped_image[sliceNum, :, :]
+            img_slice = self._cropped_image[slice_num, :, :]
         else:
-            img_slice = self._cropped_image[:, sliceNum, :]
+            img_slice = self._cropped_image[:, slice_num, :]
         seed = self.__prepare_seed(
                 img_slice, centre, seeds_previous, slice_num)
 
@@ -340,11 +334,13 @@ class AortaSegmenter():
         # Factor should be adjustable for threshold
         lower_threshold = (
             stats.GetMean(PixelValue.white_pixel.value)
-            - factor*stats.GetSigma(PixelValue.white_pixel.value)
+            - self._filter_factor
+            * stats.GetSigma(PixelValue.white_pixel.value)
         )
         upper_threshold = (
             stats.GetMean(PixelValue.white_pixel.value)
-            + factor*stats.GetSigma(PixelValue.white_pixel.value)
+            + self._filter_factor
+            * stats.GetSigma(PixelValue.white_pixel.value)
         )
 
         # use filter to apply threshold to image
@@ -371,9 +367,9 @@ class AortaSegmenter():
             if not self._is_output_binary:
                 fully_seg_slice = sitk.LabelOverlay(
                     self._cropped_image[:, :, slice_num],
-                    ls > PixelValue.black_pixel.value
+                    fully_seg_slice
                 )
-        elif self._seg_type != SegmentType.ascending_aorta:
+        elif SegmentType.is_sagittal_seg(self._seg_type):
             fully_seg_slice = seed | fully_seg_slice
         return fully_seg_slice
 
@@ -481,7 +477,7 @@ class AortaSegmenter():
         elif self._seg_type == SegmentType.sagittal:
             seed = self._cropped_image[slice_num, :, :]
         else:
-            seed = self._cropped_image[:, sliceNum, :]
+            seed = self._cropped_image[:, slice_num, :]
         return seed
 
     def __filling_missing_slices(self):
@@ -494,12 +490,10 @@ class AortaSegmenter():
                 next_index = index + 1
 
                 # if there are two skipped slices in a row,
-                # take the overlap of the segmentations
-                # before and after those two. otherwise just take the
-                # overlap of the segmentations around the skipped slice
+                # take the overlap of the two skipped slice.
+                # otherwise take the overlap of accepted slices.
                 if (len(self._skipped_slices) > next_index):
                     next_slice = self._skipped_slices[next_index]
-
                     if (next_slice == slice_num + 1 and next_slice
                             < self._cropped_image.GetDepth() - 1):
                         self._processing_image[:, :, slice_num] = (
