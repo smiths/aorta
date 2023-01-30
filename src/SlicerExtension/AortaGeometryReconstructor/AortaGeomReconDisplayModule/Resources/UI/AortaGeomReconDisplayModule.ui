@@ -137,7 +137,7 @@
       <bool>false</bool>
      </property>
      <property name="toolTip">
-      <string>Delete the last phase result and place back to previous phase</string>
+      <string>Go back to previous phase</string>
      </property>
      <property name="text">
       <string>Revert to previous phase</string>
