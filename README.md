@@ -3,7 +3,7 @@
 Developer Names: Jingyi Lin,   
 > *Segmentation algorithm implemented based on the work from Kailin Chu
 
-Date of project update: 2022/09/12
+Date of project update: 2023/01/30
 
 This project provides a software tool to semi-automatically segment a 3D aorta geometry from a chest CT scan. It uses a [3D Slicer](https://www.slicer.org/) extension in the source folder ([SlicerExtension/AortaGeometryReconstructor](https://github.com/smiths/aorta/tree/main/src/SlicerExtension/AortaGeometryReconstructor)) to accomplish the goal.
 
