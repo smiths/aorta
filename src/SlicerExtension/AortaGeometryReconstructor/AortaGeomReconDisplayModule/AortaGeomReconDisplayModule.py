@@ -399,6 +399,7 @@ class AortaGeomReconDisplayModuleWidget(ScriptedLoadableModuleWidget, VTKObserva
         self._parameterNode.EndModify(wasModified)
 
     def showPhaseCropAorta(self):
+        self.ui.revertButton.enabled = False
         self.ui.phaseLabel.text = AGR_phase.crop_aorta.value
         self.ui.ascAortaSeed.hide()
         self.ui.descAortaSeed.hide()
@@ -472,8 +473,7 @@ class AortaGeomReconDisplayModuleWidget(ScriptedLoadableModuleWidget, VTKObserva
         errorMessage = "Failed to clear inputs"
         with slicer.util.tryWithErrorDisplay(errorMessage, waitCursor=True):
             self.logic.resetDefaultParameters(self.logic.getParameterNode())
-            self.ui.phaseLabel.text = AGR_phase.crop_aorta.value
-            self.ui.skipButton.enabled = True
+            self.showPhaseCropAorta()
 
     def onSkipButton(self):
         """
@@ -506,12 +506,11 @@ class AortaGeomReconDisplayModuleWidget(ScriptedLoadableModuleWidget, VTKObserva
             if self._parameterNode.GetParameter("phase") == "1":
                 size = len(slicer.util.getNodes("*cropped*", useLists=True))
                 if not size:
-                    logging.info("Cannot found cropped volume")
+                    logging.info("Cannot find cropped volume")
                 elif size == 1:
                     self.showPhaseDAS()
                 else:
                     logging.info("Found multiple cropped volumes")
-
             elif self._parameterNode.GetParameter("phase") == "2":
                 descAortaSeed = self._parameterNode.GetParameter(
                     "descAortaSeed")
