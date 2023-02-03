@@ -15,11 +15,14 @@ Automatic aorta segmentation in thoracic computed tomography (CT) scans is impor
 
 This project implemented one of the aorta segmentation algorithms as 3D Slicer extension module. The algorithm first needs the user to crop the volume of interest (VOI) by using the 3D Slicer's volume rendering module. Next, the user needs to provide two important seeds, the center point of the descending Aorta and the center point of the ascending Aorta, as shown by the yellow dots in the image below.
 
-<img src="https://user-images.githubusercontent.com/63418020/211897759-c54ffa90-760f-492f-8331-1e046ece35a7.png" height=300 width=400>
+<p align="center">
+    <img src="https://github.com/smiths/aorta/blob/main/src/screenshots/Aorta_seeds.png" height=300 width=400 />
+</p>
 
 A simple diagram of the workflow:
-![Untitled Diagram drawio (1)](https://user-images.githubusercontent.com/63418020/212496091-1d2b64e4-afc5-49e0-b758-07bf8b8d2798.png)
-
+<p align="center">
+    <img src="https://github.com/smiths/aorta/blob/main/src/screenshots/Workflow.png" />
+</p>
 
 #### About 3D Slicer
 3D Slicer is an open-sourced desktop software that solves advanced image computing challenges with a focus on clinical and biomedical applications. 3D Slicer software provides a clean user interface and a clear guide to developing highly customizable extensions and modules.  
@@ -40,13 +43,19 @@ Instructions for installing and using Aorta Geometry Reconstruction (AGR) are pr
     - Select "Modules", and add the "AortaGeomReconDisplayModule" folder in the additional module paths. This folder is located in src\SlicerExtension\AortaGeometryReconstructor\\[AortaGeomReconDisplayModule](https://github.com/smiths/aorta/tree/main/src/SlicerExtension/AortaGeometryReconstructor).
     - Restart the application to take into account the new module paths.
     - Find the "AortaGeomReconDisplayModule" module as shown below:
-![modules](https://user-images.githubusercontent.com/63418020/215304002-f2be0b08-9ad4-4b36-ba9d-c96db14bde80.png)
+<p align="center">
+    <img src="https://github.com/smiths/aorta/blob/main/src/screenshots/ARG_module.png" />
+</p>
 3. (Optional) In "Application Settings", and "Modules", drag "AortaGeomReconDisplayModule" to your favorite modules to access this module quickly from UI. Restart the application for the changes to the UI to appear.
 
 ### To load DICOM data:
 1. Select "File" from the bar menu, then "Add DICOM Data".
 2. The uploaded volume must be a scalar volume object to be viewed in the Volume Rendering module. Therefore, to make sure that we are uploading volume as a scalar volume, in "Add DICOM data" module, unselect the plugin MultiVolumeImporterPlugin as shown below,
-![MultiVolumePlugin](https://user-images.githubusercontent.com/63418020/215304072-f8575886-3667-4eef-8d8b-17fd6b0dba4b.png)
+
+<p align="center">
+<img src="https://github.com/smiths/aorta/blob/main/src/screenshots/MultiVolumePlugin.png" />
+</p>
+
 3. Select "Import DICOM files", and select one of the patient's folders.
     - Once loaded, 3D Slicer will keep the patient record in the DICOM database, and the user can easily reload DICOM data from the DICOM database.
 4. Select the patient file, click "load" button or double-click on the patient file to load the data into the program.
@@ -55,23 +64,40 @@ Instructions for installing and using Aorta Geometry Reconstruction (AGR) are pr
 ### To use Volume Rendering to crop a VOI:
 For this step we use the [Volume Rendering module](https://slicer.readthedocs.io/en/latest/user_guide/modules/volumerendering.html), a built-in module for 3D Slicer.
 1. Load the Dicom files as described in the section To load DICOM [data](https://github.com/smiths/aorta#to-load-dicom-data).
-2. Once loaded, select the Volume Rendering module. Select the volume that you want to crop, and click on the eye icon on the left.  
-![Volume Rendering](https://user-images.githubusercontent.com/63418020/215304104-6d467cf7-8d71-4491-8d89-fbb4d0e6c834.png)
+2. Once loaded, select the Volume Rendering module. Select the volume that you want to crop, and click on the eye icon on the left. 
+
+<p align="center">
+    <img src="https://github.com/smiths/aorta/blob/main/src/screenshots/Volume_Rendering_module.png" />
+</p>
+
 3. Within the module UI, under Display, enable Crop Display ROI, open the eye for ROI, and select CT-Bones for the preset. You should be able to see the 3D rendering in the top right corner. You can drag the points controls to control the crop, and use the sliders at the top of the image to scroll through the slice.  
-![Volume Rendering UI](https://user-images.githubusercontent.com/63418020/215304132-72dfa530-d875-4b7f-9afa-546867204dd9.png)
-![Crop](https://user-images.githubusercontent.com/63418020/215304142-9e8fcddd-69f6-4197-8c1c-3a0d8e46bf6e.png)
+
+<p align="center">
+    <img src="https://github.com/smiths/aorta/blob/main/src/screenshots/Volume_Rendering_UI.png" />
+</p>
+
+<p align="center">
+    <img src="https://github.com/smiths/aorta/blob/main/src/screenshots/Crop.png" />
+</p>
+
 4. Change back to AortaGeomReconDisplayModule, you should also have a Volume rendering ROI or vtkMRMLMarkupsROINode object.
 5. Select a new module, Crop volume, in Converters category. Select CreateNewVolumeParameters on Crop Volume Parameter Set.
-![Crop volume sequence](https://user-images.githubusercontent.com/63418020/215304168-c737cd7b-ecc9-49e5-a8de-043d6d0c601b.png)
+<p align="center">
+    <img src="https://github.com/smiths/aorta/blob/main/src/screenshots/Crop_volume_create_new_parameter.png" />
+</p>
 6. For Input volume, select the volume to crop. For Input ROI, select the ROI we created with Volume Rendering module. The default name of the ROI is "Volume rendering ROI". If you are unable to select ROI, go back to step 2 and use Volume Rendering module to create a ROI. For output volume, you can select create new volume or modify the original volume.  
-![Crop volume sequence 2](https://user-images.githubusercontent.com/63418020/215304173-b4353e4d-0100-44b6-a190-c3640443e65c.png)
+<p align="center">
+    <img src="https://github.com/smiths/aorta/blob/main/src/screenshots/Crop_volume_parameters.png" />
+</p>
 7. Clicks on "Apply", and change back to AortaGeomReconDisplayModule, you should be able to find a new volume or the cropped volume.
 
 ### To apply the segmentation algorithm for phase 2 Descending Aorta Segmentation and phase 3 Ascending Aorta Segmentation
 1. Make sure that you have done the cropping and have a cropped volume in phase 1 Crop Aorta, then click on Apply to move to next phase.
 2. Once you are in phase 2 Descending Aorta Segmentation, right click on one of the red, green or yellow window image area, you should see a list of options as shown below.
 3. "Slice intersection" option is selected once you have loaded AGR module. Right click and check "Interaction" option. Alternatively, you can hold "shift" and move around mouse cursor to move around the intersection point.
-![Screenshot 2023-01-14 152226](https://user-images.githubusercontent.com/63418020/212496147-be5f060b-16a2-458f-98d6-411a88898b93.png)
+<p align="center">
+    <img src="https://github.com/smiths/aorta/blob/main/src/screenshots/Interaction.png" />
+</p>
 4. Hold on Mouse left button to drag and place the intersection point on the point of interest, as described in the image from Overview section. 
 5. In phase 2 Descending Aorta Segmentation, you should see that the value of DesAortaSeeds coordinates is changing when moving the intersection point. Once you have entered all values, click on Apply. After a few minutes, you should see a new volume named "Segmented Descending Aorta Volume".
 6. If you are not satisfied with the result volume, you can click on "Revert to previous phase" button. The old volume should be deleted before you process another time.
