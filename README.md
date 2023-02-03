@@ -35,7 +35,11 @@ src - Source code
 test - Test cases  
 src/SlicerExtension/AortaGeometryReconstructor - 3D Slicer extension folder to be loaded to 3D Slicer
 
-Instructions for installing and using Aorta Geometry Reconstruction (AGR) are provided below.
+### Instructions for installing and using Aorta Geometry Reconstruction (AGR) are provided below.
+
+Click on the image below for a video demonstrating the import of AortaGeomRecon module, and the complete workflow to perform aorta segmentation.
+[![AortaGeomRecon Video instruction](https://github.com/smiths/aorta/blob/update-README/src/screenshots/Thumbnail.jpg)](https://youtu.be/ckUad6hZqb0)
+
 
 ### To install 3D Slicer and import an extension:
 1. Download 3D Slicer from [here](https://download.slicer.org/). This project has been tested with the stable release, version 5.0.3.
