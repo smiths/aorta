@@ -88,6 +88,7 @@ class AortaSegmenter():
         no_iteration = 1000
         curvature_scaling = 0.5
         propagation_scaling = 1
+        self._stats_filter = sitk.LabelStatisticsImageFilter()
         self._segment_filter = sitk.ThresholdSegmentationLevelSetImageFilter()
         self._segment_filter.SetMaximumRMSError(rms_error)
         self._segment_filter.SetNumberOfIterations(no_iteration)
@@ -313,18 +314,17 @@ class AortaSegmenter():
                 img_slice, centre, seeds_previous, slice_num)
 
         # determine threshold values based on seed location
-        stats = sitk.LabelStatisticsImageFilter()
-        stats.Execute(img_slice, seed)
-        # Factor should be adjustable for threshold
+        self._stats_filter.Execute(img_slice, seed)
+
         lower_threshold = (
-            stats.GetMean(PixelValue.white_pixel.value)
+            self._stats_filter.GetMean(PixelValue.white_pixel.value)
             - self._filter_factor
-            * stats.GetSigma(PixelValue.white_pixel.value)
+            * self._stats_filter.GetSigma(PixelValue.white_pixel.value)
         )
         upper_threshold = (
-            stats.GetMean(PixelValue.white_pixel.value)
+            self._stats_filter.GetMean(PixelValue.white_pixel.value)
             + self._filter_factor
-            * stats.GetSigma(PixelValue.white_pixel.value)
+            * self._stats_filter.GetSigma(PixelValue.white_pixel.value)
         )
         # use filter to apply threshold to image
         init_label_stats = sitk.SignedMaurerDistanceMap(
