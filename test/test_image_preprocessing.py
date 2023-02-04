@@ -3,6 +3,7 @@ from src.SlicerExtension.AortaGeometryReconstructor.AortaGeomReconDisplayModule.
 import SimpleITK as sitk
 import numpy as np
 
+
 def transform_image(cropped_image):
     img_array = sitk.GetArrayFromImage(
         (sitk.Cast(sitk.RescaleIntensity(cropped_image), sitk.sitkUInt8)))
@@ -20,17 +21,21 @@ def transform_image(cropped_image):
     median_img = sitk.Cast(median.Execute(eq_img), sitk.sitkUInt8)
     return median_img
 
+
 def get_cropped_volume_image():
     nda = np.load("test/sample/43681283_crop.npy")
     return sitk.GetImageFromArray(nda)
+
 
 def read_desc_volume_image():
     nda = np.load("test/sample/43681283_des.npy")
     return sitk.GetImageFromArray(nda)
 
+
 def read_asc_volume_image():
     nda = np.load("test/sample/43681283_asc.npy")
     return sitk.GetImageFromArray(nda)
+
 
 def read_final_volume_image():
     nda = np.load("test/sample/43681283_final.npy")
@@ -39,6 +44,7 @@ def read_final_volume_image():
 
 def compare_images(ref_image, test_image):
     return 1
+
 
 def compare_des():
     cropped_image = get_cropped_volume_image()
@@ -62,21 +68,22 @@ def compare_des():
     result = compare_images(image_des, processed_image)
     assert (result)
 
+
 def compare_asc():
     starting_slice = 1
     aorta_centre = [1, 1]
     asc_axial_segmenter = AortaSegmenter(
         cropped_image=None,
-        starting_slice=None, aorta_centre=None,
+        starting_slice=starting_slice, aorta_centre=aorta_centre,
         num_slice_skipping=3,
         qualified_slice_factor=2.2,
         processing_image=None,
         seg_type=SegmentType.ascending_aorta
     )
+    asc_axial_segmenter.begin_segmentation()
+
 
 def compare_final_volume():
-    starting_slice = 1
-    aorta_centre = [1, 1]
     sagittal_segmenter = AortaSegmenter(
         cropped_image=None,
         starting_slice=None, aorta_centre=None,
@@ -85,6 +92,7 @@ def compare_final_volume():
         processing_image=None,
         seg_type=SegmentType.sagittal_segmenter
     )
+    sagittal_segmenter.begin_segmentation()
 
 
 def test_prepared_segmenting_image():
