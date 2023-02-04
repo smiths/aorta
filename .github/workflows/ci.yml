@@ -16,5 +16,9 @@ jobs:
         uses: actions/checkout@v3
       - name: Install pytest
         run: pip3 install pytest
+      - name: Install SITK
+        run: pip3 install SimpleITK
+      - name: Install SITK
+        run: pip3 install numpy
       - name: Test with Pytest
         run: pytest
