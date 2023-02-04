@@ -727,27 +727,6 @@ class AortaGeomReconDisplayModuleLogic(ScriptedLoadableModuleLogic):  # noqa: F4
             return (ui.ascAortaSeed.coordinates == "0,0,0")
         return False
 
-    """Get cropped and normalized image and stored as self._segmenting_image
-    """
-    def prepareSegmentingImage(self, image, index, size):
-        # crop the image
-        crop_filter = sitk.ExtractImageFilter()
-        crop_filter.SetIndex(index)
-        crop_filter.SetSize(size)
-
-        cropped_image = crop_filter.Execute(image)
-
-        # ensure that the spacing in the image is correct
-        cropped_image.SetOrigin(image.GetOrigin())
-        cropped_image.SetSpacing(image.GetSpacing())
-        cropped_image.SetDirection(image.GetDirection())
-
-        selectCastFilter = sitk.VectorIndexSelectionCastImageFilter()
-        selectCastFilter.SetIndex(0)
-        selectCastFilter.SetOutputPixelType(sitk.sitkUInt32)
-        cropped_image = selectCastFilter.Execute(cropped_image)
-        return cropped_image
-
     def transform_image(self, cropped_volume):
         cropped_image = sitkUtils.PullVolumeFromSlicer(cropped_volume)
 
@@ -821,21 +800,6 @@ class AortaGeomReconDisplayModuleLogic(ScriptedLoadableModuleLogic):  # noqa: F4
         self.setDefaultParameters(parameterNode)
         if parameterNode.GetParameter("phase"):
             parameterNode.SetParameter("phase", "1")
-
-    def processCropImage(self, cropIndex, cropSize, volume):
-        indexStr = cropIndex.split(",")
-        sizeStr = cropSize.split(",")
-        index = [int(i) for i in indexStr]
-        size = [int(i) for i in sizeStr]
-        now = datetime.now()
-        logging.info(f"{now} Pulling Volume from Slicer")
-        sitkImage = sitkUtils.PullVolumeFromSlicer(volume)
-        # logging.info(sitkImage)
-        outputImage = self.prepareSegmentingImage(sitkImage, index, size)
-        now = datetime.now()
-        logging.info(f"{now} Finished cropping image")
-        # logging.info(outputImage)
-        return outputImage
 
     def processDescendingAorta(
                 self,
