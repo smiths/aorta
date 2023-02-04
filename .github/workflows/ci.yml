@@ -18,7 +18,7 @@ jobs:
         run: pip3 install pytest
       - name: Install SITK
         run: pip3 install SimpleITK
-      - name: Install SITK
+      - name: Install numpy
         run: pip3 install numpy
       - name: Test with Pytest
         run: pytest
