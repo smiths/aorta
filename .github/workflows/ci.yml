@@ -20,5 +20,7 @@ jobs:
         run: pip3 install SimpleITK
       - name: Install numpy
         run: pip3 install numpy
-      - name: Test with Pytest
-        run: pytest
+      - name: Test descending aorta segmentation
+        run: pytest --limit 0.05 -k 'test_compare_des'
+      - name: Test ascending aorta segmentation
+        run: pytest --limit 0.05 -k 'test_compare_asc'
