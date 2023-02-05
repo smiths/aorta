@@ -17,8 +17,8 @@ class SegmentType(Enum):
         return (seg_type == SegmentType.sagittal_front
                 or seg_type == SegmentType.sagittal)
 
-    def __repr__(self):
-        return f'{self.name.replace("_"," ")} segmentation'
+    def __format__(self, obj):
+        return "%s segmentation" % (self._name_.replace("_", " "))
 
 
 class SegmentDirection(Enum):

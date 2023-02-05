@@ -27,6 +27,10 @@ def get_cropped_volume_image():
     return sitk.GetImageFromArray(nda)
 
 
+cropped_image = get_cropped_volume_image()
+cropped_image = transform_image(cropped_image)
+
+
 def read_desc_volume_image():
     nda = np.load("test/sample/43681283_des.npy")
     return sitk.GetImageFromArray(nda)
@@ -42,48 +46,89 @@ def read_final_volume_image():
     return sitk.GetImageFromArray(nda)
 
 
-def compare_images(ref_image, test_image):
-    return 1
+def rmse(arr1, arr2):
+    return np.sqrt(mse(arr1, arr2))
 
 
-def compare_des():
-    cropped_image = get_cropped_volume_image()
-    cropped_image = transform_image(cropped_image)
+def mae(arr1, arr2):
+    npsum = np.sum(np.abs(np.subtract(arr1, arr2)))
+    return npsum/np.count_nonzero(np.logical_or(arr1, arr2))
 
+
+def mse(arr1, arr2):
+    npsum = np.sum(np.square(np.subtract(arr1, arr2)))
+    return npsum/np.count_nonzero(np.logical_or(arr1, arr2))
+
+
+def test_compare_des(limit):
     starting_slice = 820
     aorta_centre = [19, 30]
+    qualified_slice_factor = 2.2
+
+    # starting_slice = 700
+    # aorta_centre = [5, 60]
     desc_axial_segmenter = AortaSegmenter(
         cropped_image=cropped_image,
         starting_slice=starting_slice, aorta_centre=aorta_centre,
         num_slice_skipping=3,
-        qualified_slice_factor=2.2,
+        qualified_slice_factor=qualified_slice_factor,
         processing_image=None,
         seg_type=SegmentType.descending_aorta
     )
-
     desc_axial_segmenter.begin_segmentation()
-    processed_image = desc_axial_segmenter.processing_image
-    image_des = read_desc_volume_image()
+    test_image = desc_axial_segmenter.processing_image
+    ref_image = read_desc_volume_image()
+    print("qualified_slice_factor : {}".format(qualified_slice_factor))
+    nda_ref = sitk.GetArrayFromImage(ref_image)
+    nda_test = sitk.GetArrayFromImage(test_image)
+    result = mse(nda_ref, nda_test)
+    print(
+        "{} MAE".format(SegmentType.descending_aorta),
+        mae(nda_ref, nda_test)
+    )
+    print(
+        "{} RMSE".format(SegmentType.descending_aorta),
+        rmse(nda_ref, nda_test)
+    )
+    assert (result < limit)
 
-    result = compare_images(image_des, processed_image)
-    assert (result)
+    return test_image
 
 
-def compare_asc():
-    starting_slice = 1
-    aorta_centre = [1, 1]
+def test_compare_asc(limit, processing_image=None):
+    if not processing_image:
+        processing_image = read_desc_volume_image()
+    starting_slice = 733
+    aorta_centre = [87, 131]
+    qualified_slice_factor = 2.2
     asc_axial_segmenter = AortaSegmenter(
-        cropped_image=None,
+        cropped_image=cropped_image,
         starting_slice=starting_slice, aorta_centre=aorta_centre,
         num_slice_skipping=3,
-        qualified_slice_factor=2.2,
-        processing_image=None,
+        qualified_slice_factor=qualified_slice_factor,
+        processing_image=processing_image,
         seg_type=SegmentType.ascending_aorta
     )
     asc_axial_segmenter.begin_segmentation()
+    test_image = asc_axial_segmenter.processing_image
+    ref_image = read_asc_volume_image()
+    print("qualified_slice_factor : {}".format(qualified_slice_factor))
+    nda_ref = sitk.GetArrayFromImage(ref_image)
+    nda_test = sitk.GetArrayFromImage(test_image)
+    result = mse(nda_ref, nda_test)
+    print(
+        "{} MAE".format(SegmentType.ascending_aorta),
+        mae(nda_ref, nda_test)
+    )
+    print(
+        "{} RMSE".format(SegmentType.ascending_aorta),
+        rmse(nda_ref, nda_test)
+    )
+    assert (result < limit)
+    return test_image
 
 
-def compare_final_volume():
+def compare_final_volume(limit, processing_image):
     sagittal_segmenter = AortaSegmenter(
         cropped_image=None,
         starting_slice=None, aorta_centre=None,
@@ -95,6 +140,8 @@ def compare_final_volume():
     sagittal_segmenter.begin_segmentation()
 
 
-def test_prepared_segmenting_image():
-    compare_des()
-    assert (1)
+def test_prepared_segmenting_image(limit):
+    limit = float(limit)
+    processing_image = test_compare_des(limit)
+    processing_image = test_compare_asc(limit, processing_image)
+    # processing_image = compare_final_volume(limit, processing_image)
