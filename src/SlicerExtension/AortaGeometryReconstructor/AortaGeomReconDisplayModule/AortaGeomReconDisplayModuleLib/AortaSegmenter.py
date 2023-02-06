@@ -43,6 +43,8 @@ class AortaSegmenter():
         self._aorta_centre = aorta_centre
         self._num_slice_skipping = num_slice_skipping
         self._seg_type = seg_type
+        if seg_type == SegmentType.sagittal_front:
+            self._seg_type = SegmentType.sagittal
         self._processing_image = processing_image
         self._qualified_slice_factor = qualified_slice_factor
         self._filter_factor = filter_factor
@@ -85,7 +87,7 @@ class AortaSegmenter():
     def begin_segmentation(self):
         # Initializing filter
         rms_error = 0.02
-        no_iteration = 1000
+        no_iteration = 600
         curvature_scaling = 0.5
         propagation_scaling = 1
         self._stats_filter = sitk.LabelStatisticsImageFilter()
