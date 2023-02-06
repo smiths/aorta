@@ -60,13 +60,7 @@ def mse(arr1, arr2):
     return npsum/np.count_nonzero(np.logical_or(arr1, arr2))
 
 
-def test_compare_des(limit=None, qsf=None, ffactor=None):
-    if not limit:
-        limit = 0.05
-    if not qsf:
-        qsf = 2.2
-    if not ffactor:
-        ffactor = 3.5
+def test_compare_des(limit, qsf, ffactor):
     starting_slice = 820
     aorta_centre = [19, 30]
 
@@ -106,15 +100,9 @@ def test_compare_des(limit=None, qsf=None, ffactor=None):
     return test_image
 
 
-def test_compare_asc(
-        limit=None, qsf=None,
-        ffactor=None, processing_image=None):
+def test_compare_asc(limit, qsf, ffactor, processing_image=None):
     if not processing_image:
         processing_image = read_desc_volume_image()
-    if not qsf:
-        qsf = 2.2
-    if not ffactor:
-        ffactor = 3.5
     starting_slice = 733
     aorta_centre = [87, 131]
     asc_axial_segmenter = AortaSegmenter(
@@ -150,9 +138,7 @@ def test_compare_asc(
     return test_image
 
 
-def test_compare_final_volume(
-        limit=None, qsf=None,
-        ffactor=None, processing_image=None):
+def test_compare_final_volume(limit, qsf, ffactor, processing_image=None):
     if not processing_image:
         processing_image = read_asc_volume_image()
     if not qsf:
@@ -192,7 +178,7 @@ def test_compare_final_volume(
     return test_image
 
 
-def test_prepared_segmenting_image(limit=None, qsf=None, ffactor=None):
+def test_prepared_segmenting_image(limit, qsf, ffactor):
     limit = float(limit)
     processing_image = test_compare_des(limit)
     processing_image = test_compare_asc(limit, processing_image)
