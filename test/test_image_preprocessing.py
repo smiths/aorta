@@ -4,6 +4,26 @@ import SimpleITK as sitk
 import numpy as np
 
 
+def print_result(arr1, arr2):
+    print(
+        "{} mean_square_error".format(SegmentType.descending_aorta),
+        mean_square_error(arr1, arr2)
+    )
+    print(
+        "{} mean_absolute_error".format(SegmentType.ascending_aorta),
+        mean_absolute_error(arr1, arr2)
+    )
+    print(
+        "{} root_mse".format(SegmentType.ascending_aorta),
+        root_mse(arr1, arr2)
+    )
+    print(
+        "{} Sørensen–Dice coefficient".format(
+            SegmentType.descending_aorta),
+        DSC(arr1, arr2)
+    )
+
+
 def transform_image(cropped_image):
     img_array = sitk.GetArrayFromImage(
         (sitk.Cast(sitk.RescaleIntensity(cropped_image), sitk.sitkUInt8)))
@@ -46,23 +66,28 @@ def read_final_volume_image():
     return sitk.GetImageFromArray(nda)
 
 
-def rmse(arr1, arr2):
-    return np.sqrt(mse(arr1, arr2))
+def DSC(arr1, arr2):
+    two_TP = np.count_nonzero(np.logical_and(arr1, arr2))*2
+    return two_TP/(np.count_nonzero(arr1) + np.count_nonzero(arr2))
 
 
-def mae(arr1, arr2):
+def root_mse(arr1, arr2):
+    return np.sqrt(mean_square_error(arr1, arr2))
+
+
+def mean_absolute_error(arr1, arr2):
     npsum = np.sum(np.abs(np.subtract(arr1, arr2)))
     return npsum/np.count_nonzero(np.logical_or(arr1, arr2))
 
 
-def mse(arr1, arr2):
+def mean_square_error(arr1, arr2):
     npsum = np.sum(np.square(np.subtract(arr1, arr2)))
     return npsum/np.count_nonzero(np.logical_or(arr1, arr2))
 
 
 def test_compare_des(limit, qsf, ffactor):
     starting_slice = 820
-    aorta_centre = [19, 30]
+    aorta_centre = [18, 26]
 
     # starting_slice = 700
     # aorta_centre = [5, 60]
@@ -82,21 +107,9 @@ def test_compare_des(limit, qsf, ffactor):
     print("filter factor : {}".format(ffactor))
     nda_ref = sitk.GetArrayFromImage(ref_image)
     nda_test = sitk.GetArrayFromImage(test_image)
-    print(
-        "{} MAE".format(SegmentType.descending_aorta),
-        mae(nda_ref, nda_test)
-    )
-    result = mse(nda_ref, nda_test)
-    print(
-        "{} MSE".format(SegmentType.descending_aorta),
-        result
-    )
-    print(
-        "{} RMSE".format(SegmentType.descending_aorta),
-        rmse(nda_ref, nda_test)
-    )
-    assert (result < limit)
-
+    DSC_error = 1-DSC(nda_ref, nda_test)
+    print_result(nda_ref, nda_test)
+    assert (DSC_error < limit)
     return test_image
 
 
@@ -121,20 +134,9 @@ def test_compare_asc(limit, qsf, ffactor, processing_image=None):
     print("filter factor : {}".format(ffactor))
     nda_ref = sitk.GetArrayFromImage(ref_image)
     nda_test = sitk.GetArrayFromImage(test_image)
-    result = mse(nda_ref, nda_test)
-    print(
-        "{} MSE".format(SegmentType.descending_aorta),
-        result
-    )
-    print(
-        "{} MAE".format(SegmentType.ascending_aorta),
-        mae(nda_ref, nda_test)
-    )
-    print(
-        "{} RMSE".format(SegmentType.ascending_aorta),
-        rmse(nda_ref, nda_test)
-    )
-    assert (result < limit)
+    DSC_error = 1-DSC(nda_ref, nda_test)
+    print_result(nda_ref, nda_test)
+    assert (DSC_error < limit)
     return test_image
 
 
@@ -161,20 +163,9 @@ def test_compare_final_volume(limit, qsf, ffactor, processing_image=None):
     print("filter factor : {}".format(ffactor))
     nda_ref = sitk.GetArrayFromImage(ref_image)
     nda_test = sitk.GetArrayFromImage(test_image)
-    result = mse(nda_ref, nda_test)
-    print(
-        "{} MSE".format(SegmentType.descending_aorta),
-        result
-    )
-    print(
-        "{} MAE".format(SegmentType.ascending_aorta),
-        mae(nda_ref, nda_test)
-    )
-    print(
-        "{} RMSE".format(SegmentType.ascending_aorta),
-        rmse(nda_ref, nda_test)
-    )
-    assert (result < limit)
+    DSC_error = 1-DSC(nda_ref, nda_test)
+    print_result(nda_ref, nda_test)
+    assert (DSC_error < limit)
     return test_image
 
 
