@@ -2,25 +2,26 @@ from src.SlicerExtension.AortaGeometryReconstructor.AortaGeomReconDisplayModule.
 from src.SlicerExtension.AortaGeometryReconstructor.AortaGeomReconDisplayModule.AortaGeomReconDisplayModuleLib.AortaSegmenter import SegmentType # noqa
 import SimpleITK as sitk
 import numpy as np
+import os
 
 
-def print_result(arr1, arr2):
+def print_result(ref_image, test_image):
     print(
         "{} mean_square_error".format(SegmentType.descending_aorta),
-        mean_square_error(arr1, arr2)
+        mean_square_error(ref_image, test_image)
     )
     print(
         "{} mean_absolute_error".format(SegmentType.ascending_aorta),
-        mean_absolute_error(arr1, arr2)
+        mean_absolute_error(ref_image, test_image)
     )
     print(
         "{} root_mse".format(SegmentType.ascending_aorta),
-        root_mse(arr1, arr2)
+        root_mse(ref_image, test_image)
     )
     print(
         "{} Sørensen–Dice coefficient".format(
             SegmentType.descending_aorta),
-        DSC(arr1, arr2)
+        DSC(ref_image, test_image)
     )
 
 
@@ -43,7 +44,13 @@ def transform_image(cropped_image):
 
 
 def get_cropped_volume_image():
-    nda = np.load("test/sample/43681283_crop.npy")
+    """Read the cropped volume
+    
+    Returns:
+        SITK: The cropped volume sitk image
+    """
+    abspath = os.path.abspath("test/sample/43681283_crop.npy")
+    nda = np.load(abspath)
     return sitk.GetImageFromArray(nda)
 
 
@@ -52,37 +59,68 @@ cropped_image = transform_image(cropped_image)
 
 
 def read_desc_volume_image():
+    """Read the segmented descending aorta volume
+    
+    Returns:
+        SITK: The segmented descending aorta sitk image
+    """
+    abspath = os.path.abspath("test/sample/43681283_des.npy")
     nda = np.load("test/sample/43681283_des.npy")
     return sitk.GetImageFromArray(nda)
 
 
 def read_asc_volume_image():
+    """Read the segmented ascending and descending aorta volume
+    
+
+    Returns:
+        SITK: The segmented ascending and descending aorta sitk image
+    """
+    abspath = os.path.abspath("test/sample/43681283_asc.npy")
     nda = np.load("test/sample/43681283_asc.npy")
     return sitk.GetImageFromArray(nda)
 
 
 def read_final_volume_image():
+    """Read the final segmented aorta volume
+    
+
+    Returns:
+        SITK: The final segmented aorta sitk image
+    """
+    abspath = os.path.abspath("test/sample/43681283_final.npy")
     nda = np.load("test/sample/43681283_final.npy")
     return sitk.GetImageFromArray(nda)
 
 
-def DSC(arr1, arr2):
-    two_TP = np.count_nonzero(np.logical_and(arr1, arr2))*2
-    return two_TP/(np.count_nonzero(arr1) + np.count_nonzero(arr2))
+def DSC(ref_image, test_image):
+    """Calculate the Dice similarity coefficient
+
+    Args:
+        ref_image (numpy.ndarrays): nda to compare  
+
+        test_image (numpy.ndarrays): nda to compare  
+    
+    Returns:
+        float: The Dice similarity coefficient of reference image and test image 
+    """
+    two_TP = np.count_nonzero(np.logical_and(ref_image, test_image))*2
+    total = (np.count_nonzero(ref_image) + np.count_nonzero(test_image))
+    return two_TP/total
 
 
-def root_mse(arr1, arr2):
-    return np.sqrt(mean_square_error(arr1, arr2))
+def root_mse(ref_image, test_image):
+    return np.sqrt(mean_square_error(ref_image, test_image))
 
 
-def mean_absolute_error(arr1, arr2):
-    npsum = np.sum(np.abs(np.subtract(arr1, arr2)))
-    return npsum/np.count_nonzero(np.logical_or(arr1, arr2))
+def mean_absolute_error(ref_image, test_image):
+    npsum = np.sum(np.abs(np.subtract(ref_image, test_image)))
+    return npsum/np.count_nonzero(np.logical_or(ref_image, test_image))
 
 
-def mean_square_error(arr1, arr2):
-    npsum = np.sum(np.square(np.subtract(arr1, arr2)))
-    return npsum/np.count_nonzero(np.logical_or(arr1, arr2))
+def mean_square_error(ref_image, test_image):
+    npsum = np.sum(np.square(np.subtract(ref_image, test_image)))
+    return npsum/np.count_nonzero(np.logical_or(ref_image, test_image))
 
 
 def test_compare_des(limit, qsf, ffactor):
