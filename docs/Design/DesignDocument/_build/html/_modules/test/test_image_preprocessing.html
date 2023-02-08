@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>test.test_image_preprocessing &mdash; AortaGeomRecon  documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> AortaGeomRecon
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">AortaGeomRecon</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../test.html">test package</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">AortaGeomRecon</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">test.test_image_preprocessing</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for test.test_image_preprocessing</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">src.SlicerExtension.AortaGeometryReconstructor.AortaGeomReconDisplayModule.AortaGeomReconDisplayModuleLib.AortaSegmenter</span> <span class="kn">import</span> <span class="n">AortaSegmenter</span> <span class="c1"># noqa</span>
+<span class="kn">from</span> <span class="nn">src.SlicerExtension.AortaGeometryReconstructor.AortaGeomReconDisplayModule.AortaGeomReconDisplayModuleLib.AortaSegmenter</span> <span class="kn">import</span> <span class="n">SegmentType</span> <span class="c1"># noqa</span>
+<span class="kn">import</span> <span class="nn">SimpleITK</span> <span class="k">as</span> <span class="nn">sitk</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">os</span>
+
+
+<div class="viewcode-block" id="print_result"><a class="viewcode-back" href="../../test.html#test.test_image_preprocessing.print_result">[docs]</a><span class="k">def</span> <span class="nf">print_result</span><span class="p">(</span><span class="n">ref_image</span><span class="p">,</span> <span class="n">test_image</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span>
+        <span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> mean_square_error&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">SegmentType</span><span class="o">.</span><span class="n">descending_aorta</span><span class="p">),</span>
+        <span class="n">mean_square_error</span><span class="p">(</span><span class="n">ref_image</span><span class="p">,</span> <span class="n">test_image</span><span class="p">)</span>
+    <span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span>
+        <span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> mean_absolute_error&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">SegmentType</span><span class="o">.</span><span class="n">ascending_aorta</span><span class="p">),</span>
+        <span class="n">mean_absolute_error</span><span class="p">(</span><span class="n">ref_image</span><span class="p">,</span> <span class="n">test_image</span><span class="p">)</span>
+    <span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span>
+        <span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> root_mse&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">SegmentType</span><span class="o">.</span><span class="n">ascending_aorta</span><span class="p">),</span>
+        <span class="n">root_mse</span><span class="p">(</span><span class="n">ref_image</span><span class="p">,</span> <span class="n">test_image</span><span class="p">)</span>
+    <span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span>
+        <span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> Sørensen–Dice coefficient&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="n">SegmentType</span><span class="o">.</span><span class="n">descending_aorta</span><span class="p">),</span>
+        <span class="n">DSC</span><span class="p">(</span><span class="n">ref_image</span><span class="p">,</span> <span class="n">test_image</span><span class="p">)</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="transform_image"><a class="viewcode-back" href="../../test.html#test.test_image_preprocessing.transform_image">[docs]</a><span class="k">def</span> <span class="nf">transform_image</span><span class="p">(</span><span class="n">cropped_image</span><span class="p">):</span>
+    <span class="n">img_array</span> <span class="o">=</span> <span class="n">sitk</span><span class="o">.</span><span class="n">GetArrayFromImage</span><span class="p">(</span>
+        <span class="p">(</span><span class="n">sitk</span><span class="o">.</span><span class="n">Cast</span><span class="p">(</span><span class="n">sitk</span><span class="o">.</span><span class="n">RescaleIntensity</span><span class="p">(</span><span class="n">cropped_image</span><span class="p">),</span> <span class="n">sitk</span><span class="o">.</span><span class="n">sitkUInt8</span><span class="p">)))</span>
+    <span class="n">histogram_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">bincount</span><span class="p">(</span><span class="n">img_array</span><span class="o">.</span><span class="n">flatten</span><span class="p">(),</span> <span class="n">minlength</span><span class="o">=</span><span class="mi">256</span><span class="p">)</span>
+    <span class="n">num_pixels</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">histogram_array</span><span class="p">)</span>
+    <span class="n">histogram_array</span> <span class="o">=</span> <span class="n">histogram_array</span><span class="o">/</span><span class="n">num_pixels</span>
+    <span class="n">chistogram_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">histogram_array</span><span class="p">)</span>
+    <span class="n">transform_map</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="mi">255</span> <span class="o">*</span> <span class="n">chistogram_array</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">)</span>
+    <span class="n">img_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">img_array</span><span class="o">.</span><span class="n">flatten</span><span class="p">())</span>
+    <span class="n">eq_img_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">transform_map</span><span class="p">[</span><span class="n">p</span><span class="p">]</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">img_list</span><span class="p">]</span>
+    <span class="n">eq_img_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">eq_img_list</span><span class="p">),</span> <span class="n">img_array</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+    <span class="n">eq_img</span> <span class="o">=</span> <span class="n">sitk</span><span class="o">.</span><span class="n">GetImageFromArray</span><span class="p">(</span><span class="n">eq_img_array</span><span class="p">)</span>
+    <span class="n">eq_img</span><span class="o">.</span><span class="n">CopyInformation</span><span class="p">(</span><span class="n">cropped_image</span><span class="p">)</span>
+    <span class="n">median</span> <span class="o">=</span> <span class="n">sitk</span><span class="o">.</span><span class="n">MedianImageFilter</span><span class="p">()</span>
+    <span class="n">median_img</span> <span class="o">=</span> <span class="n">sitk</span><span class="o">.</span><span class="n">Cast</span><span class="p">(</span><span class="n">median</span><span class="o">.</span><span class="n">Execute</span><span class="p">(</span><span class="n">eq_img</span><span class="p">),</span> <span class="n">sitk</span><span class="o">.</span><span class="n">sitkUInt8</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">median_img</span></div>
+
+
+<div class="viewcode-block" id="get_cropped_volume_image"><a class="viewcode-back" href="../../test.html#test.test_image_preprocessing.get_cropped_volume_image">[docs]</a><span class="k">def</span> <span class="nf">get_cropped_volume_image</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;Read the cropped volume</span>
+<span class="sd">    </span>
+<span class="sd">    Returns:</span>
+<span class="sd">        SITK: The cropped volume sitk image</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">abspath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="s2">&quot;test/sample/43681283_crop.npy&quot;</span><span class="p">)</span>
+    <span class="n">nda</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">abspath</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">sitk</span><span class="o">.</span><span class="n">GetImageFromArray</span><span class="p">(</span><span class="n">nda</span><span class="p">)</span></div>
+
+
+<span class="n">cropped_image</span> <span class="o">=</span> <span class="n">get_cropped_volume_image</span><span class="p">()</span>
+<span class="n">cropped_image</span> <span class="o">=</span> <span class="n">transform_image</span><span class="p">(</span><span class="n">cropped_image</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="read_desc_volume_image"><a class="viewcode-back" href="../../test.html#test.test_image_preprocessing.read_desc_volume_image">[docs]</a><span class="k">def</span> <span class="nf">read_desc_volume_image</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;Read the segmented descending aorta volume</span>
+<span class="sd">    </span>
+<span class="sd">    Returns:</span>
+<span class="sd">        SITK: The segmented descending aorta sitk image</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">abspath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="s2">&quot;test/sample/43681283_des.npy&quot;</span><span class="p">)</span>
+    <span class="n">nda</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;test/sample/43681283_des.npy&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">sitk</span><span class="o">.</span><span class="n">GetImageFromArray</span><span class="p">(</span><span class="n">nda</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="read_asc_volume_image"><a class="viewcode-back" href="../../test.html#test.test_image_preprocessing.read_asc_volume_image">[docs]</a><span class="k">def</span> <span class="nf">read_asc_volume_image</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;Read the segmented ascending and descending aorta volume</span>
+<span class="sd">    </span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        SITK: The segmented ascending and descending aorta sitk image</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">abspath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="s2">&quot;test/sample/43681283_asc.npy&quot;</span><span class="p">)</span>
+    <span class="n">nda</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;test/sample/43681283_asc.npy&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">sitk</span><span class="o">.</span><span class="n">GetImageFromArray</span><span class="p">(</span><span class="n">nda</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="read_final_volume_image"><a class="viewcode-back" href="../../test.html#test.test_image_preprocessing.read_final_volume_image">[docs]</a><span class="k">def</span> <span class="nf">read_final_volume_image</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;Read the final segmented aorta volume</span>
+<span class="sd">    </span>
+<span class="sd">    </span>
+<span class="sd">    Returns:</span>
+<span class="sd">        SITK: The final segmented aorta sitk image</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">abspath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="s2">&quot;test/sample/43681283_final.npy&quot;</span><span class="p">)</span>
+    <span class="n">nda</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;test/sample/43681283_final.npy&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">sitk</span><span class="o">.</span><span class="n">GetImageFromArray</span><span class="p">(</span><span class="n">nda</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="DSC"><a class="viewcode-back" href="../../test.html#test.test_image_preprocessing.DSC">[docs]</a><span class="k">def</span> <span class="nf">DSC</span><span class="p">(</span><span class="n">ref_image</span><span class="p">,</span> <span class="n">test_image</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Calculate the Dice similarity coefficient</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        ref_image (numpy.ndarrays): nda to compare  </span>
+
+<span class="sd">        test_image (numpy.ndarrays): nda to compare  </span>
+<span class="sd">    </span>
+<span class="sd">    Returns:</span>
+<span class="sd">        float: The Dice similarity coefficient of reference image and test image </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">two_TP</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">count_nonzero</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span><span class="n">ref_image</span><span class="p">,</span> <span class="n">test_image</span><span class="p">))</span><span class="o">*</span><span class="mi">2</span>
+    <span class="n">total</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">count_nonzero</span><span class="p">(</span><span class="n">ref_image</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">count_nonzero</span><span class="p">(</span><span class="n">test_image</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">two_TP</span><span class="o">/</span><span class="n">total</span></div>
+
+
+<div class="viewcode-block" id="root_mse"><a class="viewcode-back" href="../../test.html#test.test_image_preprocessing.root_mse">[docs]</a><span class="k">def</span> <span class="nf">root_mse</span><span class="p">(</span><span class="n">ref_image</span><span class="p">,</span> <span class="n">test_image</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">mean_square_error</span><span class="p">(</span><span class="n">ref_image</span><span class="p">,</span> <span class="n">test_image</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="mean_absolute_error"><a class="viewcode-back" href="../../test.html#test.test_image_preprocessing.mean_absolute_error">[docs]</a><span class="k">def</span> <span class="nf">mean_absolute_error</span><span class="p">(</span><span class="n">ref_image</span><span class="p">,</span> <span class="n">test_image</span><span class="p">):</span>
+    <span class="n">npsum</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">subtract</span><span class="p">(</span><span class="n">ref_image</span><span class="p">,</span> <span class="n">test_image</span><span class="p">)))</span>
+    <span class="k">return</span> <span class="n">npsum</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">count_nonzero</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">logical_or</span><span class="p">(</span><span class="n">ref_image</span><span class="p">,</span> <span class="n">test_image</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="mean_square_error"><a class="viewcode-back" href="../../test.html#test.test_image_preprocessing.mean_square_error">[docs]</a><span class="k">def</span> <span class="nf">mean_square_error</span><span class="p">(</span><span class="n">ref_image</span><span class="p">,</span> <span class="n">test_image</span><span class="p">):</span>
+    <span class="n">npsum</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">square</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">subtract</span><span class="p">(</span><span class="n">ref_image</span><span class="p">,</span> <span class="n">test_image</span><span class="p">)))</span>
+    <span class="k">return</span> <span class="n">npsum</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">count_nonzero</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">logical_or</span><span class="p">(</span><span class="n">ref_image</span><span class="p">,</span> <span class="n">test_image</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="test_compare_des"><a class="viewcode-back" href="../../test.html#test.test_image_preprocessing.test_compare_des">[docs]</a><span class="k">def</span> <span class="nf">test_compare_des</span><span class="p">(</span><span class="n">limit</span><span class="p">,</span> <span class="n">qsf</span><span class="p">,</span> <span class="n">ffactor</span><span class="p">):</span>
+    <span class="n">starting_slice</span> <span class="o">=</span> <span class="mi">820</span>
+    <span class="n">aorta_centre</span> <span class="o">=</span> <span class="p">[</span><span class="mi">18</span><span class="p">,</span> <span class="mi">26</span><span class="p">]</span>
+
+    <span class="c1"># starting_slice = 700</span>
+    <span class="c1"># aorta_centre = [5, 60]</span>
+    <span class="n">desc_axial_segmenter</span> <span class="o">=</span> <span class="n">AortaSegmenter</span><span class="p">(</span>
+        <span class="n">cropped_image</span><span class="o">=</span><span class="n">cropped_image</span><span class="p">,</span>
+        <span class="n">starting_slice</span><span class="o">=</span><span class="n">starting_slice</span><span class="p">,</span> <span class="n">aorta_centre</span><span class="o">=</span><span class="n">aorta_centre</span><span class="p">,</span>
+        <span class="n">num_slice_skipping</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+        <span class="n">qualified_slice_factor</span><span class="o">=</span><span class="n">qsf</span><span class="p">,</span>
+        <span class="n">filter_factor</span><span class="o">=</span><span class="n">ffactor</span><span class="p">,</span>
+        <span class="n">processing_image</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">seg_type</span><span class="o">=</span><span class="n">SegmentType</span><span class="o">.</span><span class="n">descending_aorta</span>
+    <span class="p">)</span>
+    <span class="n">desc_axial_segmenter</span><span class="o">.</span><span class="n">begin_segmentation</span><span class="p">()</span>
+    <span class="n">test_image</span> <span class="o">=</span> <span class="n">desc_axial_segmenter</span><span class="o">.</span><span class="n">processing_image</span>
+    <span class="n">ref_image</span> <span class="o">=</span> <span class="n">read_desc_volume_image</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;qualified slicefactor : </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">qsf</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;filter factor : </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ffactor</span><span class="p">))</span>
+    <span class="n">nda_ref</span> <span class="o">=</span> <span class="n">sitk</span><span class="o">.</span><span class="n">GetArrayFromImage</span><span class="p">(</span><span class="n">ref_image</span><span class="p">)</span>
+    <span class="n">nda_test</span> <span class="o">=</span> <span class="n">sitk</span><span class="o">.</span><span class="n">GetArrayFromImage</span><span class="p">(</span><span class="n">test_image</span><span class="p">)</span>
+    <span class="n">DSC_error</span> <span class="o">=</span> <span class="mi">1</span><span class="o">-</span><span class="n">DSC</span><span class="p">(</span><span class="n">nda_ref</span><span class="p">,</span> <span class="n">nda_test</span><span class="p">)</span>
+    <span class="n">print_result</span><span class="p">(</span><span class="n">nda_ref</span><span class="p">,</span> <span class="n">nda_test</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="p">(</span><span class="n">DSC_error</span> <span class="o">&lt;</span> <span class="n">limit</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">test_image</span></div>
+
+
+<div class="viewcode-block" id="test_compare_asc"><a class="viewcode-back" href="../../test.html#test.test_image_preprocessing.test_compare_asc">[docs]</a><span class="k">def</span> <span class="nf">test_compare_asc</span><span class="p">(</span><span class="n">limit</span><span class="p">,</span> <span class="n">qsf</span><span class="p">,</span> <span class="n">ffactor</span><span class="p">,</span> <span class="n">processing_image</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">processing_image</span><span class="p">:</span>
+        <span class="n">processing_image</span> <span class="o">=</span> <span class="n">read_desc_volume_image</span><span class="p">()</span>
+    <span class="n">starting_slice</span> <span class="o">=</span> <span class="mi">733</span>
+    <span class="n">aorta_centre</span> <span class="o">=</span> <span class="p">[</span><span class="mi">87</span><span class="p">,</span> <span class="mi">131</span><span class="p">]</span>
+    <span class="n">asc_axial_segmenter</span> <span class="o">=</span> <span class="n">AortaSegmenter</span><span class="p">(</span>
+        <span class="n">cropped_image</span><span class="o">=</span><span class="n">cropped_image</span><span class="p">,</span>
+        <span class="n">starting_slice</span><span class="o">=</span><span class="n">starting_slice</span><span class="p">,</span> <span class="n">aorta_centre</span><span class="o">=</span><span class="n">aorta_centre</span><span class="p">,</span>
+        <span class="n">num_slice_skipping</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+        <span class="n">qualified_slice_factor</span><span class="o">=</span><span class="n">qsf</span><span class="p">,</span>
+        <span class="n">filter_factor</span><span class="o">=</span><span class="n">ffactor</span><span class="p">,</span>
+        <span class="n">processing_image</span><span class="o">=</span><span class="n">processing_image</span><span class="p">,</span>
+        <span class="n">seg_type</span><span class="o">=</span><span class="n">SegmentType</span><span class="o">.</span><span class="n">ascending_aorta</span>
+    <span class="p">)</span>
+    <span class="n">asc_axial_segmenter</span><span class="o">.</span><span class="n">begin_segmentation</span><span class="p">()</span>
+    <span class="n">test_image</span> <span class="o">=</span> <span class="n">asc_axial_segmenter</span><span class="o">.</span><span class="n">processing_image</span>
+    <span class="n">ref_image</span> <span class="o">=</span> <span class="n">read_asc_volume_image</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;qualified slicefactor : </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">qsf</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;filter factor : </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ffactor</span><span class="p">))</span>
+    <span class="n">nda_ref</span> <span class="o">=</span> <span class="n">sitk</span><span class="o">.</span><span class="n">GetArrayFromImage</span><span class="p">(</span><span class="n">ref_image</span><span class="p">)</span>
+    <span class="n">nda_test</span> <span class="o">=</span> <span class="n">sitk</span><span class="o">.</span><span class="n">GetArrayFromImage</span><span class="p">(</span><span class="n">test_image</span><span class="p">)</span>
+    <span class="n">DSC_error</span> <span class="o">=</span> <span class="mi">1</span><span class="o">-</span><span class="n">DSC</span><span class="p">(</span><span class="n">nda_ref</span><span class="p">,</span> <span class="n">nda_test</span><span class="p">)</span>
+    <span class="n">print_result</span><span class="p">(</span><span class="n">nda_ref</span><span class="p">,</span> <span class="n">nda_test</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="p">(</span><span class="n">DSC_error</span> <span class="o">&lt;</span> <span class="n">limit</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">test_image</span></div>
+
+
+<div class="viewcode-block" id="test_compare_final_volume"><a class="viewcode-back" href="../../test.html#test.test_image_preprocessing.test_compare_final_volume">[docs]</a><span class="k">def</span> <span class="nf">test_compare_final_volume</span><span class="p">(</span><span class="n">limit</span><span class="p">,</span> <span class="n">qsf</span><span class="p">,</span> <span class="n">ffactor</span><span class="p">,</span> <span class="n">processing_image</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">processing_image</span><span class="p">:</span>
+        <span class="n">processing_image</span> <span class="o">=</span> <span class="n">read_asc_volume_image</span><span class="p">()</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">qsf</span><span class="p">:</span>
+        <span class="n">qsf</span> <span class="o">=</span> <span class="mf">2.2</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">ffactor</span><span class="p">:</span>
+        <span class="n">ffactor</span> <span class="o">=</span> <span class="mf">3.5</span>
+    <span class="n">sagittal_segmenter</span> <span class="o">=</span> <span class="n">AortaSegmenter</span><span class="p">(</span>
+        <span class="n">cropped_image</span><span class="o">=</span><span class="n">cropped_image</span><span class="p">,</span>
+        <span class="n">starting_slice</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">aorta_centre</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">num_slice_skipping</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+        <span class="n">qualified_slice_factor</span><span class="o">=</span><span class="n">qsf</span><span class="p">,</span>
+        <span class="n">filter_factor</span><span class="o">=</span><span class="n">ffactor</span><span class="p">,</span>
+        <span class="n">processing_image</span><span class="o">=</span><span class="n">processing_image</span><span class="p">,</span>
+        <span class="n">seg_type</span><span class="o">=</span><span class="n">SegmentType</span><span class="o">.</span><span class="n">sagittal_segmenter</span>
+    <span class="p">)</span>
+    <span class="n">sagittal_segmenter</span><span class="o">.</span><span class="n">begin_segmentation</span><span class="p">()</span>
+    <span class="n">test_image</span> <span class="o">=</span> <span class="n">sagittal_segmenter</span><span class="o">.</span><span class="n">processing_image</span>
+    <span class="n">ref_image</span> <span class="o">=</span> <span class="n">read_final_volume_image</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;qualified slicefactor : </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">qsf</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;filter factor : </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ffactor</span><span class="p">))</span>
+    <span class="n">nda_ref</span> <span class="o">=</span> <span class="n">sitk</span><span class="o">.</span><span class="n">GetArrayFromImage</span><span class="p">(</span><span class="n">ref_image</span><span class="p">)</span>
+    <span class="n">nda_test</span> <span class="o">=</span> <span class="n">sitk</span><span class="o">.</span><span class="n">GetArrayFromImage</span><span class="p">(</span><span class="n">test_image</span><span class="p">)</span>
+    <span class="n">DSC_error</span> <span class="o">=</span> <span class="mi">1</span><span class="o">-</span><span class="n">DSC</span><span class="p">(</span><span class="n">nda_ref</span><span class="p">,</span> <span class="n">nda_test</span><span class="p">)</span>
+    <span class="n">print_result</span><span class="p">(</span><span class="n">nda_ref</span><span class="p">,</span> <span class="n">nda_test</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="p">(</span><span class="n">DSC_error</span> <span class="o">&lt;</span> <span class="n">limit</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">test_image</span></div>
+
+
+<div class="viewcode-block" id="test_prepared_segmenting_image"><a class="viewcode-back" href="../../test.html#test.test_image_preprocessing.test_prepared_segmenting_image">[docs]</a><span class="k">def</span> <span class="nf">test_prepared_segmenting_image</span><span class="p">(</span><span class="n">limit</span><span class="p">,</span> <span class="n">qsf</span><span class="p">,</span> <span class="n">ffactor</span><span class="p">):</span>
+    <span class="n">limit</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">limit</span><span class="p">)</span>
+    <span class="n">processing_image</span> <span class="o">=</span> <span class="n">test_compare_des</span><span class="p">(</span><span class="n">limit</span><span class="p">)</span>
+    <span class="n">processing_image</span> <span class="o">=</span> <span class="n">test_compare_asc</span><span class="p">(</span><span class="n">limit</span><span class="p">,</span> <span class="n">processing_image</span><span class="p">)</span>
+    <span class="n">processing_image</span> <span class="o">=</span> <span class="n">test_compare_final_volume</span><span class="p">(</span><span class="n">limit</span><span class="p">,</span> <span class="n">processing_image</span><span class="p">)</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Jingyi Lin.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
