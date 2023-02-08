@@ -112,7 +112,7 @@
 
 <div class="viewcode-block" id="get_cropped_volume_image"><a class="viewcode-back" href="../../test.html#test.test_image_preprocessing.get_cropped_volume_image">[docs]</a><span class="k">def</span> <span class="nf">get_cropped_volume_image</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;Read the cropped volume</span>
-<span class="sd">    </span>
+
 <span class="sd">    Returns:</span>
 <span class="sd">        SITK: The cropped volume sitk image</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -127,36 +127,36 @@
 
 <div class="viewcode-block" id="read_desc_volume_image"><a class="viewcode-back" href="../../test.html#test.test_image_preprocessing.read_desc_volume_image">[docs]</a><span class="k">def</span> <span class="nf">read_desc_volume_image</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;Read the segmented descending aorta volume</span>
-<span class="sd">    </span>
+
 <span class="sd">    Returns:</span>
 <span class="sd">        SITK: The segmented descending aorta sitk image</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">abspath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="s2">&quot;test/sample/43681283_des.npy&quot;</span><span class="p">)</span>
-    <span class="n">nda</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;test/sample/43681283_des.npy&quot;</span><span class="p">)</span>
+    <span class="n">nda</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">abspath</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">sitk</span><span class="o">.</span><span class="n">GetImageFromArray</span><span class="p">(</span><span class="n">nda</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="read_asc_volume_image"><a class="viewcode-back" href="../../test.html#test.test_image_preprocessing.read_asc_volume_image">[docs]</a><span class="k">def</span> <span class="nf">read_asc_volume_image</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;Read the segmented ascending and descending aorta volume</span>
-<span class="sd">    </span>
+
 
 <span class="sd">    Returns:</span>
 <span class="sd">        SITK: The segmented ascending and descending aorta sitk image</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">abspath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="s2">&quot;test/sample/43681283_asc.npy&quot;</span><span class="p">)</span>
-    <span class="n">nda</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;test/sample/43681283_asc.npy&quot;</span><span class="p">)</span>
+    <span class="n">nda</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">abspath</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">sitk</span><span class="o">.</span><span class="n">GetImageFromArray</span><span class="p">(</span><span class="n">nda</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="read_final_volume_image"><a class="viewcode-back" href="../../test.html#test.test_image_preprocessing.read_final_volume_image">[docs]</a><span class="k">def</span> <span class="nf">read_final_volume_image</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;Read the final segmented aorta volume</span>
-<span class="sd">    </span>
-<span class="sd">    </span>
+
+
 <span class="sd">    Returns:</span>
 <span class="sd">        SITK: The final segmented aorta sitk image</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">abspath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="s2">&quot;test/sample/43681283_final.npy&quot;</span><span class="p">)</span>
-    <span class="n">nda</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;test/sample/43681283_final.npy&quot;</span><span class="p">)</span>
+    <span class="n">nda</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">abspath</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">sitk</span><span class="o">.</span><span class="n">GetImageFromArray</span><span class="p">(</span><span class="n">nda</span><span class="p">)</span></div>
 
 
@@ -164,12 +164,12 @@
     <span class="sd">&quot;&quot;&quot;Calculate the Dice similarity coefficient</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        ref_image (numpy.ndarrays): nda to compare  </span>
+<span class="sd">        ref_image (numpy.ndarrays): nda to compare</span>
 
-<span class="sd">        test_image (numpy.ndarrays): nda to compare  </span>
-<span class="sd">    </span>
+<span class="sd">        test_image (numpy.ndarrays): nda to compare</span>
+
 <span class="sd">    Returns:</span>
-<span class="sd">        float: The Dice similarity coefficient of reference image and test image </span>
+<span class="sd">        float: The Dice similarity coefficient of the reference and test image</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">two_TP</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">count_nonzero</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span><span class="n">ref_image</span><span class="p">,</span> <span class="n">test_image</span><span class="p">))</span><span class="o">*</span><span class="mi">2</span>
     <span class="n">total</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">count_nonzero</span><span class="p">(</span><span class="n">ref_image</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">count_nonzero</span><span class="p">(</span><span class="n">test_image</span><span class="p">))</span>

@@ -13,14 +13,13 @@
 import os
 import sys
 project_path = os.path.abspath('../../../')
-AGR_module_path = os.path.join(
-    project_path,
-    "src/SlicerExtension/AortaGeometryReconstructor/AortaGeomReconDisplayModule"
-)
+AGR_module_path = os.path.join(project_path, "src/SlicerExtension/")
+AGR_module_path = os.path.join(AGR_module_path, "AortaGeometryReconstructor/")
+AGR_module_path = os.path.join(AGR_module_path, "AortaGeomReconDisplayModule")
 
 sys.path.insert(0, project_path)
 sys.path.insert(0, AGR_module_path)
-print(sys.path)
+
 
 # -- Project information -----------------------------------------------------
 
@@ -43,7 +42,7 @@ templates_path = ['_templates']
 # directories to ignore when looking for source files.
 # This pattern also affects html_static_path and html_extra_path.
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
-autodoc_default_options = {"members": True, "undoc-members": True, "private-members": True}
+autodoc_default_options = {"members": True, "undoc-members": True, "private-members": True} # noqa
 
 # -- Options for HTML output -------------------------------------------------
 

@@ -45,7 +45,7 @@ def transform_image(cropped_image):
 
 def get_cropped_volume_image():
     """Read the cropped volume
-    
+
     Returns:
         SITK: The cropped volume sitk image
     """
@@ -60,36 +60,36 @@ cropped_image = transform_image(cropped_image)
 
 def read_desc_volume_image():
     """Read the segmented descending aorta volume
-    
+
     Returns:
         SITK: The segmented descending aorta sitk image
     """
     abspath = os.path.abspath("test/sample/43681283_des.npy")
-    nda = np.load("test/sample/43681283_des.npy")
+    nda = np.load(abspath)
     return sitk.GetImageFromArray(nda)
 
 
 def read_asc_volume_image():
     """Read the segmented ascending and descending aorta volume
-    
+
 
     Returns:
         SITK: The segmented ascending and descending aorta sitk image
     """
     abspath = os.path.abspath("test/sample/43681283_asc.npy")
-    nda = np.load("test/sample/43681283_asc.npy")
+    nda = np.load(abspath)
     return sitk.GetImageFromArray(nda)
 
 
 def read_final_volume_image():
     """Read the final segmented aorta volume
-    
+
 
     Returns:
         SITK: The final segmented aorta sitk image
     """
     abspath = os.path.abspath("test/sample/43681283_final.npy")
-    nda = np.load("test/sample/43681283_final.npy")
+    nda = np.load(abspath)
     return sitk.GetImageFromArray(nda)
 
 
@@ -97,12 +97,12 @@ def DSC(ref_image, test_image):
     """Calculate the Dice similarity coefficient
 
     Args:
-        ref_image (numpy.ndarrays): nda to compare  
+        ref_image (numpy.ndarrays): nda to compare
 
-        test_image (numpy.ndarrays): nda to compare  
-    
+        test_image (numpy.ndarrays): nda to compare
+
     Returns:
-        float: The Dice similarity coefficient of reference image and test image 
+        float: The Dice similarity coefficient of the reference and test image
     """
     two_TP = np.count_nonzero(np.logical_and(ref_image, test_image))*2
     total = (np.count_nonzero(ref_image) + np.count_nonzero(test_image))

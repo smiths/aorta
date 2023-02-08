@@ -36,7 +36,7 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../modules.html">test</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">AortaGeomRecon</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../test.html">test package</a></li>
 </ul>
 
@@ -77,6 +77,9 @@
     <span class="n">sagittal</span> <span class="o">=</span> <span class="mi">4</span>
 
 <div class="viewcode-block" id="SegmentType.is_axial_seg"><a class="viewcode-back" href="../../AortaGeomReconDisplayModuleLib.html#AortaGeomReconDisplayModuleLib.AortaSegmenter.SegmentType.is_axial_seg">[docs]</a>    <span class="k">def</span> <span class="nf">is_axial_seg</span><span class="p">(</span><span class="n">seg_type</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return True if the segmentation type is</span>
+<span class="sd">        descending or ascending aorta segmentation, False otherwise.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">(</span><span class="n">seg_type</span> <span class="o">==</span> <span class="n">SegmentType</span><span class="o">.</span><span class="n">descending_aorta</span>
                 <span class="ow">or</span> <span class="n">seg_type</span> <span class="o">==</span> <span class="n">SegmentType</span><span class="o">.</span><span class="n">ascending_aorta</span><span class="p">)</span></div>
 
@@ -89,7 +92,7 @@
 
 
 <div class="viewcode-block" id="SegmentDirection"><a class="viewcode-back" href="../../AortaGeomReconDisplayModuleLib.html#AortaGeomReconDisplayModuleLib.AortaSegmenter.SegmentDirection">[docs]</a><span class="k">class</span> <span class="nc">SegmentDirection</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
-    <span class="n">S_to_I</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">Superior_to_Inferior</span> <span class="o">=</span> <span class="mi">1</span>
     <span class="n">I_to_S</span> <span class="o">=</span> <span class="mi">2</span></div>
 
 

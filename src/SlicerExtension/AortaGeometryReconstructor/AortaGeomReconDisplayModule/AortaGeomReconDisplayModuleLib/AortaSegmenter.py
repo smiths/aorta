@@ -10,10 +10,8 @@ class SegmentType(Enum):
     sagittal = 4
 
     def is_axial_seg(seg_type):
-        """Read the cropped volume
-    
-        Returns:
-            boolean: True if 
+        """Return True if the segmentation type is
+        descending or ascending aorta segmentation, False otherwise.
         """
         return (seg_type == SegmentType.descending_aorta
                 or seg_type == SegmentType.ascending_aorta)
@@ -28,7 +26,7 @@ class SegmentType(Enum):
 
 class SegmentDirection(Enum):
     Superior_to_Inferior = 1
-    I_to_S = 2
+    Inferior_to_Superior = 2
 
 
 class PixelValue(Enum):
@@ -145,7 +143,7 @@ class AortaSegmenter():
 
             # SEGMENT FROM SEED VALUE TO BOTTOM OF THE AORTA
             print("{} - top to bottom started".format(self._seg_type))
-            self._seg_dir = SegmentDirection.Superior_to_Inferior
+            self._seg_dir = SegmentDirection.S_to_I
             self._end = -1
             self._step = -1
             self._skipped_slice_counter = 0
@@ -153,7 +151,7 @@ class AortaSegmenter():
             print("{} - top to bottom finished".format(self._seg_type))
 
             print("{} - bottom to top started".format(self._seg_type))
-            self._seg_dir = SegmentDirection.I_to_S
+            self._seg_dir = SegmentDirection.Inferior_to_Superior
             self._end = self._cropped_image.GetDepth()
             self._step = 1
             self._skipped_slice_counter = len(self._skipped_slices)
@@ -253,7 +251,7 @@ class AortaSegmenter():
                     seeds_previous = var_list[3]
 
                     # check for double size
-                    if self._seg_dir == SegmentDirection.I_to_S:
+                    if self._seg_dir == SegmentDirection.Inferior_to_Superior:
                         if total_coord > self._original_size * 2:
                             if (total_coord < previous_size):
                                 self._decreasing_size = True
@@ -281,9 +279,9 @@ class AortaSegmenter():
         ps_factor = 2
         os_factor = self._qualified_slice_factor
         if SegmentType.is_axial_seg(self._seg_type):
-            if self._seg_dir == SegmentDirection.Superior_to_Inferior:
+            if self._seg_dir == SegmentDirection.S_to_I:
                 comparing_size = self._original_size
-            elif self._seg_dir == SegmentDirection.I_to_S:
+            elif self._seg_dir == SegmentDirection.Inferior_to_Superior:
                 comparing_size = previous_size
                 if self._seg_type == SegmentType.ascending_aorta:
                     os_factor = 4
