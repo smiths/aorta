@@ -143,7 +143,7 @@ class AortaSegmenter():
 
             # SEGMENT FROM SEED VALUE TO BOTTOM OF THE AORTA
             print("{} - top to bottom started".format(self._seg_type))
-            self._seg_dir = SegmentDirection.S_to_I
+            self._seg_dir = SegmentDirection.Superior_to_Inferior
             self._end = -1
             self._step = -1
             self._skipped_slice_counter = 0
@@ -279,7 +279,7 @@ class AortaSegmenter():
         ps_factor = 2
         os_factor = self._qualified_slice_factor
         if SegmentType.is_axial_seg(self._seg_type):
-            if self._seg_dir == SegmentDirection.S_to_I:
+            if self._seg_dir == SegmentDirection.Superior_to_Inferior:
                 comparing_size = self._original_size
             elif self._seg_dir == SegmentDirection.Inferior_to_Superior:
                 comparing_size = previous_size
