@@ -1,4 +1,11 @@
+
+
 def pytest_addoption(parser):
+    """Read the segmented ascending and descending aorta volume
+
+    Returns:
+        SITK: The segmented ascending and descending aorta sitk image
+    """
     parser.addoption("--limit", action="store", default=0.05)
     parser.addoption("--qsf", action="store", default=2.2)
     parser.addoption("--ffactor", action="store", default=3.5)
