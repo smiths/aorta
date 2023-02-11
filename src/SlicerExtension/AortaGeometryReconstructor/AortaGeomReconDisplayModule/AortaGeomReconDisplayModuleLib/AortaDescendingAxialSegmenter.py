@@ -1,5 +1,15 @@
+import os
+import sys
+project_path = os.path.abspath('.')
+AGR_module_path = os.path.join(project_path, "src/SlicerExtension/")
+AGR_module_path = os.path.join(AGR_module_path, "AortaGeometryReconstructor/")
+AGR_module_path = os.path.join(AGR_module_path, "AortaGeomReconDisplayModule")
+sys.path.insert(0, AGR_module_path)
+
 from AortaGeomReconDisplayModuleLib.AortaAxialSegmenter \
     import AortaAxialSegmenter
+from AortaGeomReconDisplayModuleLib.AortaGeomReconEnums \
+    import SegmentDirection as SegDir
 import SimpleITK as sitk
 import numpy as np
 
@@ -7,12 +17,12 @@ import numpy as np
 class AortaDescendingAxialSegmenter(AortaAxialSegmenter):
 
     def __init__(self, starting_slice, aorta_centre, num_slice_skipping,
-                 segmentation_factor, cropped_image,
+                 qualified_slice_factor, cropped_image,
                  normalized=False, outputBinary=True):
         super().__init__(starting_slice=starting_slice,
                          aorta_centre=aorta_centre,
                          num_slice_skipping=num_slice_skipping,
-                         segmentation_factor=segmentation_factor,
+                         qualified_slice_factor=qualified_slice_factor,
                          cropped_image=cropped_image,
                          normalized=normalized,
                          output_binary=outputBinary)
@@ -23,9 +33,9 @@ class AortaDescendingAxialSegmenter(AortaAxialSegmenter):
     def __circle_filter(self, sliceNum, centre):
         imgSlice = self._cropped_image[:, :, sliceNum]
 
-        if self._normalized:
-            imgSlice = sitk.Cast(
-                sitk.RescaleIntensity(imgSlice), sitk.sitkUInt8)
+        # if self._normalized:
+        #     imgSlice = sitk.Cast(
+        #         sitk.RescaleIntensity(imgSlice), sitk.sitkUInt8)
 
         # make new image for putting seed in
         seg_2d = sitk.Image(imgSlice.GetSize(), sitk.sitkUInt8)
@@ -75,65 +85,55 @@ class AortaDescendingAxialSegmenter(AortaAxialSegmenter):
 
         return fully_seg_slice, len(list_x), centre_new
 
-    def segmentation(self, factor, top_to_bottom):
-
-        if top_to_bottom:
-            fully_seg_slice, total_coord, _ = self.__circle_filter(
-                self._starting_slice, self._aorta_centre)
-
-            self._processing_image[
-                :, :, self._starting_slice] = fully_seg_slice
-
-            self._original_size = total_coord
-            previous_size = total_coord
-            # counts how many slices have been skipped
-            counter = 0
-            starting_slice = self._starting_slice
-            endingSlice = -1
-            step = -1
-        else:
-            starting_slice = self._starting_slice
-            endingSlice = self._cropped_image.GetDepth()
-            previous_size = self._original_size
-            step = 1
-
+    def segmentation(self):
         centre_previous = self._aorta_centre
         more_circles = True
         counter = len(self._skipped_slices)
 
-        for sliceNum in range(starting_slice, endingSlice, step):
+        for sliceNum in range(self._start, self._end, self._step):
             if (more_circles):
 
                 # perform segmentation on slice i
                 fully_seg_slice, total_coord, centre = self.__circle_filter(
                     sliceNum, centre_previous)
+
                 # determine whether the size of this slice "qualifies" it
                 # to be accurate
-                is_new_center_qualified = (
-                    (total_coord < 2 * previous_size)
-                    and (total_coord < factor * self._original_size)
-                )
-                if top_to_bottom:
-                    is_new_center_qualified = (
-                        is_new_center_qualified
-                        and total_coord > (1 / factor * self._original_size)
+                cmp_prev_size = (total_coord < 2*self._previous_size)
+                if self._seg_dir == SegDir.Superior_to_Inferior:
+                    slicer_larger_than = (
+                        total_coord >
+                        (self._original_size/self.qualified_slice_factor)
+                    )
+                    cmp_original_size = (
+                        total_coord <
+                        (self._original_size*self.qualified_slice_factor)
                     )
                 else:
-                    is_new_center_qualified = (
-                        is_new_center_qualified
-                        and total_coord > (1 / factor * previous_size)
+                    slicer_larger_than = (
+                        total_coord >
+                        (self._previous_size/self.qualified_slice_factor)
                     )
+                    cmp_original_size = (
+                        total_coord <
+                        (self._original_size*
+                            (self.qualified_slice_factor+0.3)
+                        )
+                    )
+
+                is_new_center_qualified = (
+                    cmp_prev_size
+                    and slicer_larger_than
+                    and cmp_original_size
+                )
 
                 if is_new_center_qualified:
                     counter = 0
-                    # add slice to new_image
                     self._processing_image[:, :, sliceNum] = fully_seg_slice
                     centre_previous = centre
                 else:
                     counter += 1
                     self._skipped_slices.append(sliceNum)
-                    # myshow(sitk.LabelOverlay(
-                    # cropped_images[ct_number][:,:,i], fully_seg_slice))
                     if (counter >= self._num_slice_skipping):
                         more_circles = False
 
@@ -143,14 +143,34 @@ class AortaDescendingAxialSegmenter(AortaAxialSegmenter):
 
                     # Ignore skipped slice by not assigning new slice back to
                     # segmenting image
-                    total_coord = previous_size
+                    total_coord = self._previous_size
 
             elif not self._is_output_binary:
                 self._processing_image[:, :, sliceNum] = sitk.Cast(
                     self._cropped_image_255[:, :, sliceNum],
                     sitk.sitkVectorUInt8)
 
-            previous_size = total_coord
+            self._previous_size = total_coord
+
+    def initializeParameterStoI(self):
+        fully_seg_slice, total_coord, _ = self.__circle_filter(
+            self._starting_slice, self._aorta_centre)
+        self._original_size = total_coord
+        self._previous_size = total_coord
+        self._processing_image[
+            :, :, self._starting_slice] = fully_seg_slice
+        self._skipped_counter = 0
+        self._start = self._starting_slice
+        self._end = -1
+        self._step = -1
+        self._seg_dir = SegDir.Superior_to_Inferior
+
+    def initializeParameterItoS(self):
+        self._start = self._starting_slice
+        self._end = self._cropped_image.GetDepth()
+        self._previous_size = self._original_size
+        self._step = 1
+        self._seg_dir = SegDir.Inferior_to_Superior
 
     def begin_segmentation(self):
         # Descending Aorta Segmentation
@@ -164,13 +184,16 @@ class AortaDescendingAxialSegmenter(AortaAxialSegmenter):
         self._processing_image = sitk.Image(
             self._cropped_image.GetSize(), sitk.sitkUInt8)
         self._processing_image.CopyInformation(self._cropped_image)
-        print(self._cropped_image.GetSize())
+
+        self.initializeParameterStoI()
         print("Descending aorta segmentation - top to bottom started")
-        self.segmentation(self._segmentation_factor, True)
+        self.segmentation()
         print("Descending aorta segmentation - top to bottom finished")
 
+
+        self.initializeParameterItoS()
         print("Descending aorta segmentation - bottom to top started")
-        self.segmentation(self._segmentation_factor + 0.3, False)
+        self.segmentation()
         print("Descending aorta segmentation - bottom to top finished")
 
         # Fill in missing slices of descending aorta
