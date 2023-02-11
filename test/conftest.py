@@ -1,10 +1,7 @@
 
 
 def pytest_addoption(parser):
-    """Read the segmented ascending and descending aorta volume
-
-    Returns:
-        SITK: The segmented ascending and descending aorta sitk image
+    """Add argument parser to pytest, we can pass parameters to pytest.
     """
     parser.addoption("--limit", action="store", default=0.05)
     parser.addoption("--qsf", action="store", default=2.2)
@@ -12,8 +9,8 @@ def pytest_addoption(parser):
 
 
 def pytest_generate_tests(metafunc):
-    # This is called for every test. Only get/set command line arguments
-    # if the argument is specified in the list of test "fixturenames".
+    """Convert parser arguments to parameters
+    """
     option_value = float(metafunc.config.option.limit)
     if 'limit' in metafunc.fixturenames and option_value is not None:
         metafunc.parametrize("limit", [option_value])

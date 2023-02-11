@@ -1,5 +1,7 @@
 from src.SlicerExtension.AortaGeometryReconstructor.AortaGeomReconDisplayModule.AortaGeomReconDisplayModuleLib.AortaSegmenter_backup import AortaSegmenter # noqa
 from src.SlicerExtension.AortaGeometryReconstructor.AortaGeomReconDisplayModule.AortaGeomReconDisplayModuleLib.AortaSegmenter_backup import SegmentType # noqa
+from src.SlicerExtension.AortaGeometryReconstructor.AortaGeomReconDisplayModule.AortaGeomReconDisplayModuleLib.AortaDescendingAxialSegmenter import AortaDescendingAxialSegmenter # noqa
+
 import SimpleITK as sitk
 import numpy as np
 import os
@@ -129,14 +131,23 @@ def test_compare_des(limit, qsf, ffactor):
 
     # starting_slice = 700
     # aorta_centre = [5, 60]
-    desc_axial_segmenter = AortaSegmenter(
-        cropped_image=cropped_image,
-        starting_slice=starting_slice, aorta_centre=aorta_centre,
+    # desc_axial_segmenter = AortaSegmenter(
+    #     cropped_image=cropped_image,
+    #     starting_slice=starting_slice, aorta_centre=aorta_centre,
+    #     num_slice_skipping=3,
+    #     qualified_slice_factor=qsf,
+    #     filter_factor=ffactor,
+    #     processing_image=None,
+    #     seg_type=SegmentType.descending_aorta
+    # )
+
+
+    desc_axial_segmenter = AortaDescendingAxialSegmenter(
+        starting_slice=starting_slice,
+        aorta_centre=aorta_centre,
         num_slice_skipping=3,
         qualified_slice_factor=qsf,
-        filter_factor=ffactor,
-        processing_image=None,
-        seg_type=SegmentType.descending_aorta
+        cropped_image=cropped_image
     )
     desc_axial_segmenter.begin_segmentation()
     test_image = desc_axial_segmenter.processing_image
