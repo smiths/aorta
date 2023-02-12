@@ -36,7 +36,7 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../modules.html">AortaGeomReconDisplayModule</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">AortaGeomReconDisplayModuleLib</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../test.html">test package</a></li>
 </ul>
 
@@ -65,15 +65,19 @@
            <div itemprop="articleBody">
              
   <h1>Source code for test.conftest</h1><div class="highlight"><pre>
-<div class="viewcode-block" id="pytest_addoption"><a class="viewcode-back" href="../../test.html#test.conftest.pytest_addoption">[docs]</a><span></span><span class="k">def</span> <span class="nf">pytest_addoption</span><span class="p">(</span><span class="n">parser</span><span class="p">):</span>
+<span></span>
+
+<div class="viewcode-block" id="pytest_addoption"><a class="viewcode-back" href="../../test.html#test.conftest.pytest_addoption">[docs]</a><span class="k">def</span> <span class="nf">pytest_addoption</span><span class="p">(</span><span class="n">parser</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Add argument parser to pytest, we can pass parameters to pytest.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">parser</span><span class="o">.</span><span class="n">addoption</span><span class="p">(</span><span class="s2">&quot;--limit&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mf">0.05</span><span class="p">)</span>
     <span class="n">parser</span><span class="o">.</span><span class="n">addoption</span><span class="p">(</span><span class="s2">&quot;--qsf&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mf">2.2</span><span class="p">)</span>
     <span class="n">parser</span><span class="o">.</span><span class="n">addoption</span><span class="p">(</span><span class="s2">&quot;--ffactor&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mf">3.5</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="pytest_generate_tests"><a class="viewcode-back" href="../../test.html#test.conftest.pytest_generate_tests">[docs]</a><span class="k">def</span> <span class="nf">pytest_generate_tests</span><span class="p">(</span><span class="n">metafunc</span><span class="p">):</span>
-    <span class="c1"># This is called for every test. Only get/set command line arguments</span>
-    <span class="c1"># if the argument is specified in the list of test &quot;fixturenames&quot;.</span>
+    <span class="sd">&quot;&quot;&quot;Convert parser arguments to parameters</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">option_value</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">metafunc</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">option</span><span class="o">.</span><span class="n">limit</span><span class="p">)</span>
     <span class="k">if</span> <span class="s1">&#39;limit&#39;</span> <span class="ow">in</span> <span class="n">metafunc</span><span class="o">.</span><span class="n">fixturenames</span> <span class="ow">and</span> <span class="n">option_value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">metafunc</span><span class="o">.</span><span class="n">parametrize</span><span class="p">(</span><span class="s2">&quot;limit&quot;</span><span class="p">,</span> <span class="p">[</span><span class="n">option_value</span><span class="p">])</span>

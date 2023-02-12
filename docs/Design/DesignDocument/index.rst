@@ -10,9 +10,7 @@ Welcome to AortaGeomRecon's documentation!
    :maxdepth: 2
    :caption: Contents:
 
-
    modules
-   test
 
 
 Indices and tables
