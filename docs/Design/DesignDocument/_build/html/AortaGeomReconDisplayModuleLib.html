@@ -18,7 +18,7 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="prev" title="test package" href="test.html" /> 
+    <link rel="prev" title="AortaGeomReconDisplayModule module" href="AortaGeomReconDisplayModule.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -38,11 +38,18 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
-<li class="toctree-l1 current"><a class="reference internal" href="modules.html">AortaGeomRecon</a><ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">Project</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="test.html">test package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="AortaGeomReconDisplayModule.html">AortaGeomReconDisplayModule module</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">AortaGeomReconDisplayModuleLib package</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-AortaGeomReconDisplayModuleLib.AortaAscendingAxialSegmenter">AortaGeomReconDisplayModuleLib.AortaAscendingAxialSegmenter module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-AortaGeomReconDisplayModuleLib.AortaAxialSegmenter">AortaGeomReconDisplayModuleLib.AortaAxialSegmenter module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-AortaGeomReconDisplayModuleLib.AortaDescendingAxialSegmenter">AortaGeomReconDisplayModuleLib.AortaDescendingAxialSegmenter module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-AortaGeomReconDisplayModuleLib.AortaGeomReconEnums">AortaGeomReconDisplayModuleLib.AortaGeomReconEnums module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-AortaGeomReconDisplayModuleLib.AortaSagitalSegmenter">AortaGeomReconDisplayModuleLib.AortaSagitalSegmenter module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#module-AortaGeomReconDisplayModuleLib.AortaSegmenter">AortaGeomReconDisplayModuleLib.AortaSegmenter module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-AortaGeomReconDisplayModuleLib.AortaSegmenterBase">AortaGeomReconDisplayModuleLib.AortaSegmenterBase module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#module-AortaGeomReconDisplayModuleLib">Module contents</a></li>
 </ul>
 </li>
@@ -65,7 +72,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="index.html" class="icon icon-home"></a></li>
-          <li class="breadcrumb-item"><a href="modules.html">AortaGeomRecon</a></li>
+          <li class="breadcrumb-item"><a href="modules.html">Project</a></li>
       <li class="breadcrumb-item active">AortaGeomReconDisplayModuleLib package</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/AortaGeomReconDisplayModuleLib.rst.txt" rel="nofollow"> View page source</a>
@@ -81,55 +88,157 @@
 <section id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline"></a></h2>
 </section>
+<section id="module-AortaGeomReconDisplayModuleLib.AortaAscendingAxialSegmenter">
+<span id="aortageomrecondisplaymodulelib-aortaascendingaxialsegmenter-module"></span><h2>AortaGeomReconDisplayModuleLib.AortaAscendingAxialSegmenter module<a class="headerlink" href="#module-AortaGeomReconDisplayModuleLib.AortaAscendingAxialSegmenter" title="Permalink to this headline"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="AortaGeomReconDisplayModuleLib.AortaAscendingAxialSegmenter.AortaAscendingAxialSegmenter">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">AortaGeomReconDisplayModuleLib.AortaAscendingAxialSegmenter.</span></span><span class="sig-name descname"><span class="pre">AortaAscendingAxialSegmenter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">starting_slice</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">aorta_centre</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_slice_skipping</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qualified_slice_factor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cropped_image</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">processing_image</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#AortaGeomReconDisplayModuleLib.AortaAscendingAxialSegmenter.AortaAscendingAxialSegmenter" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#AortaGeomReconDisplayModuleLib.AortaAxialSegmenter.AortaAxialSegmenter" title="AortaGeomReconDisplayModuleLib.AortaAxialSegmenter.AortaAxialSegmenter"><code class="xref py py-class docutils literal notranslate"><span class="pre">AortaGeomReconDisplayModuleLib.AortaAxialSegmenter.AortaAxialSegmenter</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="AortaGeomReconDisplayModuleLib.AortaAscendingAxialSegmenter.AortaAscendingAxialSegmenter.begin_segmentation">
+<span class="sig-name descname"><span class="pre">begin_segmentation</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#AortaGeomReconDisplayModuleLib.AortaAscendingAxialSegmenter.AortaAscendingAxialSegmenter.begin_segmentation" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-AortaGeomReconDisplayModuleLib.AortaAxialSegmenter">
+<span id="aortageomrecondisplaymodulelib-aortaaxialsegmenter-module"></span><h2>AortaGeomReconDisplayModuleLib.AortaAxialSegmenter module<a class="headerlink" href="#module-AortaGeomReconDisplayModuleLib.AortaAxialSegmenter" title="Permalink to this headline"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="AortaGeomReconDisplayModuleLib.AortaAxialSegmenter.AortaAxialSegmenter">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">AortaGeomReconDisplayModuleLib.AortaAxialSegmenter.</span></span><span class="sig-name descname"><span class="pre">AortaAxialSegmenter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">starting_slice</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">aorta_centre</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_slice_skipping</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qualified_slice_factor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cropped_image</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#AortaGeomReconDisplayModuleLib.AortaAxialSegmenter.AortaAxialSegmenter" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#AortaGeomReconDisplayModuleLib.AortaSegmenterBase.AortaSegmenterBase" title="AortaGeomReconDisplayModuleLib.AortaSegmenterBase.AortaSegmenterBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">AortaGeomReconDisplayModuleLib.AortaSegmenterBase.AortaSegmenterBase</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="AortaGeomReconDisplayModuleLib.AortaAxialSegmenter.AortaAxialSegmenter.circle_filter">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">circle_filter</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#AortaGeomReconDisplayModuleLib.AortaAxialSegmenter.AortaAxialSegmenter.circle_filter" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-AortaGeomReconDisplayModuleLib.AortaDescendingAxialSegmenter">
+<span id="aortageomrecondisplaymodulelib-aortadescendingaxialsegmenter-module"></span><h2>AortaGeomReconDisplayModuleLib.AortaDescendingAxialSegmenter module<a class="headerlink" href="#module-AortaGeomReconDisplayModuleLib.AortaDescendingAxialSegmenter" title="Permalink to this headline"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="AortaGeomReconDisplayModuleLib.AortaDescendingAxialSegmenter.AortaDescendingAxialSegmenter">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">AortaGeomReconDisplayModuleLib.AortaDescendingAxialSegmenter.</span></span><span class="sig-name descname"><span class="pre">AortaDescendingAxialSegmenter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">starting_slice</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">aorta_centre</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_slice_skipping</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qualified_slice_factor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cropped_image</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#AortaGeomReconDisplayModuleLib.AortaDescendingAxialSegmenter.AortaDescendingAxialSegmenter" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#AortaGeomReconDisplayModuleLib.AortaAxialSegmenter.AortaAxialSegmenter" title="AortaGeomReconDisplayModuleLib.AortaAxialSegmenter.AortaAxialSegmenter"><code class="xref py py-class docutils literal notranslate"><span class="pre">AortaGeomReconDisplayModuleLib.AortaAxialSegmenter.AortaAxialSegmenter</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="AortaGeomReconDisplayModuleLib.AortaDescendingAxialSegmenter.AortaDescendingAxialSegmenter.begin_segmentation">
+<span class="sig-name descname"><span class="pre">begin_segmentation</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#AortaGeomReconDisplayModuleLib.AortaDescendingAxialSegmenter.AortaDescendingAxialSegmenter.begin_segmentation" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="AortaGeomReconDisplayModuleLib.AortaDescendingAxialSegmenter.AortaDescendingAxialSegmenter.segmentation">
+<span class="sig-name descname"><span class="pre">segmentation</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#AortaGeomReconDisplayModuleLib.AortaDescendingAxialSegmenter.AortaDescendingAxialSegmenter.segmentation" title="Permalink to this definition"></a></dt>
+<dd><p>From the starting slice to the superior or the inferior,
+use label statistics to see if a circle can be segmented.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-AortaGeomReconDisplayModuleLib.AortaGeomReconEnums">
+<span id="aortageomrecondisplaymodulelib-aortageomreconenums-module"></span><h2>AortaGeomReconDisplayModuleLib.AortaGeomReconEnums module<a class="headerlink" href="#module-AortaGeomReconDisplayModuleLib.AortaGeomReconEnums" title="Permalink to this headline"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="AortaGeomReconDisplayModuleLib.AortaGeomReconEnums.PixelValue">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">AortaGeomReconDisplayModuleLib.AortaGeomReconEnums.</span></span><span class="sig-name descname"><span class="pre">PixelValue</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#AortaGeomReconDisplayModuleLib.AortaGeomReconEnums.PixelValue" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">enum.Enum</span></code></p>
+<p>An enumeration.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="AortaGeomReconDisplayModuleLib.AortaGeomReconEnums.PixelValue.black_pixel">
+<span class="sig-name descname"><span class="pre">black_pixel</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0</span></em><a class="headerlink" href="#AortaGeomReconDisplayModuleLib.AortaGeomReconEnums.PixelValue.black_pixel" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="AortaGeomReconDisplayModuleLib.AortaGeomReconEnums.PixelValue.white_pixel">
+<span class="sig-name descname"><span class="pre">white_pixel</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></em><a class="headerlink" href="#AortaGeomReconDisplayModuleLib.AortaGeomReconEnums.PixelValue.white_pixel" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="AortaGeomReconDisplayModuleLib.AortaGeomReconEnums.SegmentDirection">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">AortaGeomReconDisplayModuleLib.AortaGeomReconEnums.</span></span><span class="sig-name descname"><span class="pre">SegmentDirection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#AortaGeomReconDisplayModuleLib.AortaGeomReconEnums.SegmentDirection" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">enum.Enum</span></code></p>
+<p>Enum type describing the segmentation direction.
+Superior is where the human head is located.
+Inferior is where the human feet is located.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="AortaGeomReconDisplayModuleLib.AortaGeomReconEnums.SegmentDirection.Inferior_to_Superior">
+<span class="sig-name descname"><span class="pre">Inferior_to_Superior</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">2</span></em><a class="headerlink" href="#AortaGeomReconDisplayModuleLib.AortaGeomReconEnums.SegmentDirection.Inferior_to_Superior" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="AortaGeomReconDisplayModuleLib.AortaGeomReconEnums.SegmentDirection.Superior_to_Inferior">
+<span class="sig-name descname"><span class="pre">Superior_to_Inferior</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></em><a class="headerlink" href="#AortaGeomReconDisplayModuleLib.AortaGeomReconEnums.SegmentDirection.Superior_to_Inferior" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="AortaGeomReconDisplayModuleLib.AortaGeomReconEnums.SegmentType">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">AortaGeomReconDisplayModuleLib.AortaGeomReconEnums.</span></span><span class="sig-name descname"><span class="pre">SegmentType</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#AortaGeomReconDisplayModuleLib.AortaGeomReconEnums.SegmentType" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">enum.Enum</span></code></p>
+<p>An enumeration.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="AortaGeomReconDisplayModuleLib.AortaGeomReconEnums.SegmentType.ascending_aorta">
+<span class="sig-name descname"><span class="pre">ascending_aorta</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">2</span></em><a class="headerlink" href="#AortaGeomReconDisplayModuleLib.AortaGeomReconEnums.SegmentType.ascending_aorta" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="AortaGeomReconDisplayModuleLib.AortaGeomReconEnums.SegmentType.descending_aorta">
+<span class="sig-name descname"><span class="pre">descending_aorta</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></em><a class="headerlink" href="#AortaGeomReconDisplayModuleLib.AortaGeomReconEnums.SegmentType.descending_aorta" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="AortaGeomReconDisplayModuleLib.AortaGeomReconEnums.SegmentType.is_axial_seg">
+<span class="sig-name descname"><span class="pre">is_axial_seg</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#AortaGeomReconDisplayModuleLib.AortaGeomReconEnums.SegmentType.is_axial_seg" title="Permalink to this definition"></a></dt>
+<dd><p>Return True if the segmentation type is
+descending or ascending aorta segmentation, False otherwise.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="AortaGeomReconDisplayModuleLib.AortaGeomReconEnums.SegmentType.is_sagittal_seg">
+<span class="sig-name descname"><span class="pre">is_sagittal_seg</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#AortaGeomReconDisplayModuleLib.AortaGeomReconEnums.SegmentType.is_sagittal_seg" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="AortaGeomReconDisplayModuleLib.AortaGeomReconEnums.SegmentType.sagittal">
+<span class="sig-name descname"><span class="pre">sagittal</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">4</span></em><a class="headerlink" href="#AortaGeomReconDisplayModuleLib.AortaGeomReconEnums.SegmentType.sagittal" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="AortaGeomReconDisplayModuleLib.AortaGeomReconEnums.SegmentType.sagittal_front">
+<span class="sig-name descname"><span class="pre">sagittal_front</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">3</span></em><a class="headerlink" href="#AortaGeomReconDisplayModuleLib.AortaGeomReconEnums.SegmentType.sagittal_front" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-AortaGeomReconDisplayModuleLib.AortaSagitalSegmenter">
+<span id="aortageomrecondisplaymodulelib-aortasagitalsegmenter-module"></span><h2>AortaGeomReconDisplayModuleLib.AortaSagitalSegmenter module<a class="headerlink" href="#module-AortaGeomReconDisplayModuleLib.AortaSagitalSegmenter" title="Permalink to this headline"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="AortaGeomReconDisplayModuleLib.AortaSagitalSegmenter.AortaSagitalSegmenter">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">AortaGeomReconDisplayModuleLib.AortaSagitalSegmenter.</span></span><span class="sig-name descname"><span class="pre">AortaSagitalSegmenter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">segmentationFactor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">segmentedImage</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">original_cropped_image</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#AortaGeomReconDisplayModuleLib.AortaSagitalSegmenter.AortaSagitalSegmenter" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#AortaGeomReconDisplayModuleLib.AortaSegmenterBase.AortaSegmenterBase" title="AortaGeomReconDisplayModuleLib.AortaSegmenterBase.AortaSegmenterBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">AortaGeomReconDisplayModuleLib.AortaSegmenterBase.AortaSegmenterBase</span></code></a></p>
+<p>This class performs Aorta Sagital segmentation</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="AortaGeomReconDisplayModuleLib.AortaSagitalSegmenter.AortaSagitalSegmenter.begin_segmentation">
+<span class="sig-name descname"><span class="pre">begin_segmentation</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#AortaGeomReconDisplayModuleLib.AortaSagitalSegmenter.AortaSagitalSegmenter.begin_segmentation" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
 <section id="module-AortaGeomReconDisplayModuleLib.AortaSegmenter">
 <span id="aortageomrecondisplaymodulelib-aortasegmenter-module"></span><h2>AortaGeomReconDisplayModuleLib.AortaSegmenter module<a class="headerlink" href="#module-AortaGeomReconDisplayModuleLib.AortaSegmenter" title="Permalink to this headline"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="AortaGeomReconDisplayModuleLib.AortaSegmenter.AortaSegmenter">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">AortaGeomReconDisplayModuleLib.AortaSegmenter.</span></span><span class="sig-name descname"><span class="pre">AortaSegmenter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cropped_image</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">starting_slice</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">aorta_centre</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_slice_skipping</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">processing_image</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seg_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qualified_slice_factor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2.2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filter_factor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_normalized</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_output_binary</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/AortaGeomReconDisplayModuleLib/AortaSegmenter.html#AortaSegmenter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#AortaGeomReconDisplayModuleLib.AortaSegmenter.AortaSegmenter" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">AortaGeomReconDisplayModuleLib.AortaSegmenter.</span></span><span class="sig-name descname"><span class="pre">AortaSegmenter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cropped_image</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">starting_slice</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">aorta_centre</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_slice_skipping</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">processing_image</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seg_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qualified_slice_factor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2.2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filter_factor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_normalized</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_output_binary</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#AortaGeomReconDisplayModuleLib.AortaSegmenter.AortaSegmenter" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <dl class="py method">
-<dt class="sig sig-object py" id="AortaGeomReconDisplayModuleLib.AortaSegmenter.AortaSegmenter.__circle_filter">
-<span class="sig-name descname"><span class="pre">__circle_filter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">slice_num</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">centre</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seeds_previous</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#AortaGeomReconDisplayModuleLib.AortaSegmenter.AortaSegmenter.__circle_filter" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="AortaGeomReconDisplayModuleLib.AortaSegmenter.AortaSegmenter.__count_pixels">
-<span class="sig-name descname"><span class="pre">__count_pixels</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ls</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_filtered_slice</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#AortaGeomReconDisplayModuleLib.AortaSegmenter.AortaSegmenter.__count_pixels" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="AortaGeomReconDisplayModuleLib.AortaSegmenter.AortaSegmenter.__filling_missing_slices">
-<span class="sig-name descname"><span class="pre">__filling_missing_slices</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#AortaGeomReconDisplayModuleLib.AortaSegmenter.AortaSegmenter.__filling_missing_slices" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="AortaGeomReconDisplayModuleLib.AortaSegmenter.AortaSegmenter.__get_new_slice">
-<span class="sig-name descname"><span class="pre">__get_new_slice</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ls</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">slice_num</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#AortaGeomReconDisplayModuleLib.AortaSegmenter.AortaSegmenter.__get_new_slice" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="AortaGeomReconDisplayModuleLib.AortaSegmenter.AortaSegmenter.__get_overlap">
-<span class="sig-name descname"><span class="pre">__get_overlap</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">img1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">slice_num</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#AortaGeomReconDisplayModuleLib.AortaSegmenter.AortaSegmenter.__get_overlap" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="AortaGeomReconDisplayModuleLib.AortaSegmenter.AortaSegmenter.__is_new_slice_qualified">
-<span class="sig-name descname"><span class="pre">__is_new_slice_qualified</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">slice_num</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">total_coord</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">previous_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_slice</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sag_new_size</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#AortaGeomReconDisplayModuleLib.AortaSegmenter.AortaSegmenter.__is_new_slice_qualified" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="AortaGeomReconDisplayModuleLib.AortaSegmenter.AortaSegmenter.__prepare_seed">
-<span class="sig-name descname"><span class="pre">__prepare_seed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">img_slice</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">centre</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seeds_previous</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">slice_num</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#AortaGeomReconDisplayModuleLib.AortaSegmenter.AortaSegmenter.__prepare_seed" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="AortaGeomReconDisplayModuleLib.AortaSegmenter.AortaSegmenter.__segmentation">
-<span class="sig-name descname"><span class="pre">__segmentation</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#AortaGeomReconDisplayModuleLib.AortaSegmenter.AortaSegmenter.__segmentation" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
 <dt class="sig sig-object py" id="AortaGeomReconDisplayModuleLib.AortaSegmenter.AortaSegmenter.begin_segmentation">
-<span class="sig-name descname"><span class="pre">begin_segmentation</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/AortaGeomReconDisplayModuleLib/AortaSegmenter.html#AortaSegmenter.begin_segmentation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#AortaGeomReconDisplayModuleLib.AortaSegmenter.AortaSegmenter.begin_segmentation" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">begin_segmentation</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#AortaGeomReconDisplayModuleLib.AortaSegmenter.AortaSegmenter.begin_segmentation" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py property">
@@ -149,75 +258,31 @@
 
 </dd></dl>
 
+</section>
+<section id="module-AortaGeomReconDisplayModuleLib.AortaSegmenterBase">
+<span id="aortageomrecondisplaymodulelib-aortasegmenterbase-module"></span><h2>AortaGeomReconDisplayModuleLib.AortaSegmenterBase module<a class="headerlink" href="#module-AortaGeomReconDisplayModuleLib.AortaSegmenterBase" title="Permalink to this headline"></a></h2>
 <dl class="py class">
-<dt class="sig sig-object py" id="AortaGeomReconDisplayModuleLib.AortaSegmenter.PixelValue">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">AortaGeomReconDisplayModuleLib.AortaSegmenter.</span></span><span class="sig-name descname"><span class="pre">PixelValue</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/AortaGeomReconDisplayModuleLib/AortaSegmenter.html#PixelValue"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#AortaGeomReconDisplayModuleLib.AortaSegmenter.PixelValue" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">enum.Enum</span></code></p>
-<p>An enumeration.</p>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="AortaGeomReconDisplayModuleLib.AortaSegmenter.PixelValue.black_pixel">
-<span class="sig-name descname"><span class="pre">black_pixel</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0</span></em><a class="headerlink" href="#AortaGeomReconDisplayModuleLib.AortaSegmenter.PixelValue.black_pixel" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="AortaGeomReconDisplayModuleLib.AortaSegmenter.PixelValue.white_pixel">
-<span class="sig-name descname"><span class="pre">white_pixel</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></em><a class="headerlink" href="#AortaGeomReconDisplayModuleLib.AortaSegmenter.PixelValue.white_pixel" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="AortaGeomReconDisplayModuleLib.AortaSegmenter.SegmentDirection">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">AortaGeomReconDisplayModuleLib.AortaSegmenter.</span></span><span class="sig-name descname"><span class="pre">SegmentDirection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/AortaGeomReconDisplayModuleLib/AortaSegmenter.html#SegmentDirection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#AortaGeomReconDisplayModuleLib.AortaSegmenter.SegmentDirection" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">enum.Enum</span></code></p>
-<p>An enumeration.</p>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="AortaGeomReconDisplayModuleLib.AortaSegmenter.SegmentDirection.I_to_S">
-<span class="sig-name descname"><span class="pre">I_to_S</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">2</span></em><a class="headerlink" href="#AortaGeomReconDisplayModuleLib.AortaSegmenter.SegmentDirection.I_to_S" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="AortaGeomReconDisplayModuleLib.AortaSegmenter.SegmentDirection.Superior_to_Inferior">
-<span class="sig-name descname"><span class="pre">Superior_to_Inferior</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></em><a class="headerlink" href="#AortaGeomReconDisplayModuleLib.AortaSegmenter.SegmentDirection.Superior_to_Inferior" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="AortaGeomReconDisplayModuleLib.AortaSegmenter.SegmentType">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">AortaGeomReconDisplayModuleLib.AortaSegmenter.</span></span><span class="sig-name descname"><span class="pre">SegmentType</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/AortaGeomReconDisplayModuleLib/AortaSegmenter.html#SegmentType"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#AortaGeomReconDisplayModuleLib.AortaSegmenter.SegmentType" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">enum.Enum</span></code></p>
-<p>An enumeration.</p>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="AortaGeomReconDisplayModuleLib.AortaSegmenter.SegmentType.ascending_aorta">
-<span class="sig-name descname"><span class="pre">ascending_aorta</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">2</span></em><a class="headerlink" href="#AortaGeomReconDisplayModuleLib.AortaSegmenter.SegmentType.ascending_aorta" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="AortaGeomReconDisplayModuleLib.AortaSegmenter.SegmentType.descending_aorta">
-<span class="sig-name descname"><span class="pre">descending_aorta</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></em><a class="headerlink" href="#AortaGeomReconDisplayModuleLib.AortaSegmenter.SegmentType.descending_aorta" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
+<dt class="sig sig-object py" id="AortaGeomReconDisplayModuleLib.AortaSegmenterBase.AortaSegmenterBase">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">AortaGeomReconDisplayModuleLib.AortaSegmenterBase.</span></span><span class="sig-name descname"><span class="pre">AortaSegmenterBase</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cropped_image</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qualified_slice_factor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2.2</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#AortaGeomReconDisplayModuleLib.AortaSegmenterBase.AortaSegmenterBase" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <dl class="py method">
-<dt class="sig sig-object py" id="AortaGeomReconDisplayModuleLib.AortaSegmenter.SegmentType.is_axial_seg">
-<span class="sig-name descname"><span class="pre">is_axial_seg</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/AortaGeomReconDisplayModuleLib/AortaSegmenter.html#SegmentType.is_axial_seg"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#AortaGeomReconDisplayModuleLib.AortaSegmenter.SegmentType.is_axial_seg" title="Permalink to this definition"></a></dt>
-<dd><p>Return True if the segmentation type is
-descending or ascending aorta segmentation, False otherwise.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="AortaGeomReconDisplayModuleLib.AortaSegmenter.SegmentType.is_sagittal_seg">
-<span class="sig-name descname"><span class="pre">is_sagittal_seg</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/AortaGeomReconDisplayModuleLib/AortaSegmenter.html#SegmentType.is_sagittal_seg"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#AortaGeomReconDisplayModuleLib.AortaSegmenter.SegmentType.is_sagittal_seg" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="AortaGeomReconDisplayModuleLib.AortaSegmenterBase.AortaSegmenterBase.begin_segmentation">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">begin_segmentation</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#AortaGeomReconDisplayModuleLib.AortaSegmenterBase.AortaSegmenterBase.begin_segmentation" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
-<dl class="py attribute">
-<dt class="sig sig-object py" id="AortaGeomReconDisplayModuleLib.AortaSegmenter.SegmentType.sagittal">
-<span class="sig-name descname"><span class="pre">sagittal</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">4</span></em><a class="headerlink" href="#AortaGeomReconDisplayModuleLib.AortaSegmenter.SegmentType.sagittal" title="Permalink to this definition"></a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="AortaGeomReconDisplayModuleLib.AortaSegmenterBase.AortaSegmenterBase.cropped_image">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cropped_image</span></span><a class="headerlink" href="#AortaGeomReconDisplayModuleLib.AortaSegmenterBase.AortaSegmenterBase.cropped_image" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
-<dl class="py attribute">
-<dt class="sig sig-object py" id="AortaGeomReconDisplayModuleLib.AortaSegmenter.SegmentType.sagittal_front">
-<span class="sig-name descname"><span class="pre">sagittal_front</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">3</span></em><a class="headerlink" href="#AortaGeomReconDisplayModuleLib.AortaSegmenter.SegmentType.sagittal_front" title="Permalink to this definition"></a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="AortaGeomReconDisplayModuleLib.AortaSegmenterBase.AortaSegmenterBase.processing_image">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">processing_image</span></span><a class="headerlink" href="#AortaGeomReconDisplayModuleLib.AortaSegmenterBase.AortaSegmenterBase.processing_image" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="AortaGeomReconDisplayModuleLib.AortaSegmenterBase.AortaSegmenterBase.qualified_slice_factor">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">qualified_slice_factor</span></span><a class="headerlink" href="#AortaGeomReconDisplayModuleLib.AortaSegmenterBase.AortaSegmenterBase.qualified_slice_factor" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -232,7 +297,7 @@ descending or ascending aorta segmentation, False otherwise.</p>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="test.html" class="btn btn-neutral float-left" title="test package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="AortaGeomReconDisplayModule.html" class="btn btn-neutral float-left" title="AortaGeomReconDisplayModule module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
   <hr/>

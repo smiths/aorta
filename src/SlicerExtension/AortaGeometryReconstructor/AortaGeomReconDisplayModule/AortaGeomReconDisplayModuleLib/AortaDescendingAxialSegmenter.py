@@ -68,9 +68,9 @@ class AortaDescendingAxialSegmenter(AortaAxialSegmenter):
 
         Returns:
             numpy.ndarray: A new slice where the labeled statistic of the seed image is greater than 1
-
+        Returns:
             int: The total number of the counted X coordinates
-
+        Returns:
             tupple: The new derived centre calculated by the mean of counted X coordinates and Y coordinates
         """ # noqa
         # assign segmentation to fully_seg_slice
@@ -85,12 +85,11 @@ class AortaDescendingAxialSegmenter(AortaAxialSegmenter):
         return new_slice, total_coord, new_centre
 
     def __is_new_centre_qualified(self, total_coord):
-        """Determine whether the size of this slice "qualifies" it
-        to be accurate
+        """Return True if the number of coordiante in the segmented center is qualified
 
         Returns:
             Boolean
-        """
+        """ # noqa
         cmp_prev_size = bool(total_coord < 2*self._previous_size)
         if self._seg_dir == SegDir.Superior_to_Inferior:
             slicer_larger_than = bool(
