@@ -8,11 +8,11 @@ class AortaAscendingAxialSegmenter(AortaAxialSegmenter):
 
     def __init__(
             self, starting_slice, aorta_centre, num_slice_skipping,
-            segmentation_factor, cropped_image, processing_image):
+            qualified_slice_factor, cropped_image, processing_image):
         self._processing_image = processing_image
 
         super().__init__(starting_slice, aorta_centre, num_slice_skipping,
-                         segmentation_factor, cropped_image)
+                         qualified_slice_factor, cropped_image)
 
     def __get_overlap(self, img1, i):
         img2 = self._cropped_image[:, :, i]
