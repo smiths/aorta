@@ -2,18 +2,16 @@ import SimpleITK as sitk
 import numpy as np
 import os
 import sys
-from AortaGeomReconDisplayModuleLib.AortaGeomReconEnums \
-    import SegmentDirection as SegDir
-from AortaGeomReconDisplayModuleLib.AortaGeomReconEnums \
-    import SegmentType as SegType
-from AortaGeomReconDisplayModuleLib.AortaGeomReconEnums \
-    import PixelValue
 
 project_path = os.path.abspath('.')
 AGR_module_path = os.path.join(project_path, "src/SlicerExtension/")
 AGR_module_path = os.path.join(AGR_module_path, "AortaGeometryReconstructor/")
 AGR_module_path = os.path.join(AGR_module_path, "AortaGeomReconDisplayModule")
 sys.path.insert(0, AGR_module_path)
+
+from AortaGeomReconDisplayModuleLib.AortaGeomReconEnums import SegmentDirection as SegDir # noqa
+from AortaGeomReconDisplayModuleLib.AortaGeomReconEnums import SegmentType as SegType # noqa
+from AortaGeomReconDisplayModuleLib.AortaGeomReconEnums import PixelValue # noqa
 
 
 class AortaSegmenter():
