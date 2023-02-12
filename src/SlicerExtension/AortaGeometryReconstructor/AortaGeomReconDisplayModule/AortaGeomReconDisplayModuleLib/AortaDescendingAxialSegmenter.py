@@ -17,26 +17,29 @@ from AortaGeomReconDisplayModuleLib.AortaGeomReconEnums import SegmentType as Se
 class AortaDescendingAxialSegmenter(AortaAxialSegmenter):
 
     def __init__(self, starting_slice, aorta_centre, num_slice_skipping,
-                 qualified_slice_factor, cropped_image):
+                 qualified_coef, cropped_image):
         super().__init__(starting_slice=starting_slice,
                          aorta_centre=aorta_centre,
                          num_slice_skipping=num_slice_skipping,
-                         qualified_slice_factor=qualified_slice_factor,
+                         qualified_coef=qualified_coef,
                          cropped_image=cropped_image)
 
     def __prepare_seed(self):
         """Get a seed from the original image. We will add extra space
         and use it to get the labeled image statistics.
-        """
-        seg_2d = sitk.Image(self._cur_img_slice.GetSize(), sitk.sitkUInt8)
-        seg_2d.CopyInformation(self._cur_img_slice)
+
+        Returns:
+            SITK::IMAGE: An image slice with aorta centre and some extra spacing.
+        """ # noqa
+        seed = sitk.Image(self._cur_img_slice.GetSize(), sitk.sitkUInt8)
+        seed.CopyInformation(self._cur_img_slice)
         # add original seed and additional seeds three pixels apart
         spacing = 3
         for j in range(-1, 2):
             one = self._prev_centre[0] + spacing*j
-            seg_2d[(one, self._prev_centre[1])] = 1
-        seg_2d = sitk.BinaryDilate(seg_2d, [3] * 2)
-        return seg_2d
+            seed[(one, self._prev_centre[1])] = 1
+        seed = sitk.BinaryDilate(seed, [3] * 2)
+        return seed
 
     def __get_label_statistics(self):
         """From the labeled image we can derive descriptive intensity.
@@ -44,16 +47,16 @@ class AortaDescendingAxialSegmenter(AortaAxialSegmenter):
         Returns:
             numpy.ndarray: labeled statistics of the original image.
         """
-        seg_2d = self.__prepare_seed()
+        seed = self.__prepare_seed()
         # determine threshold values based on seed location
         factor = 3.5
         stats = sitk.LabelStatisticsImageFilter()
-        stats.Execute(self._cur_img_slice, seg_2d)
+        stats.Execute(self._cur_img_slice, seed)
         lower_threshold = stats.GetMean(1)-factor*stats.GetSigma(1)
         upper_threshold = stats.GetMean(1)+factor*stats.GetSigma(1)
         # use filter to apply threshold to image
         init_ls = sitk.SignedMaurerDistanceMap(
-            seg_2d, insideIsPositive=True, useImageSpacing=True)
+            seed, insideIsPositive=True, useImageSpacing=True)
 
         # segment the aorta using the seed values and threshold values
         self._segment_filter.SetLowerThreshold(lower_threshold)
@@ -94,20 +97,20 @@ class AortaDescendingAxialSegmenter(AortaAxialSegmenter):
         if self._seg_dir == SegDir.Superior_to_Inferior:
             slicer_larger_than = bool(
                 total_coord >
-                (self._original_size/self.qualified_slice_factor)
+                (self._original_size/self._qualified_coef)
             )
             cmp_original_size = bool(
                 total_coord <
-                (self._original_size*self.qualified_slice_factor)
+                (self._original_size*self._qualified_coef)
             )
         else:
             slicer_larger_than = bool(
                 total_coord >
-                (self._previous_size/self.qualified_slice_factor)
+                (self._previous_size/self._qualified_coef)
             )
             cmp_original_size = bool(
                 total_coord <
-                (self._original_size*(self.qualified_slice_factor+0.3))
+                (self._original_size*(self._qualified_coef+0.3))
             )
         return cmp_prev_size and slicer_larger_than and cmp_original_size
 

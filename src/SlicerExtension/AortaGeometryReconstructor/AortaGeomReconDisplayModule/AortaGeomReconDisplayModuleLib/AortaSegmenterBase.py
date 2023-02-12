@@ -3,21 +3,21 @@ import abc
 
 class AortaSegmenterBase():
 
-    def __init__(self, cropped_image, qualified_slice_factor=2.2):
-        self._qualified_slice_factor = qualified_slice_factor
+    def __init__(self, cropped_image, qualified_coef=2.2):
+        self._qualified_coef = qualified_coef
         self._cropped_image = cropped_image
 
     @property
-    def qualified_slice_factor(self):
+    def qualified_coef(self):
         return self._qualified_slice_factor
 
     @property
     def cropped_image(self):
         return self._cropped_image
 
-    @qualified_slice_factor.setter
-    def qualified_slice_factor(self, qualified_slice_factor):
-        self._qualified_slice_factor = qualified_slice_factor
+    @qualified_coef.setter
+    def qualified_coef(self, qualified_coef):
+        self._qualified_slice_factor = qualified_coef
 
     @property
     def processing_image(self):
