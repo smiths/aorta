@@ -126,7 +126,7 @@
 
 \begin{document}
 
-\title{Software Requirements Specification for \progname: subtitle describing software} 
+\title{Software Requirements Specification for \progname: A software tool to semi-automatically segment a 3D aorta geometry from a chest CT scan} 
 \author{Author Name(s)}
 \date{\today}
 	
@@ -145,8 +145,7 @@
 \begin{tabularx}{\textwidth}{p{3cm}p{2cm}X}
 \toprule {\bf Date} & {\bf Version} & {\bf Notes}\\
 \midrule
-Date 1 & 1.0 & Notes\\
-Date 2 & 1.1 & Notes\\
+2023-02-12 & 1.0 & Notes\\
 \bottomrule
 \end{tabularx}
 
@@ -164,40 +163,22 @@ used as described below.  For each unit, the symbol is given followed by a
 description of the unit and the SI name.
 ~\newline
 
-\renewcommand{\arraystretch}{1.2}
+%\renewcommand{\arraystretch}{1.2}
 %\begin{table}[ht]
-  \noindent \begin{tabular}{l l l} 
-    \toprule		
-    \textbf{symbol} & \textbf{unit} & \textbf{SI}\\
-    \midrule 
-    \si{\metre} & length & metre\\
-    \si{\kilogram} & mass	& kilogram\\
-    \si{\second} & time & second\\
-    \si{\celsius} & temperature & centigrade\\
-    \si{\joule} & energy & joule\\
-    \si{\watt} & power & watt (W = \si{\joule\per\second})\\
-    \bottomrule
-  \end{tabular}
+  % \noindent \begin{tabular}{l l l} 
+  %   \toprule		
+  %   \textbf{symbol} & \textbf{unit} & \textbf{SI}\\
+  %   \midrule 
+  %   \si{\metre} & length & metre\\
+  %   \si{\kilogram} & mass	& kilogram\\
+  %   \si{\second} & time & second\\
+  %   \si{\celsius} & temperature & centigrade\\
+  %   \si{\joule} & energy & joule\\
+  %   \si{\watt} & power & watt (W = \si{\joule\per\second})\\
+  %   \bottomrule
+  % \end{tabular}
   %	\caption{Provide a caption}
 %\end{table}
-
-\plt{Only include the units that your SRS actually uses.}
-
-\plt{Derived units, like newtons, pascal, etc, should show their derivation
-    (the units they are derived from) if their constituent units are in the
-    table of units (that is, if the units they are derived from are used in the
-    document).  For instance, the derivation of pascals as
-    $\si{\pascal}=\si{\newton\per\square\meter}$ is shown if newtons and m are
-    both in the table.  The derivations of newtons would not be shown if kg and
-    s are not both in the table.}
-
-\plt{The symbol for units named after people use capital letters, but the name
-  of the unit itself uses lower case.  For instance, pascals use the symbol Pa,
-  watts use the symbol W, teslas use the symbol T, newtons use the symbol N,
-  etc.  The one exception to this is degree Celsius.  Details on writing metric
-  units can be found on the 
-  \href{https://www.nist.gov/pml/weights-and-measures/writing-metric-units}
-  {NIST} web-page.}
 
 \subsection{Table of Symbols}
 
@@ -206,20 +187,20 @@ their units.  The choice of symbols was made to be consistent with the heat
 transfer literature and with existing documentation for solar water heating
 systems.  The symbols are listed in alphabetical order.
 
-\renewcommand{\arraystretch}{1.2}
-%\noindent \begin{tabularx}{1.0\textwidth}{l l X}
-\noindent \begin{longtable*}{l l p{12cm}} \toprule
-\textbf{symbol} & \textbf{unit} & \textbf{description}\\
-\midrule 
-$A_C$ & \si[per-mode=symbol] {\square\metre} & coil surface area
-\\
-$A_\text{in}$ & \si[per-mode=symbol] {\square\metre} & surface area over 
-which heat is transferred in
-\\ 
-\bottomrule
-\end{longtable*}
-\plt{Use your problems actual symbols.  The si package is a good idea to use for
-  units.}
+% \renewcommand{\arraystretch}{1.2}
+% %\noindent \begin{tabularx}{1.0\textwidth}{l l X}
+% \noindent \begin{longtable*}{l l p{12cm}} \toprule
+% \textbf{symbol} & \textbf{unit} & \textbf{description}\\
+% \midrule 
+% $A_C$ & \si[per-mode=symbol] {\square\metre} & coil surface area
+% \\
+% $A_\text{in}$ & \si[per-mode=symbol] {\square\metre} & surface area over 
+% which heat is transferred in
+% \\ 
+% \bottomrule
+% \end{longtable*}
+% \plt{Use your problems actual symbols.  The si package is a good idea to use for
+%   units.}
 
 \subsection{Abbreviations and Acronyms}
 
@@ -229,6 +210,7 @@ which heat is transferred in
   \textbf{symbol} & \textbf{description}\\
   \midrule 
   A & Assumption\\
+  \progname{} & AortaGeometryReconstructor 3D Slicer extension\\
   DD & Data Definition\\
   GD & General Definition\\
   GS & Goal Statement\\
@@ -237,26 +219,24 @@ which heat is transferred in
   PS & Physical System Description\\
   R & Requirement\\
   SRS & Software Requirements Specification\\
-  \progname{} & \plt{put an expanded version of your program name here (as appropriate)}\\
+  SITK & Simple ITK\\
   T & Theoretical Model\\
   \bottomrule
 \end{tabular}\\
 
-\plt{Add any other abbreviations or acronyms that you add}
+% \subsection{Mathematical Notation}
 
-\subsection{Mathematical Notation}
+% \plt{This section is optional, but should be included for projects that make use
+%   of notation to convey mathematical information.  For instance, if typographic
+%   conventions (like bold face font) are used to distinguish matrices, this
+%   should be stated here.  If symbols are used to show mathematical operations,
+%   these should be summarized here.  In some cases the easiest way to summarize
+%   the notation is to point to a text or other source that explains the
+%   notation.}
 
-\plt{This section is optional, but should be included for projects that make use
-  of notation to convey mathematical information.  For instance, if typographic
-  conventions (like bold face font) are used to distinguish matrices, this
-  should be stated here.  If symbols are used to show mathematical operations,
-  these should be summarized here.  In some cases the easiest way to summarize
-  the notation is to point to a text or other source that explains the
-  notation.}
-
-\plt{This section was added to the template because some students use very
-  domain specific notation.  This notation will not be readily understandable to
-  people outside of your domain.  It should be explained.}
+% \plt{This section was added to the template because some students use very
+%   domain specific notation.  This notation will not be readily understandable to
+%   people outside of your domain.  It should be explained.}
 
 \newpage
 
