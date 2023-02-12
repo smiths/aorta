@@ -8,11 +8,11 @@ class AortaAscendingAxialSegmenter(AortaAxialSegmenter):
 
     def __init__(
             self, starting_slice, aorta_centre, num_slice_skipping,
-            qualified_slice_factor, cropped_image, processing_image):
+            qualified_coef, cropped_image, processing_image):
         self._processing_image = processing_image
 
         super().__init__(starting_slice, aorta_centre, num_slice_skipping,
-                         qualified_slice_factor, cropped_image)
+                         qualified_coef, cropped_image)
 
     def __get_overlap(self, img1, i):
         img2 = self._cropped_image[:, :, i]
@@ -53,7 +53,7 @@ class AortaAscendingAxialSegmenter(AortaAxialSegmenter):
 
             # factor size that starts like normal,
             # but may change depending on overlap
-            factor_size_overlap = self._qualified_slice_factor
+            factor_size_overlap = self._qualified_coef
             decreasing_size = False
             start = self._starting_slice
             end = self._cropped_image.GetDepth()
@@ -78,14 +78,14 @@ class AortaAscendingAxialSegmenter(AortaAxialSegmenter):
                     if (self.__get_overlap(seg > 0, sliceNum)):
                         factor_size_overlap = 2.8
                     else:
-                        factor_size_overlap = self._qualified_slice_factor
+                        factor_size_overlap = self._qualified_coef
                     if (decreasing_size):
                         # if size of segmentation is decreasing,
                         # try to maintain decreasing nature
                         factor_size_overlap = 1.2
                     is_new_center_qualified = (
                         total_coord >
-                        1 / self._qualified_slice_factor * previous_size
+                        1 / self._qualified_coef * previous_size
                     )
                     is_new_center_qualified = (
                         is_new_center_qualified
@@ -96,11 +96,11 @@ class AortaAscendingAxialSegmenter(AortaAxialSegmenter):
 
                     is_new_center_qualified = (
                         total_coord >
-                        (self._original_size / self._qualified_slice_factor)
+                        (self._original_size / self._qualified_coef)
                     )
                     is_new_center_qualified = (
                         is_new_center_qualified
-                        and total_coord < self._qualified_slice_factor
+                        and total_coord < self._qualified_coef
                         * self._original_size
                         and total_coord < 2 * previous_size
                     )
