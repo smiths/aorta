@@ -8,13 +8,11 @@ class AortaAscendingAxialSegmenter(AortaAxialSegmenter):
 
     def __init__(
             self, starting_slice, aorta_centre, num_slice_skipping,
-            segmentation_factor, cropped_image, processing_image,
-            normalized=False, is_output_binary=True):
+            segmentation_factor, cropped_image, processing_image):
         self._processing_image = processing_image
 
         super().__init__(starting_slice, aorta_centre, num_slice_skipping,
-                         segmentation_factor, cropped_image, normalized,
-                         is_output_binary)
+                         segmentation_factor, cropped_image)
 
     def __get_overlap(self, img1, i):
         img2 = self._cropped_image[:, :, i]
@@ -55,7 +53,7 @@ class AortaAscendingAxialSegmenter(AortaAxialSegmenter):
 
             # factor size that starts like normal,
             # but may change depending on overlap
-            factor_size_overlap = self._segmentation_factor
+            factor_size_overlap = self._qualified_slice_factor
             decreasing_size = False
             start = self._starting_slice
             end = self._cropped_image.GetDepth()
@@ -80,14 +78,14 @@ class AortaAscendingAxialSegmenter(AortaAxialSegmenter):
                     if (self.__get_overlap(seg > 0, sliceNum)):
                         factor_size_overlap = 2.8
                     else:
-                        factor_size_overlap = self._segmentation_factor
+                        factor_size_overlap = self._qualified_slice_factor
                     if (decreasing_size):
                         # if size of segmentation is decreasing,
                         # try to maintain decreasing nature
                         factor_size_overlap = 1.2
                     is_new_center_qualified = (
                         total_coord >
-                        1 / self._segmentation_factor * previous_size
+                        1 / self._qualified_slice_factor * previous_size
                     )
                     is_new_center_qualified = (
                         is_new_center_qualified
@@ -97,11 +95,11 @@ class AortaAscendingAxialSegmenter(AortaAxialSegmenter):
                 else:
 
                     is_new_center_qualified = (total_coord >
-                                               (1 / self._segmentation_factor)
+                                               (1 / self._qualified_slice_factor)
                                                * self._original_size)
                     is_new_center_qualified = (
                         is_new_center_qualified
-                        and total_coord < self._segmentation_factor
+                        and total_coord < self._qualified_slice_factor
                         * self._original_size
                         and total_coord < 2 * previous_size
                     )
@@ -127,16 +125,6 @@ class AortaAscendingAxialSegmenter(AortaAxialSegmenter):
                     counter += 1
                     if (counter >= num_skips):
                         more_circles = False
-                        if not self._is_output_binary:
-                            self._processing_image[:, :, sliceNum] = sitk.Cast(
-                                self._cropped_image_255[:, :, sliceNum],
-                                sitk.sitkVectorUInt8
-                            )
-
-            elif not self._is_output_binary:
-                self._processing_image[:, :, sliceNum] = sitk.Cast(
-                    self._cropped_image_255[:, :, sliceNum],
-                    sitk.sitkVectorUInt8)
 
             previous_size = total_coord
 
@@ -162,11 +150,6 @@ class AortaAscendingAxialSegmenter(AortaAxialSegmenter):
         # def circle_filter_arch(i, centre, seeds, image_type="reg"):
         # set slice
         imgSlice = self._cropped_image[:, :, sliceNum]
-
-        # re-normalize
-        if self._normalized:
-            imgSlice = sitk.Cast(sitk.RescaleIntensity(imgSlice),
-                                 sitk.sitkUInt8)
 
         # make new image for putting seed in
         seg_2d = sitk.Image(imgSlice.GetSize(), sitk.sitkUInt8)

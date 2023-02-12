@@ -344,7 +344,6 @@ class AortaGeomReconDisplayModuleWidget(ScriptedLoadableModuleWidget, VTKObserva
         # (it could cause infinite loop)
         self._updatingGUIFromParameterNode = True
         phase = self._parameterNode.GetParameter("phase")
-        print(phase)
         if not phase or phase == '1':
             self.showPhaseCropAorta()
         elif phase == '2':
@@ -733,47 +732,34 @@ class AortaGeomReconDisplayModuleLogic(ScriptedLoadableModuleLogic):  # noqa: F4
 
     def transform_image(self, cropped_volume):
         cropped_image = sitkUtils.PullVolumeFromSlicer(cropped_volume)
-
-        logging.info("Transformed to 32 bits unsigned")
         img_array = sitk.GetArrayFromImage(
             (sitk.Cast(sitk.RescaleIntensity(cropped_image), sitk.sitkUInt8)))
-        logging.info("Transformed to 8 bits unsigned")
-
         # flatten image array and calculate histogram via binning
         histogram_array = np.bincount(img_array.flatten(), minlength=256)
-
         # normalize image
         num_pixels = np.sum(histogram_array)
         histogram_array = histogram_array/num_pixels
-
         # normalized cumulative histogram
         chistogram_array = np.cumsum(histogram_array)
-
         # create pixel mapping lookup table
         transform_map = np.floor(255 * chistogram_array).astype(np.uint8)
-
         # flatten image array into 1D list
         # so they can be used with the pixel mapping table
         img_list = list(img_array.flatten())
-
         # transform pixel values to equalize
         eq_img_list = [transform_map[p] for p in img_list]
-
         # reshape and write back into img_array
         eq_img_array = np.reshape(np.asarray(eq_img_list), img_array.shape)
-
         # save image
         eq_img = sitk.GetImageFromArray(eq_img_array)
         eq_img.CopyInformation(cropped_image)
-
         # Median Image Filter
         median = sitk.MedianImageFilter()
         median_img = sitk.Cast(median.Execute(eq_img), sitk.sitkUInt8)
         self._cropped_image = median_img
 
     def createDefaultParameters(self, parameterNode):
-        """
-        Initialize parameter node with default settings.
+        """Initialize parameter node with default settings.
         """
         if not parameterNode.GetParameter("ascAortaSeed"):
             parameterNode.SetParameter("ascAortaSeed", "0,0,0")
