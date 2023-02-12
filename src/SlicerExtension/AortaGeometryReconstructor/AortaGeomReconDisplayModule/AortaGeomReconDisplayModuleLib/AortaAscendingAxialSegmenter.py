@@ -94,9 +94,10 @@ class AortaAscendingAxialSegmenter(AortaAxialSegmenter):
                     )
                 else:
 
-                    is_new_center_qualified = (total_coord >
-                                               (1 / self._qualified_slice_factor)
-                                               * self._original_size)
+                    is_new_center_qualified = (
+                        total_coord >
+                        (self._original_size / self._qualified_slice_factor)
+                    )
                     is_new_center_qualified = (
                         is_new_center_qualified
                         and total_coord < self._qualified_slice_factor

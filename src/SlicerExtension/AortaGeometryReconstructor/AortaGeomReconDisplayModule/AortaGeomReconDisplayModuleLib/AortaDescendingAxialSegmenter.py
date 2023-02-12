@@ -1,19 +1,18 @@
 import os
 import sys
-project_path = os.path.abspath('.')
-AGR_module_path = os.path.join(project_path, "src/SlicerExtension/")
-AGR_module_path = os.path.join(AGR_module_path, "AortaGeometryReconstructor/")
-AGR_module_path = os.path.join(AGR_module_path, "AortaGeomReconDisplayModule")
-sys.path.insert(0, AGR_module_path)
-
 from AortaGeomReconDisplayModuleLib.AortaAxialSegmenter \
     import AortaAxialSegmenter
 from AortaGeomReconDisplayModuleLib.AortaGeomReconEnums \
     import SegmentDirection as SegDir
 from AortaGeomReconDisplayModuleLib.AortaGeomReconEnums \
-    import SegmentType as SegType
+    import SegmentType as SegType # noqa
 import SimpleITK as sitk
 import numpy as np
+project_path = os.path.abspath('.')
+AGR_module_path = os.path.join(project_path, "src/SlicerExtension/")
+AGR_module_path = os.path.join(AGR_module_path, "AortaGeometryReconstructor/")
+AGR_module_path = os.path.join(AGR_module_path, "AortaGeomReconDisplayModule")
+sys.path.insert(0, AGR_module_path)
 
 
 class AortaDescendingAxialSegmenter(AortaAxialSegmenter):
@@ -74,7 +73,7 @@ class AortaDescendingAxialSegmenter(AortaAxialSegmenter):
             int: The total number of the counted X coordinates
 
             tupple: The new derived centre calculated by the mean of counted X coordinates and Y coordinates
-        """
+        """ # noqa
         # assign segmentation to fully_seg_slice
         new_slice = label_stats > 0
         # get array from segmentation
@@ -115,7 +114,7 @@ class AortaDescendingAxialSegmenter(AortaAxialSegmenter):
         return cmp_prev_size and slicer_larger_than and cmp_original_size
 
     def segmentation(self):
-        """From the starting slice to the superior or the inferior, 
+        """From the starting slice to the superior or the inferior,
         use label statistics to see if a circle can be segmented.
         """
         counter = 0
@@ -167,7 +166,6 @@ class AortaDescendingAxialSegmenter(AortaAxialSegmenter):
         print("Descending aorta segmentation - top to bottom started")
         self.segmentation()
         print("Descending aorta segmentation - top to bottom finished")
-
 
         # Initialize parameters for inferior to superior segmentation
         self._start = self._starting_slice+1
