@@ -142,7 +142,6 @@ def test_compare_des(limit, qsf, ffactor):
     #     seg_type=SegmentType.descending_aorta
     # )
 
-
     desc_axial_segmenter = AortaDescendingAxialSegmenter(
         starting_slice=starting_slice,
         aorta_centre=aorta_centre,
