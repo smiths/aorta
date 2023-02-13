@@ -17,8 +17,8 @@ class SegmentType(Enum):
         return (seg_type == SegmentType.sagittal_front
                 or seg_type == SegmentType.sagittal)
 
-    def __repr__(self):
-        return f'{self.name.replace("_"," ")} segmentation'
+    def __format__(self, obj):
+        return "%s segmentation" % (self._name_.replace("_", " "))
 
 
 class SegmentDirection(Enum):
@@ -43,6 +43,8 @@ class AortaSegmenter():
         self._aorta_centre = aorta_centre
         self._num_slice_skipping = num_slice_skipping
         self._seg_type = seg_type
+        if seg_type == SegmentType.sagittal_front:
+            self._seg_type = SegmentType.sagittal
         self._processing_image = processing_image
         self._qualified_slice_factor = qualified_slice_factor
         self._filter_factor = filter_factor
@@ -85,9 +87,10 @@ class AortaSegmenter():
     def begin_segmentation(self):
         # Initializing filter
         rms_error = 0.02
-        no_iteration = 1000
+        no_iteration = 600
         curvature_scaling = 0.5
         propagation_scaling = 1
+        self._stats_filter = sitk.LabelStatisticsImageFilter()
         self._segment_filter = sitk.ThresholdSegmentationLevelSetImageFilter()
         self._segment_filter.SetMaximumRMSError(rms_error)
         self._segment_filter.SetNumberOfIterations(no_iteration)
@@ -313,18 +316,17 @@ class AortaSegmenter():
                 img_slice, centre, seeds_previous, slice_num)
 
         # determine threshold values based on seed location
-        stats = sitk.LabelStatisticsImageFilter()
-        stats.Execute(img_slice, seed)
-        # Factor should be adjustable for threshold
+        self._stats_filter.Execute(img_slice, seed)
+
         lower_threshold = (
-            stats.GetMean(PixelValue.white_pixel.value)
+            self._stats_filter.GetMean(PixelValue.white_pixel.value)
             - self._filter_factor
-            * stats.GetSigma(PixelValue.white_pixel.value)
+            * self._stats_filter.GetSigma(PixelValue.white_pixel.value)
         )
         upper_threshold = (
-            stats.GetMean(PixelValue.white_pixel.value)
+            self._stats_filter.GetMean(PixelValue.white_pixel.value)
             + self._filter_factor
-            * stats.GetSigma(PixelValue.white_pixel.value)
+            * self._stats_filter.GetSigma(PixelValue.white_pixel.value)
         )
         # use filter to apply threshold to image
         init_label_stats = sitk.SignedMaurerDistanceMap(
