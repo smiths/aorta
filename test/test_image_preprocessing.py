@@ -1,26 +1,30 @@
 from src.SlicerExtension.AortaGeometryReconstructor.AortaGeomReconDisplayModule.AortaGeomReconDisplayModuleLib.AortaSegmenter import AortaSegmenter # noqa
-from src.SlicerExtension.AortaGeometryReconstructor.AortaGeomReconDisplayModule.AortaGeomReconDisplayModuleLib.AortaSegmenter import SegmentType # noqa
+from src.SlicerExtension.AortaGeometryReconstructor.AortaGeomReconDisplayModule.AortaGeomReconDisplayModuleLib.AortaGeomReconEnums import SegmentType # noqa
+from src.SlicerExtension.AortaGeometryReconstructor.AortaGeomReconDisplayModule.AortaGeomReconDisplayModuleLib.AortaDescendingAxialSegmenter import AortaDescendingAxialSegmenter # noqa
+from src.SlicerExtension.AortaGeometryReconstructor.AortaGeomReconDisplayModule.AortaGeomReconDisplayModuleLib.AortaAscendingAxialSegmenter import AortaAscendingAxialSegmenter # noqa
+
 import SimpleITK as sitk
 import numpy as np
+import os
 
 
-def print_result(arr1, arr2):
+def print_result(ref_image, test_image):
     print(
         "{} mean_square_error".format(SegmentType.descending_aorta),
-        mean_square_error(arr1, arr2)
+        mean_square_error(ref_image, test_image)
     )
     print(
         "{} mean_absolute_error".format(SegmentType.ascending_aorta),
-        mean_absolute_error(arr1, arr2)
+        mean_absolute_error(ref_image, test_image)
     )
     print(
         "{} root_mse".format(SegmentType.ascending_aorta),
-        root_mse(arr1, arr2)
+        root_mse(ref_image, test_image)
     )
     print(
         "{} Sørensen–Dice coefficient".format(
             SegmentType.descending_aorta),
-        DSC(arr1, arr2)
+        DSC(ref_image, test_image)
     )
 
 
@@ -43,7 +47,13 @@ def transform_image(cropped_image):
 
 
 def get_cropped_volume_image():
-    nda = np.load("test/sample/43681283_crop.npy")
+    """Read the cropped volume
+
+    Returns:
+        SITK: The cropped volume sitk image
+    """
+    abspath = os.path.abspath("test/sample/43681283_crop.npy")
+    nda = np.load(abspath)
     return sitk.GetImageFromArray(nda)
 
 
@@ -52,58 +62,97 @@ cropped_image = transform_image(cropped_image)
 
 
 def read_desc_volume_image():
-    nda = np.load("test/sample/43681283_des.npy")
+    """Read the segmented descending aorta volume
+
+    Returns:
+        SITK: The segmented descending aorta sitk image
+    """
+    abspath = os.path.abspath("test/sample/43681283_des.npy")
+    nda = np.load(abspath)
     return sitk.GetImageFromArray(nda)
 
 
 def read_asc_volume_image():
-    nda = np.load("test/sample/43681283_asc.npy")
+    """Read the segmented ascending and descending aorta volume
+
+
+    Returns:
+        SITK: The segmented ascending and descending aorta sitk image
+    """
+    abspath = os.path.abspath("test/sample/43681283_asc.npy")
+    nda = np.load(abspath)
     return sitk.GetImageFromArray(nda)
 
 
 def read_final_volume_image():
-    nda = np.load("test/sample/43681283_final.npy")
+    """Read the final segmented aorta volume
+
+
+    Returns:
+        SITK: The final segmented aorta sitk image
+    """
+    abspath = os.path.abspath("test/sample/43681283_final.npy")
+    nda = np.load(abspath)
     return sitk.GetImageFromArray(nda)
 
 
-def DSC(arr1, arr2):
-    two_TP = np.count_nonzero(np.logical_and(arr1, arr2))*2
-    return two_TP/(np.count_nonzero(arr1) + np.count_nonzero(arr2))
+def DSC(ref_image, test_image):
+    """Calculate the Dice similarity coefficient
+
+    Args:
+        ref_image (numpy.ndarrays): nda to compare
+
+        test_image (numpy.ndarrays): nda to compare
+
+    Returns:
+        float: The Dice similarity coefficient of the reference and test image
+    """
+    two_TP = np.count_nonzero(np.logical_and(ref_image, test_image))*2
+    total = (np.count_nonzero(ref_image) + np.count_nonzero(test_image))
+    return two_TP/total
 
 
-def root_mse(arr1, arr2):
-    return np.sqrt(mean_square_error(arr1, arr2))
+def root_mse(ref_image, test_image):
+    return np.sqrt(mean_square_error(ref_image, test_image))
 
 
-def mean_absolute_error(arr1, arr2):
-    npsum = np.sum(np.abs(np.subtract(arr1, arr2)))
-    return npsum/np.count_nonzero(np.logical_or(arr1, arr2))
+def mean_absolute_error(ref_image, test_image):
+    npsum = np.sum(np.abs(np.subtract(ref_image, test_image)))
+    return npsum/np.count_nonzero(np.logical_or(ref_image, test_image))
 
 
-def mean_square_error(arr1, arr2):
-    npsum = np.sum(np.square(np.subtract(arr1, arr2)))
-    return npsum/np.count_nonzero(np.logical_or(arr1, arr2))
+def mean_square_error(ref_image, test_image):
+    npsum = np.sum(np.square(np.subtract(ref_image, test_image)))
+    return npsum/np.count_nonzero(np.logical_or(ref_image, test_image))
 
 
-def test_compare_des(limit, qsf, ffactor):
+def test_compare_des(limit, qualifiedCoef, ffactor):
     starting_slice = 820
     aorta_centre = [18, 26]
 
     # starting_slice = 700
     # aorta_centre = [5, 60]
-    desc_axial_segmenter = AortaSegmenter(
-        cropped_image=cropped_image,
-        starting_slice=starting_slice, aorta_centre=aorta_centre,
+    # desc_axial_segmenter = AortaSegmenter(
+    #     cropped_image=cropped_image,
+    #     starting_slice=starting_slice, aorta_centre=aorta_centre,
+    #     num_slice_skipping=3,
+    #     qualified_slice_factor=qualifiedCoef,
+    #     filter_factor=ffactor,
+    #     processing_image=None,
+    #     seg_type=SegmentType.descending_aorta
+    # )
+
+    desc_axial_segmenter = AortaDescendingAxialSegmenter(
+        starting_slice=starting_slice,
+        aorta_centre=aorta_centre,
         num_slice_skipping=3,
-        qualified_slice_factor=qsf,
-        filter_factor=ffactor,
-        processing_image=None,
-        seg_type=SegmentType.descending_aorta
+        qualified_coef=qualifiedCoef,
+        cropped_image=cropped_image
     )
     desc_axial_segmenter.begin_segmentation()
     test_image = desc_axial_segmenter.processing_image
     ref_image = read_desc_volume_image()
-    print("qualified slicefactor : {}".format(qsf))
+    print("qualified slicefactor : {}".format(qualifiedCoef))
     print("filter factor : {}".format(ffactor))
     nda_ref = sitk.GetArrayFromImage(ref_image)
     nda_test = sitk.GetArrayFromImage(test_image)
@@ -113,24 +162,32 @@ def test_compare_des(limit, qsf, ffactor):
     return test_image
 
 
-def test_compare_asc(limit, qsf, ffactor, processing_image=None):
+def test_compare_asc(limit, qualifiedCoef, ffactor, processing_image=None):
     if not processing_image:
         processing_image = read_desc_volume_image()
     starting_slice = 733
     aorta_centre = [87, 131]
-    asc_axial_segmenter = AortaSegmenter(
-        cropped_image=cropped_image,
-        starting_slice=starting_slice, aorta_centre=aorta_centre,
+    # asc_axial_segmenter = AortaSegmenter(
+    #     cropped_image=cropped_image,
+    #     starting_slice=starting_slice, aorta_centre=aorta_centre,
+    #     num_slice_skipping=3,
+    #     qualified_slice_factor=qualifiedCoef,
+    #     filter_factor=ffactor,
+    #     processing_image=processing_image,
+    #     seg_type=SegmentType.ascending_aorta
+    # )
+    asc_axial_segmenter = AortaAscendingAxialSegmenter(
+        starting_slice=starting_slice,
+        aorta_centre=aorta_centre,
         num_slice_skipping=3,
-        qualified_slice_factor=qsf,
-        filter_factor=ffactor,
-        processing_image=processing_image,
-        seg_type=SegmentType.ascending_aorta
+        qualified_coef=qualifiedCoef,
+        cropped_image=cropped_image,
+        processing_image=processing_image
     )
     asc_axial_segmenter.begin_segmentation()
     test_image = asc_axial_segmenter.processing_image
     ref_image = read_asc_volume_image()
-    print("qualified slicefactor : {}".format(qsf))
+    print("qualified slicefactor : {}".format(qualifiedCoef))
     print("filter factor : {}".format(ffactor))
     nda_ref = sitk.GetArrayFromImage(ref_image)
     nda_test = sitk.GetArrayFromImage(test_image)
@@ -140,18 +197,23 @@ def test_compare_asc(limit, qsf, ffactor, processing_image=None):
     return test_image
 
 
-def test_compare_final_volume(limit, qsf, ffactor, processing_image=None):
+def test_compare_final_volume(
+    limit,
+    qualifiedCoef,
+    ffactor,
+    processing_image=None
+        ):
     if not processing_image:
         processing_image = read_asc_volume_image()
-    if not qsf:
-        qsf = 2.2
+    if not qualifiedCoef:
+        qualifiedCoef = 2.2
     if not ffactor:
         ffactor = 3.5
     sagittal_segmenter = AortaSegmenter(
         cropped_image=cropped_image,
         starting_slice=None, aorta_centre=None,
         num_slice_skipping=3,
-        qualified_slice_factor=qsf,
+        qualified_slice_factor=qualifiedCoef,
         filter_factor=ffactor,
         processing_image=processing_image,
         seg_type=SegmentType.sagittal_segmenter
@@ -159,7 +221,7 @@ def test_compare_final_volume(limit, qsf, ffactor, processing_image=None):
     sagittal_segmenter.begin_segmentation()
     test_image = sagittal_segmenter.processing_image
     ref_image = read_final_volume_image()
-    print("qualified slicefactor : {}".format(qsf))
+    print("qualified slicefactor : {}".format(qualifiedCoef))
     print("filter factor : {}".format(ffactor))
     nda_ref = sitk.GetArrayFromImage(ref_image)
     nda_test = sitk.GetArrayFromImage(test_image)
@@ -169,7 +231,7 @@ def test_compare_final_volume(limit, qsf, ffactor, processing_image=None):
     return test_image
 
 
-def test_prepared_segmenting_image(limit, qsf, ffactor):
+def test_prepared_segmenting_image(limit, qualifiedCoef, ffactor):
     limit = float(limit)
     processing_image = test_compare_des(limit)
     processing_image = test_compare_asc(limit, processing_image)
