@@ -16,14 +16,17 @@ project_path = os.path.abspath('../../../')
 AGR_module_path = os.path.join(project_path, "src/SlicerExtension/")
 AGR_module_path = os.path.join(AGR_module_path, "AortaGeometryReconstructor/")
 AGR_module_path = os.path.join(AGR_module_path, "AortaGeomReconDisplayModule")
-
+AGR_module_lib_path = os.path.join(
+    AGR_module_path, "AortaGeomReconDisplayModuleLib")
 slicer_bin_path = os.path.abspath(
     "/Users/lllll/AppData/Local/NA-MIC/Slicer 5.0.3/bin/Python")
 
 sys.path.insert(0, project_path)
 sys.path.insert(0, AGR_module_path)
 sys.path.insert(0, slicer_bin_path)
+sys.path.insert(0, AGR_module_lib_path)
 
+print(sys.path)
 
 # -- Project information -----------------------------------------------------
 
