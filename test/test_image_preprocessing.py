@@ -126,7 +126,7 @@ def mean_square_error(ref_image, test_image):
     return npsum/np.count_nonzero(np.logical_or(ref_image, test_image))
 
 
-def test_compare_des(limit, qsf, ffactor):
+def test_compare_des(limit, qualifiedCoef, ffactor):
     starting_slice = 820
     aorta_centre = [18, 26]
 
@@ -136,7 +136,7 @@ def test_compare_des(limit, qsf, ffactor):
     #     cropped_image=cropped_image,
     #     starting_slice=starting_slice, aorta_centre=aorta_centre,
     #     num_slice_skipping=3,
-    #     qualified_slice_factor=qsf,
+    #     qualified_slice_factor=qualifiedCoef,
     #     filter_factor=ffactor,
     #     processing_image=None,
     #     seg_type=SegmentType.descending_aorta
@@ -146,13 +146,13 @@ def test_compare_des(limit, qsf, ffactor):
         starting_slice=starting_slice,
         aorta_centre=aorta_centre,
         num_slice_skipping=3,
-        qualified_slice_factor=qsf,
+        qualified_coef=qualifiedCoef,
         cropped_image=cropped_image
     )
     desc_axial_segmenter.begin_segmentation()
     test_image = desc_axial_segmenter.processing_image
     ref_image = read_desc_volume_image()
-    print("qualified slicefactor : {}".format(qsf))
+    print("qualified slicefactor : {}".format(qualifiedCoef))
     print("filter factor : {}".format(ffactor))
     nda_ref = sitk.GetArrayFromImage(ref_image)
     nda_test = sitk.GetArrayFromImage(test_image)
@@ -162,7 +162,7 @@ def test_compare_des(limit, qsf, ffactor):
     return test_image
 
 
-def test_compare_asc(limit, qsf, ffactor, processing_image=None):
+def test_compare_asc(limit, qualifiedCoef, ffactor, processing_image=None):
     if not processing_image:
         processing_image = read_desc_volume_image()
     starting_slice = 733
@@ -171,7 +171,7 @@ def test_compare_asc(limit, qsf, ffactor, processing_image=None):
     #     cropped_image=cropped_image,
     #     starting_slice=starting_slice, aorta_centre=aorta_centre,
     #     num_slice_skipping=3,
-    #     qualified_slice_factor=qsf,
+    #     qualified_slice_factor=qualifiedCoef,
     #     filter_factor=ffactor,
     #     processing_image=processing_image,
     #     seg_type=SegmentType.ascending_aorta
@@ -180,14 +180,14 @@ def test_compare_asc(limit, qsf, ffactor, processing_image=None):
         starting_slice=starting_slice,
         aorta_centre=aorta_centre,
         num_slice_skipping=3,
-        qualified_slice_factor=qsf,
+        qualified_coef=qualifiedCoef,
         cropped_image=cropped_image,
         processing_image=processing_image
     )
     asc_axial_segmenter.begin_segmentation()
     test_image = asc_axial_segmenter.processing_image
     ref_image = read_asc_volume_image()
-    print("qualified slicefactor : {}".format(qsf))
+    print("qualified slicefactor : {}".format(qualifiedCoef))
     print("filter factor : {}".format(ffactor))
     nda_ref = sitk.GetArrayFromImage(ref_image)
     nda_test = sitk.GetArrayFromImage(test_image)
@@ -197,18 +197,23 @@ def test_compare_asc(limit, qsf, ffactor, processing_image=None):
     return test_image
 
 
-def test_compare_final_volume(limit, qsf, ffactor, processing_image=None):
+def test_compare_final_volume(
+    limit,
+    qualifiedCoef,
+    ffactor,
+    processing_image=None
+        ):
     if not processing_image:
         processing_image = read_asc_volume_image()
-    if not qsf:
-        qsf = 2.2
+    if not qualifiedCoef:
+        qualifiedCoef = 2.2
     if not ffactor:
         ffactor = 3.5
     sagittal_segmenter = AortaSegmenter(
         cropped_image=cropped_image,
         starting_slice=None, aorta_centre=None,
         num_slice_skipping=3,
-        qualified_slice_factor=qsf,
+        qualified_slice_factor=qualifiedCoef,
         filter_factor=ffactor,
         processing_image=processing_image,
         seg_type=SegmentType.sagittal_segmenter
@@ -216,7 +221,7 @@ def test_compare_final_volume(limit, qsf, ffactor, processing_image=None):
     sagittal_segmenter.begin_segmentation()
     test_image = sagittal_segmenter.processing_image
     ref_image = read_final_volume_image()
-    print("qualified slicefactor : {}".format(qsf))
+    print("qualified slicefactor : {}".format(qualifiedCoef))
     print("filter factor : {}".format(ffactor))
     nda_ref = sitk.GetArrayFromImage(ref_image)
     nda_test = sitk.GetArrayFromImage(test_image)
@@ -226,7 +231,7 @@ def test_compare_final_volume(limit, qsf, ffactor, processing_image=None):
     return test_image
 
 
-def test_prepared_segmenting_image(limit, qsf, ffactor):
+def test_prepared_segmenting_image(limit, qualifiedCoef, ffactor):
     limit = float(limit)
     processing_image = test_compare_des(limit)
     processing_image = test_compare_asc(limit, processing_image)
