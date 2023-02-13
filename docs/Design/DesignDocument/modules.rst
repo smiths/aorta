@@ -1,5 +1,5 @@
-test
-====
+AortaGeomRecon
+==============
 
 .. toctree::
    :maxdepth: 4
