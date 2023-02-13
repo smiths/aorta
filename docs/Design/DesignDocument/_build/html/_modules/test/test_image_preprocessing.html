@@ -36,8 +36,7 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../modules.html">AortaGeomReconDisplayModuleLib</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../test.html">test package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">test</a></li>
 </ul>
 
         </div>
@@ -193,7 +192,7 @@
     <span class="k">return</span> <span class="n">npsum</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">count_nonzero</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">logical_or</span><span class="p">(</span><span class="n">ref_image</span><span class="p">,</span> <span class="n">test_image</span><span class="p">))</span></div>
 
 
-<div class="viewcode-block" id="test_compare_des"><a class="viewcode-back" href="../../test.html#test.test_image_preprocessing.test_compare_des">[docs]</a><span class="k">def</span> <span class="nf">test_compare_des</span><span class="p">(</span><span class="n">limit</span><span class="p">,</span> <span class="n">qsf</span><span class="p">,</span> <span class="n">ffactor</span><span class="p">):</span>
+<div class="viewcode-block" id="test_compare_des"><a class="viewcode-back" href="../../test.html#test.test_image_preprocessing.test_compare_des">[docs]</a><span class="k">def</span> <span class="nf">test_compare_des</span><span class="p">(</span><span class="n">limit</span><span class="p">,</span> <span class="n">qualifiedCoef</span><span class="p">,</span> <span class="n">ffactor</span><span class="p">):</span>
     <span class="n">starting_slice</span> <span class="o">=</span> <span class="mi">820</span>
     <span class="n">aorta_centre</span> <span class="o">=</span> <span class="p">[</span><span class="mi">18</span><span class="p">,</span> <span class="mi">26</span><span class="p">]</span>
 
@@ -203,7 +202,7 @@
     <span class="c1">#     cropped_image=cropped_image,</span>
     <span class="c1">#     starting_slice=starting_slice, aorta_centre=aorta_centre,</span>
     <span class="c1">#     num_slice_skipping=3,</span>
-    <span class="c1">#     qualified_slice_factor=qsf,</span>
+    <span class="c1">#     qualified_slice_factor=qualifiedCoef,</span>
     <span class="c1">#     filter_factor=ffactor,</span>
     <span class="c1">#     processing_image=None,</span>
     <span class="c1">#     seg_type=SegmentType.descending_aorta</span>
@@ -213,13 +212,13 @@
         <span class="n">starting_slice</span><span class="o">=</span><span class="n">starting_slice</span><span class="p">,</span>
         <span class="n">aorta_centre</span><span class="o">=</span><span class="n">aorta_centre</span><span class="p">,</span>
         <span class="n">num_slice_skipping</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
-        <span class="n">qualified_slice_factor</span><span class="o">=</span><span class="n">qsf</span><span class="p">,</span>
+        <span class="n">qualified_coef</span><span class="o">=</span><span class="n">qualifiedCoef</span><span class="p">,</span>
         <span class="n">cropped_image</span><span class="o">=</span><span class="n">cropped_image</span>
     <span class="p">)</span>
     <span class="n">desc_axial_segmenter</span><span class="o">.</span><span class="n">begin_segmentation</span><span class="p">()</span>
     <span class="n">test_image</span> <span class="o">=</span> <span class="n">desc_axial_segmenter</span><span class="o">.</span><span class="n">processing_image</span>
     <span class="n">ref_image</span> <span class="o">=</span> <span class="n">read_desc_volume_image</span><span class="p">()</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;qualified slicefactor : </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">qsf</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;qualified slicefactor : </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">qualifiedCoef</span><span class="p">))</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;filter factor : </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ffactor</span><span class="p">))</span>
     <span class="n">nda_ref</span> <span class="o">=</span> <span class="n">sitk</span><span class="o">.</span><span class="n">GetArrayFromImage</span><span class="p">(</span><span class="n">ref_image</span><span class="p">)</span>
     <span class="n">nda_test</span> <span class="o">=</span> <span class="n">sitk</span><span class="o">.</span><span class="n">GetArrayFromImage</span><span class="p">(</span><span class="n">test_image</span><span class="p">)</span>
@@ -229,7 +228,7 @@
     <span class="k">return</span> <span class="n">test_image</span></div>
 
 
-<div class="viewcode-block" id="test_compare_asc"><a class="viewcode-back" href="../../test.html#test.test_image_preprocessing.test_compare_asc">[docs]</a><span class="k">def</span> <span class="nf">test_compare_asc</span><span class="p">(</span><span class="n">limit</span><span class="p">,</span> <span class="n">qsf</span><span class="p">,</span> <span class="n">ffactor</span><span class="p">,</span> <span class="n">processing_image</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="test_compare_asc"><a class="viewcode-back" href="../../test.html#test.test_image_preprocessing.test_compare_asc">[docs]</a><span class="k">def</span> <span class="nf">test_compare_asc</span><span class="p">(</span><span class="n">limit</span><span class="p">,</span> <span class="n">qualifiedCoef</span><span class="p">,</span> <span class="n">ffactor</span><span class="p">,</span> <span class="n">processing_image</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">processing_image</span><span class="p">:</span>
         <span class="n">processing_image</span> <span class="o">=</span> <span class="n">read_desc_volume_image</span><span class="p">()</span>
     <span class="n">starting_slice</span> <span class="o">=</span> <span class="mi">733</span>
@@ -238,7 +237,7 @@
     <span class="c1">#     cropped_image=cropped_image,</span>
     <span class="c1">#     starting_slice=starting_slice, aorta_centre=aorta_centre,</span>
     <span class="c1">#     num_slice_skipping=3,</span>
-    <span class="c1">#     qualified_slice_factor=qsf,</span>
+    <span class="c1">#     qualified_slice_factor=qualifiedCoef,</span>
     <span class="c1">#     filter_factor=ffactor,</span>
     <span class="c1">#     processing_image=processing_image,</span>
     <span class="c1">#     seg_type=SegmentType.ascending_aorta</span>
@@ -247,14 +246,14 @@
         <span class="n">starting_slice</span><span class="o">=</span><span class="n">starting_slice</span><span class="p">,</span>
         <span class="n">aorta_centre</span><span class="o">=</span><span class="n">aorta_centre</span><span class="p">,</span>
         <span class="n">num_slice_skipping</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
-        <span class="n">qualified_slice_factor</span><span class="o">=</span><span class="n">qsf</span><span class="p">,</span>
+        <span class="n">qualified_coef</span><span class="o">=</span><span class="n">qualifiedCoef</span><span class="p">,</span>
         <span class="n">cropped_image</span><span class="o">=</span><span class="n">cropped_image</span><span class="p">,</span>
         <span class="n">processing_image</span><span class="o">=</span><span class="n">processing_image</span>
     <span class="p">)</span>
     <span class="n">asc_axial_segmenter</span><span class="o">.</span><span class="n">begin_segmentation</span><span class="p">()</span>
     <span class="n">test_image</span> <span class="o">=</span> <span class="n">asc_axial_segmenter</span><span class="o">.</span><span class="n">processing_image</span>
     <span class="n">ref_image</span> <span class="o">=</span> <span class="n">read_asc_volume_image</span><span class="p">()</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;qualified slicefactor : </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">qsf</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;qualified slicefactor : </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">qualifiedCoef</span><span class="p">))</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;filter factor : </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ffactor</span><span class="p">))</span>
     <span class="n">nda_ref</span> <span class="o">=</span> <span class="n">sitk</span><span class="o">.</span><span class="n">GetArrayFromImage</span><span class="p">(</span><span class="n">ref_image</span><span class="p">)</span>
     <span class="n">nda_test</span> <span class="o">=</span> <span class="n">sitk</span><span class="o">.</span><span class="n">GetArrayFromImage</span><span class="p">(</span><span class="n">test_image</span><span class="p">)</span>
@@ -264,18 +263,23 @@
     <span class="k">return</span> <span class="n">test_image</span></div>
 
 
-<div class="viewcode-block" id="test_compare_final_volume"><a class="viewcode-back" href="../../test.html#test.test_image_preprocessing.test_compare_final_volume">[docs]</a><span class="k">def</span> <span class="nf">test_compare_final_volume</span><span class="p">(</span><span class="n">limit</span><span class="p">,</span> <span class="n">qsf</span><span class="p">,</span> <span class="n">ffactor</span><span class="p">,</span> <span class="n">processing_image</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="test_compare_final_volume"><a class="viewcode-back" href="../../test.html#test.test_image_preprocessing.test_compare_final_volume">[docs]</a><span class="k">def</span> <span class="nf">test_compare_final_volume</span><span class="p">(</span>
+    <span class="n">limit</span><span class="p">,</span>
+    <span class="n">qualifiedCoef</span><span class="p">,</span>
+    <span class="n">ffactor</span><span class="p">,</span>
+    <span class="n">processing_image</span><span class="o">=</span><span class="kc">None</span>
+        <span class="p">):</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">processing_image</span><span class="p">:</span>
         <span class="n">processing_image</span> <span class="o">=</span> <span class="n">read_asc_volume_image</span><span class="p">()</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">qsf</span><span class="p">:</span>
-        <span class="n">qsf</span> <span class="o">=</span> <span class="mf">2.2</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">qualifiedCoef</span><span class="p">:</span>
+        <span class="n">qualifiedCoef</span> <span class="o">=</span> <span class="mf">2.2</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">ffactor</span><span class="p">:</span>
         <span class="n">ffactor</span> <span class="o">=</span> <span class="mf">3.5</span>
     <span class="n">sagittal_segmenter</span> <span class="o">=</span> <span class="n">AortaSegmenter</span><span class="p">(</span>
         <span class="n">cropped_image</span><span class="o">=</span><span class="n">cropped_image</span><span class="p">,</span>
         <span class="n">starting_slice</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">aorta_centre</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">num_slice_skipping</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
-        <span class="n">qualified_slice_factor</span><span class="o">=</span><span class="n">qsf</span><span class="p">,</span>
+        <span class="n">qualified_slice_factor</span><span class="o">=</span><span class="n">qualifiedCoef</span><span class="p">,</span>
         <span class="n">filter_factor</span><span class="o">=</span><span class="n">ffactor</span><span class="p">,</span>
         <span class="n">processing_image</span><span class="o">=</span><span class="n">processing_image</span><span class="p">,</span>
         <span class="n">seg_type</span><span class="o">=</span><span class="n">SegmentType</span><span class="o">.</span><span class="n">sagittal_segmenter</span>
@@ -283,7 +287,7 @@
     <span class="n">sagittal_segmenter</span><span class="o">.</span><span class="n">begin_segmentation</span><span class="p">()</span>
     <span class="n">test_image</span> <span class="o">=</span> <span class="n">sagittal_segmenter</span><span class="o">.</span><span class="n">processing_image</span>
     <span class="n">ref_image</span> <span class="o">=</span> <span class="n">read_final_volume_image</span><span class="p">()</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;qualified slicefactor : </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">qsf</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;qualified slicefactor : </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">qualifiedCoef</span><span class="p">))</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;filter factor : </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ffactor</span><span class="p">))</span>
     <span class="n">nda_ref</span> <span class="o">=</span> <span class="n">sitk</span><span class="o">.</span><span class="n">GetArrayFromImage</span><span class="p">(</span><span class="n">ref_image</span><span class="p">)</span>
     <span class="n">nda_test</span> <span class="o">=</span> <span class="n">sitk</span><span class="o">.</span><span class="n">GetArrayFromImage</span><span class="p">(</span><span class="n">test_image</span><span class="p">)</span>
@@ -293,7 +297,7 @@
     <span class="k">return</span> <span class="n">test_image</span></div>
 
 
-<div class="viewcode-block" id="test_prepared_segmenting_image"><a class="viewcode-back" href="../../test.html#test.test_image_preprocessing.test_prepared_segmenting_image">[docs]</a><span class="k">def</span> <span class="nf">test_prepared_segmenting_image</span><span class="p">(</span><span class="n">limit</span><span class="p">,</span> <span class="n">qsf</span><span class="p">,</span> <span class="n">ffactor</span><span class="p">):</span>
+<div class="viewcode-block" id="test_prepared_segmenting_image"><a class="viewcode-back" href="../../test.html#test.test_image_preprocessing.test_prepared_segmenting_image">[docs]</a><span class="k">def</span> <span class="nf">test_prepared_segmenting_image</span><span class="p">(</span><span class="n">limit</span><span class="p">,</span> <span class="n">qualifiedCoef</span><span class="p">,</span> <span class="n">ffactor</span><span class="p">):</span>
     <span class="n">limit</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">limit</span><span class="p">)</span>
     <span class="n">processing_image</span> <span class="o">=</span> <span class="n">test_compare_des</span><span class="p">(</span><span class="n">limit</span><span class="p">)</span>
     <span class="n">processing_image</span> <span class="o">=</span> <span class="n">test_compare_asc</span><span class="p">(</span><span class="n">limit</span><span class="p">,</span> <span class="n">processing_image</span><span class="p">)</span>

@@ -36,8 +36,7 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../modules.html">Project</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../test.html">test package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">test</a></li>
 </ul>
 
         </div>
@@ -71,15 +70,15 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 
-<div class="viewcode-block" id="AortaAscendingAxialSegmenter"><a class="viewcode-back" href="../../AortaGeomReconDisplayModuleLib.html#AortaGeomReconDisplayModuleLib.AortaAscendingAxialSegmenter.AortaAscendingAxialSegmenter">[docs]</a><span class="k">class</span> <span class="nc">AortaAscendingAxialSegmenter</span><span class="p">(</span><span class="n">AortaAxialSegmenter</span><span class="p">):</span>
+<div class="viewcode-block" id="AortaAscendingAxialSegmenter"><a class="viewcode-back" href="../../backup/AortaGeomReconDisplayModuleLib.html#AortaGeomReconDisplayModuleLib.AortaAscendingAxialSegmenter.AortaAscendingAxialSegmenter">[docs]</a><span class="k">class</span> <span class="nc">AortaAscendingAxialSegmenter</span><span class="p">(</span><span class="n">AortaAxialSegmenter</span><span class="p">):</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span> <span class="n">starting_slice</span><span class="p">,</span> <span class="n">aorta_centre</span><span class="p">,</span> <span class="n">num_slice_skipping</span><span class="p">,</span>
-            <span class="n">qualified_slice_factor</span><span class="p">,</span> <span class="n">cropped_image</span><span class="p">,</span> <span class="n">processing_image</span><span class="p">):</span>
+            <span class="n">qualified_coef</span><span class="p">,</span> <span class="n">cropped_image</span><span class="p">,</span> <span class="n">processing_image</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_processing_image</span> <span class="o">=</span> <span class="n">processing_image</span>
 
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">starting_slice</span><span class="p">,</span> <span class="n">aorta_centre</span><span class="p">,</span> <span class="n">num_slice_skipping</span><span class="p">,</span>
-                         <span class="n">qualified_slice_factor</span><span class="p">,</span> <span class="n">cropped_image</span><span class="p">)</span>
+                         <span class="n">qualified_coef</span><span class="p">,</span> <span class="n">cropped_image</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">__get_overlap</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">img1</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
         <span class="n">img2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cropped_image</span><span class="p">[:,</span> <span class="p">:,</span> <span class="n">i</span><span class="p">]</span>
@@ -120,7 +119,7 @@
 
             <span class="c1"># factor size that starts like normal,</span>
             <span class="c1"># but may change depending on overlap</span>
-            <span class="n">factor_size_overlap</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_qualified_slice_factor</span>
+            <span class="n">factor_size_overlap</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_qualified_coef</span>
             <span class="n">decreasing_size</span> <span class="o">=</span> <span class="kc">False</span>
             <span class="n">start</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_starting_slice</span>
             <span class="n">end</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cropped_image</span><span class="o">.</span><span class="n">GetDepth</span><span class="p">()</span>
@@ -145,14 +144,14 @@
                     <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__get_overlap</span><span class="p">(</span><span class="n">seg</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span> <span class="n">sliceNum</span><span class="p">)):</span>
                         <span class="n">factor_size_overlap</span> <span class="o">=</span> <span class="mf">2.8</span>
                     <span class="k">else</span><span class="p">:</span>
-                        <span class="n">factor_size_overlap</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_qualified_slice_factor</span>
+                        <span class="n">factor_size_overlap</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_qualified_coef</span>
                     <span class="k">if</span> <span class="p">(</span><span class="n">decreasing_size</span><span class="p">):</span>
                         <span class="c1"># if size of segmentation is decreasing,</span>
                         <span class="c1"># try to maintain decreasing nature</span>
                         <span class="n">factor_size_overlap</span> <span class="o">=</span> <span class="mf">1.2</span>
                     <span class="n">is_new_center_qualified</span> <span class="o">=</span> <span class="p">(</span>
                         <span class="n">total_coord</span> <span class="o">&gt;</span>
-                        <span class="mi">1</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">_qualified_slice_factor</span> <span class="o">*</span> <span class="n">previous_size</span>
+                        <span class="mi">1</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">_qualified_coef</span> <span class="o">*</span> <span class="n">previous_size</span>
                     <span class="p">)</span>
                     <span class="n">is_new_center_qualified</span> <span class="o">=</span> <span class="p">(</span>
                         <span class="n">is_new_center_qualified</span>
@@ -163,11 +162,11 @@
 
                     <span class="n">is_new_center_qualified</span> <span class="o">=</span> <span class="p">(</span>
                         <span class="n">total_coord</span> <span class="o">&gt;</span>
-                        <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_original_size</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">_qualified_slice_factor</span><span class="p">)</span>
+                        <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_original_size</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">_qualified_coef</span><span class="p">)</span>
                     <span class="p">)</span>
                     <span class="n">is_new_center_qualified</span> <span class="o">=</span> <span class="p">(</span>
                         <span class="n">is_new_center_qualified</span>
-                        <span class="ow">and</span> <span class="n">total_coord</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_qualified_slice_factor</span>
+                        <span class="ow">and</span> <span class="n">total_coord</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_qualified_coef</span>
                         <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_original_size</span>
                         <span class="ow">and</span> <span class="n">total_coord</span> <span class="o">&lt;</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">previous_size</span>
                     <span class="p">)</span>
@@ -196,7 +195,7 @@
 
             <span class="n">previous_size</span> <span class="o">=</span> <span class="n">total_coord</span>
 
-<div class="viewcode-block" id="AortaAscendingAxialSegmenter.begin_segmentation"><a class="viewcode-back" href="../../AortaGeomReconDisplayModuleLib.html#AortaGeomReconDisplayModuleLib.AortaAscendingAxialSegmenter.AortaAscendingAxialSegmenter.begin_segmentation">[docs]</a>    <span class="k">def</span> <span class="nf">begin_segmentation</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="AortaAscendingAxialSegmenter.begin_segmentation"><a class="viewcode-back" href="../../backup/AortaGeomReconDisplayModuleLib.html#AortaGeomReconDisplayModuleLib.AortaAscendingAxialSegmenter.AortaAscendingAxialSegmenter.begin_segmentation">[docs]</a>    <span class="k">def</span> <span class="nf">begin_segmentation</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_segment_filter</span> <span class="o">=</span> <span class="n">sitk</span><span class="o">.</span><span class="n">ThresholdSegmentationLevelSetImageFilter</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_segment_filter</span><span class="o">.</span><span class="n">SetMaximumRMSError</span><span class="p">(</span><span class="mf">0.02</span><span class="p">)</span>
