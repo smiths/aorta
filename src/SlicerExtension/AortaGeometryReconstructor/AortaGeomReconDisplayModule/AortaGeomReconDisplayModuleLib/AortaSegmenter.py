@@ -1,34 +1,17 @@
 import SimpleITK as sitk
 import numpy as np
-from enum import Enum
+import os
+import sys
 
+project_path = os.path.abspath('.')
+AGR_module_path = os.path.join(project_path, "src/SlicerExtension/")
+AGR_module_path = os.path.join(AGR_module_path, "AortaGeometryReconstructor/")
+AGR_module_path = os.path.join(AGR_module_path, "AortaGeomReconDisplayModule")
+sys.path.insert(0, AGR_module_path)
 
-class SegmentType(Enum):
-    descending_aorta = 1
-    ascending_aorta = 2
-    sagittal_front = 3
-    sagittal = 4
-
-    def is_axial_seg(seg_type):
-        return (seg_type == SegmentType.descending_aorta
-                or seg_type == SegmentType.ascending_aorta)
-
-    def is_sagittal_seg(seg_type):
-        return (seg_type == SegmentType.sagittal_front
-                or seg_type == SegmentType.sagittal)
-
-    def __format__(self, obj):
-        return "%s segmentation" % (self._name_.replace("_", " "))
-
-
-class SegmentDirection(Enum):
-    S_to_I = 1
-    I_to_S = 2
-
-
-class PixelValue(Enum):
-    white_pixel = 1
-    black_pixel = 0
+from AortaGeomReconDisplayModuleLib.AortaGeomReconEnums import SegmentDirection as SegDir # noqa
+from AortaGeomReconDisplayModuleLib.AortaGeomReconEnums import SegmentType as SegType # noqa
+from AortaGeomReconDisplayModuleLib.AortaGeomReconEnums import PixelValue # noqa
 
 
 class AortaSegmenter():
@@ -43,8 +26,8 @@ class AortaSegmenter():
         self._aorta_centre = aorta_centre
         self._num_slice_skipping = num_slice_skipping
         self._seg_type = seg_type
-        if seg_type == SegmentType.sagittal_front:
-            self._seg_type = SegmentType.sagittal
+        if seg_type == SegType.sagittal_front:
+            self._seg_type = SegType.sagittal
         self._processing_image = processing_image
         self._qualified_slice_factor = qualified_slice_factor
         self._filter_factor = filter_factor
@@ -104,7 +87,7 @@ class AortaSegmenter():
             self._processing_image = sitk.Image(
                 self._cropped_image.GetSize(), sitk.sitkUInt8)
             self._processing_image.CopyInformation(self._cropped_image)
-        if self._seg_type == SegmentType.sagittal:
+        if self._seg_type == SegType.sagittal:
             self._total_pixels = (
                 self._processing_image.GetHeight()
                 * self._processing_image.GetDepth()
@@ -122,7 +105,7 @@ class AortaSegmenter():
         # to run the sagittal function
         self._base_pixel_value = self._total_pixels / max_aorta_slice
         self._decreasing_size = False
-        if SegmentType.is_axial_seg(self._seg_type):
+        if SegType.is_axial_seg(self._seg_type):
             # Get more values from the seed slice
             ls, new_slice, seed_slice = self.__circle_filter(
                 self._starting_slice,
@@ -140,7 +123,7 @@ class AortaSegmenter():
 
             # SEGMENT FROM SEED VALUE TO BOTTOM OF THE AORTA
             print("{} - top to bottom started".format(self._seg_type))
-            self._seg_dir = SegmentDirection.S_to_I
+            self._seg_dir = SegDir.Superior_to_Inferior
             self._end = -1
             self._step = -1
             self._skipped_slice_counter = 0
@@ -148,16 +131,16 @@ class AortaSegmenter():
             print("{} - top to bottom finished".format(self._seg_type))
 
             print("{} - bottom to top started".format(self._seg_type))
-            self._seg_dir = SegmentDirection.I_to_S
+            self._seg_dir = SegDir.Inferior_to_Superior
             self._end = self._cropped_image.GetDepth()
             self._step = 1
             self._skipped_slice_counter = len(self._skipped_slices)
-            if self._seg_type == SegmentType.descending_aorta:
+            if self._seg_type == SegType.descending_aorta:
                 self._qualified_slice_factor += 0.3
             self.__segmentation()
             print("{} - bottom to top finished".format(self._seg_type))
 
-            if self._seg_type == SegmentType.descending_aorta:
+            if self._seg_type == SegType.descending_aorta:
                 # Fill in missing slices of descending aorta
                 self.__filling_missing_slices()
         else:
@@ -169,7 +152,7 @@ class AortaSegmenter():
             self.__segmentation()
             print("{} - finished".format(self._seg_type))
 
-            self._seg_type = SegmentType.sagittal_front
+            self._seg_type = SegType.sagittal_front
             self._end = self._cropped_image.GetHeight()
             self._size_factor = 1.1
             print("{} - started".format(self._seg_type))
@@ -184,8 +167,8 @@ class AortaSegmenter():
         more_circles = True
 
         for sliceNum in range(self._start, self._end, self._step):
-            if SegmentType.is_sagittal_seg(self._seg_type):
-                if self._seg_type == SegmentType.sagittal:
+            if SegType.is_sagittal_seg(self._seg_type):
+                if self._seg_type == SegType.sagittal:
                     self._sag_current_size = np.count_nonzero(
                         self._processing_image[sliceNum, :, :])
                 else:
@@ -210,7 +193,7 @@ class AortaSegmenter():
                     new_filtered_slice, sag_new_size
                 )
 
-                if SegmentType.is_sagittal_seg(self._seg_type):
+                if SegType.is_sagittal_seg(self._seg_type):
                     factor = self._filter_factor
                     while not is_new_slice_qualified:
                         self._filter_factor -= 0.5
@@ -233,10 +216,10 @@ class AortaSegmenter():
                     self._filter_factor = factor
                 if is_new_slice_qualified:
                     self._skipped_slice_counter = 0
-                    if SegmentType.is_axial_seg(self._seg_type):
+                    if SegType.is_axial_seg(self._seg_type):
                         self._processing_image[:, :, sliceNum] = (
                             new_filtered_slice)
-                    elif self._seg_type == SegmentType.sagittal:
+                    elif self._seg_type == SegType.sagittal:
                         self._processing_image[sliceNum, :, :] = (
                             new_filtered_slice | seed_slice
                         )
@@ -248,14 +231,14 @@ class AortaSegmenter():
                     seeds_previous = var_list[3]
 
                     # check for double size
-                    if self._seg_dir == SegmentDirection.I_to_S:
+                    if self._seg_dir == SegDir.Inferior_to_Superior:
                         if total_coord > self._original_size * 2:
                             if (total_coord < previous_size):
                                 self._decreasing_size = True
 
                 # otherwise skip slice and don't change previous centre
                 # and seed values
-                elif SegmentType.is_axial_seg(self._seg_type):
+                elif SegType.is_axial_seg(self._seg_type):
                     self._skipped_slice_counter += 1
                     if (
                         self._skipped_slice_counter >= self._num_slice_skipping
@@ -266,7 +249,7 @@ class AortaSegmenter():
                                 self._cropped_image_255[:, :, sliceNum],
                                 sitk.sitkVectorUInt8
                             )
-            if SegmentType.is_axial_seg(self._seg_type):
+            if SegType.is_axial_seg(self._seg_type):
                 previous_size = total_coord
 
     def __is_new_slice_qualified(
@@ -275,12 +258,12 @@ class AortaSegmenter():
         is_new_slice_qualified = False
         ps_factor = 2
         os_factor = self._qualified_slice_factor
-        if SegmentType.is_axial_seg(self._seg_type):
-            if self._seg_dir == SegmentDirection.S_to_I:
+        if SegType.is_axial_seg(self._seg_type):
+            if self._seg_dir == SegDir.Superior_to_Inferior:
                 comparing_size = self._original_size
-            elif self._seg_dir == SegmentDirection.I_to_S:
+            elif self._seg_dir == SegDir.Inferior_to_Superior:
                 comparing_size = previous_size
-                if self._seg_type == SegmentType.ascending_aorta:
+                if self._seg_type == SegType.ascending_aorta:
                     os_factor = 4
                     if self._decreasing_size:
                         ps_factor = 1.2
@@ -306,9 +289,9 @@ class AortaSegmenter():
         return is_new_slice_qualified
 
     def __circle_filter(self, slice_num, centre, seeds_previous):
-        if SegmentType.is_axial_seg(self._seg_type):
+        if SegType.is_axial_seg(self._seg_type):
             img_slice = self._cropped_image[:, :, slice_num]
-        elif self._seg_type == SegmentType.sagittal:
+        elif self._seg_type == SegType.sagittal:
             img_slice = self._cropped_image[slice_num, :, :]
         else:
             img_slice = self._cropped_image[:, slice_num, :]
@@ -346,14 +329,14 @@ class AortaSegmenter():
 
     def __get_new_slice(self, ls, slice_num):
         fully_seg_slice = ls > PixelValue.black_pixel.value
-        if self._seg_type == SegmentType.descending_aorta:
+        if self._seg_type == SegType.descending_aorta:
             # assign segmentation to fully_seg_slice
             if not self._is_output_binary:
                 fully_seg_slice = sitk.LabelOverlay(
                     self._cropped_image[:, :, slice_num],
                     fully_seg_slice
                 )
-        elif self._seg_type == SegmentType.ascending_aorta:
+        elif self._seg_type == SegType.ascending_aorta:
             fully_seg_slice = (
                 fully_seg_slice
                 | self._processing_image[:, :, slice_num]
@@ -366,14 +349,14 @@ class AortaSegmenter():
         total_coord = None
         sag_new_size = None
         # get array from segmentation
-        if self._seg_type == SegmentType.descending_aorta:
+        if self._seg_type == SegType.descending_aorta:
             nda = sitk.GetArrayFromImage(new_filtered_slice)
             # calculate average x and average y values,
             # to get the new centre value
             list_x, list_y = np.where(nda == PixelValue.white_pixel.value)
             new_centre = (int(np.average(list_y)), int(np.average(list_x)))
             total_coord = len(list_x)
-        elif self._seg_type == SegmentType.ascending_aorta:
+        elif self._seg_type == SegType.ascending_aorta:
             nda = sitk.GetArrayFromImage(ls > 0)
             new_centre = [0, 0]
             list_y, _ = np.where(nda == PixelValue.white_pixel.value)
@@ -436,15 +419,15 @@ class AortaSegmenter():
                 new_seeds.append([x3, int(np.average(next_seed_y3_list))])
             if (height4 > height / 2):
                 new_seeds.append([x4, int(np.average(next_seed_y4_list))])
-        elif self._seg_type == SegmentType.sagittal_front:
+        elif self._seg_type == SegType.sagittal_front:
             sag_new_size = np.count_nonzero(new_filtered_slice)
-        elif self._seg_type == SegmentType.sagittal:
+        elif self._seg_type == SegType.sagittal:
             sag_new_size = np.count_nonzero(new_filtered_slice | seed)
 
         return total_coord, sag_new_size, new_centre, new_seeds
 
     def __prepare_seed(self, img_slice, centre, seeds_previous, slice_num):
-        if SegmentType.is_axial_seg(self._seg_type):
+        if SegType.is_axial_seg(self._seg_type):
             if self._normalized:
                 img_slice = sitk.Cast(sitk.RescaleIntensity(img_slice),
                                       sitk.sitkUInt8)
@@ -457,11 +440,11 @@ class AortaSegmenter():
                 seed_with_space = centre[0] + spacing*j
                 seed[(seed_with_space, centre[1])] = 1
 
-            if self._seg_type == SegmentType.ascending_aorta:
+            if self._seg_type == SegType.ascending_aorta:
                 for s in seeds_previous:
                     seed[s] = 1
             seed = sitk.BinaryDilate(seed, [3] * 2)
-        elif self._seg_type == SegmentType.sagittal:
+        elif self._seg_type == SegType.sagittal:
             seed = self._processing_image[slice_num, :, :]
         else:
             seed = self._processing_image[:, slice_num, :]
