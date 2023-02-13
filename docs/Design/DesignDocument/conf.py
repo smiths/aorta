@@ -17,8 +17,12 @@ AGR_module_path = os.path.join(project_path, "src/SlicerExtension/")
 AGR_module_path = os.path.join(AGR_module_path, "AortaGeometryReconstructor/")
 AGR_module_path = os.path.join(AGR_module_path, "AortaGeomReconDisplayModule")
 
+slicer_bin_path = os.path.abspath(
+    "/Users/lllll/AppData/Local/NA-MIC/Slicer 5.0.3/bin/Python")
+
 sys.path.insert(0, project_path)
 sys.path.insert(0, AGR_module_path)
+sys.path.insert(0, slicer_bin_path)
 
 
 # -- Project information -----------------------------------------------------
@@ -33,8 +37,8 @@ author = 'Jingyi Lin'
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
-extensions = ["sphinx.ext.todo", "sphinx.ext.napoleon"]
-
+extensions = ["sphinx.ext.todo", "sphinx.ext.viewcode", "sphinx.ext.autodoc"]
+autodoc_mock_imports = ["vtk", "sitkUtils", "PythonQt"]
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
 
@@ -42,7 +46,7 @@ templates_path = ['_templates']
 # directories to ignore when looking for source files.
 # This pattern also affects html_static_path and html_extra_path.
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
-# autodoc_default_options = {"members": True, "undoc-members": True, "private-members": True} # noqa
+autodoc_default_options = {"members": True, "undoc-members": True, "private-members": True} # noqa
 
 # -- Options for HTML output -------------------------------------------------
 
