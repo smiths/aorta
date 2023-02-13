@@ -183,80 +183,23 @@ description of the unit and the SI name.
 \subsection{Table of Symbols}
 
 The table that follows summarizes the symbols used in this document along with
-their units.  The choice of symbols was made to be consistent with the heat
-transfer literature and with existing documentation for solar water heating
-systems.  The symbols are listed in alphabetical order.
+their units.  The choice of symbols was made to be consistent with existing documentation for 3D Slicer program. 
+The symbols are listed in alphabetical order.
 
 \renewcommand{\arraystretch}{1.2}
 \noindent \begin{longtable}{l p{2cm} p{12cm}} \toprule
   \textbf{symbol} & \textbf{type} & \textbf{description}\\
   \midrule
-$B$ & $\mathbb{R}^{n}$ &  sample dataset of size $n$ 
- \\
-\text{base} & $\mathbb{R}^{n}$ & baseline signal 
-\\
-\textit{Baseline} & $\mathbb{R} $ & baseline quantity for fMRI dataset 
-\\
-\textit{cval} & $\mathbb{R}$ & a threshold variable
-\\
-$d$ & $\mathbb{N}^{+}$ & sample size 
-\\
-$f$ & $\mathbb{N}$ & number of frames 
-\\
-$k$ & $\mathbb{N}$ & index of best ideal signal 
-\\
-$M$ & $\mathbb{R}^{m \times n}$  & data model consisting of baseline, orthogonal and ideal
-time series
 \\
 \textit{MSE} & $\mathbb{R}$ &  mean square error
 \\
- $p$ & $\mathbb{R}$ &  threshold for voxel's intensity
+\textit{MAE} & $\mathbb{R}$ &  mean absolute error
 \\
- \textit{pnum} & $\mathbb{W}$ &  degree of the polynomial in the baseline model
-\\
-$r$ & $\mathbb{R}^{n}$ & ideal signal
-\\
-$r_{k}$ & $\mathbb{R}^{n}$ & best ideal signal
-\\
-$s$ & $\mathbb{R}$ & sample variance
-\\
-\text{sb} & $\mathbb{R}^{m \times n \times p}$ & sub-brick
-\\
-\text{slc} & $\mathbb{R}^{m \times n}$ & slice   
-\\
-\textit{SSE} & $\mathbb{R}$ & sum of squared errors
-\\
-$t$ & $\mathbb{R}$ & time 
-\\
-\textit{Topline} & $\mathbb{R}$ & topline quantity for fMRI dataset
-\\
-$v$ & $\mathbb{R}$& voxel     
-\\
-$X$ & $\mathbb{R}^{m \times n \times p \times q}$ & 3d+time dataset
-%\\
-%$y$  & - & \text{fMRI} output data
-\\
-$\alpha$ & $\mathbb{R}$ & fit coefficient for ideal signal
-\\
-$\beta$& $\mathbb{R}$ & fit coefficient for baseline
-\\
-$\beta^{*}$&$\mathbb{R}^{n}$ & vector of fit coefficients
-\\
-$\epsilon$ & $\mathbb{R}^ n$ & noise vector
-\\
-$\gamma$ & $\mathbb{R}$ & fit coefficient for orthogonal time series   
-\\
-$\sigma$ & $\mathbb{R}$  & sample standard deviation
-\\
-$\sigma_{r}$ & $\mathbb{R}$ & standard deviation of the residuals
-\\
-$\rho$ & $\mathbb{R}$  & Pearson correlation coefficient
-\\
-$\rho_{s}$ & $\mathbb{R}$  & Spearman correlation coefficient
+\textit{RMAE} & $\mathbb{R}$ & root mean absolute error
 \\ 
-$qualified\_slice\_factor$ & $\mathbb{R}$  & quadrant correlation coefficient
+$qualified\_coef$ & $\mathbb{R}$  & qualified center coefficient
 \\
-$\phi$ & $\mathbb{R}^{n}$ & orthogonal time series 
+$volume\_node$ & $\mathbb{R}$  & qualified center coefficient
 \\
 \bottomrule
 \caption{Table of Symbols}
@@ -286,7 +229,7 @@ $\phi$ & $\mathbb{R}^{n}$ & orthogonal time series
   \textbf{symbol} & \textbf{description}\\
   \midrule 
   A & Assumption\\
-  \progname{} & AortaGeometryReconstructor 3D Slicer extension\\
+  \progname & AortaGeometryReconstructor 3D Slicer extension\\
   DD & Data Definition\\
   GD & General Definition\\
   GS & Goal Statement\\
@@ -318,105 +261,124 @@ $\phi$ & $\mathbb{R}^{n}$ & orthogonal time series
 
 \pagenumbering{arabic}
 
-\plt{This SRS template is based on \citet{SmithAndLai2005, SmithEtAl2007}.  It
-  will get you started.  You should not modify the section headings, without
-  first discussing the change with the course instructor.  Modification means
-  you are not following the template, which loses some of the advantage of a
-  template, especially standardization.  Although the bits shown below do not
-  include type information, you may need to add this information for your
-  problem.  If you are unsure, please can ask the instructor.}
+% \plt{This SRS template is based on \citet{SmithAndLai2005, SmithEtAl2007}.  It
+%   will get you started.  You should not modify the section headings, without
+%   first discussing the change with the course instructor.  Modification means
+%   you are not following the template, which loses some of the advantage of a
+%   template, especially standardization.  Although the bits shown below do not
+%   include type information, you may need to add this information for your
+%   problem.  If you are unsure, please can ask the instructor.}
 
-\plt{Feel free to change the appearance of the report by modifying the LaTeX
-  commands.}
+% \plt{Feel free to change the appearance of the report by modifying the LaTeX
+%   commands.}
 
-\plt{This template document assumes that a single program is being documented.
-  If you are documenting a family of models, you should start with a commonality
-  analysis.  A separate template is provided for this.  For program
-  families you should look at \cite{Smith2006, SmithMcCutchanAndCarette2017}.
-  Single family member programs are often programs based on a single physical
-  model.  General purpose tools are usually documented as a family.  Families of
-  physical models also come up.}
+% \plt{This template document assumes that a single program is being documented.
+%   If you are documenting a family of models, you should start with a commonality
+%   analysis.  A separate template is provided for this.  For program
+%   families you should look at \cite{Smith2006, SmithMcCutchanAndCarette2017}.
+%   Single family member programs are often programs based on a single physical
+%   model.  General purpose tools are usually documented as a family.  Families of
+%   physical models also come up.}
 
-\plt{The SRS is not generally written, or read, sequentially.  The SRS is a
-  reference document.  It is generally read in an ad hoc order, as the need
-  arises.  For writing an SRS, and for reading one for the first time, the
-  suggested order of sections is:
-\begin{itemize}
-\item Goal Statement
-\item Instance Models
-\item Requirements
-\item Introduction
-\item Specific System Description
-\end{itemize}
-}
+% \plt{The SRS is not generally written, or read, sequentially.  The SRS is a
+%   reference document.  It is generally read in an ad hoc order, as the need
+%   arises.  For writing an SRS, and for reading one for the first time, the
+%   suggested order of sections is:
+% \begin{itemize}
+% \item Goal Statement
+% \item Instance Models
+% \item Requirements
+% \item Introduction
+% \item Specific System Description
+% \end{itemize}
+% }
 
-\plt{Guiding principles for the SRS document:
-\begin{itemize}
-\item Do not repeat the same information at the same abstraction level.  If
-  information is repeated, the repetition should be at a different abstraction
-  level.  For instance, there will be overlap between the scope section and the
-  assumptions, but the scope section will not go into as much detail as the
-  assumptions section.
-\end{itemize}
-}
+% \plt{Guiding principles for the SRS document:
+% \begin{itemize}
+% \item Do not repeat the same information at the same abstraction level.  If
+%   information is repeated, the repetition should be at a different abstraction
+%   level.  For instance, there will be overlap between the scope section and the
+%   assumptions, but the scope section will not go into as much detail as the
+%   assumptions section.
+% \end{itemize}
+% }
 
-\plt{The template description comments should be disabled before submitting this
-  document for grading.}
+% \plt{The template description comments should be disabled before submitting this
+%   document for grading.}
 
-\plt{You can borrow any wording from the text given in the template.  It is part
-  of the template, and not considered an instance of academic integrity.  Of
-  course, you need to cite the source of the template.}
+% \plt{You can borrow any wording from the text given in the template.  It is part
+%   of the template, and not considered an instance of academic integrity.  Of
+%   course, you need to cite the source of the template.}
 
-\plt{When the documentation is done, it should be possible to trace back to the
-  source of every piece of information.  Some information will come from
-  external sources, like terminology.  Other information will be derived, like
-  General Definitions.}
+% \plt{When the documentation is done, it should be possible to trace back to the
+%   source of every piece of information.  Some information will come from
+%   external sources, like terminology.  Other information will be derived, like
+%   General Definitions.}
 
-\plt{An SRS document should have the following qualities: unambiguous,
-  consistent, complete, validatable, abstract and traceable.}
+% \plt{An SRS document should have the following qualities: unambiguous,
+%   consistent, complete, validatable, abstract and traceable.}
 
-\plt{The overall goal of the SRS is that someone that meets the Characteristics
-  of the Intended Reader (Section~\ref{sec_IntendedReader}) can learn,
-  understand and verify the captured domain knowledge.  They should not have to
-  trust the authors of the SRS on any statements.  They should be able to
-  independently verify/derive every statement made.}
+% \plt{The overall goal of the SRS is that someone that meets the Characteristics
+%   of the Intended Reader (Section~\ref{sec_IntendedReader}) can learn,
+%   understand and verify the captured domain knowledge.  They should not have to
+%   trust the authors of the SRS on any statements.  They should be able to
+%   independently verify/derive every statement made.}
 
 \section{Introduction}
 
-\plt{The introduction section is written to introduce the problem.  It starts
-  general and focuses on the problem domain. The general advice is to start with
-a paragraph or two that describes the problem, followed by a ``roadmap''
-paragraph.  A roadmap orients the reader by telling them what sub-sections to
-expect in the Introduction section.}
+This document provides an overview of the Software Requirements Specification
+(SRS) for the 3D Slicer extension module \progname{}. \progname{}
+provides a highly customizable aorta segmentation module, 
+and an interactive user interface to apply the segmentation workflow.
+
+% \plt{The introduction section is written to introduce the problem.  It starts
+%   general and focuses on the problem domain. The general advice is to start with
+% a paragraph or two that describes the problem, followed by a ``roadmap''
+% paragraph.  A roadmap orients the reader by telling them what sub-sections to
+% expect in the Introduction section.}
 
 \subsection{Purpose of Document}
+The main purpose of this document is to provide sufficient information to
+understand what \progname{} module does. The goals and theoretical models used in the
+\progname{} segmentation module implementation are provided,
+with an emphasis on explicitly identifying assumptions and unambiguous
+definitions.
 
-\plt{This section summarizes the purpose of the SRS document.  It does not focus
-  on the problem itself.  The problem is described in the ``Problem
-  Description'' section (Section~\ref{Sec_pd}).  The purpose is for the document
-  in the context of the project itself, not in the context of this course.
-  Although the ``purpose'' of the document is to get a grade, you should not
-  mention this.  Instead, ``fake it'' as if this is a real project.  The purpose
-  section will be similar between projects.  The purpose of the document is the
-  purpose of the SRS, including communication, planning for the design stage,
-  etc.}
+% \plt{This section summarizes the purpose of the SRS document.  It does not focus
+%   on the problem itself.  The problem is described in the ``Problem
+%   Description'' section (Section~\ref{Sec_pd}).  The purpose is for the document
+%   in the context of the project itself, not in the context of this course.
+%   Although the ``purpose'' of the document is to get a grade, you should not
+%   mention this.  Instead, ``fake it'' as if this is a real project.  The purpose
+%   section will be similar between projects.  The purpose of the document is the
+%   purpose of the SRS, including communication, planning for the design stage,
+%   etc.}
 
 \subsection{Scope of Requirements} 
+The responsibilities of the user and the \progname{} are as follows:
+\begin{itemize}
+\item{User Responsibilities:} Users are responsible to provide appropriate
+inputs to the program and ensure that the inputs meet the assumptions mentioned
+in \ref{assump}.
+\item{\progname{} Responsibilities:} Upon receiving appropriate inputs, the program is intended to perform the
+segmentation algorithm, and returned a vtkMRMLScalarVolumeNode of the segment result,
+which is capable to transfer to a SITK::Image, or a numpy.ndarray.
+Other outputs are mentioned in \rref{R6} to \rref{R13}.
+\end{itemize}
+% \plt{Modelling the real world requires simplification.  The full complexity of
+%   the actual physics, chemistry, biology is too much for existing models, and
+%   for existing computational solution techniques.  Rather than say what is in
+%   the scope, it is usually easier to say what is not.  You can think of it as
+%   the scope is initially everything, and then it is constrained to create the
+%   actual scope.  For instance, the problem can be restricted to 2 dimensions, or
+%   it can ignore the effect of temperature (or pressure) on the material
+%   properties, etc.}  
 
-\plt{Modelling the real world requires simplification.  The full complexity of
-  the actual physics, chemistry, biology is too much for existing models, and
-  for existing computational solution techniques.  Rather than say what is in
-  the scope, it is usually easier to say what is not.  You can think of it as
-  the scope is initially everything, and then it is constrained to create the
-  actual scope.  For instance, the problem can be restricted to 2 dimensions, or
-  it can ignore the effect of temperature (or pressure) on the material
-  properties, etc.}  
-
-\plt{The scope section is related to the assumptions section
-  (Section~\ref{sec_assumpt}).  However, the scope and the assumptions are not
-  at the same level of abstraction.  The scope is at a high level.  The focus is
-  on the ``big picture'' assumptions.  The assumptions section lists, and
-  describes, all of the assumptions.}
+% \plt{The scope section is related to the assumptions section
+%   (Section~\ref{sec_assumpt}).  However, the scope and the assumptions are not
+%   at the same level of abstraction.  The scope is at a high level.  The focus is
+%   on the ``big picture'' assumptions.  The assumptions section lists, and
+%   describes, all of the assumptions.}
 
 \subsection{Characteristics of Intended Reader} \label{sec_IntendedReader}
 
