@@ -218,6 +218,12 @@ class AortaAscendingAxialSegmenter(AortaAxialSegmenter):
             new_slice = label_stats > 0
             total_coord, centre, seeds = self.__count_pixel(new_slice)
             is_overlapping = False
+            # check for double size
+            if self._seg_dir == SegDir.Inferior_to_Superior:
+                if total_coord > 2*self._original_size:
+                    if (total_coord < self._previous_size):
+                        self._is_size_decreasing = True
+                        self._qualified_overlap_coef = 1.2
             if self._seg_dir == SegDir.Inferior_to_Superior:
                 is_overlapping = self.__is_overlapping(new_slice, i)
             if self.__is_new_centre_qualified(total_coord, is_overlapping):
@@ -227,16 +233,10 @@ class AortaAscendingAxialSegmenter(AortaAxialSegmenter):
                 )
                 self._prev_centre = centre
                 self._prev_seeds = seeds
-
-                # check for double size
-                if self._seg_dir == SegDir.Inferior_to_Superior:
-                    if total_coord > 2*self._original_size:
-                        if (total_coord < self._previous_size):
-                            self._is_size_decreasing = True
-                            self._qualified_overlap_coef = 1.2
             # otherwise skip slice and don't change previous centre
             # and seed values
             else:
+                total_coord = self._previous_size
                 counter += 1
                 if (counter >= self._num_slice_skipping):
                     break
