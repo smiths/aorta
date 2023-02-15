@@ -16,6 +16,7 @@
 \usepackage{caption}
 \usepackage{pdflscape}
 \usepackage{afterpage}
+\usepackage{subfig}
 
 \usepackage[round]{natbib}
 
@@ -126,7 +127,7 @@
 
 \begin{document}
 
-\title{Software Requirements Specification for \progname: A software tool to semi-automatically segment a 3D aorta geometry from a chest CT scan} 
+\title{Software Requirements Specification for \progname{}} 
 \author{\authname}
 \date{\today}
 	
@@ -504,72 +505,127 @@ especially the ability to point out the center of the descending aorta and the a
 %   Calculus and Physics.''}
 
 \subsection{System Constraints}
-
-\plt{System constraints differ from other type of requirements because they
-  limit the developers' options in the system design and they identify how the
-  eventual system must fit into the world. This is the only place in the SRS
-  where design decisions can be specified.  That is, the quality requirement for
-  abstraction is relaxed here.  However, system constraints should only be
-  included if they are truly required.}
+Intended environment to run the program on are the Windows 10 systems.
+% \plt{System constraints differ from other type of requirements because they
+%   limit the developers' options in the system design and they identify how the
+%   eventual system must fit into the world. This is the only place in the SRS
+%   where design decisions can be specified.  That is, the quality requirement for
+%   abstraction is relaxed here.  However, system constraints should only be
+%   included if they are truly required.}
 
 \section{Specific System Description}
 
 This section first presents the problem description, which gives a high-level
 view of the problem to be solved.  This is followed by the solution characteristics
 specification, which presents the assumptions, theories, definitions and finally
-the instance models.  \plt{Add any project specific details that are relevant
-  for the section overview.}
+the instance models.  
+
+% \plt{Add any project specific details that are relevant
+%   for the section overview.}
 
 \subsection{Problem Description} \label{Sec_pd}
 
-\progname{} is intended to solve ... \plt{What problem does your program solve?
-The description here should be in the problem space, not the solution space.}
+The main purpose of \progname{} is to semi-automatically segment a 3D aorta geometry from a chest CT scan.
 
-\subsubsection{Terminology and  Definitions}
 
-\plt{This section is expressed in words, not with equations.  It provide the
-  meaning of the different words and phrases used in the domain of the problem.
-The terminology is used to introduce concepts from the world outside of the
-mathematical model  The terminology provides a real world connection to give the
-mathematical model meaning.}
-
+\subsubsection{Coordinate Systems}
 This subsection provides a list of terms that are used in the subsequent
 sections and their meaning, with the purpose of reducing ambiguity and making it
 easier to correctly understand the requirements:
 
+While working with medical images, it is necessary to be familiar with the different coordinate systems of the medical literarure and how data (voxels' orientation) is interpreted in different medical and non-medical software. Each coordinate system uses one or more numbers (coordinates) to uniquely determine the position of a point (in the medical context, we refer to each point as a voxel). The purpose of this section is to introduce some of the coordinate systems related to the medical imaging. There are different coordinate systems to represent data. A knowledge of the following coordinate systems is needed to be able to work with the medical images.
+\paragraph{Cartesian Coordinate System}
+A Cartesian coordinate system is a coordinate system that specifies each point uniquely in a 2D plane by a pair of numerical coordinates or in a 3D space by three numerical coordinates. We assume a right-hand Cartesian coordinate system throughout this document.
+\paragraph{World Coordinate System}
+World Coordinate System (WCS) is a Cartesian coordinate system that describes the physical coordinates associated with a model such as a MRI scanner or a patient. While each model has its own coordinate system, without a universal coordinate system such as WCS, they cannot interact with each other. For model interaction to be possible, their coordinate systems must be transformed into the WCS. Figure \ref{WCS} shows the WCS corresponding space and axes.
+\begin{figure}[hbpt!]
+\centering
+\includegraphics[width=50mm]{worldCoordinateSystem.png}
+\caption{World Coordinate System Space and Axes~\cite{slicerWCS}}
+\label{WCS}
+\end{figure}
+\paragraph{Anatomical Coordinate System}
+Anatomical coordinate system, also known as patient coordinate system, is a right-handed 3D coordinate system which describes the standard anatomical position of a human using the following 3 orthogonal planes:
 \begin{itemize}
-
-\item 
-
+\item{Axial / Transverse plane:} is a plane parallel to the ground that separates the body into head (superior) and tail (inferior) positions.
+\item{Coronal / Frontal plane:} is a plane perpendicular to the ground that divides the body into front (anterior) and back (posterior) positions.
+\item{Sagittal / Median plane:} is a plane that divides the body into right and left positions.
 \end{itemize}
+Figure \ref{ACS} shows this coordinate system.
+
+\begin{figure}[htbp!] 
+\centering
+\subfloat{
+\includegraphics[width=80mm]{anatomicalCoordinateSystem1.png}
+}
+
+\subfloat{
+\includegraphics[width=60mm]{anatomicalCoordinateSystem2.png}
+}
+\caption{Anatomical Coordinate System Space and Axes~\cite{slicerWCS}} %without this we cannot have label
+\label{ACS}
+\end{figure}
+\indent
+
+Medical applications follow an anatomical coordinate system to store voxels in sequences. Depending on how the data is stored, this coordinate system can be divided into different bases. The most common ones are:
+\begin{itemize}
+\item{LPS Coordinate System:}
+
+The LPS coordinate system, also known as DICOM (patient) coordinate system, is a left-hand coordinate system used in DICOM images. In this system, voxels are ordered from left to right in a row, rows are ordered from posterior to anterior, and slices are stored from inferior to superior. In other words, it is an LPI system. \\
+\indent
+LPS stands for Left-Posterior-Superior which indicates the directions that spatial axes are increasing.
+% RAI Radiological preferred axes.
+\item{RAS Coordinate System:}
+
+LPI is a right-hand coordinate system for voxel orientation. It stores voxels from right to left to create rows, rows from anterior to posterior to create slices and slices from superior to inferior to create volumes. This system is the preferred basis for Neurological applications such as 3dfim+ and is used in NIfTI files. The increasing position order is RAS.
+\end{itemize}
+\paragraph{Image Coordinate System}
+To specify locations in an image we need to know to which coordinate system it is referenced. Different software may use different orders as their index convention.
+\begin{itemize}
+\item{Image Coordinate System for Matlab:}
+
+In Matlab, index numbering starts at the upper left corner. To express the position of point $(x,y,z)$, we should consider that the $x$ axis increases from left to right, the $y$ axis increases to the bottom and the $z$ axis increases backward. 
+\begin{figure}[hbpt!]
+\centering
+\includegraphics[width=50mm]{imageCoordinateSystem.png}
+\caption{Image Coordinate System Space and Axes in Matlab~\cite{slicerWCS}}
+\label{WCS}
+\end{figure}
+\item{Image Coordinate System for AFNI:}
+
+In AFNI, the lower left hand corner of the image is considered as the origin, which represents the position of the first voxel (0,0,0).
+\newline\newline
+\indent
+If we are using different file formats and software, we need to transform their coordinate systems into WCS.
+\end{itemize}
+
 
 \subsubsection{Physical System Description} \label{sec_phySystDescrip}
 
-\plt{The purpose of this section is to clearly and unambiguously state the
-  physical system that is to be modelled. Effective problem solving requires a
-  logical and organized approach. The statements on the physical system to be
-  studied should cover enough information to solve the problem. The physical
-  description involves element identification, where elements are defined as
-  independent and separable items of the physical system. Some example elements
-  include acceleration due to gravity, the mass of an object, and the size and
-  shape of an object. Each element should be identified and labelled, with their
-  interesting properties specified clearly. The physical description can also
-  include interactions of the elements, such as the following: i) the
-  interactions between the elements and their physical environment; ii) the
-  interactions between elements; and, iii) the initial or boundary conditions.}
+% \plt{The purpose of this section is to clearly and unambiguously state the
+%   physical system that is to be modelled. Effective problem solving requires a
+%   logical and organized approach. The statements on the physical system to be
+%   studied should cover enough information to solve the problem. The physical
+%   description involves element identification, where elements are defined as
+%   independent and separable items of the physical system. Some example elements
+%   include acceleration due to gravity, the mass of an object, and the size and
+%   shape of an object. Each element should be identified and labelled, with their
+%   interesting properties specified clearly. The physical description can also
+%   include interactions of the elements, such as the following: i) the
+%   interactions between the elements and their physical environment; ii) the
+%   interactions between elements; and, iii) the initial or boundary conditions.}
 
-The physical system of \progname{}, as shown in Figure~?,
-includes the following elements:
+We do not study the physical system for Dicom or how the data is actually generated.
 
-\begin{itemize}
+% \begin{itemize}
 
-\item[PS1:] 
+% \item[PS1:] 
 
-\item[PS2:] ...
+% \item[PS2:] ...
 
-\end{itemize}
+% \end{itemize}
 
-\plt{A figure here makes sense for most SRS documents}
+% \plt{A figure here makes sense for most SRS documents}
 
 % \begin{figure}[h!]
 % \begin{center}
@@ -583,15 +639,15 @@ includes the following elements:
 
 \subsubsection{Goal Statements}
 
-\plt{The goal statements refine the ``Problem Description''
-  (Section~\ref{Sec_pd}).  A goal is a functional objective the system under
-  consideration should achieve. Goals provide criteria for sufficient
-  completeness of a requirements specification and for requirements
-  pertinence. Goals will be refined in Section “Instanced Models”
-  (Section~\ref{sec_instance}). Large and complex goals should be decomposed
-  into smaller sub-goals.  The goals are written abstractly, with a minimal
-  amount of technical language.  They should be understandable by non-domain
-  experts.}
+% \plt{The goal statements refine the ``Problem Description''
+%   (Section~\ref{Sec_pd}).  A goal is a functional objective the system under
+%   consideration should achieve. Goals provide criteria for sufficient
+%   completeness of a requirements specification and for requirements
+%   pertinence. Goals will be refined in Section “Instanced Models”
+%   (Section~\ref{sec_instance}). Large and complex goals should be decomposed
+%   into smaller sub-goals.  The goals are written abstractly, with a minimal
+%   amount of technical language.  They should be understandable by non-domain
+%   experts.}
 
 \noindent Given the \plt{inputs}, the goal statements are:
 
