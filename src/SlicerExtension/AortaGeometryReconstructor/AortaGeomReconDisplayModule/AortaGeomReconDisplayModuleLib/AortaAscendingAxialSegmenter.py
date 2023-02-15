@@ -14,6 +14,7 @@ from AortaGeomReconDisplayModuleLib.AortaAxialSegmenter import AortaAxialSegment
 from AortaGeomReconDisplayModuleLib.AortaGeomReconEnums import SegmentDirection as SegDir # noqa
 from AortaGeomReconDisplayModuleLib.AortaGeomReconEnums import SegmentType as SegType # noqa
 
+
 class AortaAscendingAxialSegmenter(AortaAxialSegmenter):
 
     def __init__(
@@ -179,7 +180,7 @@ class AortaAscendingAxialSegmenter(AortaAxialSegmenter):
         """ # noqa
         if self._seg_dir == SegDir.Superior_to_Inferior:
             cmp_prev_size = bool(
-                total_coord < 2* self._previous_size
+                total_coord < 2 * self._previous_size
             )
             cmp_original_size = bool(
                 total_coord <
@@ -200,8 +201,8 @@ class AortaAscendingAxialSegmenter(AortaAxialSegmenter):
             )
             cmp_original_size = bool(total_coord < (self._original_size*4))
             cmp_prev_size = bool(
-                (total_coord < 
-                (self._qualified_overlap_coef * self._previous_size))
+                total_coord <
+                (self._qualified_overlap_coef * self._previous_size)
             )
         return cmp_prev_size and slicer_larger_than and cmp_original_size
 
