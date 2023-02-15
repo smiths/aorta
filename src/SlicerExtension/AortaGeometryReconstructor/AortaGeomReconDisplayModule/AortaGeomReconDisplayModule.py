@@ -840,7 +840,7 @@ class AortaGeomReconDisplayModuleLogic(ScriptedLoadableModuleLogic):  # noqa: F4
             starting_slice=aASnumber[2],
             aorta_centre=aASnumber[:2],
             num_slice_skipping=int(float(num_slice_skipping)),
-            segmentation_factor=float(qualified_coef),
+            qualified_coef=float(qualified_coef),
             cropped_image=self._cropped_image,
             processing_image=self._processing_image
         )

@@ -66,18 +66,15 @@ class AortaDescendingAxialSegmenter(AortaAxialSegmenter):
             init_ls, sitk.Cast(self._cur_img_slice, sitk.sitkFloat32))
         return ls
 
-    def __count_pixel(self, label_stats):
+    def __count_pixel(self, new_slice):
         """Use label statistics to calculate the number of counted pixels.
 
         Returns:
-            numpy.ndarray: A new slice where the labeled statistic of the seed image is greater than 1
-        Returns:
-            int: The total number of the counted X coordinates
-        Returns:
-            tupple: The new derived centre calculated by the mean of counted X coordinates and Y coordinates
+            (tuple): tuple containing:
+                int: The total number of the counted X coordinates
+                tupple: The new derived centre calculated by the mean of counted X coordinates and Y coordinates
         """ # noqa
         # assign segmentation to fully_seg_slice
-        new_slice = label_stats > 0
         # get array from segmentation
         nda = sitk.GetArrayFromImage(new_slice)
         # calculate average x and average y values,
@@ -85,7 +82,7 @@ class AortaDescendingAxialSegmenter(AortaAxialSegmenter):
         list_x, list_y = np.where(nda == 1)
         new_centre = (int(np.average(list_y)), int(np.average(list_x)))
         total_coord = len(list_x)
-        return new_slice, total_coord, new_centre
+        return total_coord, new_centre
 
     def __is_new_centre_qualified(self, total_coord):
         """Return True if the number of coordiante in the segmented center is qualified
@@ -114,7 +111,7 @@ class AortaDescendingAxialSegmenter(AortaAxialSegmenter):
             )
         return cmp_prev_size and slicer_larger_than and cmp_original_size
 
-    def segmentation(self):
+    def __segmentation(self):
         """From the starting slice to the superior or the inferior,
         use label statistics to see if a circle can be segmented.
         """
@@ -122,7 +119,8 @@ class AortaDescendingAxialSegmenter(AortaAxialSegmenter):
         for sliceNum in range(self._start, self._end, self._step):
             self._cur_img_slice = self._cropped_image[:, :, sliceNum]
             label_stats = self.__get_label_statistics()
-            new_slice, total_coord, centre = self.__count_pixel(label_stats)
+            new_slice = label_stats > 0
+            total_coord, centre = self.__count_pixel(new_slice)
             if self.__is_new_centre_qualified(total_coord):
                 counter = 0
                 self._processing_image[:, :, sliceNum] = new_slice
@@ -156,7 +154,8 @@ class AortaDescendingAxialSegmenter(AortaAxialSegmenter):
         slice_num = self._starting_slice
         self._cur_img_slice = self._cropped_image[:, :, slice_num]
         label_stats = self.__get_label_statistics()
-        new_slice, total_coord, centre = self.__count_pixel(label_stats)
+        new_slice = label_stats > 0
+        total_coord, centre = self.__count_pixel(new_slice)
         self._original_size = total_coord
         self._previous_size = total_coord
         self._processing_image[:, :, slice_num] = new_slice
@@ -165,7 +164,7 @@ class AortaDescendingAxialSegmenter(AortaAxialSegmenter):
         self._step = -1
         self._seg_dir = SegDir.Superior_to_Inferior
         print("Descending aorta segmentation - top to bottom started")
-        self.segmentation()
+        self.__segmentation()
         print("Descending aorta segmentation - top to bottom finished")
 
         # Initialize parameters for inferior to superior segmentation
@@ -176,7 +175,7 @@ class AortaDescendingAxialSegmenter(AortaAxialSegmenter):
         self._step = 1
         self._seg_dir = SegDir.Inferior_to_Superior
         print("Descending aorta segmentation - bottom to top started")
-        self.segmentation()
+        self.__segmentation()
         print("Descending aorta segmentation - bottom to top finished")
 
         # Fill in missing slices of descending aorta
