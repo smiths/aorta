@@ -232,6 +232,7 @@ $volume\_node$ & $\mathbb{R}$  & qualified center coefficient
   A & Assumption\\
   \progname & AortaGeometryReconstructor 3D Slicer extension\\
   DD & Data Definition\\
+  DICOM & Digital Imaging and Communications in Medicine\\
   GD & General Definition\\
   GS & Goal Statement\\
   IM & Instance Model\\
@@ -649,13 +650,28 @@ We do not study the physical system for Dicom or how the data is actually genera
 %   amount of technical language.  They should be understandable by non-domain
 %   experts.}
 
-\noindent Given the \plt{inputs}, the goal statements are:
+\noindent Given the DICOM image that includes patient's chest,
+the descending aorta center voxel coordinate,
+and the ascending aorta center voxel coordinate, the goal statements are:
 
 \begin{itemize}
 
-\item[GS\refstepcounter{goalnum}\thegoalnum \label{G_meaningfulLabel}:] \plt{One
-    sentence description of the goal.  There may be more than one.  Each Goal
-    should have a meaningful label.}
+\item[GS\refstepcounter{goalnum}\thegoalnum \label{G_meaningfulLabel}:] 
+Calculate the mean of the pixels associated with each label or segment based on the descending or ascending aorta center voxel coordinate.
+
+\item[GS\refstepcounter{goalnum}\thegoalnum \label{G_meaningfulLabel}:] 
+Calculate the lower and upper threshold based the mean.
+
+\item[GS\refstepcounter{goalnum}\thegoalnum \label{G_meaningfulLabel}:] 
+With the lower and upper threshold, segments structures in images based on intensity values.
+
+\item[GS\refstepcounter{goalnum}\thegoalnum \label{G_meaningfulLabel}:] 
+Count the number of pixels from the segmented structures in images.
+
+\item[GS\refstepcounter{goalnum}\thegoalnum \label{G_meaningfulLabel}:] 
+Verified the new slice is qualified by compare the number of pixels of the new segmented structure to the original given slice and the previous segmented slice.
+
+
 
 \end{itemize}
 
