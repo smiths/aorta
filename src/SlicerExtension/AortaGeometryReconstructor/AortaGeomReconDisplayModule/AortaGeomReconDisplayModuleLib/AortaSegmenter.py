@@ -9,7 +9,6 @@ AGR_module_path = os.path.join(AGR_module_path, "AortaGeometryReconstructor/")
 AGR_module_path = os.path.join(AGR_module_path, "AortaGeomReconDisplayModule")
 sys.path.insert(0, AGR_module_path)
 
-from AortaGeomReconDisplayModuleLib.AortaAxialSegmenter import AortaAxialSegmenter # noqa
 from AortaGeomReconDisplayModuleLib.AortaGeomReconEnums import SegmentDirection as SegDir # noqa
 from AortaGeomReconDisplayModuleLib.AortaGeomReconEnums import SegmentType # noqa
 from AortaGeomReconDisplayModuleLib.AortaGeomReconEnums import PixelValue # noqa
