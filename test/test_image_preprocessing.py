@@ -1,29 +1,26 @@
 from src.SlicerExtension.AortaGeometryReconstructor.AortaGeomReconDisplayModule.AortaGeomReconDisplayModuleLib.AortaSegmenter import AortaSegmenter # noqa
-from src.SlicerExtension.AortaGeometryReconstructor.AortaGeomReconDisplayModule.AortaGeomReconDisplayModuleLib.AortaGeomReconEnums import SegmentType # noqa
-from src.SlicerExtension.AortaGeometryReconstructor.AortaGeomReconDisplayModule.AortaGeomReconDisplayModuleLib.AortaDescendingAxialSegmenter import AortaDescendingAxialSegmenter # noqa
-from src.SlicerExtension.AortaGeometryReconstructor.AortaGeomReconDisplayModule.AortaGeomReconDisplayModuleLib.AortaAscendingAxialSegmenter import AortaAscendingAxialSegmenter # noqa
+from src.SlicerExtension.AortaGeometryReconstructor.AortaGeomReconDisplayModule.AortaGeomReconDisplayModuleLib.AortaGeomReconEnums import SegmentType as SegType # noqa
 
 import SimpleITK as sitk
 import numpy as np
 import os
 
 
-def print_result(ref_image, test_image):
+def print_result(ref_image, test_image, seg_type):
     print(
-        "{} mean_square_error".format(SegmentType.descending_aorta),
+        "{} mean_square_error".format(seg_type),
         mean_square_error(ref_image, test_image)
     )
     print(
-        "{} mean_absolute_error".format(SegmentType.ascending_aorta),
+        "{} mean_absolute_error".format(seg_type),
         mean_absolute_error(ref_image, test_image)
     )
     print(
-        "{} root_mse".format(SegmentType.ascending_aorta),
+        "{} root_mse".format(seg_type),
         root_mse(ref_image, test_image)
     )
     print(
-        "{} Sørensen–Dice coefficient".format(
-            SegmentType.descending_aorta),
+        "{} Sørensen–Dice coefficient".format(seg_type),
         DSC(ref_image, test_image)
     )
 
@@ -132,23 +129,16 @@ def test_compare_des(limit, qualifiedCoef, ffactor):
 
     # starting_slice = 700
     # aorta_centre = [5, 60]
-    # desc_axial_segmenter = AortaSegmenter(
-    #     cropped_image=cropped_image,
-    #     starting_slice=starting_slice, aorta_centre=aorta_centre,
-    #     num_slice_skipping=3,
-    #     qualified_slice_factor=qualifiedCoef,
-    #     filter_factor=ffactor,
-    #     processing_image=None,
-    #     seg_type=SegmentType.descending_aorta
-    # )
-
-    desc_axial_segmenter = AortaDescendingAxialSegmenter(
-        starting_slice=starting_slice,
-        aorta_centre=aorta_centre,
+    desc_axial_segmenter = AortaSegmenter(
+        cropped_image=cropped_image,
+        starting_slice=starting_slice, aorta_centre=aorta_centre,
         num_slice_skipping=3,
         qualified_coef=qualifiedCoef,
-        cropped_image=cropped_image
+        filter_factor=ffactor,
+        processing_image=None,
+        seg_type=SegType.descending_aorta
     )
+
     desc_axial_segmenter.begin_segmentation()
     test_image = desc_axial_segmenter.processing_image
     ref_image = read_desc_volume_image()
@@ -157,7 +147,7 @@ def test_compare_des(limit, qualifiedCoef, ffactor):
     nda_ref = sitk.GetArrayFromImage(ref_image)
     nda_test = sitk.GetArrayFromImage(test_image)
     DSC_error = 1-DSC(nda_ref, nda_test)
-    print_result(nda_ref, nda_test)
+    print_result(nda_ref, nda_test, SegType.descending_aorta)
     assert (DSC_error < limit)
     return test_image
 
@@ -167,23 +157,16 @@ def test_compare_asc(limit, qualifiedCoef, ffactor, processing_image=None):
         processing_image = read_desc_volume_image()
     starting_slice = 733
     aorta_centre = [87, 131]
-    # asc_axial_segmenter = AortaSegmenter(
-    #     cropped_image=cropped_image,
-    #     starting_slice=starting_slice, aorta_centre=aorta_centre,
-    #     num_slice_skipping=3,
-    #     qualified_slice_factor=qualifiedCoef,
-    #     filter_factor=ffactor,
-    #     processing_image=processing_image,
-    #     seg_type=SegmentType.ascending_aorta
-    # )
-    asc_axial_segmenter = AortaAscendingAxialSegmenter(
-        starting_slice=starting_slice,
-        aorta_centre=aorta_centre,
+    asc_axial_segmenter = AortaSegmenter(
+        cropped_image=cropped_image,
+        starting_slice=starting_slice, aorta_centre=aorta_centre,
         num_slice_skipping=3,
         qualified_coef=qualifiedCoef,
-        cropped_image=cropped_image,
-        processing_image=processing_image
+        filter_factor=ffactor,
+        processing_image=processing_image,
+        seg_type=SegType.ascending_aorta
     )
+
     asc_axial_segmenter.begin_segmentation()
     test_image = asc_axial_segmenter.processing_image
     ref_image = read_asc_volume_image()
@@ -192,7 +175,7 @@ def test_compare_asc(limit, qualifiedCoef, ffactor, processing_image=None):
     nda_ref = sitk.GetArrayFromImage(ref_image)
     nda_test = sitk.GetArrayFromImage(test_image)
     DSC_error = 1-DSC(nda_ref, nda_test)
-    print_result(nda_ref, nda_test)
+    print_result(nda_ref, nda_test, SegType.ascending_aorta)
     assert (DSC_error < limit)
     return test_image
 
@@ -216,7 +199,7 @@ def test_compare_final_volume(
         qualified_slice_factor=qualifiedCoef,
         filter_factor=ffactor,
         processing_image=processing_image,
-        seg_type=SegmentType.sagittal_segmenter
+        seg_type=SegType.sagittal_segmenter
     )
     sagittal_segmenter.begin_segmentation()
     test_image = sagittal_segmenter.processing_image

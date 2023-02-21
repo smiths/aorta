@@ -20,12 +20,16 @@ class SegmentType(Enum):
         """Return True if the segmentation type is
         descending or ascending aorta segmentation, False otherwise.
         """
-        return (seg_type == SegmentType.descending_aorta
-                or seg_type == SegmentType.ascending_aorta)
+        return (seg_type.value == SegmentType.descending_aorta.value
+                or seg_type.value == SegmentType.ascending_aorta.value)
 
     def is_sagittal_seg(seg_type):
-        return (seg_type == SegmentType.sagittal_front
-                or seg_type == SegmentType.sagittal)
+        return (seg_type.value == SegmentType.sagittal_front.value
+                or seg_type.value == SegmentType.sagittal.value)
+
+    def __eq__(self, other):
+        """Overrides the default implementation"""
+        return self.value == other.value
 
     def __format__(self, obj):
         return "%s segmentation" % (self._name_.replace("_", " "))
