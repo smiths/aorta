@@ -1,7 +1,5 @@
 from src.SlicerExtension.AortaGeometryReconstructor.AortaGeomReconDisplayModule.AortaGeomReconDisplayModuleLib.AortaSegmenter import AortaSegmenter # noqa
 from src.SlicerExtension.AortaGeometryReconstructor.AortaGeomReconDisplayModule.AortaGeomReconDisplayModuleLib.AortaGeomReconEnums import SegmentType as SegType # noqa
-from src.SlicerExtension.AortaGeometryReconstructor.AortaGeomReconDisplayModule.AortaGeomReconDisplayModuleLib.AortaDescendingAxialSegmenter import AortaDescendingAxialSegmenter # noqa
-from src.SlicerExtension.AortaGeometryReconstructor.AortaGeomReconDisplayModule.AortaGeomReconDisplayModuleLib.AortaAscendingAxialSegmenter import AortaAscendingAxialSegmenter # noqa
 
 import SimpleITK as sitk
 import numpy as np
