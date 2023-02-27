@@ -20,6 +20,8 @@ jobs:
         run: pip3 install SimpleITK
       - name: Install numpy
         run: pip3 install numpy
+      - name: Test file path
+        run: python3 -c 'import os; print(os.path.abspath("test/sample/43681283_crop.vtk")'
       - name: Test descending aorta segmentation
         run: pytest -s --limit 0.02 -k 'test_compare_des'
       - name: Test ascending aorta segmentation
