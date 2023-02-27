@@ -128,6 +128,7 @@ def read_final_volume_image(testCase):
     abspath = os.path.abspath("test/sample/{}_final.vtk".format(sample))
     return sitk.ReadImage(abspath)
 
+
 def DSC(ref_image, test_image):
     """Calculate the Dice similarity coefficient
 
