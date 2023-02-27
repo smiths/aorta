@@ -39,13 +39,13 @@ class AortaSegmenter():
         Returns:
             Boolean: comparison result
         """ # noqa
-        img2 = self._cropped_image[:, :, i]
+        img2 = self._processing_image[:, :, i]
         overlap = np.count_nonzero(img1 * img2)
         if (overlap <= 0):
-            img2 = self._cropped_image[:, :, i + 1]
+            img2 = self._processing_image[:, :, i - 1]
             overlap = np.count_nonzero(img1 * img2)
         if (overlap <= 0):
-            img2 = self._cropped_image[:, :, i + 2]
+            img2 = self._processing_image[:, :, i - 2]
             overlap = np.count_nonzero(img1 * img2)
         return (overlap > PixelValue.black_pixel.value)
 
@@ -108,13 +108,15 @@ class AortaSegmenter():
             seeds = []
             if self._seg_type == SegmentType.descending_aorta:
                 total_coord, centre = self.__count_pixel_des(new_slice)
+                self._processing_image[:, :, slice_num] = new_slice
             else:
                 total_coord, centre, seeds = self.__count_pixel_asc(new_slice)
+                self._processing_image[:, :, slice_num] = (
+                    new_slice | self._processing_image[:, :, slice_num])
             self._prev_seeds = seeds
             self._original_size = total_coord
             self._previous_size = total_coord
             self._prev_centre = centre
-            self._processing_image[:, :, slice_num] = new_slice
             self._skipped_slice_counter = 0
             self._end = -1
             self._step = -1
@@ -129,6 +131,7 @@ class AortaSegmenter():
             self._start = self._starting_slice + 1
             self._prev_centre = self._aorta_centre
             self._previous_size = self._original_size
+            self._prev_seeds = seeds
             self._end = self._cropped_image.GetDepth()
             self._step = 1
             self._skipped_slice_counter = len(self._skipped_slices)
@@ -156,12 +159,7 @@ class AortaSegmenter():
                 seeds = []
             else:
                 total_coord, centre, seeds = self.__count_pixel_asc(new_slice)
-                if self._seg_dir == SegDir.Inferior_to_Superior:
-                    if total_coord > 2*self._original_size:
-                        if (total_coord < self._previous_size):
-                            self._is_size_decreasing = True
-                            self._qualified_overlap_coef = 1.2
-                    is_overlapping = self.__is_overlapping(new_slice, sliceNum)
+                is_overlapping = self.__is_overlapping(new_slice, sliceNum)
             if self.__is_new_centre_qualified(total_coord, is_overlapping):
                 counter = 0
                 if self._seg_type == SegmentType.descending_aorta:
@@ -172,6 +170,12 @@ class AortaSegmenter():
                     )
                 self._prev_centre = centre
                 self._prev_seeds = seeds
+                if (self._seg_type == SegmentType.ascending_aorta
+                        and self._seg_dir == SegDir.Inferior_to_Superior
+                        and total_coord > 2*self._original_size
+                        and total_coord < self._previous_size):
+                    self._is_size_decreasing = True
+                    self._qualified_overlap_coef = 1.2
             else:
                 counter += 1
                 self._skipped_slices.append(sliceNum)
