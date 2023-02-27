@@ -61,6 +61,7 @@ def get_cropped_volume_image(testCase):
     elif testCase == 5:
         sample = "05937785"
     abspath = os.path.abspath("test/sample/{}_crop.vtk".format(sample))
+    print(abspath)
     reader = sitk.ImageFileReader()
     reader.SetImageIO("VTKImageIO")
     reader.SetFileName(abspath)
