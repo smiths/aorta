@@ -23,6 +23,6 @@ jobs:
       - name: Test file path
         run: python3 -c "import os; print(os.path.exists(os.path.abspath('test/sample/43681283_crop.vtk')))"
       - name: Test descending aorta segmentation
-        run: pytest -s --limit 0.02 -k 'test_compare_des'
+        run: pytest -s --limit 0.02 -k 'test_compare_des' --testCase 2
       - name: Test ascending aorta segmentation
-        run: pytest -s --limit 0.02 -k 'test_compare_asc'
+        run: pytest -s --limit 0.02 -k 'test_compare_asc' --testCase 2
