@@ -396,7 +396,6 @@ class AortaGeomReconDisplayModuleWidget(ScriptedLoadableModuleWidget, VTKObserva
             self.ui,
             self._parameterNode.GetParameter("phase")
         )
-        sceneObj = slicer.mrmlScene
         crop = len(slicer.util.getNodes("*cropped*", useLists=True)) == 1
         des = len(slicer.util.getNodes("*Descen*", useLists=True)) == 1
         asc = len(slicer.util.getNodes("*Ascending*", useLists=True)) == 1

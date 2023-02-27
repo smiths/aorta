@@ -329,7 +329,8 @@ def test_prepared_segmenting_image(
     limit,
     qualifiedCoef,
     ffactor,
-    testCase):
+    testCase
+        ):
     processing_image = test_compare_des(
         limit, qualifiedCoef, ffactor, testCase)
     processing_image = test_compare_asc(
