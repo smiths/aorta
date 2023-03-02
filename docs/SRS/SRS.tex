@@ -198,9 +198,9 @@ The symbols are listed in alphabetical order.
 \\
 \textit{RMAE} & $\mathbb{R}$ & root mean absolute error
 \\ 
-$qualified\_coef$ & $\mathbb{R}$  & qualified center coefficient
+$\mathbb{QC}$ & $\mathbb{R}$  & qualified center coefficient
 \\
-$volume\_node$ & $\mathbb{R}$  & qualified center coefficient
+$\mathbb{VN}$ & $\mathbb{R}^3$  & volume node
 \\
 \bottomrule
 \caption{Table of Symbols}
@@ -230,7 +230,7 @@ $volume\_node$ & $\mathbb{R}$  & qualified center coefficient
   \textbf{symbol} & \textbf{description}\\
   \midrule 
   A & Assumption\\
-  \progname & AortaGeometryReconstructor 3D Slicer extension\\
+  \progname & Aorta Geometry Reconstructor\\
   DD & Data Definition\\
   DICOM & Digital Imaging and Communications in Medicine\\
   GD & General Definition\\
@@ -357,16 +357,7 @@ definitions.
 %   etc.}
 
 \subsection{Scope of Requirements} 
-The responsibilities of the user and the \progname{} are as follows:
-\begin{itemize}
-\item{User Responsibilities:} Users are responsible to provide appropriate
-inputs to the program and ensure that the inputs meet the assumptions mentioned
-in \ref{assump}.
-\item{\progname{} Responsibilities:} Upon receiving appropriate inputs, the program is intended to perform the
-segmentation algorithm, and returned a vtkMRMLScalarVolumeNode of the segment result,
-which can be transfered to a SITK::Image, or a numpy.ndarray.
-Other outputs are mentioned in reference.%\rref{R6} to \rref{R13}.
-\end{itemize}
+
 % \plt{Modelling the real world requires simplification.  The full complexity of
 %   the actual physics, chemistry, biology is too much for existing models, and
 %   for existing computational solution techniques.  Rather than say what is in
@@ -472,6 +463,17 @@ flow between the system and its environment.
 %   ``outputs''.  A summarizing phrase can be used to characterize the inputs.
 %   For instance, saying ``material properties'' provides some information, but it
 %   stays away from the detail of listing every required properties.}
+
+% The responsibilities of the user and the \progname{} are as follows:
+% \begin{itemize}
+% \item{User Responsibilities:} Users are responsible to provide appropriate
+% inputs to the program and ensure that the inputs meet the assumptions mentioned
+% in \ref{assump}.
+% \item{\progname{} Responsibilities:} Upon receiving appropriate inputs, the program is intended to perform the
+% segmentation algorithm, and returned a vtkMRMLScalarVolumeNode of the segment result,
+% which can be transfered to a SITK::Image, or a numpy.ndarray.
+% Other outputs are mentioned in reference.%\rref{R6} to \rref{R13}.
+% \end{itemize}
 
 \begin{itemize}
 \item User Responsibilities:
