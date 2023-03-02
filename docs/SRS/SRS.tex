@@ -147,6 +147,8 @@
 \toprule {\bf Date} & {\bf Version} & {\bf Notes}\\
 \midrule
 2023-02-12 & 1.0 & Notes\\
+\midrule
+2023-03-01 & 1.01 & Modified system context image, coordinate systems, and goal statements.\\
 \bottomrule
 \end{tabularx}
 
@@ -428,7 +430,7 @@ characteristics and lists the system constraints.
 Figure \ref{Fig_SystemContext} shows the system context.  A circle represents an
 external entity outside the software, the user in this case.  A rectangle
 represents the software system itself.  Arrows are used to show the data
-flow between the system and its environment.
+flow between the system and its environment. \\ \\ \\ \\ \\ \\
 % \plt{Your system context will include a figure that shows the abstract view of
 %   the software.  Often in a scientific context, the program can be viewed
 %   abstractly following the design pattern of Inputs $\rightarrow$ Calculations
@@ -480,23 +482,19 @@ flow between the system and its environment.
 \begin{itemize}
 \item Provide the input data to the system
 \item Ensure the input meets the necessary assumptions
-\item Run the appropriate experiment to obtain the required data
-\item Verify the result data meets their requirements, otherwise repeat the process with a different input value
+\item Verify the result meets their requirements, otherwise repeat the process with a different seed values.
 \end{itemize}
 \item \progname{} Responsibilities:
 \begin{itemize}
-\item Detect data type mismatch, such as a string of characters instead of a
-  floating point number
-\item Provide simple interactions to obtain the users' input
-\item Provide visualization on the result data
+\item Provide DICOM data reader which can take a path to a folder containing DICOM files.
+\item Provide crop functionality to easily select a region of interest. 
+\item Provide simple interactions to obtain and store the users' inputs. This includes a data probe to read voxel location which stored as a coordinate, and text inputs for real numbers.
+\item Provide visualization on the result data.
 \end{itemize}
 \end{itemize}
 
 \subsection{User Characteristics} \label{SecUserCharacteristics}
-The end user of \progname{} have previous using experience with 3D Slicer, and it's sub modules, including Volume Rendering, and Crop volume modules.
-Otherwise, the end user should follow the tutorial provided in the project \href{https://github.com/smiths/aorta}{Github repository}.
-The end user also have understanding on the general position of the aorta, 
-especially the ability to point out the center of the descending aorta and the ascending aorta.
+The end user of \progname{} have taking the university level anatomy introduction course, and is capable to point out the center of the descending aorta and the ascending aorta.
 
 % \plt{This section summarizes the knowledge/skills expected of the user.
 %   Measuring usability, which is often a required non-function requirement,
@@ -508,7 +506,7 @@ especially the ability to point out the center of the descending aorta and the a
 %   Calculus and Physics.''}
 
 \subsection{System Constraints}
-Intended environment to run the program on are the Windows 10 systems.
+% Intended environment to run the program on are the Windows 10 systems.
 % \plt{System constraints differ from other type of requirements because they
 %   limit the developers' options in the system design and they identify how the
 %   eventual system must fit into the world. This is the only place in the SRS
@@ -530,17 +528,21 @@ the instance models.
 
 The main purpose of \progname{} is to semi-automatically segment a 3D aorta geometry from a chest CT scan.
 
+\subsubsection{Organ segmentation}
+The organ segmentation or the organ boundary is useful for orientation and identification of the regions of interests inside the organ during the diagnostic or treatment procedure. The aorta segmentation is important for aortic calcification quantification and to guide the segmentation of other central vessels.
 
 \subsubsection{Coordinate Systems}
 This subsection provides a list of terms that are used in the subsequent
 sections and their meaning, with the purpose of reducing ambiguity and making it
-easier to correctly understand the requirements:
+easier to correctly understand the requirements. \\
 
-While working with medical images, it is necessary to be familiar with the different coordinate systems of the medical literarure and how data (voxels' orientation) is interpreted in different medical and non-medical software. Each coordinate system uses one or more numbers (coordinates) to uniquely determine the position of a point (in the medical context, we refer to each point as a voxel). The purpose of this section is to introduce some of the coordinate systems related to the medical imaging. There are different coordinate systems to represent data. A knowledge of the following coordinate systems is needed to be able to work with the medical images.
+\noindent While working with medical images, it is necessary to be familiar with the different coordinate systems of the medical literarure and how data (voxels' orientation) is interpreted in different medical and non-medical software. Each coordinate system uses one or more numbers (coordinates) to uniquely determine the position of a point (in the medical context, we refer to each point as a voxel). The purpose of this section is to introduce some of the coordinate systems related to the medical imaging. There are different coordinate systems to represent data. A knowledge of the following coordinate systems is needed to work with the medical images.
+
 \paragraph{Cartesian Coordinate System}
 A Cartesian coordinate system is a coordinate system that specifies each point uniquely in a 2D plane by a pair of numerical coordinates or in a 3D space by three numerical coordinates. We assume a right-hand Cartesian coordinate system throughout this document.
+
 \paragraph{World Coordinate System}
-World Coordinate System (WCS) is a Cartesian coordinate system that describes the physical coordinates associated with a model such as a MRI scanner or a patient. While each model has its own coordinate system, without a universal coordinate system such as WCS, they cannot interact with each other. For model interaction to be possible, their coordinate systems must be transformed into the WCS. Figure \ref{WCS} shows the WCS corresponding space and axes.
+World Coordinate System (WCS) is a Cartesian coordinate system that describes the physical coordinates associated with a model such as an MRI scanner or a patient. While each model has its own coordinate system, without a universal coordinate system such as WCS, they cannot interact with each other. For model interaction to be possible, their coordinate systems must be transformed into the WCS. Figure \ref{WCS} shows the WCS corresponding space and axes.
 \begin{figure}[hbpt!]
 \centering
 \includegraphics[width=50mm]{worldCoordinateSystem.png}
@@ -548,7 +550,7 @@ World Coordinate System (WCS) is a Cartesian coordinate system that describes th
 \label{WCS}
 \end{figure}
 \paragraph{Anatomical Coordinate System}
-Anatomical coordinate system, also known as patient coordinate system, is a right-handed 3D coordinate system which describes the standard anatomical position of a human using the following 3 orthogonal planes:
+Anatomical coordinate system, also known as patient coordinate system, is a right-handed 3D coordinate system that describes the standard anatomical position of a human using the following 3 orthogonal planes:
 \begin{itemize}
 \item{Axial / Transverse plane:} is a plane parallel to the ground that separates the body into head (superior) and tail (inferior) positions.
 \item{Coronal / Frontal plane:} is a plane perpendicular to the ground that divides the body into front (anterior) and back (posterior) positions.
@@ -574,33 +576,17 @@ Medical applications follow an anatomical coordinate system to store voxels in s
 \begin{itemize}
 \item{LPS Coordinate System:}
 
-The LPS coordinate system, also known as DICOM (patient) coordinate system, is a left-hand coordinate system used in DICOM images. In this system, voxels are ordered from left to right in a row, rows are ordered from posterior to anterior, and slices are stored from inferior to superior. In other words, it is an LPI system. \\
+The LPS coordinate system is used in DICOM images and by the ITK toolkit. In this system, voxels are ordered from left to right in a row, rows are ordered from posterior to anterior, and slices are stored from inferior to superior.
 \indent
 LPS stands for Left-Posterior-Superior which indicates the directions that spatial axes are increasing.
 % RAI Radiological preferred axes.
 \item{RAS Coordinate System:}
 
-LPI is a right-hand coordinate system for voxel orientation. It stores voxels from right to left to create rows, rows from anterior to posterior to create slices and slices from superior to inferior to create volumes. This system is the preferred basis for Neurological applications such as 3dfim+ and is used in NIfTI files. The increasing position order is RAS.
+The RAS coordiante system is the preferred basis for Neurological applications such as 3dfim+, and 3D Slicer. RAS stands for Right-Anterior-Superior is similar to LPS with the first two axes flipped.
 \end{itemize}
+
 \paragraph{Image Coordinate System}
 To specify locations in an image we need to know to which coordinate system it is referenced. Different software may use different orders as their index convention.
-\begin{itemize}
-\item{Image Coordinate System for Matlab:}
-
-In Matlab, index numbering starts at the upper left corner. To express the position of point $(x,y,z)$, we should consider that the $x$ axis increases from left to right, the $y$ axis increases to the bottom and the $z$ axis increases backward. 
-\begin{figure}[hbpt!]
-\centering
-\includegraphics[width=50mm]{imageCoordinateSystem.png}
-\caption{Image Coordinate System Space and Axes in Matlab~\cite{slicerWCS}}
-\label{WCS}
-\end{figure}
-\item{Image Coordinate System for AFNI:}
-
-In AFNI, the lower left hand corner of the image is considered as the origin, which represents the position of the first voxel (0,0,0).
-\newline\newline
-\indent
-If we are using different file formats and software, we need to transform their coordinate systems into WCS.
-\end{itemize}
 
 
 \subsubsection{Physical System Description} \label{sec_phySystDescrip}
@@ -654,26 +640,12 @@ We do not study the physical system for Dicom or how the data is actually genera
 
 \noindent Given the DICOM image that includes patient's chest,
 the descending aorta center voxel coordinate,
-and the ascending aorta center voxel coordinate, the goal statements are:
+and the ascending aorta center voxel coordinate, the goal statements is:
 
 \begin{itemize}
 
 \item[GS\refstepcounter{goalnum}\thegoalnum \label{G_meaningfulLabel}:] 
-Calculate the mean of the pixels associated with each label or segment based on the descending or ascending aorta center voxel coordinate.
-
-\item[GS\refstepcounter{goalnum}\thegoalnum \label{G_meaningfulLabel}:] 
-Calculate the lower and upper threshold based the mean.
-
-\item[GS\refstepcounter{goalnum}\thegoalnum \label{G_meaningfulLabel}:] 
-With the lower and upper threshold, segments structures in images based on intensity values.
-
-\item[GS\refstepcounter{goalnum}\thegoalnum \label{G_meaningfulLabel}:] 
-Count the number of pixels from the segmented structures in images.
-
-\item[GS\refstepcounter{goalnum}\thegoalnum \label{G_meaningfulLabel}:] 
-Verified the new slice is qualified by compare the number of pixels of the new segmented structure to the original given slice and the previous segmented slice.
-
-
+Extract the 3D segmentation of the aorta.
 
 \end{itemize}
 
