@@ -34,6 +34,7 @@ author = 'Jingyi Lin'
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = ["sphinx.ext.todo", "sphinx.ext.napoleon"]
+autodoc_mock_imports = ["vtk", "sitkUtils", "PythonQt"]
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -42,7 +43,7 @@ templates_path = ['_templates']
 # directories to ignore when looking for source files.
 # This pattern also affects html_static_path and html_extra_path.
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
-# autodoc_default_options = {"members": True, "undoc-members": True, "private-members": True} # noqa
+autodoc_default_options = {"members": True, "undoc-members": True, "private-members": True} # noqa
 
 # -- Options for HTML output -------------------------------------------------
 
