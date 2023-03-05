@@ -1,0 +1,18 @@
+src.SlicerExtension.AortaGeometryReconstructor package
+======================================================
+
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   src.SlicerExtension.AortaGeometryReconstructor.AortaGeomReconDisplayModule
+
+Module contents
+---------------
+
+.. automodule:: src.SlicerExtension.AortaGeometryReconstructor
+   :members:
+   :undoc-members:
+   :show-inheritance:
