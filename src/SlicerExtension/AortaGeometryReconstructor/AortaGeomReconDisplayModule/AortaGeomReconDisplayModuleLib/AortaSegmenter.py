@@ -58,7 +58,8 @@ class AortaSegmenter():
         return self._processing_image
 
     def begin_segmentation(self):
-        # Initializing filter
+        """The public method to process segmentation.
+        """
         rms_error = 0.02
         no_iteration = 600
         curvature_scaling = 0.5
@@ -248,7 +249,8 @@ class AortaSegmenter():
         return seed
 
     def __get_label_statistics(self):
-        """From the labeled image we can derive descriptive intensity.
+        """Use SITK::SignedMaurerDistanceMap to calculate the Euclidean distance transform
+        and use SITK::LabelStatisticsImageFilter to derive descriptive intensity.
 
         Returns:
             numpy.ndarray: labeled statistics of the original image.
@@ -296,8 +298,8 @@ class AortaSegmenter():
 
         Returns:
             (tuple): tuple containing:
-                int: The total number of the counted X coordinates
-                tupple: The new derived centre calculated by the mean of counted X coordinates and Y coordinates
+                int: The total number of the X coordinates where it is white pixel
+                tupple: The new derived centre calculated by the mean of X coordinates and Y coordinates where it is white pixel
                 list: The new seeds coordinates based on the new derived centre
         """ # noqa
         nda = sitk.GetArrayFromImage(new_slice)
@@ -349,6 +351,10 @@ class AortaSegmenter():
         return total_coord, new_centre, new_seeds
 
     def __filling_missing_slices(self):
+        """The helper function to replace the missing slice that was not accepted during the descending aorta segmentation.
+        This function will replace the missing slice by reading the previous slice and the next slice, 
+        fill the slice with the overlapping area of both slices.
+        """ # noqa
         for index in range(len(self._skipped_slices)):
             # ensure there is at least one slice
             # before and after the skipped slice
