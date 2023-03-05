@@ -6,7 +6,7 @@ class AortaSagitalSegmenter():
     """This class performs Aorta Sagital segmentation"""
 
     def __init__(self, qualified_coef, processing_image, cropped_image):
-        self._processing_image = segmentedImage
+        self._processing_image = processing_image
         self._cropped_image = cropped_image
         self._qualified_coef = qualified_coef
 

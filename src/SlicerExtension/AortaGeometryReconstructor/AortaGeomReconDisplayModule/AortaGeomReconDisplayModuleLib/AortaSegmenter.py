@@ -254,7 +254,7 @@ class AortaSegmenter():
 
         Returns:
             numpy.ndarray: labeled statistics of the original image.
-        """
+        """ # noqa
         seed = self.__prepare_seed()
         # determine threshold values based on seed location
         stats = sitk.LabelStatisticsImageFilter()
