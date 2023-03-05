@@ -160,6 +160,22 @@ def mean_square_error(ref_image, test_image):
 
 
 def test_compare_des(limit, qualifiedCoef, ffactor, testCase):
+    """Read a test cases' cropped volume,
+    perform descending aorta segmentation,
+    and compare the result with the existing volume
+
+    Args:
+        limit (float): the maximum Dice similarity coefficient difference allowed to pass the test.
+
+        qualifiedCoef (float): the qualified coefficient value to process descending aorta segmentation.
+
+        ffactor (float): the factor used to determine the lower and upper threshold for label statistics image filter.
+
+        testCase (int): the test case to run the test (0-5).
+
+    Returns:
+        float: The Dice similarity coefficient of the reference and test image
+    """ # noqa
     starting_slice = 829
     aorta_centre = [23, 28]
     cropped_image = get_cropped_volume_image(testCase)
@@ -213,6 +229,22 @@ def test_compare_asc(
     testCase,
     processing_image=None
         ):
+    """Read a test cases' partially segmented volume (descending aorta),
+    perform ascending aorta segmentation,
+    and compare the result with the existing ascending aorta volume
+
+    Args:
+        limit (float): the maximum Dice similarity coefficient difference allowed to pass the test.
+
+        qualifiedCoef (float): the qualified coefficient value to process descending aorta segmentation.
+
+        ffactor (float): the factor used to determine the lower and upper threshold for label statistics image filter.
+
+        testCase (int): the test case to run the test (0-5).
+
+    Returns:
+        float: The Dice similarity coefficient of the reference and test image
+    """ # noqa
     cropped_image = get_cropped_volume_image(testCase)
     cropped_image = transform_image(cropped_image)
     if not processing_image:
