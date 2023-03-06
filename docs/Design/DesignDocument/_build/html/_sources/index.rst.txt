@@ -28,7 +28,7 @@ The algorithm generates a 2d circle image as the seed image by reading the aorta
 
 The algorithm then creates another image, the Euclidean distance transform of a binary image as the image intensity map, and use it with `SITK\:\:ThresholdSegmentationLevelSetImageFilter <https://simpleitk.org/doxygen/latest/html/classitk_1_1simple_1_1ThresholdSegmentationLevelSetImageFilter.html>`_ to create a segmented slice.
 
-To determine whether a segmented slice is acceptable, different conditions are verified for `Descending Aorta` and :term:`Ascending Aorta`. However, these conditions check are all invovled with the :term:`Qualified coefficient`, which is decided by the user. In simple terms, the larger the :term:`Qualified coefficient`, the loose condition on accepting a segmented slice. If the algorithm accepted this segmented slice, a new centre coordinate is calculated, and used as the seed coordinate for segmenting the next slice.
+To determine whether a segmented slice is acceptable, different conditions are verified for `Descending Aorta` and :term:`Ascending Aorta`. However, these conditions check are all invovled with the :term:`Qualified coefficient`, which is decided by the user. In simple terms, the larger the :term:`Qualified coefficient`, the looser condition on accepting a segmented slice. If the algorithm accepted this segmented slice, a new centre coordinate is calculated, and used as the seed coordinate for segmenting the next slice.
 
 When a segmented slice is not acceptable, the algorithm will skip this slice if the number of skipped slice is less then the integer given by the user. The algorithm will try to replace these skipped slice by reading the overlapped area of the previous and the next slice.
 
@@ -38,7 +38,7 @@ When a segmented slice is not acceptable, the algorithm will skip this slice if 
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
+   :caption: Modules documentation:
 
    modules
 
@@ -51,5 +51,5 @@ Indices and tables
 
 .. toctree::
    :maxdepth: 1
-
+   
    Glossary <glossary>

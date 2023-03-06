@@ -4,7 +4,7 @@ AortaGeomReconDisplayModuleLib package
 Submodules
 ----------
 
-AortaGeomReconDisplayModuleLib.AortaGeomReconEnums module
+AortaGeomReconEnums module
 ---------------------------------------------------------
 
 .. automodule:: AortaGeomReconEnums
@@ -12,7 +12,7 @@ AortaGeomReconDisplayModuleLib.AortaGeomReconEnums module
    :undoc-members:
    :show-inheritance:
 
-AortaGeomReconDisplayModuleLib.AortaSagitalSegmenter module
+AortaSagitalSegmenter module
 -----------------------------------------------------------
 
 .. automodule:: AortaSagitalSegmenter
@@ -20,7 +20,7 @@ AortaGeomReconDisplayModuleLib.AortaSagitalSegmenter module
    :undoc-members:
    :show-inheritance:
 
-AortaGeomReconDisplayModuleLib.AortaSegmenter module
+AortaSegmenter module
 ----------------------------------------------------
 
 .. automodule:: AortaSegmenter

@@ -37,7 +37,7 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+              <p class="caption" role="heading"><span class="caption-text">Modules documentation:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="modules.html">AortaGeomReconModule</a></li>
 </ul>
@@ -86,14 +86,14 @@
 </ol>
 <p>The algorithm generates a 2d circle image as the seed image by reading the aorta center coordiante and using <a class="reference external" href="https://simpleitk.org/doxygen/latest/html/classitk_1_1simple_1_1LabelStatisticsImageFilter.html">SITK::LabelStatisticsImageFilter</a>. A <a class="reference internal" href="glossary.html#term-Label-Statistic-coefficient"><span class="xref std std-term">Label Statistic coefficient</span></a> can be used to control the size of the circle seed image.</p>
 <p>The algorithm then creates another image, the Euclidean distance transform of a binary image as the image intensity map, and use it with <a class="reference external" href="https://simpleitk.org/doxygen/latest/html/classitk_1_1simple_1_1ThresholdSegmentationLevelSetImageFilter.html">SITK::ThresholdSegmentationLevelSetImageFilter</a> to create a segmented slice.</p>
-<p>To determine whether a segmented slice is acceptable, different conditions are verified for <cite>Descending Aorta</cite> and <a class="reference internal" href="glossary.html#term-Ascending-Aorta"><span class="xref std std-term">Ascending Aorta</span></a>. However, these conditions check are all invovled with the <a class="reference internal" href="glossary.html#term-Qualified-coefficient"><span class="xref std std-term">Qualified coefficient</span></a>, which is decided by the user. In simple terms, the larger the <a class="reference internal" href="glossary.html#term-Qualified-coefficient"><span class="xref std std-term">Qualified coefficient</span></a>, the loose condition on accepting a segmented slice. If the algorithm accepted this segmented slice, a new centre coordinate is calculated, and used as the seed coordinate for segmenting the next slice.</p>
+<p>To determine whether a segmented slice is acceptable, different conditions are verified for <cite>Descending Aorta</cite> and <a class="reference internal" href="glossary.html#term-Ascending-Aorta"><span class="xref std std-term">Ascending Aorta</span></a>. However, these conditions check are all invovled with the <a class="reference internal" href="glossary.html#term-Qualified-coefficient"><span class="xref std std-term">Qualified coefficient</span></a>, which is decided by the user. In simple terms, the larger the <a class="reference internal" href="glossary.html#term-Qualified-coefficient"><span class="xref std std-term">Qualified coefficient</span></a>, the looser condition on accepting a segmented slice. If the algorithm accepted this segmented slice, a new centre coordinate is calculated, and used as the seed coordinate for segmenting the next slice.</p>
 <p>When a segmented slice is not acceptable, the algorithm will skip this slice if the number of skipped slice is less then the integer given by the user. The algorithm will try to replace these skipped slice by reading the overlapped area of the previous and the next slice.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>You can find the definitions of each function within the module below</p>
 </div>
 <div class="toctree-wrapper compound">
-<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<p class="caption" role="heading"><span class="caption-text">Modules documentation:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="modules.html">AortaGeomReconModule</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="test.html">test package</a></li>
