@@ -19,7 +19,7 @@ class AortaSegmenter():
     def __init__(
             self, cropped_image, starting_slice, aorta_centre,
             num_slice_skipping, processing_image, seg_type,
-            qualified_coef=2.2, segmented_slice_coef=3.5
+            qualified_coef=2.2, label_stats_coef=3.5
     ):
         self._starting_slice = starting_slice
         self._aorta_centre = aorta_centre
@@ -29,7 +29,7 @@ class AortaSegmenter():
             self._seg_type = SegmentType.sagittal
         self._processing_image = processing_image
         self._qualified_coef = qualified_coef
-        self._segmented_slice_coef = segmented_slice_coef
+        self._label_stats_coef = label_stats_coef
         self._cropped_image = cropped_image
 
     def __is_overlapping(self, img1, i):
@@ -262,9 +262,9 @@ class AortaSegmenter():
         stats = sitk.LabelStatisticsImageFilter()
         stats.Execute(self._cur_img_slice, seed)
         lower_threshold = (
-            stats.GetMean(1) - self._segmented_slice_coef*stats.GetSigma(1))
+            stats.GetMean(1) - self._label_stats_coef*stats.GetSigma(1))
         upper_threshold = (
-            stats.GetMean(1) + self._segmented_slice_coef*stats.GetSigma(1))
+            stats.GetMean(1) + self._label_stats_coef*stats.GetSigma(1))
 
         # calculate the Euclidean distance transform
         init_ls = sitk.SignedMaurerDistanceMap(
