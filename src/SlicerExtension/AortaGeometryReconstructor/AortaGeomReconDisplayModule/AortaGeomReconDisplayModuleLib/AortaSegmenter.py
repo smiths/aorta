@@ -19,7 +19,7 @@ class AortaSegmenter():
     def __init__(
             self, cropped_image, starting_slice, aorta_centre,
             num_slice_skipping, processing_image, seg_type,
-            qualified_coef=2.2, filter_factor=3.5
+            qualified_coef=2.2, segmented_slice_coef=3.5
     ):
         self._starting_slice = starting_slice
         self._aorta_centre = aorta_centre
@@ -29,7 +29,7 @@ class AortaSegmenter():
             self._seg_type = SegmentType.sagittal
         self._processing_image = processing_image
         self._qualified_coef = qualified_coef
-        self._filter_factor = filter_factor
+        self._segmented_slice_coef = segmented_slice_coef
         self._cropped_image = cropped_image
 
     def __is_overlapping(self, img1, i):
@@ -64,7 +64,7 @@ class AortaSegmenter():
         no_iteration = 600
         curvature_scaling = 0.5
         propagation_scaling = 1
-        self._stats_filter = sitk.LabelStatisticsImageFilter()
+        # self._stats_filter = sitk.LabelStatisticsImageFilter()
         self._segment_filter = sitk.ThresholdSegmentationLevelSetImageFilter()
         self._segment_filter.SetMaximumRMSError(rms_error)
         self._segment_filter.SetNumberOfIterations(no_iteration)
@@ -104,8 +104,8 @@ class AortaSegmenter():
             # Initialize parameters for superior to inferior segmentation
             slice_num = self._starting_slice
             self._cur_img_slice = self._cropped_image[:, :, slice_num]
-            label_stats = self.__get_label_statistics()
-            new_slice = label_stats > PixelValue.black_pixel.value
+            segmented_slice = self.__get_image_segment()
+            new_slice = segmented_slice > PixelValue.black_pixel.value
             seeds = []
             if self._seg_type == SegmentType.descending_aorta:
                 total_coord, centre = self.__count_pixel_des(new_slice)
@@ -153,8 +153,8 @@ class AortaSegmenter():
         is_overlapping = False
         for sliceNum in range(self._start, self._end, self._step):
             self._cur_img_slice = self._cropped_image[:, :, sliceNum]
-            label_stats = self.__get_label_statistics()
-            new_slice = label_stats > PixelValue.black_pixel.value
+            segmented_slice = self.__get_image_segment()
+            new_slice = segmented_slice > PixelValue.black_pixel.value
             if self._seg_type == SegmentType.descending_aorta:
                 total_coord, centre = self.__count_pixel_des(new_slice)
                 seeds = []
@@ -248,27 +248,29 @@ class AortaSegmenter():
         seed = sitk.BinaryDilate(seed, [3] * 2)
         return seed
 
-    def __get_label_statistics(self):
-        """Use SITK::SignedMaurerDistanceMap to calculate the Euclidean distance transform
-        and use SITK::LabelStatisticsImageFilter to derive descriptive intensity.
+    def __get_image_segment(self):
+        """Use SITK::LabelStatisticsImageFilter to derive a 2d circle image (seed).
+        Use SITK::SignedMaurerDistanceMap to calculate the signed squared Euclidean distance transform of the circle.
+        Get segmented image slice based on the seed image.
 
         Returns:
-            numpy.ndarray: labeled statistics of the original image.
+            numpy.ndarray: Segmented image slice based on intensity values.
         """ # noqa
         seed = self.__prepare_seed()
+
         # determine threshold values based on seed location
         stats = sitk.LabelStatisticsImageFilter()
         stats.Execute(self._cur_img_slice, seed)
         lower_threshold = (
-            stats.GetMean(PixelValue.white_pixel.value)
-            - self._filter_factor*stats.GetSigma(PixelValue.white_pixel.value))
+            stats.GetMean(1) - self._segmented_slice_coef*stats.GetSigma(1))
         upper_threshold = (
-            stats.GetMean(PixelValue.white_pixel.value)
-            + self._filter_factor*stats.GetSigma(PixelValue.white_pixel.value))
-        # use filter to apply threshold to image
+            stats.GetMean(1) + self._segmented_slice_coef*stats.GetSigma(1))
+
+        # calculate the Euclidean distance transform
         init_ls = sitk.SignedMaurerDistanceMap(
             seed, insideIsPositive=True, useImageSpacing=True)
 
+        # use filter to apply threshold to image
         # segment the aorta using the seed values and threshold values
         self._segment_filter.SetLowerThreshold(lower_threshold)
         self._segment_filter.SetUpperThreshold(upper_threshold)
@@ -278,7 +280,8 @@ class AortaSegmenter():
         return ls
 
     def __count_pixel_des(self, new_slice):
-        """Use label statistics to calculate the number of counted pixels for descending aorta segmentation.
+        """Use segmented slice to calculate the number of counted pixels, and the new derived centre
+        for descending aorta segmentation.
 
         Returns:
             (tuple): tuple containing:
@@ -294,13 +297,14 @@ class AortaSegmenter():
         return total_coord, new_centre
 
     def __count_pixel_asc(self, new_slice):
-        """Use label statistics to calculate the number of counted pixels for ascending aorta segmentation.
+        """Use segmented slice to calculate the number of counted pixels, and the new derived centre
+        for ascending aorta segmentation.
 
         Returns:
             (tuple): tuple containing:
                 int: The total number of the X coordinates where it is white pixel
                 tupple: The new derived centre calculated by the mean of X coordinates and Y coordinates where it is white pixel
-                list: The new seeds coordinates based on the new derived centre
+                list: More possible coordinates based on the new derived centre
         """ # noqa
         nda = sitk.GetArrayFromImage(new_slice)
         new_centre = [0, 0]
