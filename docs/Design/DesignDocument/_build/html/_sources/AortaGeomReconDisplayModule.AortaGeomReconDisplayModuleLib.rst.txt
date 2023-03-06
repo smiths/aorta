@@ -1,29 +1,29 @@
-AortaGeomReconDisplayModule.AortaGeomReconDisplayModuleLib package
+AortaGeomReconDisplayModuleLib package
 ==================================================================
 
 Submodules
 ----------
 
-AortaGeomReconDisplayModule.AortaGeomReconDisplayModuleLib.AortaGeomReconEnums module
+AortaGeomReconEnums module
 -------------------------------------------------------------------------------------
 
-.. automodule:: AortaGeomReconDisplayModule.AortaGeomReconDisplayModuleLib.AortaGeomReconEnums
+.. automodule:: AortaGeomReconEnums
    :members:
    :undoc-members:
    :show-inheritance:
 
-AortaGeomReconDisplayModule.AortaGeomReconDisplayModuleLib.AortaSagitalSegmenter module
+AortaSagitalSegmenter module
 ---------------------------------------------------------------------------------------
 
-.. automodule:: AortaGeomReconDisplayModule.AortaGeomReconDisplayModuleLib.AortaSagitalSegmenter
+.. automodule:: AortaSagitalSegmenter
    :members:
    :undoc-members:
    :show-inheritance:
 
-AortaGeomReconDisplayModule.AortaGeomReconDisplayModuleLib.AortaSegmenter module
+AortaSegmenter module
 --------------------------------------------------------------------------------
 
-.. automodule:: AortaGeomReconDisplayModule.AortaGeomReconDisplayModuleLib.AortaSegmenter
+.. automodule:: AortaSegmenter
    :members:
    :undoc-members:
    :show-inheritance:

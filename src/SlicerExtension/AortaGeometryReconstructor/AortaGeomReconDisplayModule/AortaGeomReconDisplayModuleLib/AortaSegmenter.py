@@ -33,7 +33,7 @@ class AortaSegmenter():
         self._cropped_image = cropped_image
 
     def __is_overlapping(self, img1, i):
-        """Compare the current segmented slice with the next two slices,
+        """Compare the current segmented slice with the previous two slices,
         return True if any overlaps otherwise False
 
         Returns:

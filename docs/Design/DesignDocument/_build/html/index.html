@@ -18,7 +18,7 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="test" href="modules.html" /> 
+    <link rel="next" title="AortaGeomReconModule" href="modules.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -38,7 +38,10 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="modules.html">test</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">AortaGeomReconModule</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="glossary.html">Glossary</a></li>
 </ul>
 
         </div>
@@ -67,31 +70,53 @@
              
   <section id="welcome-to-aortageomrecon-s-documentation">
 <h1>Welcome to AortaGeomRecon’s documentation!<a class="headerlink" href="#welcome-to-aortageomrecon-s-documentation" title="Permalink to this headline"></a></h1>
+<p>This is the design document for AortaGeomRecon module, a <a class="reference internal" href="glossary.html#term-3D-Slicer"><span class="xref std std-term">3D Slicer</span></a> extension to perform <a class="reference internal" href="glossary.html#term-Aorta"><span class="xref std std-term">Aorta</span></a> segmentation and Aorta geometry reconstruction.</p>
+<p>You can find the source code, the installation guide, and the user manual in this GitHub <a class="reference external" href="https://github.com/smiths/aorta">repository</a>.</p>
+<hr class="docutils" />
+<section id="the-workflow-of-the-algorithm">
+<h2>The workflow of the algorithm<a class="headerlink" href="#the-workflow-of-the-algorithm" title="Permalink to this headline"></a></h2>
+<p>The algorithm works better with the chest volume cropped to a rectangular prism that contains the aorta and parts of the other organs such as back bone, some blood tissues and the heart. This is can be simply done with <a class="reference internal" href="glossary.html#term-3D-Slicer"><span class="xref std std-term">3D Slicer</span></a> and its submodule <a class="reference external" href="https://slicer.readthedocs.io/en/latest/user_guide/modules/volumerendering.html">Volume rendering</a>. A more detailed guide can be found on this GitHub repository <a class="reference external" href="https://github.com/smiths/aorta#to-use-volume-rendering-to-crop-a-voi">section</a>.</p>
+<p>After cropped the volume which only contains the region of interest, the algorithm needed a set of seed values from the user.</p>
+<p>The seeds values contains the following:</p>
+<ol class="arabic simple">
+<li><p><a class="reference internal" href="glossary.html#term-Descending-Aorta"><span class="xref std std-term">Descending Aorta</span></a> center coordinate.</p></li>
+<li><p><a class="reference internal" href="glossary.html#term-Qualified-coefficient"><span class="xref std std-term">Qualified coefficient</span></a> larger values loose the conditiaon to accept a segmented slice, and vice-versa.</p></li>
+<li><p>An integer indicates the number of the slice that the algorithm can skip.</p></li>
+</ol>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>You can find the definitions of each function within the module below</p>
+</div>
 <div class="toctree-wrapper compound">
 <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="modules.html">test</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">AortaGeomReconModule</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="test.html">test package</a></li>
-<li class="toctree-l2"><a class="reference internal" href="AortaGeomReconDisplayModule.html">AortaGeomReconDisplayModule package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="AortaGeomReconDisplayModuleLib.html">AortaGeomReconDisplayModuleLib package</a></li>
 </ul>
 </li>
 </ul>
 </div>
 </section>
 <section id="indices-and-tables">
-<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline"></a></h1>
-<ul class="simple">
-<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
-<li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
-<li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
+<h2>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline"></a></h2>
+<div class="line-block">
+<div class="line"><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></div>
+<div class="line"><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></div>
+</div>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="glossary.html">Glossary</a></li>
 </ul>
+</div>
+</section>
 </section>
 
 
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="modules.html" class="btn btn-neutral float-right" title="test" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="modules.html" class="btn btn-neutral float-right" title="AortaGeomReconModule" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

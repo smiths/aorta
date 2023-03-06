@@ -7,7 +7,7 @@ Subpackages
 .. toctree::
    :maxdepth: 4
 
-   AortaGeomReconDisplayModule.AortaGeomReconDisplayModuleLib
+   AortaGeomReconDisplayModuleLib
 
 Submodules
 ----------
