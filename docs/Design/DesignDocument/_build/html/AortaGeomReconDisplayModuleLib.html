@@ -7,6 +7,7 @@
   <title>AortaGeomReconDisplayModuleLib package &mdash; AortaGeomRecon  documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="_static/_static/custom.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
@@ -188,18 +189,19 @@ descending or ascending aorta segmentation, False otherwise.</p>
 <span id="aortageomrecondisplaymodulelib-aortasegmenter-module"></span><h2>AortaGeomReconDisplayModuleLib.AortaSegmenter module<a class="headerlink" href="#module-AortaSegmenter" title="Permalink to this headline"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="AortaSegmenter.AortaSegmenter">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">AortaSegmenter.</span></span><span class="sig-name descname"><span class="pre">AortaSegmenter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cropped_image</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">starting_slice</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">aorta_centre</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_slice_skipping</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">processing_image</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seg_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qualified_coef</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2.2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filter_factor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3.5</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#AortaSegmenter.AortaSegmenter" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">AortaSegmenter.</span></span><span class="sig-name descname"><span class="pre">AortaSegmenter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cropped_image</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">starting_slice</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">aorta_centre</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_slice_skipping</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">processing_image</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seg_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qualified_coef</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2.2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">segmented_slice_coef</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3.5</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#AortaSegmenter.AortaSegmenter" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <dl class="py method">
 <dt class="sig sig-object py" id="AortaSegmenter.AortaSegmenter.__count_pixel_asc">
 <span class="sig-name descname"><span class="pre">__count_pixel_asc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">new_slice</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#AortaSegmenter.AortaSegmenter.__count_pixel_asc" title="Permalink to this definition"></a></dt>
-<dd><p>Use label statistics to calculate the number of counted pixels for ascending aorta segmentation.</p>
+<dd><p>Use segmented slice to calculate the number of counted pixels, and the new derived centre
+for ascending aorta segmentation.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p><dl class="simple">
 <dt>tuple containing:</dt><dd><p>int: The total number of the X coordinates where it is white pixel
 tupple: The new derived centre calculated by the mean of X coordinates and Y coordinates where it is white pixel
-list: The new seeds coordinates based on the new derived centre</p>
+list: More possible coordinates based on the new derived centre</p>
 </dd>
 </dl>
 </p>
@@ -213,7 +215,8 @@ list: The new seeds coordinates based on the new derived centre</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="AortaSegmenter.AortaSegmenter.__count_pixel_des">
 <span class="sig-name descname"><span class="pre">__count_pixel_des</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">new_slice</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#AortaSegmenter.AortaSegmenter.__count_pixel_des" title="Permalink to this definition"></a></dt>
-<dd><p>Use label statistics to calculate the number of counted pixels for descending aorta segmentation.</p>
+<dd><p>Use segmented slice to calculate the number of counted pixels, and the new derived centre
+for descending aorta segmentation.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p><dl class="simple">
@@ -238,13 +241,14 @@ fill the slice with the overlapping area of both slices.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="AortaSegmenter.AortaSegmenter.__get_label_statistics">
-<span class="sig-name descname"><span class="pre">__get_label_statistics</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#AortaSegmenter.AortaSegmenter.__get_label_statistics" title="Permalink to this definition"></a></dt>
-<dd><p>Use SITK::SignedMaurerDistanceMap to calculate the Euclidean distance transform
-and use SITK::LabelStatisticsImageFilter to derive descriptive intensity.</p>
+<dt class="sig sig-object py" id="AortaSegmenter.AortaSegmenter.__get_image_segment">
+<span class="sig-name descname"><span class="pre">__get_image_segment</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#AortaSegmenter.AortaSegmenter.__get_image_segment" title="Permalink to this definition"></a></dt>
+<dd><p>Use SITK::LabelStatisticsImageFilter to derive a 2d circle image (seed).
+Use SITK::SignedMaurerDistanceMap to calculate the signed squared Euclidean distance transform of the circle.
+Get segmented image slice based on the seed image.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>labeled statistics of the original image.</p>
+<dd class="field-odd"><p>Segmented image slice based on intensity values.</p>
 </dd>
 <dt class="field-even">Return type</dt>
 <dd class="field-even"><p>numpy.ndarray</p>
