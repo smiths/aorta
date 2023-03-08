@@ -182,10 +182,10 @@ class AortaSegmenter():
                     self._qualified_overlap_coef = 1.2
             else:
                 counter += 1
-                self._skipped_slice_is.append(slice_i)
-                if (counter >= self._num_slice_i_skipping):
-                    self._skipped_slice_is = self._skipped_slice_is[
-                        ::-self._num_slice_i_skipping]
+                self._skipped_slices.append(slice_i)
+                if (counter >= self._num_slice_skipping):
+                    self._skipped_slices = self._skipped_slices[
+                        ::-self._num_slice_skipping]
                     break
                 total_coord = self._previous_size
             self._previous_size = total_coord
