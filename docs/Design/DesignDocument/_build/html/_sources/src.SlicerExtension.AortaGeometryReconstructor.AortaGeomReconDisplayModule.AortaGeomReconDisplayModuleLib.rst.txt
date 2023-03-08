@@ -1,0 +1,37 @@
+src.SlicerExtension.AortaGeometryReconstructor.AortaGeomReconDisplayModule.AortaGeomReconDisplayModuleLib package
+=================================================================================================================
+
+Submodules
+----------
+
+src.SlicerExtension.AortaGeometryReconstructor.AortaGeomReconDisplayModule.AortaGeomReconDisplayModuleLib.AortaGeomReconEnums module
+------------------------------------------------------------------------------------------------------------------------------------
+
+.. automodule:: src.SlicerExtension.AortaGeometryReconstructor.AortaGeomReconDisplayModule.AortaGeomReconDisplayModuleLib.AortaGeomReconEnums
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+src.SlicerExtension.AortaGeometryReconstructor.AortaGeomReconDisplayModule.AortaGeomReconDisplayModuleLib.AortaSagitalSegmenter module
+--------------------------------------------------------------------------------------------------------------------------------------
+
+.. automodule:: src.SlicerExtension.AortaGeometryReconstructor.AortaGeomReconDisplayModule.AortaGeomReconDisplayModuleLib.AortaSagitalSegmenter
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+src.SlicerExtension.AortaGeometryReconstructor.AortaGeomReconDisplayModule.AortaGeomReconDisplayModuleLib.AortaSegmenter module
+-------------------------------------------------------------------------------------------------------------------------------
+
+.. automodule:: src.SlicerExtension.AortaGeometryReconstructor.AortaGeomReconDisplayModule.AortaGeomReconDisplayModuleLib.AortaSegmenter
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: src.SlicerExtension.AortaGeometryReconstructor.AortaGeomReconDisplayModule.AortaGeomReconDisplayModuleLib
+   :members:
+   :undoc-members:
+   :show-inheritance:

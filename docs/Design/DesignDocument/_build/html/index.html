@@ -7,6 +7,7 @@
   <title>Welcome to AortaGeomRecon’s documentation! &mdash; AortaGeomRecon  documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="_static/_static/custom.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
@@ -18,7 +19,7 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="AortaGeomRecon" href="modules.html" /> 
+    <link rel="next" title="AortaGeomReconModule" href="modules.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -36,9 +37,12 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+              <p class="caption" role="heading"><span class="caption-text">Modules documentation:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="modules.html">AortaGeomRecon</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">AortaGeomReconModule</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="glossary.html">Glossary</a></li>
 </ul>
 
         </div>
@@ -67,12 +71,32 @@
              
   <section id="welcome-to-aortageomrecon-s-documentation">
 <h1>Welcome to AortaGeomRecon’s documentation!<a class="headerlink" href="#welcome-to-aortageomrecon-s-documentation" title="Permalink to this headline"></a></h1>
+<p>This is the design document for AortaGeomRecon module, a <a class="reference internal" href="glossary.html#term-3D-Slicer"><span class="xref std std-term">3D Slicer</span></a> extension to perform <a class="reference internal" href="glossary.html#term-Aorta"><span class="xref std std-term">Aorta</span></a> segmentation and Aorta geometry reconstruction.</p>
+<p>You can find the source code, the installation guide, and the user manual in this GitHub <a class="reference external" href="https://github.com/smiths/aorta">repository</a>.</p>
+<hr class="docutils" />
+<section id="the-workflow-of-the-algorithm">
+<h2>The workflow of the algorithm<a class="headerlink" href="#the-workflow-of-the-algorithm" title="Permalink to this headline"></a></h2>
+<p>The algorithm works better with the chest volume cropped to a rectangular prism that contains the aorta and parts of the other organs such as back bone, some blood tissues and the heart. This can be simply done with <a class="reference internal" href="glossary.html#term-3D-Slicer"><span class="xref std std-term">3D Slicer</span></a> and its submodule <a class="reference external" href="https://slicer.readthedocs.io/en/latest/user_guide/modules/volumerendering.html">Volume rendering</a>. A more detailed guide can be found on this GitHub repository <a class="reference external" href="https://github.com/smiths/aorta#to-use-volume-rendering-to-crop-a-voi">section</a>.</p>
+<p>After cropped the volume which only contains the region of interest, the algorithm needed a set of variables inputs from the user.</p>
+<p>The seeds values contains the following:</p>
+<ol class="arabic simple">
+<li><p><a class="reference internal" href="glossary.html#term-Descending-Aorta"><span class="xref std std-term">Descending Aorta</span></a> or <a class="reference internal" href="glossary.html#term-Ascending-Aorta"><span class="xref std std-term">Ascending Aorta</span></a> center coordinate.</p></li>
+<li><p><a class="reference internal" href="glossary.html#term-Qualified-coefficient"><span class="xref std std-term">Qualified coefficient</span></a> larger values loose the conditiaon to accept a <a class="reference internal" href="glossary.html#term-segmented"><span class="xref std std-term">segmented</span></a> <a class="reference internal" href="glossary.html#term-slice"><span class="xref std std-term">slice</span></a>, and vice-versa.</p></li>
+<li><p>An integer indicates the number of the slice that the algorithm can skip.</p></li>
+</ol>
+<p>The algorithm generates a 2d circle image as the seed image by reading the aorta center coordiante and using <a class="reference external" href="https://simpleitk.org/doxygen/latest/html/classitk_1_1simple_1_1LabelStatisticsImageFilter.html">SITK::LabelStatisticsImageFilter</a>. A <a class="reference internal" href="glossary.html#term-Label-Statistic-coefficient"><span class="xref std std-term">Label Statistic coefficient</span></a> can be used to control the size of the circle seed image.</p>
+<p>The algorithm then creates another image, the Euclidean distance transform of a binary image as the image intensity map, and use it with <a class="reference external" href="https://simpleitk.org/doxygen/latest/html/classitk_1_1simple_1_1ThresholdSegmentationLevelSetImageFilter.html">SITK::ThresholdSegmentationLevelSetImageFilter</a> to create a segmented slice.</p>
+<p>To determine whether a segmented slice is acceptable, different conditions are verified for <cite>Descending Aorta</cite> and <a class="reference internal" href="glossary.html#term-Ascending-Aorta"><span class="xref std std-term">Ascending Aorta</span></a>. However, these conditions check are all invovled with the <a class="reference internal" href="glossary.html#term-Qualified-coefficient"><span class="xref std std-term">Qualified coefficient</span></a>, which is decided by the user. In simple terms, the larger the <a class="reference internal" href="glossary.html#term-Qualified-coefficient"><span class="xref std std-term">Qualified coefficient</span></a>, the looser condition on accepting a segmented slice. If the algorithm accepted this segmented slice, a new centre coordinate is calculated, and used as the seed coordinate for segmenting the next slice.</p>
+<p>When a segmented slice is not acceptable, the algorithm will skip this slice if the number of skipped slice is less then the integer given by the user. The algorithm will try to replace these skipped slice by reading the overlapped area of the previous and the next slice.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>You can find the definitions of each function within the module below</p>
+</div>
 <div class="toctree-wrapper compound">
-<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<p class="caption" role="heading"><span class="caption-text">Modules documentation:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="modules.html">AortaGeomRecon</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">AortaGeomReconModule</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="test.html">test package</a></li>
-<li class="toctree-l2"><a class="reference internal" href="AortaGeomReconDisplayModule.html">AortaGeomReconDisplayModule module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="AortaGeomReconDisplayModuleLib.html">AortaGeomReconDisplayModuleLib package</a></li>
 </ul>
 </li>
@@ -80,19 +104,24 @@
 </div>
 </section>
 <section id="indices-and-tables">
-<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline"></a></h1>
-<ul class="simple">
-<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
-<li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
-<li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
+<h2>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline"></a></h2>
+<div class="line-block">
+<div class="line"><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></div>
+<div class="line"><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></div>
+</div>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="glossary.html">Glossary</a></li>
 </ul>
+</div>
+</section>
 </section>
 
 
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="modules.html" class="btn btn-neutral float-right" title="AortaGeomRecon" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="modules.html" class="btn btn-neutral float-right" title="AortaGeomReconModule" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

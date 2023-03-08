@@ -1,16 +1,14 @@
-from AortaGeomReconDisplayModuleLib.AortaSegmenterBase \
-    import AortaSegmenterBase
 import SimpleITK as sitk
 import numpy as np
 
 
-class AortaSagitalSegmenter(AortaSegmenterBase):
+class AortaSagitalSegmenter():
     """This class performs Aorta Sagital segmentation"""
 
-    def __init__(self, segmentationFactor, segmentedImage,
-                 original_cropped_image):
-        self._processing_image = segmentedImage
-        super().__init__(original_cropped_image, segmentationFactor)
+    def __init__(self, qualified_coef, processing_image, cropped_image):
+        self._processing_image = processing_image
+        self._cropped_image = cropped_image
+        self._qualified_coef = qualified_coef
 
     def __segment_sag(self, sliceNum, factor, size_factor,
                       current_size, imgSlice, axial_seg, seg_type):
@@ -79,7 +77,7 @@ class AortaSagitalSegmenter(AortaSegmenterBase):
                 imgSlice = self._cropped_image[sliceNum, :, :]
                 axial_seg = self._processing_image[sliceNum, :, :]
                 self._processing_image[sliceNum, :, :] = self.__segment_sag(
-                    sliceNum, self._segmentation_factor, 1.4,
+                    sliceNum, self._qualified_coef, 1.4,
                     current_size, imgSlice, axial_seg, None)
         print("Sagittal segmentation finished")
 
@@ -95,6 +93,6 @@ class AortaSagitalSegmenter(AortaSegmenterBase):
                 imgSlice = self._cropped_image[:, sliceNum, :]
                 axial_seg = self._processing_image[:, sliceNum, :]
                 self._processing_image[:, sliceNum, :] = self.__segment_sag(
-                    sliceNum, self._segmentation_factor, 1.1, current_size,
+                    sliceNum, self._qualified_coef, 1.1, current_size,
                     imgSlice, axial_seg, "frontally")
         print("Sagittal segmentation - frontally finished")

@@ -1,9 +1,8 @@
-AortaGeomRecon
-==============
+AortaGeomReconModule
+====================
 
 .. toctree::
    :maxdepth: 4
 
    test
-   AortaGeomReconDisplayModule
    AortaGeomReconDisplayModuleLib

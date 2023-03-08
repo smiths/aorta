@@ -9,14 +9,14 @@ import slicer
 from slicer.ScriptedLoadableModule import *  # noqa: F403
 from slicer.util import VTKObservationMixin
 
-from AortaGeomReconDisplayModuleLib.AortaDescendingAxialSegmenter \
-    import AortaDescendingAxialSegmenter
-
-from AortaGeomReconDisplayModuleLib.AortaAscendingAxialSegmenter \
-    import AortaAscendingAxialSegmenter
+from AortaGeomReconDisplayModuleLib.AortaSegmenter \
+    import AortaSegmenter
 
 from AortaGeomReconDisplayModuleLib.AortaSagitalSegmenter \
     import AortaSagitalSegmenter
+
+from AortaGeomReconDisplayModuleLib.AortaGeomReconEnums \
+    import SegmentType as SegType
 
 import sitkUtils
 import numpy as np  # noqa: F401
@@ -178,6 +178,7 @@ class AortaGeomReconDisplayModuleWidget(ScriptedLoadableModuleWidget, VTKObserva
         self.ui.revertButton.enabled = False
         self.ui.resetButton.enabled = True
         self.ui.skipButton.enabled = True
+        self.ui.getVTKButton.enabled = True
 
         # Set scene in MRML widgets.
         # Make sure that in Qt designer the top-level qMRMLWidget's
@@ -214,13 +215,10 @@ class AortaGeomReconDisplayModuleWidget(ScriptedLoadableModuleWidget, VTKObserva
 
         self.ui.ascAortaSeed.connect(
             "coordinatesChanged(double*)", self.updateParameterNodeFromGUI)
-
         self.ui.descAortaSeed.connect(
             "coordinatesChanged(double*)", self.updateParameterNodeFromGUI)
-
         self.ui.qualifiedCoefficient.connect(
             "valueChanged(double)", self.updateParameterNodeFromGUI)
-
         self.ui.numOfSkippingSlice.connect(
             "valueChanged(double)", self.updateParameterNodeFromGUI)
 
@@ -231,6 +229,7 @@ class AortaGeomReconDisplayModuleWidget(ScriptedLoadableModuleWidget, VTKObserva
         self.ui.revertButton.connect('clicked(bool)', self.onRevertButton)
         self.ui.resetButton.connect('clicked(bool)', self.onResetButton)
         self.ui.skipButton.connect('clicked(bool)', self.onSkipButton)
+        self.ui.getVTKButton.connect('clicked(bool)', self.onGetVTKButton)
 
         sliceDisplayNodes = slicer.util.getNodesByClass(
             "vtkMRMLSliceDisplayNode")
@@ -385,7 +384,6 @@ class AortaGeomReconDisplayModuleWidget(ScriptedLoadableModuleWidget, VTKObserva
         wasModified = self._parameterNode.StartModify()
 
         # Modify all properties in a single batch
-
         self._parameterNode.SetParameter(
             "ascAortaSeed", self.ui.ascAortaSeed.coordinates)
         self._parameterNode.SetParameter(
@@ -398,7 +396,11 @@ class AortaGeomReconDisplayModuleWidget(ScriptedLoadableModuleWidget, VTKObserva
             self.ui,
             self._parameterNode.GetParameter("phase")
         )
-
+        crop = len(slicer.util.getNodes("*cropped*", useLists=True)) == 1
+        des = len(slicer.util.getNodes("*Descen*", useLists=True)) == 1
+        asc = len(slicer.util.getNodes("*Ascending*", useLists=True)) == 1
+        final = len(slicer.util.getNodes("*Final*", useLists=True)) == 1
+        self.ui.getVTKButton.enabled = crop or des or asc or final
         self._parameterNode.EndModify(wasModified)
 
     def showPhaseCropAorta(self):
@@ -451,6 +453,32 @@ class AortaGeomReconDisplayModuleWidget(ScriptedLoadableModuleWidget, VTKObserva
         self.ui.numOfSkippingSlice.hide()
         self.ui.qualifiedCoefficientLabel.hide()
         self.ui.numOfSkippingSliceLabel.hide()
+
+    def onGetVTKButton(self):
+        sceneObj = slicer.mrmlScene
+        if self._parameterNode.GetParameter("phase") == "1":
+            size = len(slicer.util.getNodes("*cropped*", useLists=True))
+            if size == 1:
+                volume = sceneObj.GetFirstNode("cropped", None, None, False)
+                self.logic.transform_image(volume)
+                self.logic.saveVtk("crop_volume.vtk", volume)
+        elif self._parameterNode.GetParameter("phase") == "2":
+            size = len(slicer.util.getNodes("*Descen*", useLists=True))
+            if size == 1:
+                volume = sceneObj.GetFirstNode("Descen", None, None, False)
+                self.logic.saveVtk("des_volume.vtk", volume)
+        elif self._parameterNode.GetParameter("phase") == "3":
+            size = len(slicer.util.getNodes("*Ascending*", useLists=True))
+            if size == 1:
+                volume = sceneObj.GetFirstNode("Ascending", None, None, False)
+                self.logic.transform_image(volume)
+                self.logic.saveVtk("asc_volume.vtk", volume)
+        else:
+            size = len(slicer.util.getNodes("*Final*", useLists=True))
+            if size == 1:
+                volume = sceneObj.GetFirstNode("Final", None, None, False)
+                self.logic.transform_image(volume)
+                self.logic.saveVtk("final_volume.vtk", volume)
 
     def onRevertButton(self):
         """
@@ -510,10 +538,11 @@ class AortaGeomReconDisplayModuleWidget(ScriptedLoadableModuleWidget, VTKObserva
                 size = len(slicer.util.getNodes("*cropped*", useLists=True))
                 if not size:
                     logging.info("Cannot find cropped volume")
-                elif size == 1:
-                    self.showPhaseDAS()
+                # elif size == 1:
+                #     pass
+                #     # self.showPhaseDAS()
                 else:
-                    logging.info("Found multiple cropped volumes")
+                    self.showPhaseDAS()
             elif self._parameterNode.GetParameter("phase") == "2":
                 descAortaSeed = self._parameterNode.GetParameter(
                     "descAortaSeed")
@@ -535,7 +564,7 @@ class AortaGeomReconDisplayModuleWidget(ScriptedLoadableModuleWidget, VTKObserva
                     name="Segmented Descending Aorta Volume",
                     className="vtkMRMLScalarVolumeNode"
                 )
-                self.showPhaseAAS()
+                # self.showPhaseAAS()
 
             elif self._parameterNode.GetParameter("phase") == "3":
                 ascAortaSeed = self._parameterNode.GetParameter(
@@ -557,7 +586,7 @@ class AortaGeomReconDisplayModuleWidget(ScriptedLoadableModuleWidget, VTKObserva
                     name="Segmented Ascending Aorta Volume",
                     className="vtkMRMLScalarVolumeNode"
                 )
-                self.showPhaseSAS()
+                # self.showPhaseSAS()
 
             elif self._parameterNode.GetParameter("phase") == "4":
                 qualified_coef = self._parameterNode.GetParameter(
@@ -619,6 +648,12 @@ class AortaGeomReconDisplayModuleLogic(ScriptedLoadableModuleLogic):  # noqa: F4
         self._cropped_image = None
         self._processing_image = None
         ScriptedLoadableModuleLogic.__init__(self)  # noqa: F405
+
+    def saveVtk(self, name, volume):
+        writer = sitk.ImageFileWriter()
+        writer.SetImageIO("VTKImageIO")
+        writer.SetFileName(name)
+        writer.Execute(sitkUtils.PullVolumeFromSlicer(volume))
 
     def getPlaneIntersectionPoint(
         self,
@@ -801,14 +836,14 @@ class AortaGeomReconDisplayModuleLogic(ScriptedLoadableModuleLogic):  # noqa: F4
         dASnumber = [int(i) for i in descAortaSeedStr]
         now = datetime.now()
         logging.info(f"{now} processing Descending Aorta Segmentation")
-        desc_axial_segmenter = AortaDescendingAxialSegmenter(
-            starting_slice=dASnumber[2],
-            aorta_centre=dASnumber[:2],
+        desc_axial_segmenter = AortaSegmenter(
+            cropped_image=self._cropped_image,
+            starting_slice=dASnumber[2], aorta_centre=dASnumber[:2],
             num_slice_skipping=int(float(num_slice_skipping)),
             qualified_coef=float(qualified_coef),
-            cropped_image=self._cropped_image
+            processing_image=None,
+            seg_type=SegType.descending_aorta
         )
-
         desc_axial_segmenter.begin_segmentation()
         logging.info(
             f"{now} Finished processing Descending Aorta Segmentation")
@@ -836,13 +871,13 @@ class AortaGeomReconDisplayModuleLogic(ScriptedLoadableModuleLogic):  # noqa: F4
                     "Segmented Descending Aorta Volume", None, None, False)
             self._processing_image = sitkUtils.PullVolumeFromSlicer(volume)
 
-        asc_axial_segmenter = AortaAscendingAxialSegmenter(
-            starting_slice=aASnumber[2],
-            aorta_centre=aASnumber[:2],
-            num_slice_skipping=int(float(num_slice_skipping)),
-            segmentation_factor=float(qualified_coef),
+        asc_axial_segmenter = AortaSegmenter(
             cropped_image=self._cropped_image,
-            processing_image=self._processing_image
+            starting_slice=aASnumber[2], aorta_centre=aASnumber[:2],
+            num_slice_skipping=int(float(num_slice_skipping)),
+            qualified_coef=float(qualified_coef),
+            processing_image=self._processing_image,
+            seg_type=SegType.ascending_aorta
         )
 
         asc_axial_segmenter.begin_segmentation()
@@ -865,9 +900,9 @@ class AortaGeomReconDisplayModuleLogic(ScriptedLoadableModuleLogic):  # noqa: F4
         now = datetime.now()
         logging.info(f"{now} processing Sagittal Segmentation")
         sagittal_segmenter = AortaSagitalSegmenter(
-            segmentationFactor=float(qualified_coef),
-            segmentedImage=self._processing_image,
-            original_cropped_image=self._cropped_image
+            qualified_coef=float(qualified_coef),
+            processing_image=self._processing_image,
+            cropped_image=self._cropped_image
         )
         sagittal_segmenter.begin_segmentation()
         self._processing_image = sagittal_segmenter.processing_image

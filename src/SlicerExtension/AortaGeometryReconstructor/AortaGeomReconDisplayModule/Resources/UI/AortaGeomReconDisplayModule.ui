@@ -82,7 +82,7 @@
       <item row="8" column="1">
        <widget class="qMRMLSliderWidget" name="qualifiedCoefficient">
         <property name="decimals">
-         <number>1</number>
+         <number>2.2</number>
         </property>
         <property name="singleStep">
          <double>0.100000000000000</double>
@@ -105,7 +105,10 @@
       <item row="10" column="1">
        <widget class="qMRMLSpinBox" name="numOfSkippingSlice">
         <property name="decimals">
-         <number>0</number>
+         <number>3</number>
+        </property>
+        <property name="minimum">
+         <double>0.000000000000000</double>
         </property>
         <property name="maximum">
          <double>10.000000000000000</double>
@@ -167,6 +170,13 @@
      </property>
      <property name="text">
       <string>Skip to next phase</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QPushButton" name="getVTKButton">
+     <property name="text">
+      <string>Get VTK of the volume</string>
      </property>
     </widget>
    </item>
@@ -270,22 +280,6 @@
     <hint type="destinationlabel">
      <x>309</x>
      <y>136</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>AortaGeomReconDisplayModule</sender>
-   <signal>mrmlSceneChanged(vtkMRMLScene*)</signal>
-   <receiver>qualifiedSliceFactor</receiver>
-   <slot>setMRMLScene(vtkMRMLScene*)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>274</x>
-     <y>316</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>329</x>
-     <y>162</y>
     </hint>
    </hints>
   </connection>

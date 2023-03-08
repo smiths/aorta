@@ -4,18 +4,26 @@ test package
 Submodules
 ----------
 
-test.conftest module
+conftest module
 --------------------
 
-.. automodule:: test.conftest
+.. automodule:: conftest
    :members:
    :undoc-members:
    :show-inheritance:
 
-test.test\_image\_preprocessing module
+test\_image\_preprocessing module
 --------------------------------------
 
-.. automodule:: test.test_image_preprocessing
+.. automodule:: test_image_preprocessing
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: test
    :members:
    :undoc-members:
    :show-inheritance:

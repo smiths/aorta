@@ -14,13 +14,20 @@ jobs:
           architecture: x64
       - name: Checkout master code
         uses: actions/checkout@v3
+        with:
+            lfs: 'true'
+      - name: checkoutLFS
+        uses: actions/checkout@v2
+      - run: git lfs pull
       - name: Install pytest
         run: pip3 install pytest
       - name: Install SITK
         run: pip3 install SimpleITK
       - name: Install numpy
         run: pip3 install numpy
+      - name: Test file path
+        run: python3 -c "import os; print(os.path.exists(os.path.abspath('test/sample/43681283_crop.vtk')))"
       - name: Test descending aorta segmentation
-        run: pytest -s --limit 0.02 -k 'test_compare_des'
+        run: pytest -s --limit 0.02 -k 'test_compare_des' --testCase 2
       - name: Test ascending aorta segmentation
-        run: pytest -s --limit 0.02 -k 'test_compare_asc'
+        run: pytest -s --limit 0.02 -k 'test_compare_asc' --testCase 2
