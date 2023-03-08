@@ -15,6 +15,7 @@ from AortaGeomReconDisplayModuleLib.AortaGeomReconEnums import PixelValue # noqa
 
 
 class AortaSegmenter():
+    """This class is used to perform Descending or Ascending aorta segmentation"""
 
     def __init__(
             self, cropped_image, starting_slice, aorta_centre,
@@ -151,23 +152,23 @@ class AortaSegmenter():
         """
         counter = 0
         is_overlapping = False
-        for sliceNum in range(self._start, self._end, self._step):
-            self._cur_img_slice = self._cropped_image[:, :, sliceNum]
+        for slice_i in range(self._start, self._end, self._step):
+            self._cur_img_slice = self._cropped_image[:, :, slice_i]
             segmented_slice = self.__get_image_segment()
-            new_slice = segmented_slice > PixelValue.black_pixel.value
+            new_slice_i = segmented_slice > PixelValue.black_pixel.value
             if self._seg_type == SegmentType.descending_aorta:
-                total_coord, centre = self.__count_pixel_des(new_slice)
+                total_coord, centre = self.__count_pixel_des(new_slice_i)
                 seeds = []
             else:
-                total_coord, centre, seeds = self.__count_pixel_asc(new_slice)
-                is_overlapping = self.__is_overlapping(new_slice, sliceNum)
+                total_coord, centre, seeds = self.__count_pixel_asc(new_slice_i)
+                is_overlapping = self.__is_overlapping(new_slice_i, slice_i)
             if self.__is_new_centre_qualified(total_coord, is_overlapping):
                 counter = 0
                 if self._seg_type == SegmentType.descending_aorta:
-                    self._processing_image[:, :, sliceNum] = new_slice
+                    self._processing_image[:, :, slice_i] = new_slice_i
                 else:
-                    self._processing_image[:, :, sliceNum] = (
-                        new_slice | self._processing_image[:, :, sliceNum]
+                    self._processing_image[:, :, slice_i] = (
+                        new_slice_i | self._processing_image[:, :, slice_i]
                     )
                 self._prev_centre = centre
                 self._prev_seeds = seeds
@@ -179,10 +180,10 @@ class AortaSegmenter():
                     self._qualified_overlap_coef = 1.2
             else:
                 counter += 1
-                self._skipped_slices.append(sliceNum)
-                if (counter >= self._num_slice_skipping):
-                    self._skipped_slices = self._skipped_slices[
-                        ::-self._num_slice_skipping]
+                self._skipped_slice_is.append(slice_i)
+                if (counter >= self._num_slice_i_skipping):
+                    self._skipped_slice_is = self._skipped_slice_is[
+                        ::-self._num_slice_i_skipping]
                     break
                 total_coord = self._previous_size
             self._previous_size = total_coord
@@ -280,7 +281,8 @@ class AortaSegmenter():
         return ls
 
     def __count_pixel_des(self, new_slice):
-        """Use segmented slice to calculate the number of counted pixels, and the new derived centre
+        """Use segmented slice to calculate the number of white pixels,
+        and the new derived centre
         for descending aorta segmentation.
 
         Returns:
@@ -297,13 +299,13 @@ class AortaSegmenter():
         return total_coord, new_centre
 
     def __count_pixel_asc(self, new_slice):
-        """Use segmented slice to calculate the number of counted pixels, and the new derived centre
-        for ascending aorta segmentation.
+        """Use segmented slice to calculate the number of white pixels,
+        and the new centre based on the segmented result.
 
         Returns:
             (tuple): tuple containing:
                 int: The total number of the X coordinates where it is white pixel
-                tupple: The new derived centre calculated by the mean of X coordinates and Y coordinates where it is white pixel
+                tupple: The new derived centre calculated by the mean of X coordinates and Y coordinates of white pixels
                 list: More possible coordinates based on the new derived centre
         """ # noqa
         nda = sitk.GetArrayFromImage(new_slice)

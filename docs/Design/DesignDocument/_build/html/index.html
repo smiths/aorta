@@ -74,20 +74,63 @@
 <p>This is the design document for AortaGeomRecon module, a <a class="reference internal" href="glossary.html#term-3D-Slicer"><span class="xref std std-term">3D Slicer</span></a> extension to perform <a class="reference internal" href="glossary.html#term-Aorta"><span class="xref std std-term">Aorta</span></a> segmentation and Aorta geometry reconstruction.</p>
 <p>You can find the source code, the installation guide, and the user manual in this GitHub <a class="reference external" href="https://github.com/smiths/aorta">repository</a>.</p>
 <hr class="docutils" />
-<section id="the-workflow-of-the-algorithm">
-<h2>The workflow of the algorithm<a class="headerlink" href="#the-workflow-of-the-algorithm" title="Permalink to this headline"></a></h2>
+<section id="the-steps-before-applying-the-main-algorithm">
+<h2>The steps before applying the main algorithm<a class="headerlink" href="#the-steps-before-applying-the-main-algorithm" title="Permalink to this headline"></a></h2>
 <p>The algorithm works better with the chest volume cropped to a rectangular prism that contains the aorta and parts of the other organs such as back bone, some blood tissues and the heart. This can be simply done with <a class="reference internal" href="glossary.html#term-3D-Slicer"><span class="xref std std-term">3D Slicer</span></a> and its submodule <a class="reference external" href="https://slicer.readthedocs.io/en/latest/user_guide/modules/volumerendering.html">Volume rendering</a>. A more detailed guide can be found on this GitHub repository <a class="reference external" href="https://github.com/smiths/aorta#to-use-volume-rendering-to-crop-a-voi">section</a>.</p>
 <p>After cropped the volume which only contains the region of interest, the algorithm needed a set of variables inputs from the user.</p>
-<p>The seeds values contains the following:</p>
+<p>The variables inputs are:</p>
 <ol class="arabic simple">
-<li><p><a class="reference internal" href="glossary.html#term-Descending-Aorta"><span class="xref std std-term">Descending Aorta</span></a> or <a class="reference internal" href="glossary.html#term-Ascending-Aorta"><span class="xref std std-term">Ascending Aorta</span></a> center coordinate.</p></li>
+<li><p><a class="reference internal" href="glossary.html#term-Descending-Aorta"><span class="xref std std-term">Descending Aorta</span></a> or <a class="reference internal" href="glossary.html#term-Ascending-Aorta"><span class="xref std std-term">Ascending Aorta</span></a> centre coordinate.</p></li>
 <li><p><a class="reference internal" href="glossary.html#term-Qualified-coefficient"><span class="xref std std-term">Qualified coefficient</span></a> larger values loose the conditiaon to accept a <a class="reference internal" href="glossary.html#term-segmented"><span class="xref std std-term">segmented</span></a> <a class="reference internal" href="glossary.html#term-slice"><span class="xref std std-term">slice</span></a>, and vice-versa.</p></li>
 <li><p>An integer indicates the number of the slice that the algorithm can skip.</p></li>
 </ol>
-<p>The algorithm generates a 2d circle image as the seed image by reading the aorta center coordiante and using <a class="reference external" href="https://simpleitk.org/doxygen/latest/html/classitk_1_1simple_1_1LabelStatisticsImageFilter.html">SITK::LabelStatisticsImageFilter</a>. A <a class="reference internal" href="glossary.html#term-Label-Statistic-coefficient"><span class="xref std std-term">Label Statistic coefficient</span></a> can be used to control the size of the circle seed image.</p>
-<p>The algorithm then creates another image, the Euclidean distance transform of a binary image as the image intensity map, and use it with <a class="reference external" href="https://simpleitk.org/doxygen/latest/html/classitk_1_1simple_1_1ThresholdSegmentationLevelSetImageFilter.html">SITK::ThresholdSegmentationLevelSetImageFilter</a> to create a segmented slice.</p>
-<p>To determine whether a segmented slice is acceptable, different conditions are verified for <cite>Descending Aorta</cite> and <a class="reference internal" href="glossary.html#term-Ascending-Aorta"><span class="xref std std-term">Ascending Aorta</span></a>. However, these conditions check are all invovled with the <a class="reference internal" href="glossary.html#term-Qualified-coefficient"><span class="xref std std-term">Qualified coefficient</span></a>, which is decided by the user. In simple terms, the larger the <a class="reference internal" href="glossary.html#term-Qualified-coefficient"><span class="xref std std-term">Qualified coefficient</span></a>, the looser condition on accepting a segmented slice. If the algorithm accepted this segmented slice, a new centre coordinate is calculated, and used as the seed coordinate for segmenting the next slice.</p>
-<p>When a segmented slice is not acceptable, the algorithm will skip this slice if the number of skipped slice is less then the integer given by the user. The algorithm will try to replace these skipped slice by reading the overlapped area of the previous and the next slice.</p>
+</section>
+<section id="the-main-ideas-of-the-algorithm">
+<h2>The main ideas of the algorithm<a class="headerlink" href="#the-main-ideas-of-the-algorithm" title="Permalink to this headline"></a></h2>
+<p>At the beginning of the algorithm, the user’s input on the aorta centre is used to generate the seed slice, 2 dimensional circle image. This seed slice will be used as a reference throughout the workflow of the algorithm. Therefore, changing the input of the centre coordiante could generate a completely different segmentation result.</p>
+<p>For each slice starting from the user’s selected slice going in the inferior or superior direction</p>
+<ol class="arabic">
+<li><p>The algorithm generates the seed image by using <a class="reference external" href="https://simpleitk.org/doxygen/latest/html/classitk_1_1simple_1_1LabelStatisticsImageFilter.html">SITK::LabelStatisticsImageFilter</a>.</p>
+<blockquote>
+<div><div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>A <a class="reference internal" href="glossary.html#term-Label-Statistic-coefficient"><span class="xref std std-term">Label Statistic coefficient</span></a> can be used to control the size of the circle seed image. However, this is a constant which is not linked to UI for the user to select in the current version.</p>
+</div>
+</div></blockquote>
+</li>
+<li><p>The algorithm then creates another image, the Euclidean distance transform of a binary image as the image intensity map, and use it with <a class="reference external" href="https://simpleitk.org/doxygen/latest/html/classitk_1_1simple_1_1ThresholdSegmentationLevelSetImageFilter.html">SITK::ThresholdSegmentationLevelSetImageFilter</a> to create a segmented slice.</p></li>
+<li><p>The algorithm determine whether to accept the segmented slice or not, based on the number of white pixels on the segmented slice, and the qualified coefficient to control the limit.</p>
+<blockquote>
+<div><div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>To determine whether a segmented slice is acceptable, different conditions are verified for <a class="reference internal" href="glossary.html#term-Descending-Aorta"><span class="xref std std-term">Descending Aorta</span></a> and <a class="reference internal" href="glossary.html#term-Ascending-Aorta"><span class="xref std std-term">Ascending Aorta</span></a>. These conditions check are all invovled with the <a class="reference internal" href="glossary.html#term-Qualified-coefficient"><span class="xref std std-term">Qualified coefficient</span></a>, which is decided by the user. In simple terms, the larger the <a class="reference internal" href="glossary.html#term-Qualified-coefficient"><span class="xref std std-term">Qualified coefficient</span></a>, the looser condition on accepting a segmented slice.</p>
+</div>
+</div></blockquote>
+</li>
+<li><p>If the algorithm accepted this segmented slice, a new centre coordinate is calculated, and used as the seed coordinate for segmenting the next slice.</p></li>
+<li><p>When a segmented slice is not acceptable, the algorithm will skip this slice if the number of skipped slice is less then the integer given by the user. The algorithm will try to replace these skipped slice by reading the overlapped area of the previous and the next slice.</p></li>
+</ol>
+</section>
+<section id="the-pseudocode-of-the-algorithm">
+<h2>The pseudocode of the algorithm<a class="headerlink" href="#the-pseudocode-of-the-algorithm" title="Permalink to this headline"></a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">segmented_slice</span> <span class="o">=</span> <span class="n">get_image_segment</span><span class="p">()</span>
+<span class="c1"># Any value (grey-scaled) above 0 will be set to white pixel</span>
+<span class="n">new_slice</span> <span class="o">=</span> <span class="n">segmented_slice</span> <span class="o">&gt;</span> <span class="n">PixelValue</span><span class="o">.</span><span class="n">black_pixel</span><span class="o">.</span><span class="n">value</span>
+<span class="n">total_coord</span><span class="p">,</span> <span class="n">centre</span> <span class="o">=</span> <span class="n">count_pixels</span><span class="p">(</span><span class="n">new_slice</span><span class="p">)</span>
+
+<span class="c1"># start is always the index of the original slice</span>
+<span class="c1"># end could be the index of the superior or the inferior of the aorta</span>
+<span class="k">for</span> <span class="n">slice_i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="n">step</span><span class="p">):</span>
+    <span class="n">cur_img_slice</span> <span class="o">=</span> <span class="n">cropped_image</span><span class="p">[:,</span> <span class="p">:,</span> <span class="n">slice_i</span><span class="p">]</span>
+    <span class="n">segmented_slice</span> <span class="o">=</span> <span class="n">get_image_segment</span><span class="p">()</span>
+    <span class="n">new_slice</span> <span class="o">=</span> <span class="n">segmented_slice</span> <span class="o">&gt;</span> <span class="n">PixelValue</span><span class="o">.</span><span class="n">black_pixel</span><span class="o">.</span><span class="n">value</span>
+    <span class="n">total_coord</span><span class="p">,</span> <span class="n">centre</span><span class="p">,</span> <span class="n">seeds</span> <span class="o">=</span> <span class="n">count_pixel</span><span class="p">(</span><span class="n">new_slice</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">is_new_centre_qualified</span><span class="p">(</span><span class="n">total_coord</span><span class="p">):</span>
+         <span class="n">processing_image</span><span class="p">[:,</span> <span class="p">:,</span> <span class="n">slice_i</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_slice</span>
+         <span class="n">prev_centre</span> <span class="o">=</span> <span class="n">centre</span>
+         <span class="n">prev_seeds</span> <span class="o">=</span> <span class="n">seeds</span>
+</pre></div>
+</div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>You can find the definitions of each function within the module below</p>

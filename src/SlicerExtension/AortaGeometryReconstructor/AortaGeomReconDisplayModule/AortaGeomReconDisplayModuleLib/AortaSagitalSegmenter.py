@@ -3,7 +3,7 @@ import numpy as np
 
 
 class AortaSagitalSegmenter():
-    """This class performs Aorta Sagital segmentation"""
+    """This class performs Aorta Sagittal segmentation"""
 
     def __init__(self, qualified_coef, processing_image, cropped_image):
         self._processing_image = processing_image
