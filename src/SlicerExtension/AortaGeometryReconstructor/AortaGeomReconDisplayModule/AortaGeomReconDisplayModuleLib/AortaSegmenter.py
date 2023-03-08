@@ -15,7 +15,8 @@ from AortaGeomReconDisplayModuleLib.AortaGeomReconEnums import PixelValue # noqa
 
 
 class AortaSegmenter():
-    """This class is used to perform Descending or Ascending aorta segmentation"""
+    """This class is used to perform
+    Descending or Ascending aorta segmentation"""
 
     def __init__(
             self, cropped_image, starting_slice, aorta_centre,
@@ -160,7 +161,8 @@ class AortaSegmenter():
                 total_coord, centre = self.__count_pixel_des(new_slice_i)
                 seeds = []
             else:
-                total_coord, centre, seeds = self.__count_pixel_asc(new_slice_i)
+                total_coord, centre, seeds = self.__count_pixel_asc(
+                    new_slice_i)
                 is_overlapping = self.__is_overlapping(new_slice_i, slice_i)
             if self.__is_new_centre_qualified(total_coord, is_overlapping):
                 counter = 0
