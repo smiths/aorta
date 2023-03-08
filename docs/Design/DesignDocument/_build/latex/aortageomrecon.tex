@@ -78,7 +78,7 @@
 
 
 \sphinxAtStartPar
-This is the design document for AortaGeomRecon module, a {\hyperref[\detokenize{glossary:term-3D-Slicer}]{\sphinxtermref{\DUrole{xref,std,std-term}{3D Slicer}}}} extension to perform {\hyperref[\detokenize{glossary:term-Aorta}]{\sphinxtermref{\DUrole{xref,std,std-term}{Aorta}}}} segmentation and Aorta geometry reconstruction.
+This is the design document for the AortaGeomRecon module, a {\hyperref[\detokenize{glossary:term-3D-Slicer}]{\sphinxtermref{\DUrole{xref,std,std-term}{3D Slicer}}}} extension to perform {\hyperref[\detokenize{glossary:term-Aorta}]{\sphinxtermref{\DUrole{xref,std,std-term}{Aorta}}}} segmentation and Aorta geometry reconstruction.
 
 \sphinxAtStartPar
 You can find the source code, the installation guide, and the user manual in this GitHub \sphinxhref{https://github.com/smiths/aorta}{repository}.
@@ -91,10 +91,10 @@ You can find the source code, the installation guide, and the user manual in thi
 \chapter{The steps before applying the main algorithm}
 \label{\detokenize{index:the-steps-before-applying-the-main-algorithm}}
 \sphinxAtStartPar
-The algorithm works better with the chest volume cropped to a rectangular prism that contains the aorta and parts of the other organs such as back bone, some blood tissues and the heart. This can be simply done with {\hyperref[\detokenize{glossary:term-3D-Slicer}]{\sphinxtermref{\DUrole{xref,std,std-term}{3D Slicer}}}} and its submodule \sphinxhref{https://slicer.readthedocs.io/en/latest/user\_guide/modules/volumerendering.html}{Volume rendering}. A more detailed guide can be found on this GitHub repository \sphinxhref{https://github.com/smiths/aorta\#to-use-volume-rendering-to-crop-a-voi}{section}.
+The algorithm works better with the chest volume cropped to a rectangular prism that contains the aorta and parts of the other organs such as the backbone, some blood tissues, and the heart. This can be simply done with {\hyperref[\detokenize{glossary:term-3D-Slicer}]{\sphinxtermref{\DUrole{xref,std,std-term}{3D Slicer}}}} and its submodule \sphinxhref{https://slicer.readthedocs.io/en/latest/user\_guide/modules/volumerendering.html}{Volume rendering}. A more detailed guide can be found on this GitHub repository \sphinxhref{https://github.com/smiths/aorta\#to-use-volume-rendering-to-crop-a-voi}{section}.
 
 \sphinxAtStartPar
-After cropped the volume which only contains the region of interest, the algorithm needed a set of variables inputs from the user.
+After cropping the volume which only contains the region of interest, the algorithm needed a set of variables inputs from the user.
 
 \sphinxAtStartPar
 The variables inputs are:
@@ -106,11 +106,11 @@ The variables inputs are:
 
 \item {} 
 \sphinxAtStartPar
-{\hyperref[\detokenize{glossary:term-Qualified-coefficient}]{\sphinxtermref{\DUrole{xref,std,std-term}{Qualified coefficient}}}} larger values loose the conditiaon to accept a {\hyperref[\detokenize{glossary:term-segmented}]{\sphinxtermref{\DUrole{xref,std,std-term}{segmented}}}} {\hyperref[\detokenize{glossary:term-slice}]{\sphinxtermref{\DUrole{xref,std,std-term}{slice}}}}, and vice\sphinxhyphen{}versa.
+{\hyperref[\detokenize{glossary:term-Qualified-coefficient}]{\sphinxtermref{\DUrole{xref,std,std-term}{Qualified coefficient}}}} larger values lose the condition to accept a {\hyperref[\detokenize{glossary:term-segmented}]{\sphinxtermref{\DUrole{xref,std,std-term}{segmented}}}} {\hyperref[\detokenize{glossary:term-slice}]{\sphinxtermref{\DUrole{xref,std,std-term}{slice}}}}, and vice\sphinxhyphen{}versa.
 
 \item {} 
 \sphinxAtStartPar
-An integer indicates the number of the slice that the algorithm can skip.
+An integer indicates the number of slices that the algorithm can skip.
 
 \end{enumerate}
 
@@ -118,7 +118,7 @@ An integer indicates the number of the slice that the algorithm can skip.
 \chapter{The main ideas of the algorithm}
 \label{\detokenize{index:the-main-ideas-of-the-algorithm}}
 \sphinxAtStartPar
-At the beginning of the algorithm, the user’s input on the aorta centre is used to generate the seed slice, 2 dimensional circle image. This seed slice will be used as a reference throughout the workflow of the algorithm. Therefore, changing the input of the centre coordiante could generate a completely different segmentation result.
+At the beginning of the algorithm, the user’s input on the aorta centre is used to generate the seed slice, 2\sphinxhyphen{}dimensional circle image. This seed slice will be used as a reference throughout the workflow of the algorithm. Therefore, changing the input of the centre coordinate could generate a completely different segmentation result.
 
 \sphinxAtStartPar
 For each slice starting from the user’s selected slice going in the inferior or superior direction
@@ -131,32 +131,32 @@ The algorithm generates the seed image by using \sphinxhref{https://simpleitk.or
 
 \begin{sphinxadmonition}{note}{Note:}
 \sphinxAtStartPar
-A {\hyperref[\detokenize{glossary:term-Label-Statistic-coefficient}]{\sphinxtermref{\DUrole{xref,std,std-term}{Label Statistic coefficient}}}} can be used to control the size of the circle seed image. However, this is a constant which is not linked to UI for the user to select in the current version.
+A {\hyperref[\detokenize{glossary:term-Label-Statistic-coefficient}]{\sphinxtermref{\DUrole{xref,std,std-term}{Label Statistic coefficient}}}} can be used to control the size of the circle seed image. However, this is a constant that is not linked to the UI for the user to select in the current version.
 \end{sphinxadmonition}
 \end{quote}
 
 \item {} 
 \sphinxAtStartPar
-The algorithm then creates another image, the Euclidean distance transform of a binary image as the image intensity map, and use it with \sphinxhref{https://simpleitk.org/doxygen/latest/html/classitk\_1\_1simple\_1\_1ThresholdSegmentationLevelSetImageFilter.html}{SITK::ThresholdSegmentationLevelSetImageFilter} to create a segmented slice.
+The algorithm then creates another image, the Euclidean distance transform of a binary image as the image intensity map, and uses it with \sphinxhref{https://simpleitk.org/doxygen/latest/html/classitk\_1\_1simple\_1\_1ThresholdSegmentationLevelSetImageFilter.html}{SITK::ThresholdSegmentationLevelSetImageFilter} to create a segmented slice.
 
 \item {} 
 \sphinxAtStartPar
-The algorithm determine whether to accept the segmented slice or not, based on the number of white pixels on the segmented slice, and the qualified coefficient to control the limit.
+The algorithm determines whether to accept the segmented slice or not, based on the number of white pixels on the segmented slice, and the qualified coefficient to control the limit.
 \begin{quote}
 
 \begin{sphinxadmonition}{note}{Note:}
 \sphinxAtStartPar
-To determine whether a segmented slice is acceptable, different conditions are verified for {\hyperref[\detokenize{glossary:term-Descending-Aorta}]{\sphinxtermref{\DUrole{xref,std,std-term}{Descending Aorta}}}} and {\hyperref[\detokenize{glossary:term-Ascending-Aorta}]{\sphinxtermref{\DUrole{xref,std,std-term}{Ascending Aorta}}}}. These conditions check are all invovled with the {\hyperref[\detokenize{glossary:term-Qualified-coefficient}]{\sphinxtermref{\DUrole{xref,std,std-term}{Qualified coefficient}}}}, which is decided by the user. In simple terms, the larger the {\hyperref[\detokenize{glossary:term-Qualified-coefficient}]{\sphinxtermref{\DUrole{xref,std,std-term}{Qualified coefficient}}}}, the looser condition on accepting a segmented slice.
+To determine whether a segmented slice is acceptable, different conditions are verified for {\hyperref[\detokenize{glossary:term-Descending-Aorta}]{\sphinxtermref{\DUrole{xref,std,std-term}{Descending Aorta}}}} and {\hyperref[\detokenize{glossary:term-Ascending-Aorta}]{\sphinxtermref{\DUrole{xref,std,std-term}{Ascending Aorta}}}}. These conditions check are all involved with the {\hyperref[\detokenize{glossary:term-Qualified-coefficient}]{\sphinxtermref{\DUrole{xref,std,std-term}{Qualified coefficient}}}}, which is decided by the user. In simple terms, the larger the {\hyperref[\detokenize{glossary:term-Qualified-coefficient}]{\sphinxtermref{\DUrole{xref,std,std-term}{Qualified coefficient}}}}, the looser condition on accepting a segmented slice.
 \end{sphinxadmonition}
 \end{quote}
 
 \item {} 
 \sphinxAtStartPar
-If the algorithm accepted this segmented slice, a new centre coordinate is calculated, and used as the seed coordinate for segmenting the next slice.
+If the algorithm accepted this segmented slice, a new centre coordinate is calculated and used as the seed coordinate for segmenting the next slice.
 
 \item {} 
 \sphinxAtStartPar
-When a segmented slice is not acceptable, the algorithm will skip this slice if the number of skipped slice is less then the integer given by the user. The algorithm will try to replace these skipped slice by reading the overlapped area of the previous and the next slice.
+When a segmented slice is not acceptable, the algorithm will skip this slice if the number of the skipped slice is less than the integer given by the user. The algorithm will try to replace these skipped slices by reading the overlapped area of the previous and the next slice.
 
 \end{enumerate}
 
@@ -165,7 +165,7 @@ When a segmented slice is not acceptable, the algorithm will skip this slice if 
 \label{\detokenize{index:the-pseudocode-of-the-algorithm}}
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
 \PYG{n}{segmented\PYGZus{}slice} \PYG{o}{=} \PYG{n}{get\PYGZus{}image\PYGZus{}segment}\PYG{p}{(}\PYG{p}{)}
-\PYG{c+c1}{\PYGZsh{} Any value (grey\PYGZhy{}scaled) above 0 will be set to white pixel}
+\PYG{c+c1}{\PYGZsh{} Any value (grey\PYGZhy{}scaled) above 0 will be set to a white pixel}
 \PYG{n}{new\PYGZus{}slice} \PYG{o}{=} \PYG{n}{segmented\PYGZus{}slice} \PYG{o}{\PYGZgt{}} \PYG{n}{PixelValue}\PYG{o}{.}\PYG{n}{black\PYGZus{}pixel}\PYG{o}{.}\PYG{n}{value}
 \PYG{n}{total\PYGZus{}coord}\PYG{p}{,} \PYG{n}{centre} \PYG{o}{=} \PYG{n}{count\PYGZus{}pixels}\PYG{p}{(}\PYG{n}{new\PYGZus{}slice}\PYG{p}{)}
 
@@ -605,7 +605,8 @@ This class performs Aorta Sagittal segmentation
 Bases: \sphinxcode{\sphinxupquote{object}}
 
 \sphinxAtStartPar
-This class is used to perform Descending or Ascending aorta segmentation
+This class is used to perform
+Descending or Ascending aorta segmentation
 \index{\_\_count\_pixel\_asc() (AortaSegmenter.AortaSegmenter method)@\spxentry{\_\_count\_pixel\_asc()}\spxextra{AortaSegmenter.AortaSegmenter method}}
 
 \begin{fulllineitems}
