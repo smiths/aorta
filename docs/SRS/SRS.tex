@@ -596,62 +596,10 @@ and the ascending aorta center voxel coordinate, the goal statements is:
 \begin{itemize}
 
 \item[GS\refstepcounter{goalnum}\thegoalnum \label{Gsegment}:] 
-Extract the 3 dimensional segmentation of the aorta.
+Extract the three dimensional segmentation of the aorta.
 
 \end{itemize}
 
-\subsection{Solution Characteristics Specification}
-
-\plt{This section specifies the information in the solution domain of the system
-  to be developed. This section is intended to express what is required in
-  such a way that analysts and stakeholders get a clear picture, and the
-  latter will accept it. The purpose of this section is to reduce the problem
-  into one expressed in mathematical terms. Mathematical expertise is used to
-  extract the essentials from the underlying physical description of the
-  problem, and to collect and substantiate all physical data pertinent to the
-  problem.}
-
-\plt{This section presents the solution characteristics by successively refining
-  models.  It starts with the abstract/general Theoretical Models (TMs) and
-  refines them to the concrete/specific Instance Models (IMs).  If necessary
-  there are intermediate refinements to General Definitions (GDs).  All of these
-  refinements can potentially use Assumptions (A) and Data Definitions (DD).
-  TMs are refined to create new models, that are called GMs or IMs. DDs are not
-  refined; they are just used. GDs and IMs are derived, or refined, from other
-  models. DDs are not derived; they are just given. TMs are also just given, but
-  they are refined, not used.  If a potential DD includes a derivation, then
-  that means it is refining other models, which would make it a GD or an IM.}
-
-\plt{The above makes a distinction between ``refined'' and ``used.'' A model is
-  refined to another model if it is changed by the refinement. When we change a
-  general 3D equation to a 2D equation, we are making a refinement, by applying
-  the assumption that the third dimension does not matter. If we use a
-  definition, like the definition of density, we aren't refining, or changing
-  that definition, we are just using it.}
-
-\plt{The same information can be a TM in one problem and a DD in another.  It is
-  about how the information is used.  In one problem the definition of
-  acceleration can be a TM, in another it would be a DD.}
-
-\plt{There is repetition between the information given in the different chunks
-  (TM, GDs etc) with other information in the document.  For instance, the
-  meaning of the symbols, the units etc are repeated.  This is so that the
-  chunks can stand on their own when being read by a reviewer/user.  It also
-  facilitates reuse of the models in a different context.}
-
-\noindent \plt{The relationships between the parts of the document are show in
-  the following figure.  In this diagram ``may ref'' has the same role as
-  ``uses'' above.  The figure adds ``Likely Changes,'' which are able to
-  reference (use) Assumptions.}
-
-\begin{figure}[H]
-  \includegraphics[scale=0.9]{RelationsBetweenTM_GD_IM_DD_A.pdf}
-\end{figure}
-
-The instance models that govern \progname{} are presented in
-Subsection~\ref{sec_instance}.  The information to understand the meaning of the
-instance models and their derivation is also presented, so that the instance
-models can be verified.
 
 \subsubsection{Assumptions} \label{sec_assumpt}
 
@@ -664,7 +612,7 @@ likely change [LC], in which the respective assumption is used.
 \begin{itemize}
 
 \item[A\refstepcounter{assumpnum}\theassumpnum \label{A_meaningfulLabel}:]
-  The 3D image provided by the user must contains a visually distingushable aorta image [DD\ref{DD2}].
+  The 3D image provided by the user must contains a visually distingushable aorta volume [\ddref{segmentation}].
 
 \end{itemize}
 
@@ -807,17 +755,17 @@ models. The dimension of each quantity is also given.
 \begin{tabular}{| p{\colAwidth} | p{\colBwidth}|}
 \hline
 \rowcolor[gray]{0.9}
-Number& DD\refstepcounter{datadefnum}\thedatadefnum \label{DD1}\\
+Number& DD\refstepcounter{datadefnum}\thedatadefnum \label{slc}\\
 \hline
 Label& \bf Image/Slice \\
 \hline
-Symbol & \textit{image} or \textit{slice}\\
+Symbol & $ \text{slc} : \mathbb{R}^{m \times n}$\\
 \hline
 % Units& $Mt^{-3}$\\
 % \hline
-  SI Units & \\
+  SI Units & - \\
   \hline
-  Equation& \\
+  Equation& - \\
   \hline
   Description & 
                 A visual representation of something that is represented using only two spatial dimensions with a sequence of arrays where real values represents the color or intensity.
@@ -825,7 +773,7 @@ Symbol & \textit{image} or \textit{slice}\\
   \hline
   Sources & \\
   \hline
-  Ref.\ By & \iref{ewat}, \iref{DD2}\\
+  Ref.\ By & \ddref{volume}\\
   \hline
 \end{tabular}
 \end{minipage}\\ \\
@@ -837,17 +785,17 @@ Symbol & \textit{image} or \textit{slice}\\
 \begin{tabular}{| p{\colAwidth} | p{\colBwidth}|}
 \hline
 \rowcolor[gray]{0.9}
-Number& DD\refstepcounter{datadefnum}\thedatadefnum \label{DD2}\\
+Number& DD\refstepcounter{datadefnum}\thedatadefnum \label{volume}\\
 \hline
-Label& \bf 3D Image\\
+Label& \bf Volume\\
 \hline
-Symbol & $3D\_image$\\
+Symbol & $ \text{volume} : \mathbb{R}^{m \times n \times p}$\\
 \hline
 % Units& $Mt^{-3}$\\
 % \hline
-  SI Units & \\
+  SI Units & - \\
   \hline
-  Equation& \\
+  Equation& - \\
   \hline
   Description & 
                 A three dimensional image is a sequence of some images/slices. \label{DD1}
@@ -855,7 +803,7 @@ Symbol & $3D\_image$\\
   \hline
   Sources & \\
   \hline
-  Ref.\ By & \iref{ewat}\\
+  Ref.\ By & \iref{roi}\\
   \hline
 \end{tabular}
 \end{minipage}\\
@@ -910,16 +858,16 @@ The goals \gsref{Gsegment} are solved by finding \iref{roi} and perform \iref{se
   \hline
   Label& \bf Region of interest \\
   \hline
-  Input& 3D images\\
+  Input & $ \text{volume} : \mathbb{R}^{m \times n \times p}$ \\
   \hline
-  Output& 3D images\\
+  Output& $ \text{volume} : \mathbb{R}^{m \times n \times p}$\\
   \hline
   Description & The regions of interest is a subset of the 3D image. This subset has the majority of the values which the users wants to read, process or extract.
   \\
   \hline
   Sources&  \\
   \hline
-  Ref.\ By &\\
+  Ref.\ By & \iref{segmentation} \\
   \hline
 \end{tabular}
 \end{minipage}\\
@@ -938,16 +886,16 @@ The goals \gsref{Gsegment} are solved by finding \iref{roi} and perform \iref{se
   \hline
   Label& \bf Segmentation \\
   \hline
-  Input& 3D images\\
+  Input & $ \text{volume} : \mathbb{R}^{m \times n \times p}$ \\
   \hline
-  Output& 3D images\\
+  Output& $ \text{volume} : \mathbb{R}^{m \times n \times p}$\\
   \hline
   Description & The process of extract a region of interest from the original 3D image. The extracted region of interest can be represented with high intensity pixel value. The rest of the image should have a lower intensity pixe valuel.
   \\
   \hline
   Sources& \\
   \hline
-  Ref.\ By &\\
+  Ref.\ By & \rref{R_Outputs}, \lcref{LC_seg_algorithm} \\
   \hline
 \end{tabular}
 \end{minipage}\\
@@ -1034,9 +982,6 @@ A correct solution must exhibit \plt{fill in the details}.  \plt{These
 
 \section{Requirements}
 
-\plt{The requirements refine the goal statement.  They will make heavy use of
-  references to the instance models.}
-
 This section provides the functional requirements, the business tasks that the
 software is expected to complete, and the nonfunctional requirements, the
 qualities that the software is expected to exhibit.
@@ -1051,8 +996,8 @@ qualities that the software is expected to exhibit.
   \noindent \begin{longtable*}{l l p{12cm}} \toprule
          \textbf{symbol}  & \textbf{description}\\
          \midrule 
-$X$ & CT Scans data in DICOM format
-(\ddref{DD2}))\\ %comparing value used for excluding correlation coefficients
+$X$ & CT Scans volume
+(\ddref{volume}))\\ %comparing value used for excluding correlation coefficients
          \bottomrule
 \end{longtable*}
 
@@ -1083,11 +1028,7 @@ $X$ & CT Scans data in DICOM format
     Validation Plan.''  A link to the VnV plan would be a nice extra.}
 
 \item[NFR\refstepcounter{nfrnum}\thenfrnum \label{NFR_Usability}:] \textbf{Usability}
-  \plt{Characterize the usability by giving the context/use for the software.
-    You should likely reference the user characteristics section.  The level of
-    usability achieved by the software shall be described following the
-    procedure given in Section~X of the Verification and Validation Plan.  A
-    link to the VnV plan would be a nice extra.}
+\progname{} should provide a graphical user interface to import any DICOM file folder, and to input the required parameters.
 
 \item[NFR\refstepcounter{nfrnum}\thenfrnum \label{NFR_Maintainability}:]
   \textbf{Maintainability} \plt{The effort required to make any of the likely
@@ -1112,7 +1053,7 @@ $X$ & CT Scans data in DICOM format
 
 \noindent \begin{itemize}
 
-\item[LC\refstepcounter{lcnum}\thelcnum\label{LC_meaningfulLabel}:] \iref{segmentation} There are various segmentation algorithms, each has a different procedure and inputs.
+\item[LC\refstepcounter{lcnum}\thelcnum\label{LC_seg_algorithm}:] \iref{segmentation} There are various segmentation algorithms, each has a different procedure and inputs.
 	
 \end{itemize}
 
