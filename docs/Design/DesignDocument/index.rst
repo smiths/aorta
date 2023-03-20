@@ -8,22 +8,20 @@ Welcome to AortaGeomRecon's documentation!
 
 This is the design document for the AortaGeomRecon module, a :term:`3D Slicer` extension to perform :term:`Aorta` segmentation and Aorta geometry reconstruction. 
 
-You can find the source code, the installation guide, and the user manual in this GitHub `repository <https://github.com/smiths/aorta>`_.
+You can find the source code, the installation guide, and the user manual in the project's `repository <https://github.com/smiths/aorta>`_.
 
 ------------
 
 The steps before applying the main algorithm
 ********************************************
 
-The algorithm works better with the chest volume cropped to a rectangular prism that contains the aorta and parts of the other organs such as the backbone, some blood tissues, and the heart. This can be simply done with :term:`3D Slicer` and its submodule `Volume rendering <https://slicer.readthedocs.io/en/latest/user_guide/modules/volumerendering.html>`_. A more detailed guide can be found on this GitHub repository `section <https://github.com/smiths/aorta#to-use-volume-rendering-to-crop-a-voi>`_. 
+The algorithm works best with the chest volume cropped to a rectangular prism that contains the aorta and parts of the other organs such as the backbone, blood vessels, and the heart. This can be done with :term:`3D Slicer` and its submodule `Volume rendering <https://slicer.readthedocs.io/en/latest/user_guide/modules/volumerendering.html>`_. A detailed guide can be found on the `volume rendering and cropping section <https://github.com/smiths/aorta#to-use-volume-rendering-to-crop-a-voi>`_ of the user instructions. 
 
-After cropping the volume which only contains the region of interest, the algorithm needed a set of variables inputs from the user. 
+After cropping the volume, which only contains the region of interest, the algorithm needs a set of variables inputs from the user. These variables are:
 
-The variables inputs are:
-
-1. :term:`Descending Aorta` or :term:`Ascending Aorta` centre coordinate.
-2. :term:`Qualified coefficient` larger values lose the condition to accept a :term:`segmented` :term:`slice`, and vice-versa. 
-3. An integer indicates the number of slices that the algorithm can skip.
+1. :term:`Descending Aorta` and :term:`Ascending Aorta` centre coordinate.
+2. :term:`Qualified coefficient`
+3. An integer to indicate the number of slices that the algorithm is allowed to skip.
 
 
 The main ideas of the algorithm
@@ -47,7 +45,7 @@ For each slice starting from the user's selected slice going in the inferior or 
 
     .. note::
 
-       To determine whether a segmented slice is acceptable, different conditions are verified for :term:`Descending Aorta` and :term:`Ascending Aorta`. These conditions check are all involved with the :term:`Qualified coefficient`, which is decided by the user. In simple terms, the larger the :term:`Qualified coefficient`, the looser condition on accepting a segmented slice.
+       To determine whether a segmented slice is acceptable, different conditions are verified for :term:`Descending Aorta` and :term:`Ascending Aorta`. These conditions check are all involved with the :term:`Qualified coefficient`, which is decided by the user. In simple terms, the larger the :term:`Qualified coefficient`, the looser the condition on accepting a segmented slice.
 
 4. If the algorithm accepted this segmented slice, a new centre coordinate is calculated and used as the seed coordinate for segmenting the next slice.
 

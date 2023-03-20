@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>test package &mdash; AortaGeomRecon  documentation</title>
@@ -13,9 +13,8 @@
   <![endif]-->
   
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -28,11 +27,15 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="index.html" class="icon icon-home"> AortaGeomRecon
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            AortaGeomRecon
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -43,8 +46,29 @@
 <li class="toctree-l1 current"><a class="reference internal" href="modules.html">AortaGeomReconModule</a><ul class="current">
 <li class="toctree-l2 current"><a class="current reference internal" href="#">test package</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#submodules">Submodules</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#module-conftest">conftest module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#module-test_image_preprocessing">test_image_preprocessing module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-conftest">conftest module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#conftest.pytest_addoption"><code class="docutils literal notranslate"><span class="pre">pytest_addoption()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#conftest.pytest_generate_tests"><code class="docutils literal notranslate"><span class="pre">pytest_generate_tests()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-test_image_preprocessing">test_image_preprocessing module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#test_image_preprocessing.DSC"><code class="docutils literal notranslate"><span class="pre">DSC()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#test_image_preprocessing.get_cropped_volume_image"><code class="docutils literal notranslate"><span class="pre">get_cropped_volume_image()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#test_image_preprocessing.mean_absolute_error"><code class="docutils literal notranslate"><span class="pre">mean_absolute_error()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#test_image_preprocessing.mean_square_error"><code class="docutils literal notranslate"><span class="pre">mean_square_error()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#test_image_preprocessing.print_result"><code class="docutils literal notranslate"><span class="pre">print_result()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#test_image_preprocessing.read_asc_volume_image"><code class="docutils literal notranslate"><span class="pre">read_asc_volume_image()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#test_image_preprocessing.read_desc_volume_image"><code class="docutils literal notranslate"><span class="pre">read_desc_volume_image()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#test_image_preprocessing.read_final_volume_image"><code class="docutils literal notranslate"><span class="pre">read_final_volume_image()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#test_image_preprocessing.root_mse"><code class="docutils literal notranslate"><span class="pre">root_mse()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#test_image_preprocessing.test_asc_and_final"><code class="docutils literal notranslate"><span class="pre">test_asc_and_final()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#test_image_preprocessing.test_compare_asc"><code class="docutils literal notranslate"><span class="pre">test_compare_asc()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#test_image_preprocessing.test_compare_des"><code class="docutils literal notranslate"><span class="pre">test_compare_des()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#test_image_preprocessing.test_compare_final_volume"><code class="docutils literal notranslate"><span class="pre">test_compare_final_volume()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#test_image_preprocessing.test_prepared_segmenting_image"><code class="docutils literal notranslate"><span class="pre">test_prepared_segmenting_image()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#test_image_preprocessing.transform_image"><code class="docutils literal notranslate"><span class="pre">transform_image()</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="#module-test">Module contents</a></li>
 </ul>
 </li>
@@ -69,7 +93,7 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="index.html" class="icon icon-home"></a></li>
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="modules.html">AortaGeomReconModule</a></li>
       <li class="breadcrumb-item active">test package</li>
       <li class="wy-breadcrumbs-aside">
@@ -82,12 +106,12 @@
            <div itemprop="articleBody">
              
   <section id="test-package">
-<h1>test package<a class="headerlink" href="#test-package" title="Permalink to this headline"></a></h1>
+<h1>test package<a class="headerlink" href="#test-package" title="Permalink to this heading"></a></h1>
 <section id="submodules">
-<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline"></a></h2>
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading"></a></h2>
 </section>
 <section id="module-conftest">
-<span id="conftest-module"></span><h2>conftest module<a class="headerlink" href="#module-conftest" title="Permalink to this headline"></a></h2>
+<span id="conftest-module"></span><h2>conftest module<a class="headerlink" href="#module-conftest" title="Permalink to this heading"></a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="conftest.pytest_addoption">
 <span class="sig-prename descclassname"><span class="pre">conftest.</span></span><span class="sig-name descname"><span class="pre">pytest_addoption</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parser</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#conftest.pytest_addoption" title="Permalink to this definition"></a></dt>
@@ -102,22 +126,22 @@
 
 </section>
 <section id="module-test_image_preprocessing">
-<span id="test-image-preprocessing-module"></span><h2>test_image_preprocessing module<a class="headerlink" href="#module-test_image_preprocessing" title="Permalink to this headline"></a></h2>
+<span id="test-image-preprocessing-module"></span><h2>test_image_preprocessing module<a class="headerlink" href="#module-test_image_preprocessing" title="Permalink to this heading"></a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="test_image_preprocessing.DSC">
 <span class="sig-prename descclassname"><span class="pre">test_image_preprocessing.</span></span><span class="sig-name descname"><span class="pre">DSC</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ref_image</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_image</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#test_image_preprocessing.DSC" title="Permalink to this definition"></a></dt>
 <dd><p>Calculate the Dice similarity coefficient</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>ref_image</strong> (<em>numpy.ndarrays</em>) – nda to compare</p></li>
 <li><p><strong>test_image</strong> (<em>numpy.ndarrays</em>) – nda to compare</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>The Dice similarity coefficient of the reference and test image</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>float</p>
 </dd>
 </dl>
@@ -128,10 +152,10 @@
 <span class="sig-prename descclassname"><span class="pre">test_image_preprocessing.</span></span><span class="sig-name descname"><span class="pre">get_cropped_volume_image</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">testCase</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#test_image_preprocessing.get_cropped_volume_image" title="Permalink to this definition"></a></dt>
 <dd><p>Read the cropped volume</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>The cropped volume sitk image</p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>SITK</p>
 </dd>
 </dl>
@@ -157,10 +181,10 @@
 <span class="sig-prename descclassname"><span class="pre">test_image_preprocessing.</span></span><span class="sig-name descname"><span class="pre">read_asc_volume_image</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">testCase</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#test_image_preprocessing.read_asc_volume_image" title="Permalink to this definition"></a></dt>
 <dd><p>Read the segmented ascending and descending aorta volume</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>The segmented ascending and descending aorta sitk image</p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>SITK</p>
 </dd>
 </dl>
@@ -171,10 +195,10 @@
 <span class="sig-prename descclassname"><span class="pre">test_image_preprocessing.</span></span><span class="sig-name descname"><span class="pre">read_desc_volume_image</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">testCase</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#test_image_preprocessing.read_desc_volume_image" title="Permalink to this definition"></a></dt>
 <dd><p>Read the segmented descending aorta volume</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>The segmented descending aorta sitk image</p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>SITK</p>
 </dd>
 </dl>
@@ -185,10 +209,10 @@
 <span class="sig-prename descclassname"><span class="pre">test_image_preprocessing.</span></span><span class="sig-name descname"><span class="pre">read_final_volume_image</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">testCase</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#test_image_preprocessing.read_final_volume_image" title="Permalink to this definition"></a></dt>
 <dd><p>Read the final segmented aorta volume</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>The final segmented aorta sitk image</p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>SITK</p>
 </dd>
 </dl>
@@ -211,7 +235,7 @@
 perform ascending aorta segmentation,
 and compare the result with the existing ascending aorta volume</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>limit</strong> (<em>float</em>) – the maximum Dice similarity coefficient difference allowed to pass the test.</p></li>
 <li><p><strong>qualifiedCoef</strong> (<em>float</em>) – the qualified coefficient value to process descending aorta segmentation.</p></li>
@@ -219,10 +243,10 @@ and compare the result with the existing ascending aorta volume</p>
 <li><p><strong>testCase</strong> (<em>int</em>) – the test case to run the test (0-5).</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>The Dice similarity coefficient of the reference and test image</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>float</p>
 </dd>
 </dl>
@@ -235,7 +259,7 @@ and compare the result with the existing ascending aorta volume</p>
 perform descending aorta segmentation,
 and compare the result with the existing volume</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>limit</strong> (<em>float</em>) – the maximum Dice similarity coefficient difference allowed to pass the test.</p></li>
 <li><p><strong>qualifiedCoef</strong> (<em>float</em>) – the qualified coefficient value to process descending aorta segmentation.</p></li>
@@ -243,10 +267,10 @@ and compare the result with the existing volume</p>
 <li><p><strong>testCase</strong> (<em>int</em>) – the test case to run the test (0-5).</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>The Dice similarity coefficient of the reference and test image</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>float</p>
 </dd>
 </dl>
@@ -269,7 +293,7 @@ and compare the result with the existing volume</p>
 
 </section>
 <section id="module-test">
-<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-test" title="Permalink to this headline"></a></h2>
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-test" title="Permalink to this heading"></a></h2>
 </section>
 </section>
 
