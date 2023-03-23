@@ -27,52 +27,150 @@ After cropping the volume, which only contains the region of interest, the algor
 The main ideas of the algorithm
 *******************************
 
-At the beginning of the algorithm, the user's input on the aorta centre is used to generate the seed slice, 2-dimensional circle image. This seed slice will be used as a reference throughout the workflow of the algorithm. Therefore, changing the input of the centre coordinate could generate a completely different segmentation result.
+At the beginning of the algorithm, the user's input on the aorta centre is used to generate the seed slice, 2-dimensional circle image. This seed slice will be used as a reference throughout the workflow of the algorithm. Therefore, changing the input of the centre coordinate could generate a slightly different segmentation result.
 
 For each slice starting from the user's selected slice going in the inferior or superior direction
 
-1. The algorithm generates the seed image by using `SITK\:\:LabelStatisticsImageFilter <https://simpleitk.org/doxygen/latest/html/classitk_1_1simple_1_1LabelStatisticsImageFilter.html>`_. 
+1. The algorithm generates a label image by making a grid spacing 3 pixels aparts, overwrites the values of these pixels to white pixel (value of 1).
+
+2. By using `SITK\:\:LabelStatisticsImageFilter <https://simpleitk.org/doxygen/latest/html/classitk_1_1simple_1_1LabelStatisticsImageFilter.html>`_, we get the mean and the sigma of the intensity image with the white pixel.  
 
     .. note::
 
-       A :term:`Label Statistic coefficient` can be used to control the size of the circle seed image. However, this is a constant that is not linked to the UI for the user to select in the current version.
+       A :term:`Label Statistic coefficient` is used to control the threshold range. With a Larger label statistic coefficient, the algorithm will use a larger range of threshold to perform segmentation.
 
 
-2. The algorithm then creates another image, the Euclidean distance transform of a binary image as the image intensity map, and uses it with `SITK\:\:ThresholdSegmentationLevelSetImageFilter <https://simpleitk.org/doxygen/latest/html/classitk_1_1simple_1_1ThresholdSegmentationLevelSetImageFilter.html>`_ to create a segmented slice.
+3. The algorithm then creates another image, the Euclidean distance transform of a binary image as the image intensity map, and uses it with `SITK\:\:ThresholdSegmentationLevelSetImageFilter <https://simpleitk.org/doxygen/latest/html/classitk_1_1simple_1_1ThresholdSegmentationLevelSetImageFilter.html>`_ to create a segmented slice.
 
 
-3. The algorithm determines whether to accept the segmented slice or not, based on the number of white pixels on the segmented slice, and the qualified coefficient to control the limit.
+4. The algorithm determines whether to accept the segmented slice or not, based on the number of white pixels on the segmented slice, and the qualified coefficient to control the limit.
 
     .. note::
 
        To determine whether a segmented slice is acceptable, different conditions are verified for :term:`Descending Aorta` and :term:`Ascending Aorta`. These conditions check are all involved with the :term:`Qualified coefficient`, which is decided by the user. In simple terms, the larger the :term:`Qualified coefficient`, the looser the condition on accepting a segmented slice.
 
-4. If the algorithm accepted this segmented slice, a new centre coordinate is calculated and used as the seed coordinate for segmenting the next slice.
+5. If the algorithm accepted this segmented slice, a new centre coordinate is calculated and used as the seed coordinate for segmenting the next slice.
 
-5. When a segmented slice is not acceptable, the algorithm will skip this slice if the number of the skipped slice is less than the integer given by the user. The algorithm will try to replace these skipped slices by reading the overlapped area of the previous and the next slice.
+6. When a segmented slice is not acceptable, the algorithm will skip this slice if the number of the skipped slice is less than the integer given by the user. The algorithm will try to replace these skipped slices by reading the overlapped area of the previous and the next slice.
 
 The pseudocode of the algorithm
 *******************************
 
 .. code-block:: python
 
-   segmented_slice = get_image_segment()
-   # Any value (grey-scaled) above 0 will be set to a white pixel
-   new_slice = segmented_slice > PixelValue.black_pixel.value
-   total_coord, centre = count_pixels(new_slice)
+   """inputs to the program
+         seed_aorta_centre: tuple (int, int)
+         seed_slice_index: int
+         qualified_coefficient: float
+         cropped_image: ndarray shape of (x, y, z)
 
-   # start is always the index of the original slice
-   # end could be the index of the superior or the inferior of the aorta
+      outputs:
+         processing_image: ndarray shape of (x, y, z) with segmented volume
+   """
+   processing_image = cropped_image.copy()
+   white_pixel = 1
+   black_pixel = 0
+   segment_filter = sitk.ThresholdSegmentationLevelSetImageFilter()
+   skipped_slice = []
+
+   def calculate_seed(curr_slice, prev_centre):
+      # Create a seed slice based on user's chosen aorta-centre coordinate
+      # Overwrites the values to white_pixel over a square around the centre
+      seed = curr_slice.copy()
+      spacing = 3
+      for i = -1 to 2 do:
+         circle_x = prev_centre[0] + spacing*j
+         seed[(circle_x, prev_centre[1])] = white_pixel
+      return seed
+
+   def segment_single_slice(current_index, prev_centre):
+      # retrieve the 2d slice to be processed
+      curr_slice = cropped_image[:,:, current_index]
+      # create a label map
+      seed = calculate_seed(curr_slice, prev_centre)
+      # Calculate statistics associated with white_pixel label
+      stats = sitk.LabelStatisticsImageFilter()
+      stats.Execute(curr_slice, seed)
+      # Threshold for SITK::ThresholdSegmentationLevelSetImageFilter
+      # stats.GetMean(white_pixel) returns the mean value of the intensity regions
+      # i.e the pixels around the white_pixel are within these range of thresholds
+      # The pixel far from the white_pixel have lower intensity value
+      lower_threshold = (stats.GetMean(white_pixel) - label_stats_coef*stats.GetSigma(white_pixel))
+      upper_threshold = (stats.GetMean(white_pixel) + label_stats_coef*stats.GetSigma(white_pixel))
+      # calculate the Euclidean distance transform and use it to perform segmentation
+      init_ls = sitk.SignedMaurerDistanceMap(seed)
+      segment_filter.SetLowerThreshold(lower_threshold)
+      segment_filter.SetUpperThreshold(upper_threshold)
+      # Segmentated slice, a ndarrays of shape (x, y)
+      return segment_filter.Execute(init_ls, curr_slice)
+
+   def count_pixels(segmented_slice):
+      # This function will count the number of white pixels in this segmented slice
+      # and calculate a new centre based on the 
+      num_of_white_pixel = 0
+      x_coord = 0
+      y_coord = 0
+      for x from 0 to segmented_slice[0].length:
+         for y from 0 to segmented_slice.length:
+            if segmented_slice[x][y] == 1:
+               x_coord += x
+               y_coord += y
+               num_of_white_pixel += 1
+      new_centre = (x_coord/num_of_white_pixel, y_coord/num_of_white_pixel)
+      return num_of_white_pixel, new_centre
+
+   def is_new_centre_qualified(new_size):
+      # compare new slice's number of white pixel to
+      # the original slice and the previous size
+
+      condition_1 = new_size < original_size*qualified_coefficient
+      condition_2 = new_size > original_size*qualified_coefficient
+      condition_3 = new_size < prev_size*qualified_coefficient
+
+      return condition_1 and condition_2 and condition_3
+
+   # The stats of the user's chosen slice will be used as reference
+   # to determine whether a new segmented slice is acceptable
+   segmented_slice = segment_single_slice(seed_slice_index, seed_aorta_centre)
+   
+   # Any pixel with positive intensity value will be set to white_pixel
+   new_slice = Array[segmented_slice[0].length][segmented_slice.length]
+   for x from 0 to segmented_slice[0].length:
+      for y from 0 to segmented_slice.length:
+         if segmented_slice[x][y] > black_pixel:
+            new_slice[x][y] = white_pixel
+         else:
+            new_slice[x][y] = black_pixel
+
+   # orginal_size will be used to compare new slice's size
+   # to determine if the new slice is acceptable
+   original_size, original_centre = count_pixels(new_slice)
+
+   # Repeat the above process for each slice
    for slice_i in range(start, end, step):
        cur_img_slice = cropped_image[:, :, slice_i]
-       segmented_slice = get_image_segment()
-       new_slice = segmented_slice > PixelValue.black_pixel.value
-       total_coord, centre, seeds = count_pixel(new_slice)
-       if is_new_centre_qualified(total_coord):
-            processing_image[:, :, slice_i] = new_slice
-            prev_centre = centre
-            prev_seeds = seeds
 
+       # prev_centre is the new derived centre from last segmented slice
+       segmented_slice = segment_single_slice(slice_i, prev_centre)
+
+       # element-wise operation, exactly what we doing with the double for-loop
+       new_slice = segmented_slice > PixelValue.black_pixel.value
+
+       total_coord, centre = count_pixel(new_slice)
+       if is_new_centre_qualified(total_coord):
+          # processing_image is the segmented volume returned
+          processing_image[:, :, slice_i] = new_slice
+          prev_centre = centre
+          # for ascending aorta, we will generate more possible coordinates
+          # and use it in segmentation algorithm
+          # prev_seeds = seeds
+       else:
+          skipped_slice.append(slice_i)
+
+   for slice_i in skipped_slice:
+       # replace processing_image[slice_i] with the intersection of its previous and next slice
+
+   return processing_image
 
 .. note::
 

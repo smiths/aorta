@@ -89,14 +89,15 @@
 </section>
 <section id="the-main-ideas-of-the-algorithm">
 <h2>The main ideas of the algorithm<a class="headerlink" href="#the-main-ideas-of-the-algorithm" title="Permalink to this heading"></a></h2>
-<p>At the beginning of the algorithm, the user’s input on the aorta centre is used to generate the seed slice, 2-dimensional circle image. This seed slice will be used as a reference throughout the workflow of the algorithm. Therefore, changing the input of the centre coordinate could generate a completely different segmentation result.</p>
+<p>At the beginning of the algorithm, the user’s input on the aorta centre is used to generate the seed slice, 2-dimensional circle image. This seed slice will be used as a reference throughout the workflow of the algorithm. Therefore, changing the input of the centre coordinate could generate a slightly different segmentation result.</p>
 <p>For each slice starting from the user’s selected slice going in the inferior or superior direction</p>
 <ol class="arabic">
-<li><p>The algorithm generates the seed image by using <a class="reference external" href="https://simpleitk.org/doxygen/latest/html/classitk_1_1simple_1_1LabelStatisticsImageFilter.html">SITK::LabelStatisticsImageFilter</a>.</p>
+<li><p>The algorithm generates a label image by making a grid spacing 3 pixels aparts, overwrites the values of these pixels to white pixel (value of 1).</p></li>
+<li><p>By using <a class="reference external" href="https://simpleitk.org/doxygen/latest/html/classitk_1_1simple_1_1LabelStatisticsImageFilter.html">SITK::LabelStatisticsImageFilter</a>, we get the mean and the sigma of the intensity image with the white pixel.</p>
 <blockquote>
 <div><div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>A <a class="reference internal" href="glossary.html#term-Label-Statistic-coefficient"><span class="xref std std-term">Label Statistic coefficient</span></a> can be used to control the size of the circle seed image. However, this is a constant that is not linked to the UI for the user to select in the current version.</p>
+<p>A <a class="reference internal" href="glossary.html#term-Label-Statistic-coefficient"><span class="xref std std-term">Label Statistic coefficient</span></a> is used to control the threshold range. With a Larger label statistic coefficient, the algorithm will use a larger range of threshold to perform segmentation.</p>
 </div>
 </div></blockquote>
 </li>
@@ -115,22 +116,119 @@
 </section>
 <section id="the-pseudocode-of-the-algorithm">
 <h2>The pseudocode of the algorithm<a class="headerlink" href="#the-pseudocode-of-the-algorithm" title="Permalink to this heading"></a></h2>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">segmented_slice</span> <span class="o">=</span> <span class="n">get_image_segment</span><span class="p">()</span>
-<span class="c1"># Any value (grey-scaled) above 0 will be set to a white pixel</span>
-<span class="n">new_slice</span> <span class="o">=</span> <span class="n">segmented_slice</span> <span class="o">&gt;</span> <span class="n">PixelValue</span><span class="o">.</span><span class="n">black_pixel</span><span class="o">.</span><span class="n">value</span>
-<span class="n">total_coord</span><span class="p">,</span> <span class="n">centre</span> <span class="o">=</span> <span class="n">count_pixels</span><span class="p">(</span><span class="n">new_slice</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot;inputs to the program</span>
+<span class="sd">      seed_aorta_centre: tuple (int, int)</span>
+<span class="sd">      seed_slice_index: int</span>
+<span class="sd">      qualified_coefficient: float</span>
+<span class="sd">      cropped_image: ndarray shape of (x, y, z)</span>
 
-<span class="c1"># start is always the index of the original slice</span>
-<span class="c1"># end could be the index of the superior or the inferior of the aorta</span>
+<span class="sd">   outputs:</span>
+<span class="sd">      processing_image: ndarray shape of (x, y, z) with segmented volume</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="n">processing_image</span> <span class="o">=</span> <span class="n">cropped_image</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="n">white_pixel</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">black_pixel</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">segment_filter</span> <span class="o">=</span> <span class="n">sitk</span><span class="o">.</span><span class="n">ThresholdSegmentationLevelSetImageFilter</span><span class="p">()</span>
+<span class="n">skipped_slice</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="k">def</span> <span class="nf">calculate_seed</span><span class="p">(</span><span class="n">curr_slice</span><span class="p">,</span> <span class="n">prev_centre</span><span class="p">):</span>
+   <span class="c1"># Create a seed slice based on user&#39;s chosen aorta-centre coordinate</span>
+   <span class="c1"># Overwrites the values to white_pixel over a square around the centre</span>
+   <span class="n">seed</span> <span class="o">=</span> <span class="n">curr_slice</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+   <span class="n">spacing</span> <span class="o">=</span> <span class="mi">3</span>
+   <span class="k">for</span> <span class="n">i</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span> <span class="n">to</span> <span class="mi">2</span> <span class="n">do</span><span class="p">:</span>
+      <span class="n">circle_x</span> <span class="o">=</span> <span class="n">prev_centre</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">spacing</span><span class="o">*</span><span class="n">j</span>
+      <span class="n">seed</span><span class="p">[(</span><span class="n">circle_x</span><span class="p">,</span> <span class="n">prev_centre</span><span class="p">[</span><span class="mi">1</span><span class="p">])]</span> <span class="o">=</span> <span class="n">white_pixel</span>
+   <span class="k">return</span> <span class="n">seed</span>
+
+<span class="k">def</span> <span class="nf">segment_single_slice</span><span class="p">(</span><span class="n">current_index</span><span class="p">,</span> <span class="n">prev_centre</span><span class="p">):</span>
+   <span class="c1"># retrieve the 2d slice to be processed</span>
+   <span class="n">curr_slice</span> <span class="o">=</span> <span class="n">cropped_image</span><span class="p">[:,:,</span> <span class="n">current_index</span><span class="p">]</span>
+   <span class="c1"># create a label map</span>
+   <span class="n">seed</span> <span class="o">=</span> <span class="n">calculate_seed</span><span class="p">(</span><span class="n">curr_slice</span><span class="p">,</span> <span class="n">prev_centre</span><span class="p">)</span>
+   <span class="c1"># Calculate statistics associated with white_pixel label</span>
+   <span class="n">stats</span> <span class="o">=</span> <span class="n">sitk</span><span class="o">.</span><span class="n">LabelStatisticsImageFilter</span><span class="p">()</span>
+   <span class="n">stats</span><span class="o">.</span><span class="n">Execute</span><span class="p">(</span><span class="n">curr_slice</span><span class="p">,</span> <span class="n">seed</span><span class="p">)</span>
+   <span class="c1"># Threshold for SITK::ThresholdSegmentationLevelSetImageFilter</span>
+   <span class="c1"># stats.GetMean(white_pixel) returns the mean value of the intensity regions</span>
+   <span class="c1"># i.e the pixels around the white_pixel are within these range of thresholds</span>
+   <span class="c1"># The pixel far from the white_pixel have lower intensity value</span>
+   <span class="n">lower_threshold</span> <span class="o">=</span> <span class="p">(</span><span class="n">stats</span><span class="o">.</span><span class="n">GetMean</span><span class="p">(</span><span class="n">white_pixel</span><span class="p">)</span> <span class="o">-</span> <span class="n">label_stats_coef</span><span class="o">*</span><span class="n">stats</span><span class="o">.</span><span class="n">GetSigma</span><span class="p">(</span><span class="n">white_pixel</span><span class="p">))</span>
+   <span class="n">upper_threshold</span> <span class="o">=</span> <span class="p">(</span><span class="n">stats</span><span class="o">.</span><span class="n">GetMean</span><span class="p">(</span><span class="n">white_pixel</span><span class="p">)</span> <span class="o">+</span> <span class="n">label_stats_coef</span><span class="o">*</span><span class="n">stats</span><span class="o">.</span><span class="n">GetSigma</span><span class="p">(</span><span class="n">white_pixel</span><span class="p">))</span>
+   <span class="c1"># calculate the Euclidean distance transform and use it to perform segmentation</span>
+   <span class="n">init_ls</span> <span class="o">=</span> <span class="n">sitk</span><span class="o">.</span><span class="n">SignedMaurerDistanceMap</span><span class="p">(</span><span class="n">seed</span><span class="p">)</span>
+   <span class="n">segment_filter</span><span class="o">.</span><span class="n">SetLowerThreshold</span><span class="p">(</span><span class="n">lower_threshold</span><span class="p">)</span>
+   <span class="n">segment_filter</span><span class="o">.</span><span class="n">SetUpperThreshold</span><span class="p">(</span><span class="n">upper_threshold</span><span class="p">)</span>
+   <span class="c1"># Segmentated slice, a ndarrays of shape (x, y)</span>
+   <span class="k">return</span> <span class="n">segment_filter</span><span class="o">.</span><span class="n">Execute</span><span class="p">(</span><span class="n">init_ls</span><span class="p">,</span> <span class="n">curr_slice</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">count_pixels</span><span class="p">(</span><span class="n">segmented_slice</span><span class="p">):</span>
+   <span class="c1"># This function will count the number of white pixels in this segmented slice</span>
+   <span class="c1"># and calculate a new centre based on the</span>
+   <span class="n">num_of_white_pixel</span> <span class="o">=</span> <span class="mi">0</span>
+   <span class="n">x_coord</span> <span class="o">=</span> <span class="mi">0</span>
+   <span class="n">y_coord</span> <span class="o">=</span> <span class="mi">0</span>
+   <span class="k">for</span> <span class="n">x</span> <span class="kn">from</span> <span class="mi">0</span> <span class="n">to</span> <span class="n">segmented_slice</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">length</span><span class="p">:</span>
+      <span class="k">for</span> <span class="n">y</span> <span class="kn">from</span> <span class="mi">0</span> <span class="n">to</span> <span class="n">segmented_slice</span><span class="o">.</span><span class="n">length</span><span class="p">:</span>
+         <span class="k">if</span> <span class="n">segmented_slice</span><span class="p">[</span><span class="n">x</span><span class="p">][</span><span class="n">y</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">x_coord</span> <span class="o">+=</span> <span class="n">x</span>
+            <span class="n">y_coord</span> <span class="o">+=</span> <span class="n">y</span>
+            <span class="n">num_of_white_pixel</span> <span class="o">+=</span> <span class="mi">1</span>
+   <span class="n">new_centre</span> <span class="o">=</span> <span class="p">(</span><span class="n">x_coord</span><span class="o">/</span><span class="n">num_of_white_pixel</span><span class="p">,</span> <span class="n">y_coord</span><span class="o">/</span><span class="n">num_of_white_pixel</span><span class="p">)</span>
+   <span class="k">return</span> <span class="n">num_of_white_pixel</span><span class="p">,</span> <span class="n">new_centre</span>
+
+<span class="k">def</span> <span class="nf">is_new_centre_qualified</span><span class="p">(</span><span class="n">new_size</span><span class="p">):</span>
+   <span class="c1"># compare new slice&#39;s number of white pixel to</span>
+   <span class="c1"># the original slice and the previous size</span>
+
+   <span class="n">condition_1</span> <span class="o">=</span> <span class="n">new_size</span> <span class="o">&lt;</span> <span class="n">original_size</span><span class="o">*</span><span class="n">qualified_coefficient</span>
+   <span class="n">condition_2</span> <span class="o">=</span> <span class="n">new_size</span> <span class="o">&gt;</span> <span class="n">original_size</span><span class="o">*</span><span class="n">qualified_coefficient</span>
+   <span class="n">condition_3</span> <span class="o">=</span> <span class="n">new_size</span> <span class="o">&lt;</span> <span class="n">prev_size</span><span class="o">*</span><span class="n">qualified_coefficient</span>
+
+   <span class="k">return</span> <span class="n">condition_1</span> <span class="ow">and</span> <span class="n">condition_2</span> <span class="ow">and</span> <span class="n">condition_3</span>
+
+<span class="c1"># The stats of the user&#39;s chosen slice will be used as reference</span>
+<span class="c1"># to determine whether a new segmented slice is acceptable</span>
+<span class="n">segmented_slice</span> <span class="o">=</span> <span class="n">segment_single_slice</span><span class="p">(</span><span class="n">seed_slice_index</span><span class="p">,</span> <span class="n">seed_aorta_centre</span><span class="p">)</span>
+
+<span class="c1"># Any pixel with positive intensity value will be set to white_pixel</span>
+<span class="n">new_slice</span> <span class="o">=</span> <span class="n">Array</span><span class="p">[</span><span class="n">segmented_slice</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">length</span><span class="p">][</span><span class="n">segmented_slice</span><span class="o">.</span><span class="n">length</span><span class="p">]</span>
+<span class="k">for</span> <span class="n">x</span> <span class="kn">from</span> <span class="mi">0</span> <span class="n">to</span> <span class="n">segmented_slice</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">length</span><span class="p">:</span>
+   <span class="k">for</span> <span class="n">y</span> <span class="kn">from</span> <span class="mi">0</span> <span class="n">to</span> <span class="n">segmented_slice</span><span class="o">.</span><span class="n">length</span><span class="p">:</span>
+      <span class="k">if</span> <span class="n">segmented_slice</span><span class="p">[</span><span class="n">x</span><span class="p">][</span><span class="n">y</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">black_pixel</span><span class="p">:</span>
+         <span class="n">new_slice</span><span class="p">[</span><span class="n">x</span><span class="p">][</span><span class="n">y</span><span class="p">]</span> <span class="o">=</span> <span class="n">white_pixel</span>
+      <span class="k">else</span><span class="p">:</span>
+         <span class="n">new_slice</span><span class="p">[</span><span class="n">x</span><span class="p">][</span><span class="n">y</span><span class="p">]</span> <span class="o">=</span> <span class="n">black_pixel</span>
+
+<span class="c1"># orginal_size will be used to compare new slice&#39;s size</span>
+<span class="c1"># to determine if the new slice is acceptable</span>
+<span class="n">original_size</span><span class="p">,</span> <span class="n">original_centre</span> <span class="o">=</span> <span class="n">count_pixels</span><span class="p">(</span><span class="n">new_slice</span><span class="p">)</span>
+
+<span class="c1"># Repeat the above process for each slice</span>
 <span class="k">for</span> <span class="n">slice_i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="n">step</span><span class="p">):</span>
     <span class="n">cur_img_slice</span> <span class="o">=</span> <span class="n">cropped_image</span><span class="p">[:,</span> <span class="p">:,</span> <span class="n">slice_i</span><span class="p">]</span>
-    <span class="n">segmented_slice</span> <span class="o">=</span> <span class="n">get_image_segment</span><span class="p">()</span>
+
+    <span class="c1"># prev_centre is the new derived centre from last segmented slice</span>
+    <span class="n">segmented_slice</span> <span class="o">=</span> <span class="n">segment_single_slice</span><span class="p">(</span><span class="n">slice_i</span><span class="p">,</span> <span class="n">prev_centre</span><span class="p">)</span>
+
+    <span class="c1"># element-wise operation, exactly what we doing with the double for-loop</span>
     <span class="n">new_slice</span> <span class="o">=</span> <span class="n">segmented_slice</span> <span class="o">&gt;</span> <span class="n">PixelValue</span><span class="o">.</span><span class="n">black_pixel</span><span class="o">.</span><span class="n">value</span>
-    <span class="n">total_coord</span><span class="p">,</span> <span class="n">centre</span><span class="p">,</span> <span class="n">seeds</span> <span class="o">=</span> <span class="n">count_pixel</span><span class="p">(</span><span class="n">new_slice</span><span class="p">)</span>
+
+    <span class="n">total_coord</span><span class="p">,</span> <span class="n">centre</span> <span class="o">=</span> <span class="n">count_pixel</span><span class="p">(</span><span class="n">new_slice</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">is_new_centre_qualified</span><span class="p">(</span><span class="n">total_coord</span><span class="p">):</span>
-         <span class="n">processing_image</span><span class="p">[:,</span> <span class="p">:,</span> <span class="n">slice_i</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_slice</span>
-         <span class="n">prev_centre</span> <span class="o">=</span> <span class="n">centre</span>
-         <span class="n">prev_seeds</span> <span class="o">=</span> <span class="n">seeds</span>
+       <span class="c1"># processing_image is the segmented volume returned</span>
+       <span class="n">processing_image</span><span class="p">[:,</span> <span class="p">:,</span> <span class="n">slice_i</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_slice</span>
+       <span class="n">prev_centre</span> <span class="o">=</span> <span class="n">centre</span>
+       <span class="c1"># for ascending aorta, we will generate more possible coordinates</span>
+       <span class="c1"># and use it in segmentation algorithm</span>
+       <span class="c1"># prev_seeds = seeds</span>
+    <span class="k">else</span><span class="p">:</span>
+       <span class="n">skipped_slice</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">slice_i</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">slice_i</span> <span class="ow">in</span> <span class="n">skipped_slice</span><span class="p">:</span>
+    <span class="c1"># replace processing_image[slice_i] with the intersection of its previous and next slice</span>
+
+<span class="k">return</span> <span class="n">processing_image</span>
 </pre></div>
 </div>
 <div class="admonition note">

@@ -7,6 +7,14 @@ import os
 
 
 def print_result(ref_image, test_image, seg_type):
+    """Print mean square error, mean absolute error, root mean square error 
+    and Sørensen–Dice coefficient between the reference image and the test image
+
+    Args:
+        ref_image (numpy.ndarrays): reference image's numpy ndarrays representation
+
+        test_image (numpy.ndarrays): test image's numpy ndarrays representation
+    """ # noqa
     print(
         "{} mean_square_error".format(seg_type),
         mean_square_error(ref_image, test_image)
@@ -26,6 +34,13 @@ def print_result(ref_image, test_image, seg_type):
 
 
 def transform_image(cropped_image):
+    """Perform histogram equalization for Digital Image Enhancement
+
+    Args:
+        cropped_image (SITK::image): The cropped image read from /project-repo/test/sample/folder
+    Returns:
+        (SITK::image): equalized cropped image.
+    """ # noqa
     img_array = sitk.GetArrayFromImage(
         (sitk.Cast(sitk.RescaleIntensity(cropped_image), sitk.sitkUInt8)))
     histogram_array = np.bincount(img_array.flatten(), minlength=256)
@@ -44,7 +59,7 @@ def transform_image(cropped_image):
 
 
 def get_cropped_volume_image(testCase):
-    """Read the cropped volume
+    """Read the cropped volume from /project-repo/test/sample
 
     Returns:
         SITK: The cropped volume sitk image
@@ -65,11 +80,11 @@ def get_cropped_volume_image(testCase):
 
 
 def read_desc_volume_image(testCase):
-    """Read the segmented descending aorta volume
+    """Read the segmented descending aorta volume from /project-repo/test/sample
 
     Returns:
         SITK: The segmented descending aorta sitk image
-    """
+    """ # noqa
     sample = 43681283
     if testCase == 1:
         sample = 22429388
@@ -86,12 +101,11 @@ def read_desc_volume_image(testCase):
 
 
 def read_asc_volume_image(testCase):
-    """Read the segmented ascending and descending aorta volume
-
+    """Read the segmented ascending and descending aorta volume from /project-repo/test/sample
 
     Returns:
         SITK: The segmented ascending and descending aorta sitk image
-    """
+    """ # noqa
     sample = 43681283
     if testCase == 1:
         sample = 22429388
@@ -108,12 +122,12 @@ def read_asc_volume_image(testCase):
 
 
 def read_final_volume_image(testCase):
-    """Read the final segmented aorta volume
+    """Read the sagittal segmented aorta volume from /project-repo/test/sample
 
 
     Returns:
         SITK: The final segmented aorta sitk image
-    """
+    """ # noqa
     sample = 43681283
     if testCase == 1:
         sample = 22429388
@@ -130,39 +144,70 @@ def read_final_volume_image(testCase):
 
 
 def DSC(ref_image, test_image):
-    """Calculate the Dice similarity coefficient
+    """Calculate the Dice similarity coefficient.
 
     Args:
-        ref_image (numpy.ndarrays): nda to compare
+        ref_image (numpy.ndarrays): reference image's numpy ndarrays representation
 
-        test_image (numpy.ndarrays): nda to compare
+        test_image (numpy.ndarrays): test image's numpy ndarrays representation
 
     Returns:
         float: The Dice similarity coefficient of the reference and test image
-    """
+    """ # noqa
     two_TP = np.count_nonzero(np.logical_and(ref_image, test_image))*2
     total = (np.count_nonzero(ref_image) + np.count_nonzero(test_image))
     return two_TP/total
 
 
 def root_mse(ref_image, test_image):
+    """Calculate the root mean square error between reference image and test image.
+
+    Args:
+        ref_image (numpy.ndarrays): reference image's numpy ndarrays representation
+
+        test_image (numpy.ndarrays): test image's numpy ndarrays representation
+
+    Returns:
+        float: The Dice similarity coefficient of the reference and test image
+    """ # noqa
     return np.sqrt(mean_square_error(ref_image, test_image))
 
 
 def mean_absolute_error(ref_image, test_image):
+    """Calculate the mean absolute error between reference image and test image.
+
+    Args:
+        ref_image (numpy.ndarrays): reference image's numpy ndarrays representation
+
+        test_image (numpy.ndarrays): test image's numpy ndarrays representation
+
+    Returns:
+        float: The Dice similarity coefficient of the reference and test image
+    """ # noqa
     npsum = np.sum(np.abs(np.subtract(ref_image, test_image)))
     return npsum/np.count_nonzero(np.logical_or(ref_image, test_image))
 
 
 def mean_square_error(ref_image, test_image):
+    """Calculate the mean square error between reference image and test image.
+    This function only counts if there is a white_pixel on either reference image or test image, ignoring the black pixels
+
+    Args:
+        ref_image (numpy.ndarrays): reference image's numpy ndarrays representation
+
+        test_image (numpy.ndarrays): test image's numpy ndarrays representation
+
+    Returns:
+        float: The Dice similarity coefficient of the reference and test image
+    """ # noqa
     npsum = np.sum(np.square(np.subtract(ref_image, test_image)))
     return npsum/np.count_nonzero(np.logical_or(ref_image, test_image))
 
 
 def test_compare_des(limit, qualifiedCoef, lsCoef, testCase):
-    """Read a test cases' cropped volume,
+    """Read a test cases' cropped volume from /project-repo/test/sample,
     perform descending aorta segmentation,
-    and compare the result with the existing volume
+    and compare the result with the existing volume from /project-repo/test/sample.
 
     Args:
         limit (float): the maximum Dice similarity coefficient difference allowed to pass the test.
@@ -174,7 +219,7 @@ def test_compare_des(limit, qualifiedCoef, lsCoef, testCase):
         testCase (int): the test case to run the test (0-5).
 
     Returns:
-        float: The Dice similarity coefficient of the reference and test image
+        Boolean: Pass the test if the Sørensen–Dice coefficient between test image and reference image is within the limit set by user.
     """ # noqa
     starting_slice = 829
     aorta_centre = [23, 28]
@@ -229,9 +274,9 @@ def test_compare_asc(
     testCase,
     processing_image=None
         ):
-    """Read a test cases' partially segmented volume (descending aorta),
+    """Read a test cases' partially segmented volume (descending aorta) from /project-repo/test/sample,
     perform ascending aorta segmentation,
-    and compare the result with the existing ascending aorta volume
+    and compare the result with the existing ascending aorta volume from /project-repo/test/sample
 
     Args:
         limit (float): the maximum Dice similarity coefficient difference allowed to pass the test.
@@ -243,7 +288,7 @@ def test_compare_asc(
         testCase (int): the test case to run the test (0-5).
 
     Returns:
-        float: The Dice similarity coefficient of the reference and test image
+        Boolean: Pass the test if the Sørensen–Dice coefficient between test image and reference image is within the limit set by user.
     """ # noqa
     cropped_image = get_cropped_volume_image(testCase)
     cropped_image = transform_image(cropped_image)
@@ -299,6 +344,21 @@ def test_asc_and_final(
     testCase,
     processing_image=None
         ):
+    """Compare the  partially segmented aorta volume (descending and ascending aorta)
+    to a fully segmented aorta volume (descending, ascending and sagittal).
+
+    Args:
+        limit (float): the maximum Dice similarity coefficient difference allowed to pass the test.
+
+        qualifiedCoef (float): the qualified coefficient value to process descending aorta segmentation.
+
+        lsCoef (float): the factor used to determine the lower and upper threshold for label statistics image filter.
+
+        testCase (int): the test case to run the test (0-5).
+
+    Returns:
+        Boolean: Pass the test if the Sørensen–Dice coefficient between test image and reference image is within the limit set by user.
+    """ # noqa
     ref_image = read_asc_volume_image(testCase)
     test_image = read_final_volume_image(testCase)
     nda_ref = sitk.GetArrayFromImage(ref_image)
@@ -315,6 +375,22 @@ def test_compare_final_volume(
     testCase,
     processing_image=None
         ):
+    """Read a test cases' partially segmented volume (descending and ascending aorta) from /project-repo/test/sample,
+    perform sagittal aorta segmentation,
+    and compare the result with the existing sagittal aorta volume from /project-repo/test/sample
+
+    Args:
+        limit (float): the maximum Dice similarity coefficient difference allowed to pass the test.
+
+        qualifiedCoef (float): the qualified coefficient value to process descending aorta segmentation.
+
+        lsCoef (float): the factor used to determine the lower and upper threshold for label statistics image filter.
+
+        testCase (int): the test case to run the test (0-5).
+
+    Returns:
+        Boolean: Pass the test if the Sørensen–Dice coefficient between test image and reference image is within the limit set by user.
+    """ # noqa
     cropped_image = get_cropped_volume_image(testCase)
     cropped_image = transform_image(cropped_image)
     if not processing_image:
@@ -343,15 +419,3 @@ def test_compare_final_volume(
     print_result(nda_ref, nda_test)
     assert (DSC_error < limit)
     return test_image
-
-
-def test_prepared_segmenting_image(
-    limit,
-    qualifiedCoef,
-    lsCoef,
-    testCase
-        ):
-    processing_image = test_compare_des(
-        limit, qualifiedCoef, lsCoef, testCase)
-    processing_image = test_compare_asc(
-        limit, qualifiedCoef, lsCoef, testCase, processing_image)

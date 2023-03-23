@@ -18,7 +18,7 @@ Glossary of Terms Used in AortaGeomRecon Documentation
         Digital Imaging and Communications in Medicine (DICOM) is the standard for the communication and management of medical imaging information and related data.
 
     Label Statistic coefficient
-        The coefficient used to compute a filter slice with the mean values of the pixels by using `SITK\:\:LabelStatisticsImageFilter <https://simpleitk.org/doxygen/latest/html/classitk_1_1simple_1_1LabelStatisticsImageFilter.html>`_. Larger values with this coefficient implies a larger range of pixels included from the slice. This could be adjusted based on the area of the aorta center.
+        This coefficient is used to compute the lower and upper threshold passing through the segmentation filter `SITK\:\:ThresholdSegmentationLevelSetImageFilter <https://simpleitk.org/doxygen/latest/html/classitk_1_1simple_1_1ThresholdSegmentationLevelSetImageFilter.html>`_. Larger values with this coefficient implies a larger range of threshold when performing the segmentation. This could be adjusted based on the area of the aorta center.
 
         .. note::
 
@@ -28,7 +28,7 @@ Glossary of Terms Used in AortaGeomRecon Documentation
       The definition of the organ boundary or the organ segmentation is helpful for orientation and identification of the regions of interests inside the organ during the diagnostic or treatment procedure. Further, it allows the volume estimation of the organ.
 
     Qualified coefficient
-        The coefficient used in the qualification equation. The qualification equation compares the number of the pixels with the initial seed slice's number of pixels times or divides by this coefficient. The larger the coefficient, the looser the condition to accept the new slice.
+        This coefficient is used when comparing the number of the white pixels of the new slice to the number of the white pixels of the user's chosen seed slice. The larger the coefficient, the looser the condition to accept the new slice.
 
     slice
         A 2 dimensional image retrived from a 3 dimensional volume.

@@ -107,7 +107,7 @@
 <dt class="sig sig-object py" id="AortaGeomReconEnums.PixelValue">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">AortaGeomReconEnums.</span></span><span class="sig-name descname"><span class="pre">PixelValue</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#AortaGeomReconEnums.PixelValue" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></p>
-<p>An enumeration.</p>
+<p>Enum type describing the values of the pixel in the image.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="AortaGeomReconEnums.PixelValue.black_pixel">
 <span class="sig-name descname"><span class="pre">black_pixel</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0</span></em><a class="headerlink" href="#AortaGeomReconEnums.PixelValue.black_pixel" title="Permalink to this definition"></a></dt>
@@ -143,7 +143,8 @@ Inferior is where the human feet is located.</p>
 <dt class="sig sig-object py" id="AortaGeomReconEnums.SegmentType">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">AortaGeomReconEnums.</span></span><span class="sig-name descname"><span class="pre">SegmentType</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#AortaGeomReconEnums.SegmentType" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></p>
-<p>An enumeration.</p>
+<p>Enum type describing the segmentation phase,
+this will be used in the algorithm to run different codes.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="AortaGeomReconEnums.SegmentType.ascending_aorta">
 <span class="sig-name descname"><span class="pre">ascending_aorta</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">2</span></em><a class="headerlink" href="#AortaGeomReconEnums.SegmentType.ascending_aorta" title="Permalink to this definition"></a></dt>
@@ -152,28 +153,6 @@ Inferior is where the human feet is located.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="AortaGeomReconEnums.SegmentType.descending_aorta">
 <span class="sig-name descname"><span class="pre">descending_aorta</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></em><a class="headerlink" href="#AortaGeomReconEnums.SegmentType.descending_aorta" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="AortaGeomReconEnums.SegmentType.is_axial_seg">
-<span class="sig-name descname"><span class="pre">is_axial_seg</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#AortaGeomReconEnums.SegmentType.is_axial_seg" title="Permalink to this definition"></a></dt>
-<dd><p>Return True if the segmentation type is
-descending or ascending aorta segmentation, False otherwise.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="AortaGeomReconEnums.SegmentType.is_sagittal_seg">
-<span class="sig-name descname"><span class="pre">is_sagittal_seg</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#AortaGeomReconEnums.SegmentType.is_sagittal_seg" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="AortaGeomReconEnums.SegmentType.sagittal">
-<span class="sig-name descname"><span class="pre">sagittal</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">4</span></em><a class="headerlink" href="#AortaGeomReconEnums.SegmentType.sagittal" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="AortaGeomReconEnums.SegmentType.sagittal_front">
-<span class="sig-name descname"><span class="pre">sagittal_front</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">3</span></em><a class="headerlink" href="#AortaGeomReconEnums.SegmentType.sagittal_front" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 </dd></dl>

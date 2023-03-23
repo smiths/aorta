@@ -1,7 +1,7 @@
 
 
 def pytest_addoption(parser):
-    """Add argument parser to pytest, we can pass parameters to pytest.
+    """Add argument parser to pytest. We can pass parameters to pytest.
     """
     parser.addoption("--testCase", action="store", default=0)
     parser.addoption("--limit", action="store", default=0.05)
