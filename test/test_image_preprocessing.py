@@ -204,7 +204,7 @@ def mean_square_error(ref_image, test_image):
     return npsum/np.count_nonzero(np.logical_or(ref_image, test_image))
 
 
-def test_compare_des(limit, qualifiedCoef, lsCoef, testCase):
+def test_compare_des(limit, qualifiedCoef, thresholdCoef, testCase):
     """Read a test cases' cropped volume from /project-repo/test/sample,
     perform descending aorta segmentation,
     and compare the result with the existing volume from /project-repo/test/sample.
@@ -214,7 +214,7 @@ def test_compare_des(limit, qualifiedCoef, lsCoef, testCase):
 
         qualifiedCoef (float): the qualified coefficient value to process descending aorta segmentation.
 
-        lsCoef (float): the factor used to determine the lower and upper threshold for label statistics image filter.
+        thresholdCoef (float): the factor used to determine the lower and upper threshold for label statistics image filter.
 
         testCase (int): the test case to run the test (0-5).
 
@@ -245,7 +245,7 @@ def test_compare_des(limit, qualifiedCoef, lsCoef, testCase):
         starting_slice=starting_slice, aorta_centre=aorta_centre,
         num_slice_skipping=3,
         qualified_coef=qualifiedCoef,
-        label_stats_coef=lsCoef,
+        threshold_coef=thresholdCoef,
         processing_image=None,
         seg_type=SegType.descending_aorta
     )
@@ -254,7 +254,7 @@ def test_compare_des(limit, qualifiedCoef, lsCoef, testCase):
     test_image = desc_axial_segmenter.processing_image
     ref_image = read_desc_volume_image(testCase)
     print("qualified slicefactor : {}".format(qualifiedCoef))
-    print("filter factor : {}".format(lsCoef))
+    print("filter factor : {}".format(thresholdCoef))
     nda_ref = sitk.GetArrayFromImage(ref_image)
     nda_test = sitk.GetArrayFromImage(test_image)
     DSC_error = 1-DSC(nda_ref, nda_test)
@@ -270,7 +270,7 @@ def test_compare_des(limit, qualifiedCoef, lsCoef, testCase):
 def test_compare_asc(
     limit,
     qualifiedCoef,
-    lsCoef,
+    thresholdCoef,
     testCase,
     processing_image=None
         ):
@@ -283,7 +283,7 @@ def test_compare_asc(
 
         qualifiedCoef (float): the qualified coefficient value to process descending aorta segmentation.
 
-        lsCoef (float): the factor used to determine the lower and upper threshold for label statistics image filter.
+        thresholdCoef (float): the factor used to determine the lower and upper threshold for label statistics image filter.
 
         testCase (int): the test case to run the test (0-5).
 
@@ -316,7 +316,7 @@ def test_compare_asc(
         starting_slice=starting_slice, aorta_centre=aorta_centre,
         num_slice_skipping=3,
         qualified_coef=qualifiedCoef,
-        label_stats_coef=lsCoef,
+        threshold_coef=thresholdCoef,
         processing_image=processing_image,
         seg_type=SegType.ascending_aorta
     )
@@ -324,7 +324,7 @@ def test_compare_asc(
     test_image = asc_axial_segmenter.processing_image
     ref_image = read_asc_volume_image(testCase)
     print("qualified slicefactor : {}".format(qualifiedCoef))
-    print("filter factor : {}".format(lsCoef))
+    print("filter factor : {}".format(thresholdCoef))
     nda_ref = sitk.GetArrayFromImage(ref_image)
     nda_test = sitk.GetArrayFromImage(test_image)
     DSC_error = 1-DSC(nda_ref, nda_test)
@@ -340,7 +340,7 @@ def test_compare_asc(
 def test_asc_and_final(
     limit,
     qualifiedCoef,
-    lsCoef,
+    thresholdCoef,
     testCase,
     processing_image=None
         ):
@@ -352,7 +352,7 @@ def test_asc_and_final(
 
         qualifiedCoef (float): the qualified coefficient value to process descending aorta segmentation.
 
-        lsCoef (float): the factor used to determine the lower and upper threshold for label statistics image filter.
+        thresholdCoef (float): the factor used to determine the lower and upper threshold for label statistics image filter.
 
         testCase (int): the test case to run the test (0-5).
 
@@ -371,7 +371,7 @@ def test_asc_and_final(
 def test_compare_final_volume(
     limit,
     qualifiedCoef,
-    lsCoef,
+    thresholdCoef,
     testCase,
     processing_image=None
         ):
@@ -384,7 +384,7 @@ def test_compare_final_volume(
 
         qualifiedCoef (float): the qualified coefficient value to process descending aorta segmentation.
 
-        lsCoef (float): the factor used to determine the lower and upper threshold for label statistics image filter.
+        thresholdCoef (float): the factor used to determine the lower and upper threshold for label statistics image filter.
 
         testCase (int): the test case to run the test (0-5).
 
@@ -397,14 +397,14 @@ def test_compare_final_volume(
         processing_image = read_asc_volume_image()
     if not qualifiedCoef:
         qualifiedCoef = 2.2
-    if not lsCoef:
-        lsCoef = 3.5
+    if not thresholdCoef:
+        thresholdCoef = 3.5
     sagittal_segmenter = AortaSegmenter(
         cropped_image=cropped_image,
         starting_slice=None, aorta_centre=None,
         num_slice_skipping=3,
         qualified_slice_factor=qualifiedCoef,
-        label_stats_coef=lsCoef,
+        threshold_coef=thresholdCoef,
         processing_image=processing_image,
         seg_type=SegType.sagittal_segmenter
     )
@@ -412,7 +412,7 @@ def test_compare_final_volume(
     test_image = sagittal_segmenter.processing_image
     ref_image = read_final_volume_image(testCase)
     print("qualified slicefactor : {}".format(qualifiedCoef))
-    print("filter factor : {}".format(lsCoef))
+    print("filter factor : {}".format(thresholdCoef))
     nda_ref = sitk.GetArrayFromImage(ref_image)
     nda_test = sitk.GetArrayFromImage(test_image)
     DSC_error = 1-DSC(nda_ref, nda_test)
