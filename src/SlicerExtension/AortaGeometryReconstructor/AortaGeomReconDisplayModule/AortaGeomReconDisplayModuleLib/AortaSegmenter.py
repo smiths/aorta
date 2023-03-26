@@ -111,54 +111,54 @@ class AortaSegmenter():
         self._original_size = None
         self._seeds = None
         self._is_size_decreasing = False
-        if SegmentType.is_axial_seg(self._seg_type):
-            # Get more values from the seed slice
-            self._start = self._starting_slice - 1
-            self._prev_centre = self._aorta_centre
-            self._prev_seeds = []
-            # Initialize parameters for superior to inferior segmentation
-            slice_num = self._starting_slice
-            self._cur_img_slice = self._cropped_image[:, :, slice_num]
-            segmented_slice = self.__get_image_segment()
-            new_slice = segmented_slice > PixelValue.black_pixel.value
-            seeds = []
-            if self._seg_type == SegmentType.descending_aorta:
-                total_coord, centre = self.__count_pixel_des(new_slice)
-                self._processing_image[:, :, slice_num] = new_slice
-            else:
-                total_coord, centre, seeds = self.__count_pixel_asc(new_slice)
-                self._processing_image[:, :, slice_num] = (
-                    new_slice | self._processing_image[:, :, slice_num])
-            self._prev_seeds = seeds
-            self._original_size = total_coord
-            self._previous_size = total_coord
-            self._prev_centre = centre
-            self._skipped_slice_counter = 0
-            self._end = -1
-            self._step = -1
-            self._seg_dir = SegDir.Superior_to_Inferior
 
-            # SEGMENT FROM SEED VALUE TO BOTTOM OF THE AORTA
-            print("{} - top to bottom started".format(self._seg_type))
-            self.__segmentation()
-            print("{} - top to bottom finished".format(self._seg_type))
+        # Get more values from the seed slice
+        self._start = self._starting_slice - 1
+        self._prev_centre = self._aorta_centre
+        self._prev_seeds = []
+        # Initialize parameters for superior to inferior segmentation
+        slice_num = self._starting_slice
+        self._cur_img_slice = self._cropped_image[:, :, slice_num]
+        segmented_slice = self.__get_image_segment()
+        new_slice = segmented_slice > PixelValue.black_pixel.value
+        seeds = []
+        if self._seg_type == SegmentType.descending_aorta:
+            total_coord, centre = self.__count_pixel_des(new_slice)
+            self._processing_image[:, :, slice_num] = new_slice
+        else:
+            total_coord, centre, seeds = self.__count_pixel_asc(new_slice)
+            self._processing_image[:, :, slice_num] = (
+                new_slice | self._processing_image[:, :, slice_num])
+        self._prev_seeds = seeds
+        self._original_size = total_coord
+        self._previous_size = total_coord
+        self._prev_centre = centre
+        self._skipped_slice_counter = 0
+        self._end = -1
+        self._step = -1
+        self._seg_dir = SegDir.Superior_to_Inferior
 
-            self._seg_dir = SegDir.Inferior_to_Superior
-            self._start = self._starting_slice + 1
-            self._prev_centre = self._aorta_centre
-            self._previous_size = self._original_size
-            self._prev_seeds = seeds
-            self._end = self._cropped_image.GetDepth()
-            self._step = 1
-            self._skipped_slice_counter = len(self._skipped_slices)
+        # SEGMENT FROM SEED VALUE TO BOTTOM OF THE AORTA
+        print("{} - top to bottom started".format(self._seg_type))
+        self.__segmentation()
+        print("{} - top to bottom finished".format(self._seg_type))
 
-            print("{} - bottom to top started".format(self._seg_type))
-            self.__segmentation()
-            print("{} - bottom to top finished".format(self._seg_type))
+        self._seg_dir = SegDir.Inferior_to_Superior
+        self._start = self._starting_slice + 1
+        self._prev_centre = self._aorta_centre
+        self._previous_size = self._original_size
+        self._prev_seeds = seeds
+        self._end = self._cropped_image.GetDepth()
+        self._step = 1
+        self._skipped_slice_counter = len(self._skipped_slices)
 
-            if self._seg_type == SegmentType.descending_aorta:
-                # Fill in missing slices of descending aorta
-                self.__filling_missing_slices()
+        print("{} - bottom to top started".format(self._seg_type))
+        self.__segmentation()
+        print("{} - bottom to top finished".format(self._seg_type))
+
+        if self._seg_type == SegmentType.descending_aorta:
+            # Fill in missing slices of descending aorta
+            self.__filling_missing_slices()
 
     def __segmentation(self):
         """The main loop of the segmentation algorithm.
