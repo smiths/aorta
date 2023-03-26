@@ -164,16 +164,101 @@ this will be used in the algorithm to run different codes.</p>
 <dt class="sig sig-object py" id="AortaSagitalSegmenter.AortaSagitalSegmenter">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">AortaSagitalSegmenter.</span></span><span class="sig-name descname"><span class="pre">AortaSagitalSegmenter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">qualified_coef</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">processing_image</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cropped_image</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#AortaSagitalSegmenter.AortaSagitalSegmenter" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>This class performs Aorta Sagittal segmentation</p>
+<p>This class performs Aorta segmentation through sagittal plane.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="AortaSagitalSegmenter.AortaSagitalSegmenter.qualified_coef">
+<span class="sig-name descname"><span class="pre">qualified_coef</span></span><a class="headerlink" href="#AortaSagitalSegmenter.AortaSagitalSegmenter.qualified_coef" title="Permalink to this definition"></a></dt>
+<dd><p>This coefficient controls the lower and upper threshold of the number of white pixels to determine whether to accept each segmented slice or not.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="AortaSagitalSegmenter.AortaSagitalSegmenter.cropped_image">
+<span class="sig-name descname"><span class="pre">cropped_image</span></span><a class="headerlink" href="#AortaSagitalSegmenter.AortaSagitalSegmenter.cropped_image" title="Permalink to this definition"></a></dt>
+<dd><p>The original image that the user has only perform cropping.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>SITK::image</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="AortaSagitalSegmenter.AortaSagitalSegmenter.processing_image">
+<span class="sig-name descname"><span class="pre">processing_image</span></span><a class="headerlink" href="#AortaSagitalSegmenter.AortaSagitalSegmenter.processing_image" title="Permalink to this definition"></a></dt>
+<dd><p>The image that we are performing segmentation. This image should already performed descending and ascending aorta segmentation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>SITK::image</p>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="AortaSagitalSegmenter.AortaSagitalSegmenter.__segment_sag">
-<span class="sig-name descname"><span class="pre">__segment_sag</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sliceNum</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">factor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size_factor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">current_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">imgSlice</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axial_seg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seg_type</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#AortaSagitalSegmenter.AortaSagitalSegmenter.__segment_sag" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<span class="sig-name descname"><span class="pre">__segment_sag</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">threshold_coef</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qualified_coef</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">imgSlice</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axial_seg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seg_type</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#AortaSagitalSegmenter.AortaSagitalSegmenter.__segment_sag" title="Permalink to this definition"></a></dt>
+<dd><p>This function is the main segmentation algorithm implementation.
+The algorithm is very similar to the algorithm used in axial segmentation.
+First we get label stats with the existing segmented slice, and get the mean of the intensity values to calculate the threshold.
+Finally we use these threshold values to perform segmentation.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="AortaSagitalSegmenter.AortaSagitalSegmenter.threshold_coef">
+<span class="sig-name descname"><span class="pre">threshold_coef</span></span><a class="headerlink" href="#AortaSagitalSegmenter.AortaSagitalSegmenter.threshold_coef" title="Permalink to this definition"></a></dt>
+<dd><p>The coefficient to control the range of threshold to be used in segmentation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="AortaSagitalSegmenter.AortaSagitalSegmenter.imgSlice">
+<span class="sig-name descname"><span class="pre">imgSlice</span></span><a class="headerlink" href="#AortaSagitalSegmenter.AortaSagitalSegmenter.imgSlice" title="Permalink to this definition"></a></dt>
+<dd><p>The 2D image of the current processing slice.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>SITK::image</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="AortaSagitalSegmenter.AortaSagitalSegmenter.axial_seg">
+<span class="sig-name descname"><span class="pre">axial_seg</span></span><a class="headerlink" href="#AortaSagitalSegmenter.AortaSagitalSegmenter.axial_seg" title="Permalink to this definition"></a></dt>
+<dd><p>The 2D segmentation result from descending and ascending algorithm.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>SITK::image</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="AortaSagitalSegmenter.AortaSagitalSegmenter.seg_type">
+<span class="sig-name descname"><span class="pre">seg_type</span></span><a class="headerlink" href="#AortaSagitalSegmenter.AortaSagitalSegmenter.seg_type" title="Permalink to this definition"></a></dt>
+<dd><p>Segmentation type, sagitally or frontally.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>String</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="AortaSagitalSegmenter.AortaSagitalSegmenter.begin_segmentation">
 <span class="sig-name descname"><span class="pre">begin_segmentation</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#AortaSagitalSegmenter.AortaSagitalSegmenter.begin_segmentation" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>The main loop of the segmentation algorithm.
+For each sagittal slice, get the segmented result’s number of pixel, compared it to our base_pixel_value.
+If the number is larger than the base_pixel_value,
+this implies that there are some areas of interest that we can smooth with sagittal segmentation.</p>
+</dd></dl>
 
 </dd></dl>
 
@@ -182,20 +267,96 @@ this will be used in the algorithm to run different codes.</p>
 <span id="aortasegmenter-module"></span><h2>AortaSegmenter module<a class="headerlink" href="#module-AortaSegmenter" title="Permalink to this heading"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="AortaSegmenter.AortaSegmenter">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">AortaSegmenter.</span></span><span class="sig-name descname"><span class="pre">AortaSegmenter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cropped_image</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">starting_slice</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">aorta_centre</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_slice_skipping</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">processing_image</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seg_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qualified_coef</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2.2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label_stats_coef</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3.5</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#AortaSegmenter.AortaSegmenter" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">AortaSegmenter.</span></span><span class="sig-name descname"><span class="pre">AortaSegmenter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cropped_image</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">starting_slice</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">aorta_centre</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_slice_skipping</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">processing_image</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seg_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qualified_coef</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2.2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold_coef</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3.5</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#AortaSegmenter.AortaSegmenter" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>This class is used to perform
-Descending or Ascending aorta segmentation</p>
+<p>This class is used to perform Descending or Ascending aorta segmentation.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="AortaSegmenter.AortaSegmenter.starting_slice">
+<span class="sig-name descname"><span class="pre">starting_slice</span></span><a class="headerlink" href="#AortaSegmenter.AortaSegmenter.starting_slice" title="Permalink to this definition"></a></dt>
+<dd><p>The seed slice’s index (the index along the Z axis)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="AortaSegmenter.AortaSegmenter.aorta_centre">
+<span class="sig-name descname"><span class="pre">aorta_centre</span></span><a class="headerlink" href="#AortaSegmenter.AortaSegmenter.aorta_centre" title="Permalink to this definition"></a></dt>
+<dd><p>A tuple of two integers indicates the centre of Descending or Ascending aorta on the axial plane.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="AortaSegmenter.AortaSegmenter.num_slice_skipping">
+<span class="sig-name descname"><span class="pre">num_slice_skipping</span></span><a class="headerlink" href="#AortaSegmenter.AortaSegmenter.num_slice_skipping" title="Permalink to this definition"></a></dt>
+<dd><p>The number of slice allowed to consecutively skip by the algorithm.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="AortaSegmenter.AortaSegmenter.seg_type">
+<span class="sig-name descname"><span class="pre">seg_type</span></span><a class="headerlink" href="#AortaSegmenter.AortaSegmenter.seg_type" title="Permalink to this definition"></a></dt>
+<dd><p>Indicate the segmentation type, Descending aorta segmentation or Ascending aorta</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#AortaGeomReconEnums.SegmentType" title="AortaGeomReconEnums.SegmentType">AortaGeomReconEnums.SegmentType</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="AortaSegmenter.AortaSegmenter.qualified_coef">
+<span class="sig-name descname"><span class="pre">qualified_coef</span></span><a class="headerlink" href="#AortaSegmenter.AortaSegmenter.qualified_coef" title="Permalink to this definition"></a></dt>
+<dd><p>This coefficient controls the lower and upper threshold of the number of white pixels to determine whether to accept each segmented slice or not.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="AortaSegmenter.AortaSegmenter.cropped_image">
+<span class="sig-name descname"><span class="pre">cropped_image</span></span><a class="headerlink" href="#AortaSegmenter.AortaSegmenter.cropped_image" title="Permalink to this definition"></a></dt>
+<dd><p>The original image that the user has only perform cropping.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>SITK::image</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="AortaSegmenter.AortaSegmenter.processing_image">
+<span class="sig-name descname"><span class="pre">processing_image</span></span><a class="headerlink" href="#AortaSegmenter.AortaSegmenter.processing_image" title="Permalink to this definition"></a></dt>
+<dd><p>The processing image, this image could be none when performing descending aorta segmentation. When performing ascending aorta segmentation, it should have the Descending aorta segmentation result.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>SITK::image</p>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="AortaSegmenter.AortaSegmenter.__count_pixel_asc">
 <span class="sig-name descname"><span class="pre">__count_pixel_asc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">new_slice</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#AortaSegmenter.AortaSegmenter.__count_pixel_asc" title="Permalink to this definition"></a></dt>
-<dd><p>Use segmented slice to calculate the number of white pixels,
-and the new centre based on the segmented result.</p>
+<dd><p>Get the number of white pixels, and calculate a new centre based on the segmentation result.
+This function adds extra seeds with the mean of white pixels’ white coordinate.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p><dl class="simple">
-<dt>tuple containing:</dt><dd><p>int: The total number of the X coordinates where it is white pixel
-tupple: The new derived centre calculated by the mean of X coordinates and Y coordinates of white pixels
+<dt>tuple containing:</dt><dd><p>int: The total number of the white pixels.
+tuple: The new derived centre calculated by the mean of white pixe’s X coordinates and Y coordinates.
 list: More possible coordinates based on the new derived centre</p>
 </dd>
 </dl>
@@ -210,14 +371,12 @@ list: More possible coordinates based on the new derived centre</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="AortaSegmenter.AortaSegmenter.__count_pixel_des">
 <span class="sig-name descname"><span class="pre">__count_pixel_des</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">new_slice</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#AortaSegmenter.AortaSegmenter.__count_pixel_des" title="Permalink to this definition"></a></dt>
-<dd><p>Use segmented slice to calculate the number of white pixels,
-and the new derived centre
-for descending aorta segmentation.</p>
+<dd><p>Get the number of white pixels, and calculate a new centre based on the segmentation result.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p><dl class="simple">
-<dt>tuple containing:</dt><dd><p>int: The total number of the counted X coordinates
-tupple: The new derived centre calculated by the mean of counted X coordinates and Y coordinates</p>
+<dt>tuple containing:</dt><dd><p>int: The total number of the white pixels.
+tuple: The new derived centre calculated by the mean of white pixe’s X coordinates and Y coordinates.</p>
 </dd>
 </dl>
 </p>
@@ -239,9 +398,10 @@ fill the slice with the overlapping area of both slices.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="AortaSegmenter.AortaSegmenter.__get_image_segment">
 <span class="sig-name descname"><span class="pre">__get_image_segment</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#AortaSegmenter.AortaSegmenter.__get_image_segment" title="Permalink to this definition"></a></dt>
-<dd><p>Use SITK::LabelStatisticsImageFilter to derive a 2d circle image (seed).
+<dd><p>Use SITK::LabelStatisticsImageFilter to get the mean of the intensity values of white pixel (label of 1).
+Use the mean to calculate the threshold for segmentation image filter.
 Use SITK::SignedMaurerDistanceMap to calculate the signed squared Euclidean distance transform of the circle.
-Get segmented image slice based on the seed image.</p>
+Finally, get the segmentation value with the Euclidean distance transform.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Segmented image slice based on intensity values.</p>
@@ -255,7 +415,13 @@ Get segmented image slice based on the seed image.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="AortaSegmenter.AortaSegmenter.__is_new_centre_qualified">
 <span class="sig-name descname"><span class="pre">__is_new_centre_qualified</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">total_coord</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_overlapping</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#AortaSegmenter.AortaSegmenter.__is_new_centre_qualified" title="Permalink to this definition"></a></dt>
-<dd><p>Return True if the number of coordiante in the segmented centre is qualified</p>
+<dd><p>Return True if it satisfies the following conditions:</p>
+<ol class="arabic simple">
+<li><p>The number of white pixels of the segmented result is smaller than the previous size multiplis some ratio (the ratio could change depends on the segmentation type).</p></li>
+<li><p>The number of white pixels is smaller than qualified cofficient multiply the number of white pixels of the user’s selected slice.</p></li>
+<li><p>The number of white pixels is larger than the number of white pixels of the user’s selected slice divided by the qualified coefficient.</p></li>
+</ol>
+<p>Notes that in some cases, the conditions might change the qualified coefficient to some other values depending on the segmentation type and segmentation direction.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Boolean</p>
@@ -266,14 +432,11 @@ Get segmented image slice based on the seed image.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="AortaSegmenter.AortaSegmenter.__is_overlapping">
 <span class="sig-name descname"><span class="pre">__is_overlapping</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">img1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">i</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#AortaSegmenter.AortaSegmenter.__is_overlapping" title="Permalink to this definition"></a></dt>
-<dd><p>Compare the current segmented slice with the previous two slices,
-return True if any overlaps otherwise False</p>
+<dd><p>Compare the current 2D segmented slice with the previous two processed 2D slices,
+return True if there are any voxel intersect or overlaps on each other between the new slice and processed slice.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>comparison result</p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>Boolean</p>
+<dd class="field-odd"><p>Boolean</p>
 </dd>
 </dl>
 </dd></dl>
@@ -281,11 +444,11 @@ return True if any overlaps otherwise False</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="AortaSegmenter.AortaSegmenter.__prepare_seed">
 <span class="sig-name descname"><span class="pre">__prepare_seed</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#AortaSegmenter.AortaSegmenter.__prepare_seed" title="Permalink to this definition"></a></dt>
-<dd><p>Get a seed from the original image. We will add extra space
-and use it to get the labeled image statistics.</p>
+<dd><p>Get a seed from the original image. The algorithm will overwrite three pixels as white pixels. The pixels are decided by the previous centre, derived by count_pixels function.
+For ascending aorta segmentation, the algorithm also takes extra seeds.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>An image slice with aorta centre and some extra spacing.</p>
+<dd class="field-odd"><p>An image slice with some pixels value overwrite to white pixel (value of 1)</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>SITK::IMAGE</p>
@@ -296,25 +459,34 @@ and use it to get the labeled image statistics.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="AortaSegmenter.AortaSegmenter.__segmentation">
 <span class="sig-name descname"><span class="pre">__segmentation</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#AortaSegmenter.AortaSegmenter.__segmentation" title="Permalink to this definition"></a></dt>
-<dd><p>From the starting slice to the superior or the inferior,
-use label statistics to see if a circle can be segmented.</p>
+<dd><p>The main loop of the segmentation algorithm.
+For each axial slice, the algorithm performs segmetation with get_image_segment function.
+Next, the algorithm counts the number of white pixels of the segmentation result, and calculates a new centre based on the result.
+Finally, the algorithm decides whether to accept the new slice or not. If accepted, the new centre will be used as seed for next slice’s segmentation.
+If not, and it reached the point where maximum consecutive skips is allowed, the algorithm hault and return the segmentation result.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="AortaSegmenter.AortaSegmenter.begin_segmentation">
 <span class="sig-name descname"><span class="pre">begin_segmentation</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#AortaSegmenter.AortaSegmenter.begin_segmentation" title="Permalink to this definition"></a></dt>
-<dd><p>The public method to process segmentation.</p>
+<dd><p>The api is available to the user’s to perform axial segmentation.
+Depending on the user’s inputs, it will perform Descending aorta segmentation or Ascending aorta segmentation.
+It first set up a few variables, get the original seed values,
+then jump to the main loop which perform segmentation superior to inferior from the user’s seed slice,
+and the main loop that performs segmentation inferior to superior from the user’s seed slice.</p>
 </dd></dl>
 
 <dl class="py property">
-<dt class="sig sig-object py" id="AortaSegmenter.AortaSegmenter.cropped_image">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cropped_image</span></span><a class="headerlink" href="#AortaSegmenter.AortaSegmenter.cropped_image" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<dt class="sig sig-object py" id="id0">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cropped_image</span></span><a class="headerlink" href="#id0" title="Permalink to this definition"></a></dt>
+<dd><p>cropped image getter. The cropped image is the untouched cropped image that user has input.</p>
+</dd></dl>
 
 <dl class="py property">
-<dt class="sig sig-object py" id="AortaSegmenter.AortaSegmenter.processing_image">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">processing_image</span></span><a class="headerlink" href="#AortaSegmenter.AortaSegmenter.processing_image" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<dt class="sig sig-object py" id="id1">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">processing_image</span></span><a class="headerlink" href="#id1" title="Permalink to this definition"></a></dt>
+<dd><p>processing image getter. The prcoessing image is the segmentation result.</p>
+</dd></dl>
 
 </dd></dl>
 

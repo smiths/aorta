@@ -15,31 +15,47 @@ from AortaGeomReconDisplayModuleLib.AortaGeomReconEnums import PixelValue # noqa
 
 
 class AortaSegmenter():
-    """This class is used to perform
-    Descending or Ascending aorta segmentation"""
+    """This class is used to perform Descending or Ascending aorta segmentation.
+
+    Attributes:
+
+        starting_slice (float): The seed slice's index (the index along the Z axis)
+
+        aorta_centre (tuple): A tuple of two integers indicates the centre of Descending or Ascending aorta on the axial plane.
+
+        num_slice_skipping (int): The number of slice allowed to consecutively skip by the algorithm.
+
+        seg_type (AortaGeomReconEnums.SegmentType): Indicate the segmentation type, Descending aorta segmentation or Ascending aorta
+
+        qualified_coef (float): This coefficient controls the lower and upper threshold of the number of white pixels to determine whether to accept each segmented slice or not.
+
+        cropped_image (SITK::image): The original image that the user has only perform cropping.
+
+        processing_image (SITK::image): The processing image, this image could be none when performing descending aorta segmentation. When performing ascending aorta segmentation, it should have the Descending aorta segmentation result.
+
+    """ # noqa
 
     def __init__(
             self, cropped_image, starting_slice, aorta_centre,
             num_slice_skipping, processing_image, seg_type,
-            qualified_coef=2.2, label_stats_coef=3.5
+            qualified_coef=2.2, threshold_coef=3.5
     ):
         self._starting_slice = starting_slice
         self._aorta_centre = aorta_centre
         self._num_slice_skipping = num_slice_skipping
         self._seg_type = seg_type
-        if seg_type == SegmentType.sagittal_front:
-            self._seg_type = SegmentType.sagittal
         self._processing_image = processing_image
         self._qualified_coef = qualified_coef
-        self._label_stats_coef = label_stats_coef
+        self._threshold_coef = threshold_coef
         self._cropped_image = cropped_image
 
     def __is_overlapping(self, img1, i):
-        """Compare the current segmented slice with the previous two slices,
-        return True if any overlaps otherwise False
+        """Compare the current 2D segmented slice with the previous two processed 2D slices,
+        return True if there are any voxel intersect or overlaps on each other between the new slice and processed slice.
 
         Returns:
-            Boolean: comparison result
+            Boolean
+
         """ # noqa
         img2 = self._processing_image[:, :, i]
         overlap = np.count_nonzero(img1 * img2)
@@ -53,15 +69,26 @@ class AortaSegmenter():
 
     @property
     def cropped_image(self):
+        """cropped image getter. The cropped image is the untouched cropped image that user has input.
+
+        """ # noqa
         return self._cropped_image
 
     @property
     def processing_image(self):
+        """processing image getter. The prcoessing image is the segmentation result.
+
+        """ # noqa
         return self._processing_image
 
     def begin_segmentation(self):
-        """The public method to process segmentation.
-        """
+        """The api is available to the user's to perform axial segmentation.
+        Depending on the user's inputs, it will perform Descending aorta segmentation or Ascending aorta segmentation.
+        It first set up a few variables, get the original seed values,
+        then jump to the main loop which perform segmentation superior to inferior from the user's seed slice,
+        and the main loop that performs segmentation inferior to superior from the user's seed slice.
+
+        """ # noqa
         rms_error = 0.02
         no_iteration = 600
         curvature_scaling = 0.5
@@ -148,9 +175,13 @@ class AortaSegmenter():
                 self.__filling_missing_slices()
 
     def __segmentation(self):
-        """From the starting slice to the superior or the inferior,
-        use label statistics to see if a circle can be segmented.
-        """
+        """The main loop of the segmentation algorithm.
+        For each axial slice, the algorithm performs segmetation with get_image_segment function.
+        Next, the algorithm counts the number of white pixels of the segmentation result, and calculates a new centre based on the result.
+        Finally, the algorithm decides whether to accept the new slice or not. If accepted, the new centre will be used as seed for next slice's segmentation.
+        If not, and it reached the point where maximum consecutive skips is allowed, the algorithm hault and return the segmentation result.
+
+        """ # noqa
         counter = 0
         is_overlapping = False
         for slice_i in range(self._start, self._end, self._step):
@@ -191,7 +222,15 @@ class AortaSegmenter():
             self._previous_size = total_coord
 
     def __is_new_centre_qualified(self, total_coord, is_overlapping):
-        """Return True if the number of coordiante in the segmented centre is qualified
+        """Return True if it satisfies the following conditions:
+        
+        1. The number of white pixels of the segmented result is smaller than the previous size multiplis some ratio (the ratio could change depends on the segmentation type).
+        
+        2. The number of white pixels is smaller than qualified cofficient multiply the number of white pixels of the user's selected slice.
+        
+        3. The number of white pixels is larger than the number of white pixels of the user's selected slice divided by the qualified coefficient.
+
+        Notes that in some cases, the conditions might change the qualified coefficient to some other values depending on the segmentation type and segmentation direction.
 
         Returns:
             Boolean
@@ -233,11 +272,11 @@ class AortaSegmenter():
         return cmp_prev_size and slicer_larger_than and cmp_original_size
 
     def __prepare_seed(self):
-        """Get a seed from the original image. We will add extra space
-        and use it to get the labeled image statistics.
+        """Get a seed from the original image. The algorithm will overwrite three pixels as white pixels. The pixels are decided by the previous centre, derived by count_pixels function.
+        For ascending aorta segmentation, the algorithm also takes extra seeds.
 
         Returns:
-            SITK::IMAGE: An image slice with aorta centre and some extra spacing.
+            SITK::IMAGE: An image slice with some pixels value overwrite to white pixel (value of 1)
         """ # noqa
         seed = sitk.Image(self._cur_img_slice.GetSize(), sitk.sitkUInt8)
         seed.CopyInformation(self._cur_img_slice)
@@ -252,12 +291,14 @@ class AortaSegmenter():
         return seed
 
     def __get_image_segment(self):
-        """Use SITK::LabelStatisticsImageFilter to derive a 2d circle image (seed).
+        """Use SITK::LabelStatisticsImageFilter to get the mean of the intensity values of white pixel (label of 1).
+        Use the mean to calculate the threshold for segmentation image filter.
         Use SITK::SignedMaurerDistanceMap to calculate the signed squared Euclidean distance transform of the circle.
-        Get segmented image slice based on the seed image.
+        Finally, get the segmentation value with the Euclidean distance transform.
 
         Returns:
             numpy.ndarray: Segmented image slice based on intensity values.
+
         """ # noqa
         seed = self.__prepare_seed()
 
@@ -265,9 +306,9 @@ class AortaSegmenter():
         stats = sitk.LabelStatisticsImageFilter()
         stats.Execute(self._cur_img_slice, seed)
         lower_threshold = (
-            stats.GetMean(1) - self._label_stats_coef*stats.GetSigma(1))
+            stats.GetMean(1) - self._threshold_coef*stats.GetSigma(1))
         upper_threshold = (
-            stats.GetMean(1) + self._label_stats_coef*stats.GetSigma(1))
+            stats.GetMean(1) + self._threshold_coef*stats.GetSigma(1))
 
         # calculate the Euclidean distance transform
         init_ls = sitk.SignedMaurerDistanceMap(
@@ -283,14 +324,12 @@ class AortaSegmenter():
         return ls
 
     def __count_pixel_des(self, new_slice):
-        """Use segmented slice to calculate the number of white pixels,
-        and the new derived centre
-        for descending aorta segmentation.
+        """Get the number of white pixels, and calculate a new centre based on the segmentation result.
 
         Returns:
             (tuple): tuple containing:
-                int: The total number of the counted X coordinates
-                tupple: The new derived centre calculated by the mean of counted X coordinates and Y coordinates
+                int: The total number of the white pixels.
+                tuple: The new derived centre calculated by the mean of white pixe's X coordinates and Y coordinates.
         """ # noqa
         # assign segmentation to fully_seg_slice
         # get array from segmentation
@@ -301,13 +340,13 @@ class AortaSegmenter():
         return total_coord, new_centre
 
     def __count_pixel_asc(self, new_slice):
-        """Use segmented slice to calculate the number of white pixels,
-        and the new centre based on the segmented result.
+        """Get the number of white pixels, and calculate a new centre based on the segmentation result.
+        This function adds extra seeds with the mean of white pixels' white coordinate.
 
         Returns:
             (tuple): tuple containing:
-                int: The total number of the X coordinates where it is white pixel
-                tupple: The new derived centre calculated by the mean of X coordinates and Y coordinates of white pixels
+                int: The total number of the white pixels.
+                tuple: The new derived centre calculated by the mean of white pixe's X coordinates and Y coordinates.
                 list: More possible coordinates based on the new derived centre
         """ # noqa
         nda = sitk.GetArrayFromImage(new_slice)
