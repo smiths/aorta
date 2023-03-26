@@ -107,23 +107,9 @@ class AortaSegmenter():
             self._processing_image = sitk.Image(
                 self._cropped_image.GetSize(), sitk.sitkUInt8)
             self._processing_image.CopyInformation(self._cropped_image)
-        if self._seg_type == SegmentType.sagittal:
-            self._total_pixels = (
-                self._processing_image.GetHeight()
-                * self._processing_image.GetDepth()
-            )
-        else:
-            self._total_pixels = (
-                self._processing_image.GetWidth()
-                * self._processing_image.GetDepth()
-            )
         self._seg_dir = None
         self._original_size = None
         self._seeds = None
-        max_aorta_slice = 5000
-        # minimum number of pixels on a slice for us
-        # to run the sagittal function
-        self._base_pixel_value = self._total_pixels / max_aorta_slice
         self._is_size_decreasing = False
         if SegmentType.is_axial_seg(self._seg_type):
             # Get more values from the seed slice
