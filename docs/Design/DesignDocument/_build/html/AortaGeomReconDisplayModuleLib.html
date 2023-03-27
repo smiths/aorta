@@ -445,7 +445,7 @@ return True if there are any voxel intersect or overlaps on each other between t
 <dt class="sig sig-object py" id="AortaSegmenter.AortaSegmenter.__prepare_seed">
 <span class="sig-name descname"><span class="pre">__prepare_seed</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#AortaSegmenter.AortaSegmenter.__prepare_seed" title="Permalink to this definition"></a></dt>
 <dd><p>Get a seed from the original image. The algorithm will overwrite three pixels as white pixels. The pixels are decided by the previous centre, derived by count_pixels function.
-For ascending aorta segmentation, the algorithm also takes extra seeds.</p>
+For ascending aorta segmentation, the algorithm also takes extra seeds. These seeds will then dilate with 3*3 grid</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>An image slice with some pixels value overwrite to white pixel (value of 1)</p>

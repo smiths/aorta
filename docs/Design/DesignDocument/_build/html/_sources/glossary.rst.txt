@@ -40,7 +40,7 @@ Glossary of Terms Used in AortaGeomRecon Documentation
            Threshold coefficient is fixed at 3.5 for now. To let the user choses the values, we need to implement an UI parameter in AortaGeomReconDisplay module (our 3D Slicer extension module), and mapped the value from UI to the logic module.
 
     Qualified coefficient
-        This coefficient is used when comparing the number of the white pixels of the new slice to the number of the white pixels of the user's chosen seed slice. The larger the coefficient, the looser the condition to accept the new slice.
+        This coefficient is used when comparing the number of the white pixels of the new segmented slice to the number of the white pixels of the user's chosen seed slice. The larger the coefficient, the looser the condition to accept the new segmented slice.
 
     Euclidean distance transform
         The euclidean distance transform is the map labeling each pixel of the image with the distance to the nearest obstacle pixel (black pixel for this project).
