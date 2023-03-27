@@ -42,6 +42,9 @@ Glossary of Terms Used in AortaGeomRecon Documentation
     Qualified coefficient
         This coefficient is used when comparing the number of the white pixels of the new slice to the number of the white pixels of the user's chosen seed slice. The larger the coefficient, the looser the condition to accept the new slice.
 
+    Euclidean distance transform
+        The euclidean distance transform is the map labeling each pixel of the image with the distance to the nearest obstacle pixel (black pixel for this project).
+
     DICOM
         Digital Imaging and Communications in Medicine (DICOM) is the standard for the communication and management of medical imaging information and related data.
 
