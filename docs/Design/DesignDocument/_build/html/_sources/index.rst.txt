@@ -27,21 +27,15 @@ After cropping the volume, which only contains the region of interest, the algor
 The main ideas of the algorithm
 *******************************
 
-At the beginning of the algorithm, the user's input on the aorta centre is used to generate the seed slice, 2-dimensional circle image. This seed slice will be used as a reference throughout the workflow of the algorithm. Therefore, changing the input of the centre coordinate could generate a slightly different segmentation result.
+At the beginning of the algorithm, the user's inputs two integers indicate the aorta centre. This coordinate is to generate the seed slice, 2-dimensional circle image. This seed slice will be used as a reference throughout the workflow of the algorithm. Therefore, changing the input of the centre coordinate could generate a slightly different segmentation result.
 
-For each slice starting from the user's selected slice going in the inferior or superior direction
+For each slice starting from the user's selected slice going in the :term:`inferior` or :term:`superior` direction
 
 1. The algorithm generates a label image by making a grid spacing 3 pixels aparts, overwrites the values of these pixels to white pixel (value of 1).
 
-2. By using `SITK\:\:LabelStatisticsImageFilter <https://simpleitk.org/doxygen/latest/html/classitk_1_1simple_1_1LabelStatisticsImageFilter.html>`_, we get the mean and the sigma of the intensity image with the white pixel.  
-
-    .. note::
-
-       A :term:`Label Statistic coefficient` is used to control the threshold range. With a Larger label statistic coefficient, the algorithm will use a larger range of threshold to perform segmentation.
-
+2. By using `SITK\:\:LabelStatisticsImageFilter <https://simpleitk.org/doxygen/latest/html/classitk_1_1simple_1_1LabelStatisticsImageFilter.html>`_, the algorithm gets the mean and the sigma of the intensity image with the white pixel. The algorithm uses :term:`Threshold coefficient` to calculate the lower and upper threshold to be used in the following steps.
 
 3. The algorithm then creates another image, the Euclidean distance transform of a binary image as the image intensity map, and uses it with `SITK\:\:ThresholdSegmentationLevelSetImageFilter <https://simpleitk.org/doxygen/latest/html/classitk_1_1simple_1_1ThresholdSegmentationLevelSetImageFilter.html>`_ to create a segmented slice.
-
 
 4. The algorithm determines whether to accept the segmented slice or not, based on the number of white pixels on the segmented slice, and the qualified coefficient to control the limit.
 
@@ -92,7 +86,7 @@ The pseudocode of the algorithm
       stats = sitk.LabelStatisticsImageFilter()
       stats.Execute(curr_slice, seed)
       # Threshold for SITK::ThresholdSegmentationLevelSetImageFilter
-      # stats.GetMean(white_pixel) returns the mean value of the intensity regions
+      # stats.GetMean(white_pixel) returns the mean intensity values of the pixels labeled white pixels.
       # i.e the pixels around the white_pixel are within these range of thresholds
       # The pixel far from the white_pixel have lower intensity value
       lower_threshold = (stats.GetMean(white_pixel) - label_stats_coef*stats.GetSigma(white_pixel))
