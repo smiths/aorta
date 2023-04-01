@@ -18,8 +18,8 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Glossary of Terms Used in AortaGeomRecon Documentation" href="glossary.html" />
-    <link rel="prev" title="test package" href="test.html" /> 
+    <link rel="next" title="test package" href="test.html" />
+    <link rel="prev" title="AortaGeomReconModule" href="modules.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -44,7 +44,6 @@
               <p class="caption" role="heading"><span class="caption-text">Modules documentation:</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="modules.html">AortaGeomReconModule</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="test.html">test package</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">AortaGeomReconDisplayModuleLib package</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#submodules">Submodules</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#module-AortaGeomReconEnums">AortaGeomReconEnums module</a><ul>
@@ -64,6 +63,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#module-AortaGeomReconDisplayModuleLib">Module contents</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="test.html">test package</a></li>
 </ul>
 </li>
 </ul>
@@ -442,8 +442,8 @@ return True if there are any voxel intersect or overlaps on each other between t
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="AortaSegmenter.AortaSegmenter.__prepare_seed">
-<span class="sig-name descname"><span class="pre">__prepare_seed</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#AortaSegmenter.AortaSegmenter.__prepare_seed" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="AortaSegmenter.AortaSegmenter.__prepare_label_map">
+<span class="sig-name descname"><span class="pre">__prepare_label_map</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#AortaSegmenter.AortaSegmenter.__prepare_label_map" title="Permalink to this definition"></a></dt>
 <dd><p>Get a seed from the original image. The algorithm will overwrite three pixels as white pixels. The pixels are decided by the previous centre, derived by count_pixels function.
 For ascending aorta segmentation, the algorithm also takes extra seeds. These seeds will then dilate with 3*3 grid</p>
 <dl class="field-list simple">
@@ -500,8 +500,8 @@ and the main loop that performs segmentation inferior to superior from the user�
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="test.html" class="btn btn-neutral float-left" title="test package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="glossary.html" class="btn btn-neutral float-right" title="Glossary of Terms Used in AortaGeomRecon Documentation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="modules.html" class="btn btn-neutral float-left" title="AortaGeomReconModule" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="test.html" class="btn btn-neutral float-right" title="test package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

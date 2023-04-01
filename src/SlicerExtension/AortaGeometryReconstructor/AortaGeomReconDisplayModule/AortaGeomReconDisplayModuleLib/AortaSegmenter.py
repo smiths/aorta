@@ -257,24 +257,24 @@ class AortaSegmenter():
                 )
         return cmp_prev_size and slicer_larger_than and cmp_original_size
 
-    def __prepare_seed(self):
+    def __prepare_label_map(self):
         """Get a seed from the original image. The algorithm will overwrite three pixels as white pixels. The pixels are decided by the previous centre, derived by count_pixels function.
-        For ascending aorta segmentation, the algorithm also takes extra seeds.
+        For ascending aorta segmentation, the algorithm also takes extra seeds. These seeds will then dilate with 3*3 grid
 
         Returns:
             SITK::IMAGE: An image slice with some pixels value overwrite to white pixel (value of 1)
         """ # noqa
-        seed = sitk.Image(self._cur_img_slice.GetSize(), sitk.sitkUInt8)
-        seed.CopyInformation(self._cur_img_slice)
+        label_map = sitk.Image(self._cur_img_slice.GetSize(), sitk.sitkUInt8)
+        label_map.CopyInformation(self._cur_img_slice)
         # add original seed and additional seeds three pixels apart
         spacing = 3
         for j in range(-1, 2):
             seed_with_space = self._prev_centre[0] + spacing * j
-            seed[(seed_with_space, self._prev_centre[1])] = 1
+            label_map[(seed_with_space, self._prev_centre[1])] = 1
         for s in self._prev_seeds:
-            seed[s] = 1
-        seed = sitk.BinaryDilate(seed, [3] * 2)
-        return seed
+            label_map[s] = 1
+        label_map = sitk.BinaryDilate(label_map, [3] * 2)
+        return label_map
 
     def __get_image_segment(self):
         """Use SITK::LabelStatisticsImageFilter to get the mean of the intensity values of white pixel (label of 1).
@@ -286,19 +286,19 @@ class AortaSegmenter():
             numpy.ndarray: Segmented image slice based on intensity values.
 
         """ # noqa
-        seed = self.__prepare_seed()
+        label_map = self.__prepare_label_map()
 
         # determine threshold values based on seed location
         stats = sitk.LabelStatisticsImageFilter()
-        stats.Execute(self._cur_img_slice, seed)
+        stats.Execute(self._cur_img_slice, label_map)
         lower_threshold = (
             stats.GetMean(1) - self._threshold_coef*stats.GetSigma(1))
         upper_threshold = (
             stats.GetMean(1) + self._threshold_coef*stats.GetSigma(1))
 
         # calculate the Euclidean distance transform
-        init_ls = sitk.SignedMaurerDistanceMap(
-            seed, insideIsPositive=True, useImageSpacing=True)
+        dis_map = sitk.SignedMaurerDistanceMap(
+            label_map, insideIsPositive=True, useImageSpacing=True)
 
         # use filter to apply threshold to image
         # segment the aorta using the seed values and threshold values
@@ -306,7 +306,7 @@ class AortaSegmenter():
         self._segment_filter.SetUpperThreshold(upper_threshold)
 
         ls = self._segment_filter.Execute(
-            init_ls, sitk.Cast(self._cur_img_slice, sitk.sitkFloat32))
+            dis_map, sitk.Cast(self._cur_img_slice, sitk.sitkFloat32))
         return ls
 
     def __count_pixel_des(self, new_slice):
