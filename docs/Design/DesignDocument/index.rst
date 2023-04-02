@@ -41,24 +41,10 @@ The user's chosen slice will be used as a reference throughout the workflow of t
 
 For each slice starting from the user's selected slice going in the :term:`inferior` or :term:`superior` direction
 
-1. The algorithm generates a label map with a circle-like shape around the centre coordinate by labeling the centre pixel to a white pixel (value of 1), then use `SITK\:\:BinaryDilateImageFilter <https://simpleitk.org/doxygen/latest/html/classitk_1_1simple_1_1BinaryDilateImageFilter.html>`_ to populate the circle-like shape, where each of the pixels is assigned to white pixels.
+1. The algorithm generates a :term:`label map` withs a circle-like shape around the centre coordinate by labeling the centre pixel to a white pixel label(value of 1), then use `SITK\:\:BinaryDilateImageFilter <https://simpleitk.org/doxygen/latest/html/classitk_1_1simple_1_1BinaryDilateImageFilter.html>`_ to perform :term:`binary dilation` to generate the circle-like shape, where each of the pixels in the circle is assigned to white pixel label.
 
-      .. note::
-         A label map or a label image is an image that label each pixel of a source image. For example, the time zone map shown below has 4 labels to label the time zone for each state in U.S.
 
-         .. image:: united-states-map.png
-           :height: 400
-           :alt: U.S. time zone map
-
-      .. note::
-         The mathematical definition of dilation for binary images is as follows:
-            Suppose that X is the set of Euclidean coordinates corresponding to the input binary image, and that K is the set of coordinates for the structuring element (kernel).
-
-            Let Kx denote the translation of K so that its origin is at x.
-
-            Then the dilation of X by K is simply the set of all points x such that the intersection of Kx with X is non-empty.
-
-2. By using `SITK\:\:LabelStatisticsImageFilter <https://simpleitk.org/doxygen/latest/html/classitk_1_1simple_1_1LabelStatisticsImageFilter.html>`_, the algorithm gets the mean and the sigma of the pixels labeled as white pixels. The algorithm uses :term:`Threshold coefficient` to calculate the lower and upper threshold to be used in the following steps.
+2. By using `SITK\:\:LabelStatisticsImageFilter <https://simpleitk.org/doxygen/latest/html/classitk_1_1simple_1_1LabelStatisticsImageFilter.html>`_, the algorithm gets the mean and the sigma of the pixels labeled as white pixel label. The algorithm uses :term:`Threshold coefficient` to calculate the lower and upper threshold to be used in the following steps.
 
 
 3. The algorithm then creates another image with `SITK\:\:SignedMaurerDistanceMapImageFilter <https://simpleitk.org/doxygen/latest/html/classitk_1_1simple_1_1SignedMaurerDistanceMapImageFilter.html>`_, the :term:`Euclidean distance transform` of a binary image as the image intensity map, and uses it in `SITK\:\:ThresholdSegmentationLevelSetImageFilter <https://simpleitk.org/doxygen/latest/html/classitk_1_1simple_1_1ThresholdSegmentationLevelSetImageFilter.html>`_ and the threshold range mentioned above to create a :term:`Segmented slice`.

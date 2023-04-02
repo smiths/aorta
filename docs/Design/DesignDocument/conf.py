@@ -17,13 +17,16 @@ import sys
 project_path = os.path.abspath('../../../')
 test_path = os.path.join(project_path, "test")
 sys.path.insert(0, test_path)
-AGR_module_path = os.path.join(project_path, "src/SlicerExtension/")
-AGR_module_path = os.path.join(AGR_module_path, "AortaGeometryReconstructor/")
+AGR_module_path = os.path.join(project_path, "src")
+AGR_module_path = os.path.join(AGR_module_path, "SlicerExtension")
+AGR_module_path = os.path.join(AGR_module_path, "AortaGeometryReconstructor")
 AGR_module_path = os.path.join(AGR_module_path, "AortaGeomReconDisplayModule")
 sys.path.insert(0, AGR_module_path)
 AGR_lib_module_path = os.path.join(AGR_module_path, "AortaGeomReconDisplayModuleLib")
 sys.path.insert(0, AGR_lib_module_path)
 sys.path.insert(0, project_path)
+
+print(sys.path)
 
 
 

@@ -13,8 +13,10 @@
   <![endif]-->
   
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
-        <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -101,25 +103,8 @@
 <p>The user’s chosen slice will be used as a reference throughout the workflow of the algorithm. Therefore, changing the input of the centre coordinate and different slices could generate a slightly different segmentation result</p>
 <p>For each slice starting from the user’s selected slice going in the <a class="reference internal" href="glossary.html#term-inferior"><span class="xref std std-term">inferior</span></a> or <a class="reference internal" href="glossary.html#term-superior"><span class="xref std std-term">superior</span></a> direction</p>
 <ol class="arabic">
-<li><p>The algorithm generates a label map with a circle-like shape around the centre coordinate by labeling the centre pixel to a white pixel (value of 1), then use <a class="reference external" href="https://simpleitk.org/doxygen/latest/html/classitk_1_1simple_1_1BinaryDilateImageFilter.html">SITK::BinaryDilateImageFilter</a> to populate the circle-like shape, where each of the pixels is assigned to white pixels.</p>
-<blockquote>
-<div><div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>A label map or a label image is an image that label each pixel of a source image. For example, the time zone map shown below has 4 labels to label the time zone for each state in U.S.</p>
-<a class="reference internal image-reference" href="_images/united-states-map.png"><img alt="U.S. time zone map" src="_images/united-states-map.png" style="height: 400px;" /></a>
-</div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<dl>
-<dt>The mathematical definition of dilation for binary images is as follows:</dt><dd><p>Suppose that X is the set of Euclidean coordinates corresponding to the input binary image, and that K is the set of coordinates for the structuring element.</p>
-<p>Let Kx denote the translation of K so that its origin is at x.</p>
-<p>Then the dilation of X by K is simply the set of all points x such that the intersection of Kx with X is non-empty.</p>
-</dd>
-</dl>
-</div>
-</div></blockquote>
-</li>
-<li><p>By using <a class="reference external" href="https://simpleitk.org/doxygen/latest/html/classitk_1_1simple_1_1LabelStatisticsImageFilter.html">SITK::LabelStatisticsImageFilter</a>, the algorithm gets the mean and the sigma of the pixels labeled as white pixels. The algorithm uses <a class="reference internal" href="glossary.html#term-Threshold-coefficient"><span class="xref std std-term">Threshold coefficient</span></a> to calculate the lower and upper threshold to be used in the following steps.</p></li>
+<li><p>The algorithm generates a <a class="reference internal" href="glossary.html#term-label-map"><span class="xref std std-term">label map</span></a> withs a circle-like shape around the centre coordinate by labeling the centre pixel to a white pixel label(value of 1), then use <a class="reference external" href="https://simpleitk.org/doxygen/latest/html/classitk_1_1simple_1_1BinaryDilateImageFilter.html">SITK::BinaryDilateImageFilter</a> to perform <a class="reference internal" href="glossary.html#term-binary-dilation"><span class="xref std std-term">binary dilation</span></a> to generate the circle-like shape, where each of the pixels in the circle is assigned to white pixel label.</p></li>
+<li><p>By using <a class="reference external" href="https://simpleitk.org/doxygen/latest/html/classitk_1_1simple_1_1LabelStatisticsImageFilter.html">SITK::LabelStatisticsImageFilter</a>, the algorithm gets the mean and the sigma of the pixels labeled as white pixel label. The algorithm uses <a class="reference internal" href="glossary.html#term-Threshold-coefficient"><span class="xref std std-term">Threshold coefficient</span></a> to calculate the lower and upper threshold to be used in the following steps.</p></li>
 <li><p>The algorithm then creates another image with <a class="reference external" href="https://simpleitk.org/doxygen/latest/html/classitk_1_1simple_1_1SignedMaurerDistanceMapImageFilter.html">SITK::SignedMaurerDistanceMapImageFilter</a>, the <a class="reference internal" href="glossary.html#term-Euclidean-distance-transform"><span class="xref std std-term">Euclidean distance transform</span></a> of a binary image as the image intensity map, and uses it in <a class="reference external" href="https://simpleitk.org/doxygen/latest/html/classitk_1_1simple_1_1ThresholdSegmentationLevelSetImageFilter.html">SITK::ThresholdSegmentationLevelSetImageFilter</a> and the threshold range mentioned above to create a <a class="reference internal" href="glossary.html#term-Segmented-slice"><span class="xref std std-term">Segmented slice</span></a>.</p></li>
 <li><p>The algorithm determines whether to accept the <a class="reference internal" href="glossary.html#term-Segmented-slice"><span class="xref std std-term">Segmented slice</span></a> or not, based on the number of white pixels on the segmented slice, and the <a class="reference internal" href="glossary.html#term-Qualified-coefficient"><span class="xref std std-term">Qualified coefficient</span></a> to control the limit.</p>
 <blockquote>

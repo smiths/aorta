@@ -26,6 +26,35 @@ Glossary of Terms Used in AortaGeomRecon Documentation
     Slice
         A 2 dimensional image retrived from a 3 dimensional volume.
 
+    label map
+         A label map or a label image is an image that label each pixel of a source image. For example, the time zone map shown below has 4 labels to label the time zone for each state in U.S.
+
+         .. figure:: united-states-map.png
+           :height: 400
+           :alt: U.S. time zone map
+
+           U.S. time zone map with 4 labels.
+
+    binary dilation
+        Binary dilation is a mathematical morphology operation that uses a structuring element (kernel) for expanding the shapes in an image. Using `scipy.binary_dilation <https://docs.scipy.org/doc/scipy/reference/generated/scipy.ndimage.binary_dilation.html>`_ as example:
+
+         .. code-block:: console
+
+            >>> from scipy import ndimage
+            >>> a
+            array([[ 0.,  0.,  0.,  0.,  0.],
+                   [ 0.,  0.,  0.,  0.,  0.],
+                   [ 0.,  0.,  1.,  0.,  0.],
+                   [ 0.,  0.,  0.,  0.,  0.],
+                   [ 0.,  0.,  0.,  0.,  0.]])
+            >>> # the default kernel shape of scipy is a 3x3 structuring element with connectivity 1
+            >>> ndimage.binary_dilation(a).astype(a.dtype)
+            array([[ 0.,  0.,  0.,  0.,  0.],
+                   [ 0.,  0.,  1.,  0.,  0.],
+                   [ 0.,  1.,  1.,  1.,  0.],
+                   [ 0.,  0.,  1.,  0.,  0.],
+                   [ 0.,  0.,  0.,  0.,  0.]])
+
     Segmented slice
         A 2 dimensinoal image retrivied by applying `SITK\:\:ThresholdSegmentationLevelSetImageFilter <https://simpleitk.org/doxygen/latest/html/classitk_1_1simple_1_1ThresholdSegmentationLevelSetImageFilter.html>`_ with the euclidean distance transform image and the original image.
 
@@ -44,6 +73,11 @@ Glossary of Terms Used in AortaGeomRecon Documentation
 
     Euclidean distance transform
         The euclidean distance transform is the map labeling each pixel of the image with the distance to the nearest obstacle pixel (black pixel for this project).
+
+        .. figure:: Distance_Transformation.gif
+           :alt: Distance transformation
+
+           The euclidean distance tranform image
 
     DICOM
         Digital Imaging and Communications in Medicine (DICOM) is the standard for the communication and management of medical imaging information and related data.
