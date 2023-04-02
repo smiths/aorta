@@ -8,6 +8,7 @@ AGR_module_path = os.path.join(project_path, "src/SlicerExtension/")
 AGR_module_path = os.path.join(AGR_module_path, "AortaGeometryReconstructor/")
 AGR_module_path = os.path.join(AGR_module_path, "AortaGeomReconDisplayModule")
 sys.path.insert(0, AGR_module_path)
+np.set_printoptions(threshold=sys.maxsize)
 
 from AortaGeomReconDisplayModuleLib.AortaGeomReconEnums import SegmentDirection as SegDir # noqa
 from AortaGeomReconDisplayModuleLib.AortaGeomReconEnums import SegmentType # noqa
@@ -38,7 +39,7 @@ class AortaSegmenter():
     def __init__(
             self, cropped_image, starting_slice, aorta_centre,
             num_slice_skipping, processing_image, seg_type,
-            qualified_coef=2.2, threshold_coef=3.5
+            qualified_coef=2.2, threshold_coef=3.5, debug=False
     ):
         self._starting_slice = starting_slice
         self._aorta_centre = aorta_centre
@@ -48,6 +49,7 @@ class AortaSegmenter():
         self._qualified_coef = qualified_coef
         self._threshold_coef = threshold_coef
         self._cropped_image = cropped_image
+        self._debug_mod = debug
 
     def __is_overlapping(self, img1, i):
         """Compare the current 2D segmented slice with the previous two processed 2D slices,
@@ -129,6 +131,10 @@ class AortaSegmenter():
             total_coord, centre, seeds = self.__count_pixel_asc(new_slice)
             self._processing_image[:, :, slice_num] = (
                 new_slice | self._processing_image[:, :, slice_num])
+
+        if self._debug_mod:
+            return
+
         self._prev_seeds = seeds
         self._original_size = total_coord
         self._previous_size = total_coord
@@ -307,6 +313,21 @@ class AortaSegmenter():
 
         ls = self._segment_filter.Execute(
             dis_map, sitk.Cast(self._cur_img_slice, sitk.sitkFloat32))
+        if self._debug_mod:
+            nda = sitk.GetArrayFromImage(dis_map)
+            print("lower:", lower_threshold, "upper:", upper_threshold)
+            list_x, list_y = np.where(sitk.GetArrayFromImage(label_map) == 1)
+            print(len(list_x))
+            print("\ndistance_map") # , sitk.GetArrayFromImage(dis_map))
+            print(nda)
+            print()
+            for i in range(len(list_x)):
+                print(list_x[i], list_y[i], end=" ")
+                print(nda[(list_x[i],list_y[i])])
+            nda_ls = sitk.GetArrayFromImage(ls)
+            list_x, list_y = np.where(nda_ls > 0)
+            for i in range(len(list_x)):
+                print(list_x[i], list_y[i])
         return ls
 
     def __count_pixel_des(self, new_slice):
@@ -323,6 +344,9 @@ class AortaSegmenter():
         list_x, list_y = np.where(nda == 1)
         new_centre = (int(np.average(list_y)), int(np.average(list_x)))
         total_coord = len(list_x)
+        if self._debug_mod:
+            print(total_coord)
+            print(self._aorta_centre, new_centre)
         return total_coord, new_centre
 
     def __count_pixel_asc(self, new_slice):
@@ -337,50 +361,38 @@ class AortaSegmenter():
         """ # noqa
         nda = sitk.GetArrayFromImage(new_slice)
         new_centre = [0, 0]
-
         list_y, _ = np.where(nda == 1)
         max_y = max(list_y)
         min_y = min(list_y)
-
         total_coord = len(list_y)
-
         new_centre[1] = int(sum(list_y) / len(list_y))
         height = max_y - min_y
-
         list_x = np.where(nda[new_centre[1]] == 1)[0]
         width = len(list_x)
-
         if (width == 0):
             _, list_x = np.where(nda == 1)
         new_centre[0] = int(np.average(list_x))
-
         new_seeds = []
         y1 = int((max_y + new_centre[1])/2)
         y2 = int((min_y + new_centre[1])/2)
-
         next_seed_x1_list = np.where(nda[y1] == 1)[0]
         next_seed_x2_list = np.where(nda[y2] == 1)[0]
         width1 = len(next_seed_x1_list)
         width2 = len(next_seed_x2_list)
-
         if (width1 > width / 2):
             new_seeds.append([int(np.average(next_seed_x1_list)), y1])
         if (width2 > width / 2):
             new_seeds.append([int(np.average(next_seed_x2_list)), y2])
-
         x3 = int(new_centre[0] + width/2)
         x4 = int(new_centre[0] - width/2)
-
         next_seed_y3_list = np.where(nda[:, x3] == 1)[0]
         next_seed_y4_list = np.where(nda[:, x4] == 1)[0]
         height3 = len(next_seed_y3_list)
         height4 = len(next_seed_y4_list)
-
         if (height3 > height / 2):
             new_seeds.append([x3, int(np.average(next_seed_y3_list))])
         if (height4 > height / 2):
             new_seeds.append([x4, int(np.average(next_seed_y4_list))])
-
         return total_coord, new_centre, new_seeds
 
     def __filling_missing_slices(self):

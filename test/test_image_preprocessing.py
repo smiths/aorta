@@ -259,10 +259,6 @@ def test_compare_des(limit, qualifiedCoef, thresholdCoef, testCase):
     nda_test = sitk.GetArrayFromImage(test_image)
     DSC_error = 1-DSC(nda_ref, nda_test)
     print_result(nda_ref, nda_test, SegType.descending_aorta)
-    writer = sitk.ImageFileWriter()
-    writer.SetImageIO("VTKImageIO")
-    writer.SetFileName("des_test_case3.vtk")
-    writer.Execute(test_image)
     assert (DSC_error < limit)
     return test_image
 
@@ -329,10 +325,6 @@ def test_compare_asc(
     nda_test = sitk.GetArrayFromImage(test_image)
     DSC_error = 1-DSC(nda_ref, nda_test)
     print_result(nda_ref, nda_test, SegType.ascending_aorta)
-    writer = sitk.ImageFileWriter()
-    writer.SetImageIO("VTKImageIO")
-    writer.SetFileName("asc_test_case2.vtk")
-    writer.Execute(test_image)
     assert (DSC_error < limit)
     return test_image
 
@@ -419,3 +411,52 @@ def test_compare_final_volume(
     print_result(nda_ref, nda_test)
     assert (DSC_error < limit)
     return test_image
+
+def test_debug(limit, qualifiedCoef, thresholdCoef, testCase):
+    """Read a test cases' cropped volume from /project-repo/test/sample,
+    perform descending aorta segmentation,
+    and compare the result with the existing volume from /project-repo/test/sample.
+
+    Args:
+        limit (float): the maximum Dice similarity coefficient difference allowed to pass the test.
+
+        qualifiedCoef (float): the qualified coefficient value to process descending aorta segmentation.
+
+        thresholdCoef (float): the factor used to determine the lower and upper threshold for label statistics image filter.
+
+        testCase (int): the test case to run the test (0-5).
+
+    Returns:
+        Boolean: Pass the test if the Sørensen–Dice coefficient between test image and reference image is within the limit set by user.
+    """ # noqa
+    starting_slice = 829
+    aorta_centre = [23, 28]
+    cropped_image = get_cropped_volume_image(testCase)
+    cropped_image = transform_image(cropped_image)
+    if testCase == 1:
+        starting_slice = 857
+        aorta_centre = [90, 34]
+    elif testCase == 2:
+        starting_slice = 1202
+        aorta_centre = [20, 15]
+    elif testCase == 3:
+        starting_slice = 962
+        aorta_centre = [38, 26]
+    elif testCase == 4:
+        starting_slice = 824
+        aorta_centre = [19, 20]
+    elif testCase == 5:
+        starting_slice = 919
+        aorta_centre = [29, 15]
+    desc_axial_segmenter = AortaSegmenter(
+        cropped_image=cropped_image,
+        starting_slice=starting_slice, aorta_centre=aorta_centre,
+        num_slice_skipping=3,
+        qualified_coef=qualifiedCoef,
+        threshold_coef=thresholdCoef,
+        processing_image=None,
+        seg_type=SegType.descending_aorta,
+        debug=True
+    )
+
+    desc_axial_segmenter.begin_segmentation()

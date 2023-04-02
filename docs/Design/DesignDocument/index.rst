@@ -41,10 +41,10 @@ The user's chosen slice will be used as a reference throughout the workflow of t
 
 For each slice starting from the user's selected slice going in the :term:`inferior` or :term:`superior` direction
 
-1. The algorithm generates a :term:`label map` withs a circle-like shape around the centre coordinate by labeling the centre pixel to a white pixel label(value of 1), then use `SITK\:\:BinaryDilateImageFilter <https://simpleitk.org/doxygen/latest/html/classitk_1_1simple_1_1BinaryDilateImageFilter.html>`_ to perform :term:`binary dilation` to generate the circle-like shape, where each of the pixels in the circle is assigned to white pixel label.
+1. The algorithm generates a :term:`label map` withs a circle-like shape around the centre coordinate by labeling the centre pixel to a white pixel label (value of 1), then use `SITK\:\:BinaryDilateImageFilter <https://simpleitk.org/doxygen/latest/html/classitk_1_1simple_1_1BinaryDilateImageFilter.html>`_ to perform :term:`binary dilation` to generate the circle-like shape, where each of the pixels in the circle is assigned to white pixel label.
 
 
-2. By using `SITK\:\:LabelStatisticsImageFilter <https://simpleitk.org/doxygen/latest/html/classitk_1_1simple_1_1LabelStatisticsImageFilter.html>`_, the algorithm gets the mean and the sigma of the pixels labeled as white pixel label. The algorithm uses :term:`Threshold coefficient` to calculate the lower and upper threshold to be used in the following steps.
+2. By using `SITK\:\:LabelStatisticsImageFilter <https://simpleitk.org/doxygen/latest/html/classitk_1_1simple_1_1LabelStatisticsImageFilter.html>`_, the algorithm gets the mean and the sigma of the pixels that were labeled as white pixel label in the previous step. The algorithm uses :term:`Threshold coefficient` to calculate the lower and upper threshold to be used in the following steps.
 
 
 3. The algorithm then creates another image with `SITK\:\:SignedMaurerDistanceMapImageFilter <https://simpleitk.org/doxygen/latest/html/classitk_1_1simple_1_1SignedMaurerDistanceMapImageFilter.html>`_, the :term:`Euclidean distance transform` of a binary image as the image intensity map, and uses it in `SITK\:\:ThresholdSegmentationLevelSetImageFilter <https://simpleitk.org/doxygen/latest/html/classitk_1_1simple_1_1ThresholdSegmentationLevelSetImageFilter.html>`_ and the threshold range mentioned above to create a :term:`Segmented slice`.
