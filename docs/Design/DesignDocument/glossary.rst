@@ -69,7 +69,7 @@ Glossary of Terms Used in AortaGeomRecon Documentation
            Fig 2. A contour line map
 
     Level sets
-        Level Sets are an important category of modern image segmentation techniques based on partial differential equations (PDE), i.e. progressive evaluation of the differences among neighboring pixels to find object boundaries. The pictures below demonstrate an example of how Level Sets method work on finding the region of the heart
+        `Level Sets <https://profs.etsmtl.ca/hlombaert/levelset/>`_ are an important category of modern image segmentation techniques based on partial differential equations (PDE), i.e. progressive evaluation of the differences among neighboring pixels to find object boundaries. The pictures below demonstrate an example of how Level Sets method work on finding the region of the heart
 
         .. figure:: heart-1.png
            :alt: Distance transformation

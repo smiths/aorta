@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AortaSegmenter &mdash; AortaGeomRecon  documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/_static/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            AortaGeomRecon
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Modules documentation:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../modules.html">AortaGeomReconModule</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../glossary.html">Glossary</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">AortaGeomRecon</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Module code</a></li>
+      <li class="breadcrumb-item active">AortaSegmenter</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for AortaSegmenter</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+
+<span class="kn">import</span> <span class="nn">SimpleITK</span> <span class="k">as</span> <span class="nn">sitk</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="c1"># for design document</span>
+<span class="n">project_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)</span>
+<span class="n">AGR_module_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">project_path</span><span class="p">,</span> <span class="s2">&quot;src/SlicerExtension/&quot;</span><span class="p">)</span>
+<span class="n">AGR_module_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">AGR_module_path</span><span class="p">,</span> <span class="s2">&quot;AortaGeometryReconstructor/&quot;</span><span class="p">)</span>
+<span class="n">AGR_module_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">AGR_module_path</span><span class="p">,</span> <span class="s2">&quot;AortaGeomReconDisplayModule&quot;</span><span class="p">)</span>
+<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">AGR_module_path</span><span class="p">)</span>
+
+<span class="c1"># for debugging and numpy print operation</span>
+<span class="n">np</span><span class="o">.</span><span class="n">set_printoptions</span><span class="p">(</span><span class="n">threshold</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">maxsize</span><span class="p">)</span>
+
+<span class="c1"># import helpers enumeration classes</span>
+<span class="kn">from</span> <span class="nn">AortaGeomReconDisplayModuleLib.AortaGeomReconEnums</span> <span class="kn">import</span> <span class="n">SegmentDirection</span> <span class="k">as</span> <span class="n">SegDir</span> <span class="c1"># noqa</span>
+<span class="kn">from</span> <span class="nn">AortaGeomReconDisplayModuleLib.AortaGeomReconEnums</span> <span class="kn">import</span> <span class="n">SegmentType</span> <span class="c1"># noqa</span>
+<span class="kn">from</span> <span class="nn">AortaGeomReconDisplayModuleLib.AortaGeomReconEnums</span> <span class="kn">import</span> <span class="n">PixelValue</span> <span class="c1"># noqa</span>
+
+
+<div class="viewcode-block" id="AortaSegmenter"><a class="viewcode-back" href="../AortaGeomReconDisplayModuleLib.html#AortaSegmenter.AortaSegmenter">[docs]</a><span class="k">class</span> <span class="nc">AortaSegmenter</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;This class is used to perform Descending or Ascending aorta segmentation.</span>
+
+<span class="sd">    Attributes:</span>
+
+<span class="sd">        starting_slice (int): The seed slice&#39;s index (the index along the Z axis)</span>
+
+<span class="sd">        aorta_centre (tuple): A tuple of two integers indicates the centre of Descending or Ascending aorta on the axial plane.</span>
+
+<span class="sd">        num_slice_skipping (int): The number of slice allowed to consecutively skip by the algorithm.</span>
+
+<span class="sd">        seg_type (AortaGeomReconEnums.SegmentType): Indicate the segmentation type, Descending aorta or Ascending aorta segmentation.</span>
+
+<span class="sd">        qualified_coef (float): This coefficient controls the lower and upper threshold of the number of white pixels to determine whether to accept each segmented slice or not.</span>
+
+<span class="sd">        cropped_image (SITK::image): The original image that the user has only perform cropping.</span>
+
+<span class="sd">        processing_image (SITK::image): The processing image, this image could be none when performing Descending aorta segmentation. When performing Ascending aorta segmentation, it should have the Descending aorta segmentation result.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span> <span class="c1"># noqa</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">cropped_image</span><span class="p">,</span> <span class="n">starting_slice</span><span class="p">,</span> <span class="n">aorta_centre</span><span class="p">,</span>
+            <span class="n">num_slice_skipping</span><span class="p">,</span> <span class="n">processing_image</span><span class="p">,</span> <span class="n">seg_type</span><span class="p">,</span>
+            <span class="n">qualified_coef</span><span class="o">=</span><span class="mf">2.2</span><span class="p">,</span> <span class="n">threshold_coef</span><span class="o">=</span><span class="mf">3.5</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="kc">False</span>
+    <span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_starting_slice</span> <span class="o">=</span> <span class="n">starting_slice</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_aorta_centre</span> <span class="o">=</span> <span class="n">aorta_centre</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_num_slice_skipping</span> <span class="o">=</span> <span class="n">num_slice_skipping</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_seg_type</span> <span class="o">=</span> <span class="n">seg_type</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_processing_image</span> <span class="o">=</span> <span class="n">processing_image</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_qualified_coef</span> <span class="o">=</span> <span class="n">qualified_coef</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_threshold_coef</span> <span class="o">=</span> <span class="n">threshold_coef</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cropped_image</span> <span class="o">=</span> <span class="n">cropped_image</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_debug_mod</span> <span class="o">=</span> <span class="n">debug</span>
+
+<div class="viewcode-block" id="AortaSegmenter.begin_segmentation"><a class="viewcode-back" href="../AortaGeomReconDisplayModuleLib.html#AortaSegmenter.AortaSegmenter.begin_segmentation">[docs]</a>    <span class="k">def</span> <span class="nf">begin_segmentation</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;This is the main entry point of the axial segmentation.</span>
+<span class="sd">        This api should be called to perform Descending aorta segmentation first</span>
+<span class="sd">        (superior to inferior, then inferior to superior starting from the seed slice).</span>
+<span class="sd">        After getting the result of Descending aorta segmentation, this api should perform Ascending aorta segmentation</span>
+<span class="sd">        (superior to inferior, then inferior to superior starting from the seed slice).</span>
+<span class="sd">    </span>
+<span class="sd">        &quot;&quot;&quot;</span> <span class="c1"># noqa</span>
+        <span class="n">rms_error</span> <span class="o">=</span> <span class="mf">0.02</span>
+        <span class="n">no_iteration</span> <span class="o">=</span> <span class="mi">600</span>
+        <span class="n">curvature_scaling</span> <span class="o">=</span> <span class="mf">0.5</span>
+        <span class="n">propagation_scaling</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="c1"># self._stats_filter = sitk.LabelStatisticsImageFilter()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_segment_filter</span> <span class="o">=</span> <span class="n">sitk</span><span class="o">.</span><span class="n">ThresholdSegmentationLevelSetImageFilter</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_segment_filter</span><span class="o">.</span><span class="n">SetMaximumRMSError</span><span class="p">(</span><span class="n">rms_error</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_segment_filter</span><span class="o">.</span><span class="n">SetNumberOfIterations</span><span class="p">(</span><span class="n">no_iteration</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_segment_filter</span><span class="o">.</span><span class="n">SetCurvatureScaling</span><span class="p">(</span><span class="n">curvature_scaling</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_segment_filter</span><span class="o">.</span><span class="n">SetPropagationScaling</span><span class="p">(</span><span class="n">propagation_scaling</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_segment_filter</span><span class="o">.</span><span class="n">ReverseExpansionDirectionOn</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_skipped_slices</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="c1"># Initializing current total pixels</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_processing_image</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_processing_image</span> <span class="o">=</span> <span class="n">sitk</span><span class="o">.</span><span class="n">Image</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_cropped_image</span><span class="o">.</span><span class="n">GetSize</span><span class="p">(),</span> <span class="n">sitk</span><span class="o">.</span><span class="n">sitkUInt8</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_processing_image</span><span class="o">.</span><span class="n">CopyInformation</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cropped_image</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_seg_dir</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_original_size</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_is_size_decreasing</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="c1"># Get more values from the seed slice</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_start</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_starting_slice</span> <span class="o">-</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_prev_centre</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_aorta_centre</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_prev_seeds</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="c1"># Initialize parameters for superior to inferior segmentation</span>
+        <span class="n">slice_num</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_starting_slice</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cur_img_slice</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cropped_image</span><span class="p">[:,</span> <span class="p">:,</span> <span class="n">slice_num</span><span class="p">]</span>
+        <span class="n">segmented_slice</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__get_image_segment</span><span class="p">()</span>
+        <span class="n">new_slice</span> <span class="o">=</span> <span class="n">segmented_slice</span> <span class="o">&gt;</span> <span class="n">PixelValue</span><span class="o">.</span><span class="n">black_pixel</span><span class="o">.</span><span class="n">value</span>
+        <span class="n">seeds</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_seg_type</span> <span class="o">==</span> <span class="n">SegmentType</span><span class="o">.</span><span class="n">descending_aorta</span><span class="p">:</span>
+            <span class="n">total_coord</span><span class="p">,</span> <span class="n">centre</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__count_pixel_des</span><span class="p">(</span><span class="n">new_slice</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_processing_image</span><span class="p">[:,</span> <span class="p">:,</span> <span class="n">slice_num</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_slice</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">total_coord</span><span class="p">,</span> <span class="n">centre</span><span class="p">,</span> <span class="n">seeds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__count_pixel_asc</span><span class="p">(</span><span class="n">new_slice</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_processing_image</span><span class="p">[:,</span> <span class="p">:,</span> <span class="n">slice_num</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">new_slice</span> <span class="o">|</span> <span class="bp">self</span><span class="o">.</span><span class="n">_processing_image</span><span class="p">[:,</span> <span class="p">:,</span> <span class="n">slice_num</span><span class="p">])</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_debug_mod</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_prev_seeds</span> <span class="o">=</span> <span class="n">seeds</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_original_size</span> <span class="o">=</span> <span class="n">total_coord</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_previous_size</span> <span class="o">=</span> <span class="n">total_coord</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_prev_centre</span> <span class="o">=</span> <span class="n">centre</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_skipped_slice_counter</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_end</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_step</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_seg_dir</span> <span class="o">=</span> <span class="n">SegDir</span><span class="o">.</span><span class="n">Superior_to_Inferior</span>
+
+        <span class="c1"># SEGMENT FROM SEED VALUE TO BOTTOM OF THE AORTA</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> - top to bottom started&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_seg_type</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__segmentation</span><span class="p">()</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> - top to bottom finished&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_seg_type</span><span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_seg_dir</span> <span class="o">=</span> <span class="n">SegDir</span><span class="o">.</span><span class="n">Inferior_to_Superior</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_start</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_starting_slice</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_prev_centre</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_aorta_centre</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_previous_size</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_original_size</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_prev_seeds</span> <span class="o">=</span> <span class="n">seeds</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_end</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cropped_image</span><span class="o">.</span><span class="n">GetDepth</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_step</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_skipped_slice_counter</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_skipped_slices</span><span class="p">)</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> - bottom to top started&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_seg_type</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__segmentation</span><span class="p">()</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> - bottom to top finished&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_seg_type</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_seg_type</span> <span class="o">==</span> <span class="n">SegmentType</span><span class="o">.</span><span class="n">descending_aorta</span><span class="p">:</span>
+            <span class="c1"># Fill in missing slices of descending aorta</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__filling_missing_slices</span><span class="p">()</span></div>
+
+    <span class="k">def</span> <span class="nf">__segmentation</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;The main loop of the segmentation algorithm.</span>
+<span class="sd">        For each axial slice, the algorithm performs segmetation with get_image_segment function.</span>
+<span class="sd">        Next, the algorithm counts the number of white pixels of the segmentation result, and calculates a new centre based on the result.</span>
+<span class="sd">        Finally, the algorithm decides whether to accept the new slice or not. If accepted, the new centre will be used as seed for next slice&#39;s segmentation.</span>
+<span class="sd">        If not, and it reached the point where maximum consecutive skips is allowed, the algorithm hault and return the segmentation result.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span> <span class="c1"># noqa</span>
+        <span class="n">counter</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">is_overlapping</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">for</span> <span class="n">slice_i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_start</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_end</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_step</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_cur_img_slice</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cropped_image</span><span class="p">[:,</span> <span class="p">:,</span> <span class="n">slice_i</span><span class="p">]</span>
+            <span class="n">segmented_slice</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__get_image_segment</span><span class="p">()</span>
+            <span class="n">new_slice_i</span> <span class="o">=</span> <span class="n">segmented_slice</span> <span class="o">&gt;</span> <span class="n">PixelValue</span><span class="o">.</span><span class="n">black_pixel</span><span class="o">.</span><span class="n">value</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_seg_type</span> <span class="o">==</span> <span class="n">SegmentType</span><span class="o">.</span><span class="n">descending_aorta</span><span class="p">:</span>
+                <span class="n">total_coord</span><span class="p">,</span> <span class="n">centre</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__count_pixel_des</span><span class="p">(</span><span class="n">new_slice_i</span><span class="p">)</span>
+                <span class="n">seeds</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">total_coord</span><span class="p">,</span> <span class="n">centre</span><span class="p">,</span> <span class="n">seeds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__count_pixel_asc</span><span class="p">(</span>
+                    <span class="n">new_slice_i</span><span class="p">)</span>
+                <span class="n">is_overlapping</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__is_overlapping</span><span class="p">(</span><span class="n">new_slice_i</span><span class="p">,</span> <span class="n">slice_i</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__is_new_slice_qualified</span><span class="p">(</span><span class="n">total_coord</span><span class="p">,</span> <span class="n">is_overlapping</span><span class="p">):</span>
+                <span class="n">counter</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_seg_type</span> <span class="o">==</span> <span class="n">SegmentType</span><span class="o">.</span><span class="n">descending_aorta</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_processing_image</span><span class="p">[:,</span> <span class="p">:,</span> <span class="n">slice_i</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_slice_i</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_processing_image</span><span class="p">[:,</span> <span class="p">:,</span> <span class="n">slice_i</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                        <span class="n">new_slice_i</span> <span class="o">|</span> <span class="bp">self</span><span class="o">.</span><span class="n">_processing_image</span><span class="p">[:,</span> <span class="p">:,</span> <span class="n">slice_i</span><span class="p">]</span>
+                    <span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_prev_centre</span> <span class="o">=</span> <span class="n">centre</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_prev_seeds</span> <span class="o">=</span> <span class="n">seeds</span>
+                <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_seg_type</span> <span class="o">==</span> <span class="n">SegmentType</span><span class="o">.</span><span class="n">ascending_aorta</span>
+                        <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_seg_dir</span> <span class="o">==</span> <span class="n">SegDir</span><span class="o">.</span><span class="n">Inferior_to_Superior</span>
+                        <span class="ow">and</span> <span class="n">total_coord</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_original_size</span>
+                        <span class="ow">and</span> <span class="n">total_coord</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_previous_size</span><span class="p">):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_is_size_decreasing</span> <span class="o">=</span> <span class="kc">True</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_qualified_overlap_coef</span> <span class="o">=</span> <span class="mf">1.2</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">counter</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_skipped_slices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">slice_i</span><span class="p">)</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">counter</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_num_slice_skipping</span><span class="p">):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_skipped_slices</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_skipped_slices</span><span class="p">[</span>
+                        <span class="p">::</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">_num_slice_skipping</span><span class="p">]</span>
+                    <span class="k">break</span>
+                <span class="n">total_coord</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_previous_size</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_previous_size</span> <span class="o">=</span> <span class="n">total_coord</span>
+
+    <span class="k">def</span> <span class="nf">__is_new_slice_qualified</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">total_coord</span><span class="p">,</span> <span class="n">is_overlapping</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return True if it satisfies the following conditions:</span>
+<span class="sd">        </span>
+<span class="sd">        1. The number of white pixels of the segmented result is smaller than the previous size multiplis some ratio (the ratio could change depends on the segmentation type).</span>
+<span class="sd">        </span>
+<span class="sd">        2. The number of white pixels is smaller than qualified cofficient multiply the number of white pixels of the user&#39;s selected slice.</span>
+<span class="sd">        </span>
+<span class="sd">        3. The number of white pixels is larger than the number of white pixels of the user&#39;s selected slice divided by the qualified coefficient.</span>
+
+<span class="sd">        Notes that in some cases, the conditions might change the qualified coefficient to some other values depending on the segmentation type and segmentation direction.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Boolean</span>
+<span class="sd">        &quot;&quot;&quot;</span> <span class="c1"># noqa</span>
+        <span class="n">cmp_prev_size</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="n">total_coord</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_previous_size</span><span class="p">)</span>
+        <span class="n">slicer_larger_than</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span>
+            <span class="n">total_coord</span> <span class="o">&gt;</span>
+            <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_original_size</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">_qualified_coef</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="n">cmp_original_size</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span>
+            <span class="n">total_coord</span> <span class="o">&lt;</span>
+            <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_original_size</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_qualified_coef</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_seg_dir</span> <span class="o">==</span> <span class="n">SegDir</span><span class="o">.</span><span class="n">Inferior_to_Superior</span><span class="p">:</span>
+            <span class="n">slicer_larger_than</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span>
+                <span class="n">total_coord</span> <span class="o">&gt;</span>
+                <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_previous_size</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">_qualified_coef</span><span class="p">)</span>
+            <span class="p">)</span>
+            <span class="n">cmp_original_size</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span>
+                <span class="n">total_coord</span> <span class="o">&lt;</span>
+                <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_original_size</span><span class="o">*</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_qualified_coef</span><span class="o">+</span><span class="mf">0.3</span><span class="p">))</span>
+            <span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_seg_type</span> <span class="o">==</span> <span class="n">SegmentType</span><span class="o">.</span><span class="n">ascending_aorta</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_qualified_overlap_coef</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_qualified_coef</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_size_decreasing</span> <span class="ow">and</span> <span class="n">is_overlapping</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_qualified_overlap_coef</span> <span class="o">=</span> <span class="mf">2.8</span>
+                <span class="n">cmp_original_size</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="n">total_coord</span> <span class="o">&lt;</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_original_size</span><span class="o">*</span><span class="mi">4</span><span class="p">))</span>
+                <span class="n">cmp_prev_size</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span>
+                    <span class="n">total_coord</span> <span class="o">&lt;</span>
+                    <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_qualified_overlap_coef</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_previous_size</span><span class="p">)</span>
+                <span class="p">)</span>
+        <span class="k">return</span> <span class="n">cmp_prev_size</span> <span class="ow">and</span> <span class="n">slicer_larger_than</span> <span class="ow">and</span> <span class="n">cmp_original_size</span>
+
+    <span class="k">def</span> <span class="nf">__prepare_label_map</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Create a label map image that has a circle-like shape.</span>
+<span class="sd">        The pixels within the circle are labeled as white pixels (value of 1), the other are labeled as black pixels (value of 0).</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            SITK::IMAGE: A label map image that has a circle like shape.</span>
+<span class="sd">        &quot;&quot;&quot;</span> <span class="c1"># noqa</span>
+        <span class="n">label_map</span> <span class="o">=</span> <span class="n">sitk</span><span class="o">.</span><span class="n">Image</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cur_img_slice</span><span class="o">.</span><span class="n">GetSize</span><span class="p">(),</span> <span class="n">sitk</span><span class="o">.</span><span class="n">sitkUInt8</span><span class="p">)</span>
+        <span class="n">label_map</span><span class="o">.</span><span class="n">CopyInformation</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cur_img_slice</span><span class="p">)</span>
+        <span class="c1"># add original seed and additional seeds three pixels apart</span>
+        <span class="n">spacing</span> <span class="o">=</span> <span class="mi">3</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">):</span>
+            <span class="n">seed_with_space</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prev_centre</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">spacing</span> <span class="o">*</span> <span class="n">j</span>
+            <span class="n">label_map</span><span class="p">[</span>
+                <span class="p">(</span><span class="n">seed_with_space</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prev_centre</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+            <span class="p">]</span> <span class="o">=</span> <span class="n">PixelValue</span><span class="o">.</span><span class="n">white_pixel</span><span class="o">.</span><span class="n">value</span>
+        <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prev_seeds</span><span class="p">:</span>
+            <span class="n">label_map</span><span class="p">[</span><span class="n">s</span><span class="p">]</span> <span class="o">=</span> <span class="n">PixelValue</span><span class="o">.</span><span class="n">white_pixel</span><span class="o">.</span><span class="n">value</span>
+        <span class="n">label_map</span> <span class="o">=</span> <span class="n">sitk</span><span class="o">.</span><span class="n">BinaryDilate</span><span class="p">(</span><span class="n">label_map</span><span class="p">,</span> <span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">*</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">label_map</span>
+
+    <span class="k">def</span> <span class="nf">__get_image_segment</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Use SITK::LabelStatisticsImageFilter to get the mean of the intensity values of white pixel (label of 1).</span>
+<span class="sd">        Use the mean to calculate the threshold for segmentation image filter.</span>
+<span class="sd">        Use SITK::SignedMaurerDistanceMap to calculate the signed squared Euclidean distance transform of the circle.</span>
+<span class="sd">        Finally, get the segmentation value with the Euclidean distance transform.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            numpy.ndarray: Segmented image slice based on intensity values.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span> <span class="c1"># noqa</span>
+        <span class="n">label_map</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__prepare_label_map</span><span class="p">()</span>
+
+        <span class="c1"># calculate the Euclidean distance transform</span>
+        <span class="n">dis_map</span> <span class="o">=</span> <span class="n">sitk</span><span class="o">.</span><span class="n">SignedMaurerDistanceMap</span><span class="p">(</span>
+            <span class="n">label_map</span><span class="p">,</span> <span class="n">insideIsPositive</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">useImageSpacing</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="n">stats</span> <span class="o">=</span> <span class="n">sitk</span><span class="o">.</span><span class="n">LabelStatisticsImageFilter</span><span class="p">()</span>
+        <span class="n">stats</span><span class="o">.</span><span class="n">Execute</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cur_img_slice</span><span class="p">,</span> <span class="n">label_map</span><span class="p">)</span>
+
+        <span class="n">intensity_mean</span> <span class="o">=</span> <span class="n">stats</span><span class="o">.</span><span class="n">GetMean</span><span class="p">(</span><span class="n">PixelValue</span><span class="o">.</span><span class="n">white_pixel</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+        <span class="n">std</span> <span class="o">=</span> <span class="n">stats</span><span class="o">.</span><span class="n">GetSigma</span><span class="p">(</span><span class="n">PixelValue</span><span class="o">.</span><span class="n">white_pixel</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+        <span class="n">lower_threshold</span> <span class="o">=</span> <span class="p">(</span><span class="n">intensity_mean</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_threshold_coef</span><span class="o">*</span><span class="n">std</span><span class="p">)</span>
+        <span class="n">upper_threshold</span> <span class="o">=</span> <span class="p">(</span><span class="n">intensity_mean</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_threshold_coef</span><span class="o">*</span><span class="n">std</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_segment_filter</span><span class="o">.</span><span class="n">SetLowerThreshold</span><span class="p">(</span><span class="n">lower_threshold</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_segment_filter</span><span class="o">.</span><span class="n">SetUpperThreshold</span><span class="p">(</span><span class="n">upper_threshold</span><span class="p">)</span>
+
+        <span class="n">segmented_slice</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_segment_filter</span><span class="o">.</span><span class="n">Execute</span><span class="p">(</span>
+            <span class="n">dis_map</span><span class="p">,</span> <span class="n">sitk</span><span class="o">.</span><span class="n">Cast</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cur_img_slice</span><span class="p">,</span> <span class="n">sitk</span><span class="o">.</span><span class="n">sitkFloat32</span><span class="p">))</span>
+        
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_debug_mod</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__debug</span><span class="p">(</span>
+                <span class="n">label_map</span><span class="p">,</span>
+                <span class="n">dis_map</span><span class="p">,</span>
+                <span class="n">lower_threshold</span><span class="p">,</span>
+                <span class="n">upper_threshold</span><span class="p">,</span>
+                <span class="n">segmented_slice</span>
+            <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">segmented_slice</span>
+
+    <span class="k">def</span> <span class="nf">__count_pixel_des</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_slice</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get the number of white pixels, and calculate a new centre based on the segmentation result.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            (tuple): tuple containing:</span>
+<span class="sd">                int: The total number of the white pixels.</span>
+<span class="sd">                tuple: The new derived centre calculated by the mean of white pixe&#39;s X coordinates and Y coordinates.</span>
+<span class="sd">        &quot;&quot;&quot;</span> <span class="c1"># noqa</span>
+        <span class="c1"># assign segmentation to fully_seg_slice</span>
+        <span class="c1"># get array from segmentation</span>
+        <span class="n">nda</span> <span class="o">=</span> <span class="n">sitk</span><span class="o">.</span><span class="n">GetArrayFromImage</span><span class="p">(</span><span class="n">new_slice</span><span class="p">)</span>
+        <span class="n">list_x</span><span class="p">,</span> <span class="n">list_y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">nda</span> <span class="o">==</span> <span class="n">PixelValue</span><span class="o">.</span><span class="n">white_pixel</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+        <span class="n">new_centre</span> <span class="o">=</span> <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">average</span><span class="p">(</span><span class="n">list_y</span><span class="p">)),</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">average</span><span class="p">(</span><span class="n">list_x</span><span class="p">)))</span>
+        <span class="n">total_coord</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">list_x</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_debug_mod</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">total_coord</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_aorta_centre</span><span class="p">,</span> <span class="n">new_centre</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">total_coord</span><span class="p">,</span> <span class="n">new_centre</span>
+
+    <span class="k">def</span> <span class="nf">__count_pixel_asc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_slice</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get the number of white pixels, and calculate a new centre based on the segmentation result.</span>
+<span class="sd">        This function adds extra seeds with the mean of white pixels&#39; white coordinate.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            (tuple): tuple containing:</span>
+<span class="sd">                int: The total number of the white pixels.</span>
+<span class="sd">                tuple: The new derived centre calculated by the mean of white pixe&#39;s X coordinates and Y coordinates.</span>
+<span class="sd">                list: More possible coordinates based on the new derived centre</span>
+<span class="sd">        &quot;&quot;&quot;</span> <span class="c1"># noqa</span>
+        <span class="n">nda</span> <span class="o">=</span> <span class="n">sitk</span><span class="o">.</span><span class="n">GetArrayFromImage</span><span class="p">(</span><span class="n">new_slice</span><span class="p">)</span>
+        <span class="n">new_centre</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+        <span class="n">list_y</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">nda</span> <span class="o">==</span> <span class="n">PixelValue</span><span class="o">.</span><span class="n">white_pixel</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+        <span class="n">max_y</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">list_y</span><span class="p">)</span>
+        <span class="n">min_y</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">list_y</span><span class="p">)</span>
+        <span class="n">total_coord</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">list_y</span><span class="p">)</span>
+        <span class="n">new_centre</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">sum</span><span class="p">(</span><span class="n">list_y</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">list_y</span><span class="p">))</span>
+        <span class="n">height</span> <span class="o">=</span> <span class="n">max_y</span> <span class="o">-</span> <span class="n">min_y</span>
+        <span class="n">list_x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
+            <span class="n">nda</span><span class="p">[</span><span class="n">new_centre</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span> <span class="o">==</span> <span class="n">PixelValue</span><span class="o">.</span><span class="n">white_pixel</span><span class="o">.</span><span class="n">value</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">width</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">list_x</span><span class="p">)</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">width</span> <span class="o">==</span> <span class="mi">0</span><span class="p">):</span>
+            <span class="n">_</span><span class="p">,</span> <span class="n">list_x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">nda</span> <span class="o">==</span> <span class="n">PixelValue</span><span class="o">.</span><span class="n">white_pixel</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+        <span class="n">new_centre</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">average</span><span class="p">(</span><span class="n">list_x</span><span class="p">))</span>
+        <span class="n">new_seeds</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">y1</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">max_y</span> <span class="o">+</span> <span class="n">new_centre</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">y2</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">min_y</span> <span class="o">+</span> <span class="n">new_centre</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">next_seed_x1_list</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
+            <span class="n">nda</span><span class="p">[</span><span class="n">y1</span><span class="p">]</span> <span class="o">==</span> <span class="n">PixelValue</span><span class="o">.</span><span class="n">white_pixel</span><span class="o">.</span><span class="n">value</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">next_seed_x2_list</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
+            <span class="n">nda</span><span class="p">[</span><span class="n">y2</span><span class="p">]</span> <span class="o">==</span> <span class="n">PixelValue</span><span class="o">.</span><span class="n">white_pixel</span><span class="o">.</span><span class="n">value</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">width1</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">next_seed_x1_list</span><span class="p">)</span>
+        <span class="n">width2</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">next_seed_x2_list</span><span class="p">)</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">width1</span> <span class="o">&gt;</span> <span class="n">width</span> <span class="o">/</span> <span class="mi">2</span><span class="p">):</span>
+            <span class="n">new_seeds</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">average</span><span class="p">(</span><span class="n">next_seed_x1_list</span><span class="p">)),</span> <span class="n">y1</span><span class="p">])</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">width2</span> <span class="o">&gt;</span> <span class="n">width</span> <span class="o">/</span> <span class="mi">2</span><span class="p">):</span>
+            <span class="n">new_seeds</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">average</span><span class="p">(</span><span class="n">next_seed_x2_list</span><span class="p">)),</span> <span class="n">y2</span><span class="p">])</span>
+        <span class="n">x3</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">new_centre</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">width</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">x4</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">new_centre</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">width</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">next_seed_y3_list</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
+            <span class="n">nda</span><span class="p">[:,</span> <span class="n">x3</span><span class="p">]</span> <span class="o">==</span> <span class="n">PixelValue</span><span class="o">.</span><span class="n">white_pixel</span><span class="o">.</span><span class="n">value</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">next_seed_y4_list</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
+            <span class="n">nda</span><span class="p">[:,</span> <span class="n">x4</span><span class="p">]</span> <span class="o">==</span> <span class="n">PixelValue</span><span class="o">.</span><span class="n">white_pixel</span><span class="o">.</span><span class="n">value</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">height3</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">next_seed_y3_list</span><span class="p">)</span>
+        <span class="n">height4</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">next_seed_y4_list</span><span class="p">)</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">height3</span> <span class="o">&gt;</span> <span class="n">height</span> <span class="o">/</span> <span class="mi">2</span><span class="p">):</span>
+            <span class="n">new_seeds</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">x3</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">average</span><span class="p">(</span><span class="n">next_seed_y3_list</span><span class="p">))])</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">height4</span> <span class="o">&gt;</span> <span class="n">height</span> <span class="o">/</span> <span class="mi">2</span><span class="p">):</span>
+            <span class="n">new_seeds</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">x4</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">average</span><span class="p">(</span><span class="n">next_seed_y4_list</span><span class="p">))])</span>
+        <span class="k">return</span> <span class="n">total_coord</span><span class="p">,</span> <span class="n">new_centre</span><span class="p">,</span> <span class="n">new_seeds</span>
+
+    <span class="k">def</span> <span class="nf">__filling_missing_slices</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;The helper function to replace the missing slice that was not accepted during the descending aorta segmentation.</span>
+<span class="sd">        This function will replace the missing slice by reading the previous slice and the next slice, </span>
+<span class="sd">        fill the slice with the overlapping area of both slices.</span>
+<span class="sd">        &quot;&quot;&quot;</span> <span class="c1"># noqa</span>
+        <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_skipped_slices</span><span class="p">)):</span>
+            <span class="c1"># ensure there is at least one slice</span>
+            <span class="c1"># before and after the skipped slice</span>
+            <span class="n">slice_num</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_skipped_slices</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">slice_num</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">slice_num</span> <span class="o">&lt;</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_cropped_image</span><span class="o">.</span><span class="n">GetDepth</span><span class="p">()</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+                <span class="n">next_index</span> <span class="o">=</span> <span class="n">index</span> <span class="o">+</span> <span class="mi">1</span>
+
+                <span class="c1"># if there are two skipped slices in a row,</span>
+                <span class="c1"># take the intersect of the previous and next segmented slice.</span>
+                <span class="k">if</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_skipped_slices</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">next_index</span><span class="p">):</span>
+                    <span class="n">next_slice</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_skipped_slices</span><span class="p">[</span><span class="n">next_index</span><span class="p">]</span>
+                    <span class="k">if</span> <span class="p">(</span><span class="n">next_slice</span> <span class="o">==</span> <span class="n">slice_num</span> <span class="o">+</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">next_slice</span>
+                            <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cropped_image</span><span class="o">.</span><span class="n">GetDepth</span><span class="p">()</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_processing_image</span><span class="p">[:,</span> <span class="p">:,</span> <span class="n">slice_num</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">_processing_image</span><span class="p">[:,</span> <span class="p">:,</span> <span class="n">slice_num</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+                            <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_processing_image</span><span class="p">[:,</span> <span class="p">:,</span> <span class="n">next_slice</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">1</span>
+                        <span class="p">)</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_processing_image</span><span class="p">[:,</span> <span class="p">:,</span> <span class="n">next_slice</span><span class="p">]</span> <span class="o">=</span> \
+                            <span class="bp">self</span><span class="o">.</span><span class="n">_processing_image</span><span class="p">[:,</span> <span class="p">:,</span> <span class="n">slice_num</span><span class="p">]</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_processing_image</span><span class="p">[:,</span> <span class="p">:,</span> <span class="n">slice_num</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">_processing_image</span><span class="p">[:,</span> <span class="p">:,</span> <span class="n">slice_num</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+                            <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_processing_image</span><span class="p">[:,</span> <span class="p">:,</span> <span class="n">slice_num</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">1</span>
+                        <span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_processing_image</span><span class="p">[:,</span> <span class="p">:,</span> <span class="n">slice_num</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_processing_image</span><span class="p">[:,</span> <span class="p">:,</span> <span class="n">slice_num</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+                        <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_processing_image</span><span class="p">[:,</span> <span class="p">:,</span> <span class="n">slice_num</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__is_overlapping</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">img1</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Compare the current 2D segmented slice with the previous two processed 2D slices,</span>
+<span class="sd">        return True if there are any voxel intersect or overlaps on each other between the new slice and processed slice.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Boolean</span>
+
+<span class="sd">        &quot;&quot;&quot;</span> <span class="c1"># noqa</span>
+        <span class="n">img2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_processing_image</span><span class="p">[:,</span> <span class="p">:,</span> <span class="n">i</span><span class="p">]</span>
+        <span class="n">overlap</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">count_nonzero</span><span class="p">(</span><span class="n">img1</span> <span class="o">*</span> <span class="n">img2</span><span class="p">)</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">overlap</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">):</span>
+            <span class="n">img2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_processing_image</span><span class="p">[:,</span> <span class="p">:,</span> <span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+            <span class="n">overlap</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">count_nonzero</span><span class="p">(</span><span class="n">img1</span> <span class="o">*</span> <span class="n">img2</span><span class="p">)</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">overlap</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">):</span>
+            <span class="n">img2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_processing_image</span><span class="p">[:,</span> <span class="p">:,</span> <span class="n">i</span> <span class="o">-</span> <span class="mi">2</span><span class="p">]</span>
+            <span class="n">overlap</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">count_nonzero</span><span class="p">(</span><span class="n">img1</span> <span class="o">*</span> <span class="n">img2</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">overlap</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">cropped_image</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;cropped image getter. The cropped image is the untouched cropped image that user has input.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span> <span class="c1"># noqa</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cropped_image</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">processing_image</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;processing image getter. The prcoessing image is the segmentation result.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span> <span class="c1"># noqa</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_processing_image</span>
+
+    <span class="k">def</span> <span class="nf">__debug</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">label_map</span><span class="p">,</span> <span class="n">dis_map</span><span class="p">,</span> <span class="n">lt</span><span class="p">,</span> <span class="n">ut</span><span class="p">,</span> <span class="n">ss</span><span class="p">):</span>
+        <span class="n">nda_label</span> <span class="o">=</span> <span class="n">sitk</span><span class="o">.</span><span class="n">GetArrayFromImage</span><span class="p">(</span><span class="n">label_map</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">nda_label</span><span class="p">)</span>
+        <span class="n">nda</span> <span class="o">=</span> <span class="n">sitk</span><span class="o">.</span><span class="n">GetArrayFromImage</span><span class="p">(</span><span class="n">dis_map</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;lower:&quot;</span><span class="p">,</span> <span class="n">lt</span><span class="p">,</span> <span class="s2">&quot;upper:&quot;</span><span class="p">,</span> <span class="n">ut</span><span class="p">)</span>
+        <span class="n">list_x</span><span class="p">,</span> <span class="n">list_y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">nda_label</span> <span class="o">==</span> <span class="n">PixelValue</span><span class="o">.</span><span class="n">white_pixel</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">list_x</span><span class="p">))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">distance_map&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">nda</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">list_x</span><span class="p">)):</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">list_x</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">list_y</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot; &quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">nda</span><span class="p">[(</span><span class="n">list_x</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">list_y</span><span class="p">[</span><span class="n">i</span><span class="p">])])</span>
+        <span class="n">nda_ss</span> <span class="o">=</span> <span class="n">sitk</span><span class="o">.</span><span class="n">GetArrayFromImage</span><span class="p">(</span><span class="n">ss</span><span class="p">)</span>
+        <span class="n">list_x</span><span class="p">,</span> <span class="n">list_y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">nda_ss</span> <span class="o">&gt;</span> <span class="n">PixelValue</span><span class="o">.</span><span class="n">black_pixel</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">list_x</span><span class="p">)):</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">list_x</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">list_y</span><span class="p">[</span><span class="n">i</span><span class="p">])</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Jingyi Lin.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

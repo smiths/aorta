@@ -55,38 +55,6 @@ class AortaSegmenter():
         self._cropped_image = cropped_image
         self._debug_mod = debug
 
-    def __is_overlapping(self, img1, i):
-        """Compare the current 2D segmented slice with the previous two processed 2D slices,
-        return True if there are any voxel intersect or overlaps on each other between the new slice and processed slice.
-
-        Returns:
-            Boolean
-
-        """ # noqa
-        img2 = self._processing_image[:, :, i]
-        overlap = np.count_nonzero(img1 * img2)
-        if (overlap <= 0):
-            img2 = self._processing_image[:, :, i - 1]
-            overlap = np.count_nonzero(img1 * img2)
-        if (overlap <= 0):
-            img2 = self._processing_image[:, :, i - 2]
-            overlap = np.count_nonzero(img1 * img2)
-        return (overlap > PixelValue.black_pixel.value)
-
-    @property
-    def cropped_image(self):
-        """cropped image getter. The cropped image is the untouched cropped image that user has input.
-
-        """ # noqa
-        return self._cropped_image
-
-    @property
-    def processing_image(self):
-        """processing image getter. The prcoessing image is the segmentation result.
-
-        """ # noqa
-        return self._processing_image
-
     def begin_segmentation(self):
         """This is the main entry point of the axial segmentation.
         This api should be called to perform Descending aorta segmentation first
@@ -292,49 +260,33 @@ class AortaSegmenter():
         """ # noqa
         label_map = self.__prepare_label_map()
 
-        # determine threshold values based on seed location
-        stats = sitk.LabelStatisticsImageFilter()
-        stats.Execute(self._cur_img_slice, label_map)
-        lower_threshold = (
-            stats.GetMean(PixelValue.white_pixel.value)
-            - self._threshold_coef
-            * stats.GetSigma(PixelValue.white_pixel.value)
-        )
-        upper_threshold = (
-            stats.GetMean(PixelValue.white_pixel.value)
-            + self._threshold_coef
-            * stats.GetSigma(PixelValue.white_pixel.value)
-        )
-
         # calculate the Euclidean distance transform
         dis_map = sitk.SignedMaurerDistanceMap(
             label_map, insideIsPositive=True, useImageSpacing=True)
 
-        # use filter to apply threshold to image
-        # segment the aorta using the seed values and threshold values
+        stats = sitk.LabelStatisticsImageFilter()
+        stats.Execute(self._cur_img_slice, label_map)
+
+        intensity_mean = stats.GetMean(PixelValue.white_pixel.value)
+        std = stats.GetSigma(PixelValue.white_pixel.value)
+        lower_threshold = (intensity_mean - self._threshold_coef*std)
+        upper_threshold = (intensity_mean + self._threshold_coef*std)
+
         self._segment_filter.SetLowerThreshold(lower_threshold)
         self._segment_filter.SetUpperThreshold(upper_threshold)
 
         segmented_slice = self._segment_filter.Execute(
             dis_map, sitk.Cast(self._cur_img_slice, sitk.sitkFloat32))
+        
         if self._debug_mod:
-            nda_label = sitk.GetArrayFromImage(label_map)
-            print(nda_label)
-            nda = sitk.GetArrayFromImage(dis_map)
-            print("lower:", lower_threshold, "upper:", upper_threshold)
-            list_x, list_y = np.where(
-                nda_label == PixelValue.white_pixel.value)
-            print(len(list_x))
-            print("\ndistance_map")
-            print(nda)
-            print()
-            for i in range(len(list_x)):
-                print(list_x[i], list_y[i], end=" ")
-                print(nda[(list_x[i], list_y[i])])
-            nda_ss = sitk.GetArrayFromImage(segmented_slice)
-            list_x, list_y = np.where(nda_ss > PixelValue.black_pixel.value)
-            for i in range(len(list_x)):
-                print(list_x[i], list_y[i])
+            self.__debug(
+                label_map,
+                dis_map,
+                lower_threshold,
+                upper_threshold,
+                segmented_slice
+            )
+
         return segmented_slice
 
     def __count_pixel_des(self, new_slice):
@@ -421,8 +373,7 @@ class AortaSegmenter():
                 next_index = index + 1
 
                 # if there are two skipped slices in a row,
-                # take the overlap of the two skipped slice.
-                # otherwise take the overlap of accepted slices.
+                # take the intersect of the previous and next segmented slice.
                 if (len(self._skipped_slices) > next_index):
                     next_slice = self._skipped_slices[next_index]
                     if (next_slice == slice_num + 1 and next_slice
@@ -442,3 +393,53 @@ class AortaSegmenter():
                     self._processing_image[:, :, slice_num] = (
                         self._processing_image[:, :, slice_num - 1]
                         + self._processing_image[:, :, slice_num + 1] > 1)
+
+    def __is_overlapping(self, img1, i):
+        """Compare the current 2D segmented slice with the previous two processed 2D slices,
+        return True if there are any voxel intersect or overlaps on each other between the new slice and processed slice.
+
+        Returns:
+            Boolean
+
+        """ # noqa
+        img2 = self._processing_image[:, :, i]
+        overlap = np.count_nonzero(img1 * img2)
+        if (overlap <= 0):
+            img2 = self._processing_image[:, :, i - 1]
+            overlap = np.count_nonzero(img1 * img2)
+        if (overlap <= 0):
+            img2 = self._processing_image[:, :, i - 2]
+            overlap = np.count_nonzero(img1 * img2)
+        return (overlap > 0)
+
+    @property
+    def cropped_image(self):
+        """cropped image getter. The cropped image is the untouched cropped image that user has input.
+
+        """ # noqa
+        return self._cropped_image
+
+    @property
+    def processing_image(self):
+        """processing image getter. The prcoessing image is the segmentation result.
+
+        """ # noqa
+        return self._processing_image
+
+    def __debug(self, label_map, dis_map, lt, ut, ss):
+        nda_label = sitk.GetArrayFromImage(label_map)
+        print(nda_label)
+        nda = sitk.GetArrayFromImage(dis_map)
+        print("lower:", lt, "upper:", ut)
+        list_x, list_y = np.where(nda_label == PixelValue.white_pixel.value)
+        print(len(list_x))
+        print("\ndistance_map")
+        print(nda)
+        print()
+        for i in range(len(list_x)):
+            print(list_x[i], list_y[i], end=" ")
+            print(nda[(list_x[i], list_y[i])])
+        nda_ss = sitk.GetArrayFromImage(ss)
+        list_x, list_y = np.where(nda_ss > PixelValue.black_pixel.value)
+        for i in range(len(list_x)):
+            print(list_x[i], list_y[i])
