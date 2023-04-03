@@ -42,26 +42,29 @@ This algorithm segments each :term:`slice` with `SITK\:\:ThresholdSegmentationLe
 
 For each slice starting from the user's selected slice, going in the :term:`inferior` first, then :term:`superior` direction:
 
-1. By using `SITK\:\:BinaryDilateImageFilter <https://simpleitk.org/doxygen/latest/html/classitk_1_1simple_1_1BinaryDilateImageFilter.html>`_ to perform :term:`binary dilation`, the algorithm generates a :term:`label map` image which contains a circle-like shape around the centre coordinate (user input's or calculated by the algorithm). Each pixel within the circle will be labeled as a white pixel (value of 1), and the rest of the pixels are labeled as black pixels (value of 0).
+1. With `SITK\:\:BinaryDilateImageFilter <https://simpleitk.org/doxygen/latest/html/classitk_1_1simple_1_1BinaryDilateImageFilter.html>`_ to perform :term:`binary dilation`, the algorithm generates a :term:`label map` image which contains a circle-like shape around the centre coordinate (user input's or calculated by the algorithm). Each pixel within the circle will be labeled as a white pixel (value of 1), and the rest of the pixels are labeled as black pixels (value of 0).
 
 
-2. By using `SITK\:\:LabelStatisticsImageFilter <https://simpleitk.org/doxygen/latest/html/classitk_1_1simple_1_1LabelStatisticsImageFilter.html>`_, the algorithm gets the mean and the standard deviation of the intensity values of the pixels that were labeled as the white pixel in the previous step. The algorithm uses :term:`threshold coefficient` to calculate the lower and upper :term:`threshold` to be used in the next step.
+2. With `SITK\:\:SignedMaurerDistanceMapImageFilter <https://simpleitk.org/doxygen/latest/html/classitk_1_1simple_1_1SignedMaurerDistanceMapImageFilter.html>`_, the algorithm creates another image, the :term:`Euclidean distance transform` of the label image. This is used as a :term:`contour line` that helps build the gradient mentioned in :term:`Level sets`.
 
 
-3. With `SITK\:\:SignedMaurerDistanceMapImageFilter <https://simpleitk.org/doxygen/latest/html/classitk_1_1simple_1_1SignedMaurerDistanceMapImageFilter.html>`_, the algorithm creates another image, the :term:`Euclidean distance transform` of the label image created in step 1, and uses it as the seed image (:term:`contour line`) in `SITK\:\:ThresholdSegmentationLevelSetImageFilter <https://simpleitk.org/doxygen/latest/html/classitk_1_1simple_1_1ThresholdSegmentationLevelSetImageFilter.html>`_, with the lower and upper threshold value calculated in step 2. The filtered image is the :term:`segmented slice`.
+3. By using `SITK\:\:LabelStatisticsImageFilter <https://simpleitk.org/doxygen/latest/html/classitk_1_1simple_1_1LabelStatisticsImageFilter.html>`_, the algorithm gets the mean and the standard deviation of the intensity values of the pixels that were labeled as the white pixel in the previous step. The algorithm uses :term:`threshold coefficient` to calculate the lower and upper :term:`threshold` to be used in the next step.
 
 
-4. The algorithm determines whether to accept the :term:`segmented slice` or not, based on the number of white pixels on the segmented slice, and the :term:`Qualified coefficient` to control the limit.
+4. With `SITK\:\:ThresholdSegmentationLevelSetImageFilter <https://simpleitk.org/doxygen/latest/html/classitk_1_1simple_1_1ThresholdSegmentationLevelSetImageFilter.html>`_,  the seed image calculated in step 2, and the lower and upper threshold value calculated in step 3, the algorithm performs segmentation and generated a :term:`segmented slice`.
+
+
+5. The algorithm determines whether to accept the :term:`segmented slice` or not, based on the number of white pixels on the segmented slice, and the :term:`Qualified coefficient` to control the limit.
 
     .. note::
 
        To determine whether a segmented slice is acceptable, different conditions are verified for :term:`Descending Aorta` and :term:`Ascending Aorta`. These conditions check are all involved with the :term:`Qualified coefficient`, which is decided by the user. In simple terms, the larger the :term:`Qualified coefficient`, the looser the condition on accepting a segmented slice.
 
 
-5. If the algorithm accepted this segmented slice, a new centre coordinate is calculated and used as the seed coordinate for segmenting the next slice.
+6. If the algorithm accepted this segmented slice, a new centre coordinate is calculated and used as the seed coordinate for segmenting the next slice.
 
 
-6. When a segmented slice is not acceptable, the algorithm will skip this slice if the number of consecutive skipped slices is less than the user's limit. Otherwise, the algorithm will stop the segmentation loop. 
+7. When a segmented slice is not acceptable, the algorithm will skip this slice if the number of consecutive skipped slices is less than the user's limit. Otherwise, the algorithm will stop the segmentation loop. 
 
     .. note::
        

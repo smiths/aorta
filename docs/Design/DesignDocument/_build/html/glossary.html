@@ -96,7 +96,7 @@ The Aortic arch, is the curved segment that gives the aorta its cane-like shape.
 <figure class="align-default" id="id2">
 <a class="reference internal image-reference" href="_images/united-states-map.png"><img alt="U.S. time zone map" src="_images/united-states-map.png" style="height: 400px;" /></a>
 <figcaption>
-<p><span class="caption-text">U.S. time zone map with 4 labels.</span><a class="headerlink" href="#id2" title="Permalink to this image"></a></p>
+<p><span class="caption-text">Fig 1. U.S. time zone map with 4 labels.</span><a class="headerlink" href="#id2" title="Permalink to this image"></a></p>
 </figcaption>
 </figure>
 </dd>
@@ -122,11 +122,35 @@ The Aortic arch, is the curved segment that gives the aorta its cane-like shape.
 </dd>
 <dt id="term-segmented-slice">segmented slice<a class="headerlink" href="#term-segmented-slice" title="Permalink to this term"></a></dt><dd><p>A 2-dimensional image retrieved by applying <a class="reference external" href="https://simpleitk.org/doxygen/latest/html/classitk_1_1simple_1_1ThresholdSegmentationLevelSetImageFilter.html">SITK::ThresholdSegmentationLevelSetImageFilter</a> with the euclidean distance transform image, the original image, and the threshold value calculated with the mean and the standard deviation of the intensity values that were labeled as the white pixel.</p>
 </dd>
-<dt id="term-threshold">threshold<a class="headerlink" href="#term-threshold" title="Permalink to this term"></a></dt><dd><p>A threshold is an amount, level, or limit on a scale. When the threshold is reached, something else happens or changes.</p>
-</dd>
-<dt id="term-Level-sets">Level sets<a class="headerlink" href="#term-Level-sets" title="Permalink to this term"></a></dt><dd><p>Level Sets are an important category of modern image segmentation techniques based on partial differential equations (PDE), i.e. progressive evaluation of the differences among neighboring pixels to find object boundaries.</p>
-</dd>
 <dt id="term-contour-line">contour line<a class="headerlink" href="#term-contour-line" title="Permalink to this term"></a></dt><dd><p>A contour line (also isoline, isopleth, or isarithm) of a function of two variables is a curve along which the function has a constant value so that the curve joins points of equal value.</p>
+<figure class="align-default" id="id3">
+<a class="reference internal image-reference" href="_images/Contour2D.png"><img alt="Controu line map" src="_images/Contour2D.png" style="width: 300px; height: 300px;" /></a>
+<figcaption>
+<p><span class="caption-text">Fig 2. A contour line map</span><a class="headerlink" href="#id3" title="Permalink to this image"></a></p>
+</figcaption>
+</figure>
+</dd>
+<dt id="term-Level-sets">Level sets<a class="headerlink" href="#term-Level-sets" title="Permalink to this term"></a></dt><dd><p>Level Sets are an important category of modern image segmentation techniques based on partial differential equations (PDE), i.e. progressive evaluation of the differences among neighboring pixels to find object boundaries. The pictures below demonstrate an example of how Level Sets method work on finding the region of the heart</p>
+<figure class="align-default" id="id4">
+<img alt="Distance transformation" src="_images/heart-1.png" />
+<figcaption>
+<p><span class="caption-text">Fig 3. The seed contour</span><a class="headerlink" href="#id4" title="Permalink to this image"></a></p>
+</figcaption>
+</figure>
+<figure class="align-default" id="id5">
+<img alt="Distance transformation" src="_images/heart-2.png" />
+<figcaption>
+<p><span class="caption-text">Fig 4. The result after some iterations</span><a class="headerlink" href="#id5" title="Permalink to this image"></a></p>
+</figcaption>
+</figure>
+<figure class="align-default" id="id6">
+<img alt="Distance transformation" src="_images/heart-3.png" />
+<figcaption>
+<p><span class="caption-text">Fig 5. The final result</span><a class="headerlink" href="#id6" title="Permalink to this image"></a></p>
+</figcaption>
+</figure>
+</dd>
+<dt id="term-threshold">threshold<a class="headerlink" href="#term-threshold" title="Permalink to this term"></a></dt><dd><p>A threshold is an amount, level, or limit on a scale. When the threshold is reached, something else happens or changes.</p>
 </dd>
 <dt id="term-threshold-coefficient">threshold coefficient<a class="headerlink" href="#term-threshold-coefficient" title="Permalink to this term"></a></dt><dd><p>This coefficient is used to compute the lower and upper threshold passing through the segmentation filter <a class="reference external" href="https://simpleitk.org/doxygen/latest/html/classitk_1_1simple_1_1ThresholdSegmentationLevelSetImageFilter.html">SITK::ThresholdSegmentationLevelSetImageFilter</a>. The algorithm first uses <a class="reference external" href="https://simpleitk.org/doxygen/latest/html/classitk_1_1simple_1_1LabelStatisticsImageFilter.html">SITK::LabelStatisticsImageFilter</a> to get the mean and the standard deviation of the intensity values of the pixels that are labeled as the white pixel. Larger values with this coefficient imply a larger range of thresholds when performing the segmentation, which leads to a larger segmented region.</p>
 <div class="admonition note">
@@ -141,10 +165,10 @@ The Aortic arch, is the curved segment that gives the aorta its cane-like shape.
 <dt id="term-Qualified-coefficient">Qualified coefficient<a class="headerlink" href="#term-Qualified-coefficient" title="Permalink to this term"></a></dt><dd><p>This coefficient is used when the algorithm is determining whether a new segmented slice is acceptable in terms of the size of the segmented regions. The larger the coefficient, the looser the condition to accept the new segmented slice.</p>
 </dd>
 <dt id="term-Euclidean-distance-transform">Euclidean distance transform<a class="headerlink" href="#term-Euclidean-distance-transform" title="Permalink to this term"></a></dt><dd><p>The euclidean distance transform is the map labeling each pixel of the image with the distance to the nearest obstacle pixel (black pixel for this project).</p>
-<figure class="align-default" id="id3">
+<figure class="align-default" id="id7">
 <img alt="Distance transformation" src="_images/Distance_Transformation.gif" />
 <figcaption>
-<p><span class="caption-text">The euclidean distance transform image</span><a class="headerlink" href="#id3" title="Permalink to this image"></a></p>
+<p><span class="caption-text">The euclidean distance transform image</span><a class="headerlink" href="#id7" title="Permalink to this image"></a></p>
 </figcaption>
 </figure>
 </dd>

@@ -24,7 +24,7 @@ class AortaSegmenter():
 
     Attributes:
 
-        starting_slice (float): The seed slice's index (the index along the Z axis)
+        starting_slice (int): The seed slice's index (the index along the Z axis)
 
         aorta_centre (tuple): A tuple of two integers indicates the centre of Descending or Ascending aorta on the axial plane.
 
@@ -115,7 +115,6 @@ class AortaSegmenter():
             self._processing_image.CopyInformation(self._cropped_image)
         self._seg_dir = None
         self._original_size = None
-        self._seeds = None
         self._is_size_decreasing = False
 
         # Get more values from the seed slice

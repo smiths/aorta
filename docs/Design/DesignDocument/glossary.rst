@@ -33,7 +33,7 @@ Glossary of Terms Used in AortaGeomRecon Documentation
            :height: 400
            :alt: U.S. time zone map
 
-           U.S. time zone map with 4 labels.
+           Fig 1. U.S. time zone map with 4 labels.
 
     binary dilation
         Binary dilation is a mathematical morphology operation that uses a structuring element (kernel) for expanding the shapes in an image. Using `scipy.binary_dilation <https://docs.scipy.org/doc/scipy/reference/generated/scipy.ndimage.binary_dilation.html>`_ as example:
@@ -57,15 +57,37 @@ Glossary of Terms Used in AortaGeomRecon Documentation
 
     segmented slice
         A 2-dimensional image retrieved by applying `SITK\:\:ThresholdSegmentationLevelSetImageFilter <https://simpleitk.org/doxygen/latest/html/classitk_1_1simple_1_1ThresholdSegmentationLevelSetImageFilter.html>`_ with the euclidean distance transform image, the original image, and the threshold value calculated with the mean and the standard deviation of the intensity values that were labeled as the white pixel.
-  
-    threshold
-        A threshold is an amount, level, or limit on a scale. When the threshold is reached, something else happens or changes.
-
-    Level sets
-        Level Sets are an important category of modern image segmentation techniques based on partial differential equations (PDE), i.e. progressive evaluation of the differences among neighboring pixels to find object boundaries.
 
     contour line
         A contour line (also isoline, isopleth, or isarithm) of a function of two variables is a curve along which the function has a constant value so that the curve joins points of equal value.
+
+        .. figure:: Contour2D.png
+           :alt: Controu line map
+           :width: 300
+           :height: 300
+
+           Fig 2. A contour line map
+
+    Level sets
+        Level Sets are an important category of modern image segmentation techniques based on partial differential equations (PDE), i.e. progressive evaluation of the differences among neighboring pixels to find object boundaries. The pictures below demonstrate an example of how Level Sets method work on finding the region of the heart
+
+        .. figure:: heart-1.png
+           :alt: Distance transformation
+
+           Fig 3. The seed contour
+
+        .. figure:: heart-2.png
+           :alt: Distance transformation
+
+           Fig 4. The result after some iterations
+
+        .. figure:: heart-3.png
+           :alt: Distance transformation
+
+           Fig 5. The final result
+    
+    threshold
+        A threshold is an amount, level, or limit on a scale. When the threshold is reached, something else happens or changes.
 
     threshold coefficient
         This coefficient is used to compute the lower and upper threshold passing through the segmentation filter `SITK\:\:ThresholdSegmentationLevelSetImageFilter <https://simpleitk.org/doxygen/latest/html/classitk_1_1simple_1_1ThresholdSegmentationLevelSetImageFilter.html>`_. The algorithm first uses `SITK\:\:LabelStatisticsImageFilter  <https://simpleitk.org/doxygen/latest/html/classitk_1_1simple_1_1LabelStatisticsImageFilter.html>`_ to get the mean and the standard deviation of the intensity values of the pixels that are labeled as the white pixel. Larger values with this coefficient imply a larger range of thresholds when performing the segmentation, which leads to a larger segmented region.
