@@ -315,7 +315,7 @@ class AortaSegmenter():
         self._segment_filter.SetLowerThreshold(lower_threshold)
         self._segment_filter.SetUpperThreshold(upper_threshold)
 
-        ls = self._segment_filter.Execute(
+        segmented_slice = self._segment_filter.Execute(
             dis_map, sitk.Cast(self._cur_img_slice, sitk.sitkFloat32))
         if self._debug_mod:
             nda_label = sitk.GetArrayFromImage(label_map)
@@ -331,11 +331,11 @@ class AortaSegmenter():
             for i in range(len(list_x)):
                 print(list_x[i], list_y[i], end=" ")
                 print(nda[(list_x[i], list_y[i])])
-            nda_ls = sitk.GetArrayFromImage(ls)
-            list_x, list_y = np.where(nda_ls > PixelValue.black_pixel.value)
+            nda_ss = sitk.GetArrayFromImage(segmented_slice)
+            list_x, list_y = np.where(nda_ss > PixelValue.black_pixel.value)
             for i in range(len(list_x)):
                 print(list_x[i], list_y[i])
-        return ls
+        return segmented_slice
 
     def __count_pixel_des(self, new_slice):
         """Get the number of white pixels, and calculate a new centre based on the segmentation result.
