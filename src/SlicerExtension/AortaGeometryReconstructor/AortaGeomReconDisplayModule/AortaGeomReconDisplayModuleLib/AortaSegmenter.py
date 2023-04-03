@@ -277,7 +277,7 @@ class AortaSegmenter():
 
         segmented_slice = self._segment_filter.Execute(
             dis_map, sitk.Cast(self._cur_img_slice, sitk.sitkFloat32))
-        
+
         if self._debug_mod:
             self.__debug(
                 label_map,
