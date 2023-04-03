@@ -39,7 +39,7 @@ author = 'Jingyi Lin'
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
-extensions = ["sphinx.ext.todo", "sphinx.ext.napoleon", "sphinx.ext.viewcode"]
+extensions = ["sphinx.ext.todo", "sphinx.ext.napoleon"]
 # autodoc_mock_imports = ["vtk", "sitkUtils", "PythonQt", "slicer", "ScriptedLoadableModule"]
 
 # Add any paths that contain templates here, relative to this directory.
