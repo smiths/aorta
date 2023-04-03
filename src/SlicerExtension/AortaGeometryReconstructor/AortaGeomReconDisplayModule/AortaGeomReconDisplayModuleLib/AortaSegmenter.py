@@ -272,9 +272,11 @@ class AortaSegmenter():
         spacing = 3
         for j in range(-1, 2):
             seed_with_space = self._prev_centre[0] + spacing * j
-            label_map[(seed_with_space, self._prev_centre[1])] = 1
+            label_map[
+                (seed_with_space, self._prev_centre[1])
+            ] = PixelValue.white_pixel.value
         for s in self._prev_seeds:
-            label_map[s] = 1
+            label_map[s] = PixelValue.white_pixel.value
         label_map = sitk.BinaryDilate(label_map, [3] * 2)
         return label_map
 
@@ -294,9 +296,15 @@ class AortaSegmenter():
         stats = sitk.LabelStatisticsImageFilter()
         stats.Execute(self._cur_img_slice, label_map)
         lower_threshold = (
-            stats.GetMean(1) - self._threshold_coef*stats.GetSigma(1))
+            stats.GetMean(PixelValue.white_pixel.value)
+            - self._threshold_coef
+            * stats.GetSigma(PixelValue.white_pixel.value)
+        )
         upper_threshold = (
-            stats.GetMean(1) + self._threshold_coef*stats.GetSigma(1))
+            stats.GetMean(PixelValue.white_pixel.value)
+            + self._threshold_coef
+            * stats.GetSigma(PixelValue.white_pixel.value)
+        )
 
         # calculate the Euclidean distance transform
         dis_map = sitk.SignedMaurerDistanceMap(
@@ -310,10 +318,12 @@ class AortaSegmenter():
         ls = self._segment_filter.Execute(
             dis_map, sitk.Cast(self._cur_img_slice, sitk.sitkFloat32))
         if self._debug_mod:
-            print(sitk.GetArrayFromImage(label_map))
+            nda_label = sitk.GetArrayFromImage(label_map)
+            print(nda_label)
             nda = sitk.GetArrayFromImage(dis_map)
             print("lower:", lower_threshold, "upper:", upper_threshold)
-            list_x, list_y = np.where(sitk.GetArrayFromImage(label_map) == 1)
+            list_x, list_y = np.where(
+                nda_label == PixelValue.white_pixel.value)
             print(len(list_x))
             print("\ndistance_map")
             print(nda)
@@ -322,7 +332,7 @@ class AortaSegmenter():
                 print(list_x[i], list_y[i], end=" ")
                 print(nda[(list_x[i], list_y[i])])
             nda_ls = sitk.GetArrayFromImage(ls)
-            list_x, list_y = np.where(nda_ls > 0)
+            list_x, list_y = np.where(nda_ls > PixelValue.black_pixel.value)
             for i in range(len(list_x)):
                 print(list_x[i], list_y[i])
         return ls
@@ -338,7 +348,7 @@ class AortaSegmenter():
         # assign segmentation to fully_seg_slice
         # get array from segmentation
         nda = sitk.GetArrayFromImage(new_slice)
-        list_x, list_y = np.where(nda == 1)
+        list_x, list_y = np.where(nda == PixelValue.white_pixel.value)
         new_centre = (int(np.average(list_y)), int(np.average(list_x)))
         total_coord = len(list_x)
         if self._debug_mod:
@@ -358,22 +368,25 @@ class AortaSegmenter():
         """ # noqa
         nda = sitk.GetArrayFromImage(new_slice)
         new_centre = [0, 0]
-        list_y, _ = np.where(nda == 1)
+        list_y, _ = np.where(nda == PixelValue.white_pixel.value)
         max_y = max(list_y)
         min_y = min(list_y)
         total_coord = len(list_y)
         new_centre[1] = int(sum(list_y) / len(list_y))
         height = max_y - min_y
-        list_x = np.where(nda[new_centre[1]] == 1)[0]
+        list_x = np.where(
+            nda[new_centre[1]] == PixelValue.white_pixel.value)[0]
         width = len(list_x)
         if (width == 0):
-            _, list_x = np.where(nda == 1)
+            _, list_x = np.where(nda == PixelValue.white_pixel.value)
         new_centre[0] = int(np.average(list_x))
         new_seeds = []
         y1 = int((max_y + new_centre[1])/2)
         y2 = int((min_y + new_centre[1])/2)
-        next_seed_x1_list = np.where(nda[y1] == 1)[0]
-        next_seed_x2_list = np.where(nda[y2] == 1)[0]
+        next_seed_x1_list = np.where(
+            nda[y1] == PixelValue.white_pixel.value)[0]
+        next_seed_x2_list = np.where(
+            nda[y2] == PixelValue.white_pixel.value)[0]
         width1 = len(next_seed_x1_list)
         width2 = len(next_seed_x2_list)
         if (width1 > width / 2):
@@ -382,8 +395,10 @@ class AortaSegmenter():
             new_seeds.append([int(np.average(next_seed_x2_list)), y2])
         x3 = int(new_centre[0] + width/2)
         x4 = int(new_centre[0] - width/2)
-        next_seed_y3_list = np.where(nda[:, x3] == 1)[0]
-        next_seed_y4_list = np.where(nda[:, x4] == 1)[0]
+        next_seed_y3_list = np.where(
+            nda[:, x3] == PixelValue.white_pixel.value)[0]
+        next_seed_y4_list = np.where(
+            nda[:, x4] == PixelValue.white_pixel.value)[0]
         height3 = len(next_seed_y3_list)
         height4 = len(next_seed_y4_list)
         if (height3 > height / 2):
