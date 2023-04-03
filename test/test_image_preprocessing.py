@@ -412,10 +412,9 @@ def test_compare_final_volume(
     assert (DSC_error < limit)
     return test_image
 
+
 def test_debug(limit, qualifiedCoef, thresholdCoef, testCase):
-    """Read a test cases' cropped volume from /project-repo/test/sample,
-    perform descending aorta segmentation,
-    and compare the result with the existing volume from /project-repo/test/sample.
+    """Debug the general workflow of the axial segmentation algorithm.
 
     Args:
         limit (float): the maximum Dice similarity coefficient difference allowed to pass the test.

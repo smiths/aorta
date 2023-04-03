@@ -3,13 +3,17 @@ import sys
 
 import SimpleITK as sitk
 import numpy as np
+# for design document
 project_path = os.path.abspath('.')
 AGR_module_path = os.path.join(project_path, "src/SlicerExtension/")
 AGR_module_path = os.path.join(AGR_module_path, "AortaGeometryReconstructor/")
 AGR_module_path = os.path.join(AGR_module_path, "AortaGeomReconDisplayModule")
 sys.path.insert(0, AGR_module_path)
+
+# for debugging and numpy print operation
 np.set_printoptions(threshold=sys.maxsize)
 
+# import helpers enumeration classes
 from AortaGeomReconDisplayModuleLib.AortaGeomReconEnums import SegmentDirection as SegDir # noqa
 from AortaGeomReconDisplayModuleLib.AortaGeomReconEnums import SegmentType # noqa
 from AortaGeomReconDisplayModuleLib.AortaGeomReconEnums import PixelValue # noqa
@@ -26,13 +30,13 @@ class AortaSegmenter():
 
         num_slice_skipping (int): The number of slice allowed to consecutively skip by the algorithm.
 
-        seg_type (AortaGeomReconEnums.SegmentType): Indicate the segmentation type, Descending aorta segmentation or Ascending aorta
+        seg_type (AortaGeomReconEnums.SegmentType): Indicate the segmentation type, Descending aorta or Ascending aorta segmentation.
 
         qualified_coef (float): This coefficient controls the lower and upper threshold of the number of white pixels to determine whether to accept each segmented slice or not.
 
         cropped_image (SITK::image): The original image that the user has only perform cropping.
 
-        processing_image (SITK::image): The processing image, this image could be none when performing descending aorta segmentation. When performing ascending aorta segmentation, it should have the Descending aorta segmentation result.
+        processing_image (SITK::image): The processing image, this image could be none when performing Descending aorta segmentation. When performing Ascending aorta segmentation, it should have the Descending aorta segmentation result.
 
     """ # noqa
 
@@ -84,12 +88,12 @@ class AortaSegmenter():
         return self._processing_image
 
     def begin_segmentation(self):
-        """The api is available to the user's to perform axial segmentation.
-        Depending on the user's inputs, it will perform Descending aorta segmentation or Ascending aorta segmentation.
-        It first set up a few variables, get the original seed values,
-        then jump to the main loop which perform segmentation superior to inferior from the user's seed slice,
-        and the main loop that performs segmentation inferior to superior from the user's seed slice.
-
+        """This is the main entry point of the axial segmentation.
+        This api should be called to perform Descending aorta segmentation first
+        (superior to inferior, then inferior to superior starting from the seed slice).
+        After getting the result of Descending aorta segmentation, this api should perform Ascending aorta segmentation
+        (superior to inferior, then inferior to superior starting from the seed slice).
+    
         """ # noqa
         rms_error = 0.02
         no_iteration = 600
@@ -187,7 +191,7 @@ class AortaSegmenter():
                 total_coord, centre, seeds = self.__count_pixel_asc(
                     new_slice_i)
                 is_overlapping = self.__is_overlapping(new_slice_i, slice_i)
-            if self.__is_new_centre_qualified(total_coord, is_overlapping):
+            if self.__is_new_slice_qualified(total_coord, is_overlapping):
                 counter = 0
                 if self._seg_type == SegmentType.descending_aorta:
                     self._processing_image[:, :, slice_i] = new_slice_i
@@ -213,7 +217,7 @@ class AortaSegmenter():
                 total_coord = self._previous_size
             self._previous_size = total_coord
 
-    def __is_new_centre_qualified(self, total_coord, is_overlapping):
+    def __is_new_slice_qualified(self, total_coord, is_overlapping):
         """Return True if it satisfies the following conditions:
         
         1. The number of white pixels of the segmented result is smaller than the previous size multiplis some ratio (the ratio could change depends on the segmentation type).
@@ -228,47 +232,40 @@ class AortaSegmenter():
             Boolean
         """ # noqa
         cmp_prev_size = bool(total_coord < 2*self._previous_size)
-        if self._seg_dir == SegDir.Superior_to_Inferior:
-            slicer_larger_than = bool(
-                total_coord >
-                (self._original_size/self._qualified_coef)
-            )
-            cmp_original_size = bool(
-                total_coord <
-                (self._original_size*self._qualified_coef)
-            )
-            if self._seg_type == SegmentType.ascending_aorta:
-                cmp_prev_size = bool(
-                    total_coord < 2 * self._previous_size
-                )
-        else:
+        slicer_larger_than = bool(
+            total_coord >
+            (self._original_size/self._qualified_coef)
+        )
+        cmp_original_size = bool(
+            total_coord <
+            (self._original_size*self._qualified_coef)
+        )
+        if self._seg_dir == SegDir.Inferior_to_Superior:
             slicer_larger_than = bool(
                 total_coord >
                 (self._previous_size/self._qualified_coef)
             )
+            cmp_original_size = bool(
+                total_coord <
+                (self._original_size*(self._qualified_coef+0.3))
+            )
             if self._seg_type == SegmentType.ascending_aorta:
+                self._qualified_overlap_coef = self._qualified_coef
                 if not self._is_size_decreasing and is_overlapping:
                     self._qualified_overlap_coef = 2.8
-                else:
-                    self._qualified_overlap_coef = self._qualified_coef
                 cmp_original_size = bool(total_coord < (self._original_size*4))
                 cmp_prev_size = bool(
                     total_coord <
                     (self._qualified_overlap_coef * self._previous_size)
                 )
-            else:
-                cmp_original_size = bool(
-                    total_coord <
-                    (self._original_size*(self._qualified_coef+0.3))
-                )
         return cmp_prev_size and slicer_larger_than and cmp_original_size
 
     def __prepare_label_map(self):
-        """Get a seed from the original image. The algorithm will overwrite three pixels as white pixels. The pixels are decided by the previous centre, derived by count_pixels function.
-        For ascending aorta segmentation, the algorithm also takes extra seeds. These seeds will then dilate with 3*3 grid
+        """Create a label map image that has a circle-like shape.
+        The pixels within the circle are labeled as white pixels (value of 1), the other are labeled as black pixels (value of 0).
 
         Returns:
-            SITK::IMAGE: An image slice with some pixels value overwrite to white pixel (value of 1)
+            SITK::IMAGE: A label map image that has a circle like shape.
         """ # noqa
         label_map = sitk.Image(self._cur_img_slice.GetSize(), sitk.sitkUInt8)
         label_map.CopyInformation(self._cur_img_slice)
@@ -314,16 +311,17 @@ class AortaSegmenter():
         ls = self._segment_filter.Execute(
             dis_map, sitk.Cast(self._cur_img_slice, sitk.sitkFloat32))
         if self._debug_mod:
+            print(sitk.GetArrayFromImage(label_map))
             nda = sitk.GetArrayFromImage(dis_map)
             print("lower:", lower_threshold, "upper:", upper_threshold)
             list_x, list_y = np.where(sitk.GetArrayFromImage(label_map) == 1)
             print(len(list_x))
-            print("\ndistance_map") # , sitk.GetArrayFromImage(dis_map))
+            print("\ndistance_map")
             print(nda)
             print()
             for i in range(len(list_x)):
                 print(list_x[i], list_y[i], end=" ")
-                print(nda[(list_x[i],list_y[i])])
+                print(nda[(list_x[i], list_y[i])])
             nda_ls = sitk.GetArrayFromImage(ls)
             list_x, list_y = np.where(nda_ls > 0)
             for i in range(len(list_x)):

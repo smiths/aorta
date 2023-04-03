@@ -26,9 +26,6 @@ AGR_lib_module_path = os.path.join(AGR_module_path, "AortaGeomReconDisplayModule
 sys.path.insert(0, AGR_lib_module_path)
 sys.path.insert(0, project_path)
 
-print(sys.path)
-
-
 
 # -- Project information -----------------------------------------------------
 

@@ -13,8 +13,10 @@
   <![endif]-->
   
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
-        <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -46,20 +48,9 @@
 <li class="toctree-l1 current"><a class="reference internal" href="modules.html">AortaGeomReconModule</a><ul class="current">
 <li class="toctree-l2 current"><a class="current reference internal" href="#">AortaGeomReconDisplayModuleLib package</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#submodules">Submodules</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#module-AortaGeomReconEnums">AortaGeomReconEnums module</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#AortaGeomReconEnums.PixelValue"><code class="docutils literal notranslate"><span class="pre">PixelValue</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#AortaGeomReconEnums.SegmentDirection"><code class="docutils literal notranslate"><span class="pre">SegmentDirection</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#AortaGeomReconEnums.SegmentType"><code class="docutils literal notranslate"><span class="pre">SegmentType</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="#module-AortaSagitalSegmenter">AortaSagitalSegmenter module</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#AortaSagitalSegmenter.AortaSagitalSegmenter"><code class="docutils literal notranslate"><span class="pre">AortaSagitalSegmenter</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="#module-AortaSegmenter">AortaSegmenter module</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#AortaSegmenter.AortaSegmenter"><code class="docutils literal notranslate"><span class="pre">AortaSegmenter</span></code></a></li>
-</ul>
-</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-AortaGeomReconEnums">AortaGeomReconEnums module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-AortaSagitalSegmenter">AortaSagitalSegmenter module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-AortaSegmenter">AortaSegmenter module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#module-AortaGeomReconDisplayModuleLib">Module contents</a></li>
 </ul>
 </li>
@@ -267,7 +258,7 @@ this implies that there are some areas of interest that we can smooth with sagit
 <span id="aortasegmenter-module"></span><h2>AortaSegmenter module<a class="headerlink" href="#module-AortaSegmenter" title="Permalink to this heading"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="AortaSegmenter.AortaSegmenter">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">AortaSegmenter.</span></span><span class="sig-name descname"><span class="pre">AortaSegmenter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cropped_image</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">starting_slice</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">aorta_centre</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_slice_skipping</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">processing_image</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seg_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qualified_coef</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2.2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold_coef</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3.5</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#AortaSegmenter.AortaSegmenter" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">AortaSegmenter.</span></span><span class="sig-name descname"><span class="pre">AortaSegmenter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cropped_image</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">starting_slice</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">aorta_centre</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_slice_skipping</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">processing_image</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seg_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qualified_coef</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2.2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold_coef</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">debug</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#AortaSegmenter.AortaSegmenter" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>This class is used to perform Descending or Ascending aorta segmentation.</p>
 <dl class="py attribute">
@@ -306,7 +297,7 @@ this implies that there are some areas of interest that we can smooth with sagit
 <dl class="py attribute">
 <dt class="sig sig-object py" id="AortaSegmenter.AortaSegmenter.seg_type">
 <span class="sig-name descname"><span class="pre">seg_type</span></span><a class="headerlink" href="#AortaSegmenter.AortaSegmenter.seg_type" title="Permalink to this definition"></a></dt>
-<dd><p>Indicate the segmentation type, Descending aorta segmentation or Ascending aorta</p>
+<dd><p>Indicate the segmentation type, Descending aorta or Ascending aorta segmentation.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference internal" href="#AortaGeomReconEnums.SegmentType" title="AortaGeomReconEnums.SegmentType">AortaGeomReconEnums.SegmentType</a></p>
@@ -339,7 +330,7 @@ this implies that there are some areas of interest that we can smooth with sagit
 <dl class="py attribute">
 <dt class="sig sig-object py" id="AortaSegmenter.AortaSegmenter.processing_image">
 <span class="sig-name descname"><span class="pre">processing_image</span></span><a class="headerlink" href="#AortaSegmenter.AortaSegmenter.processing_image" title="Permalink to this definition"></a></dt>
-<dd><p>The processing image, this image could be none when performing descending aorta segmentation. When performing ascending aorta segmentation, it should have the Descending aorta segmentation result.</p>
+<dd><p>The processing image, this image could be none when performing Descending aorta segmentation. When performing Ascending aorta segmentation, it should have the Descending aorta segmentation result.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>SITK::image</p>
@@ -413,8 +404,8 @@ Finally, get the segmentation value with the Euclidean distance transform.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="AortaSegmenter.AortaSegmenter.__is_new_centre_qualified">
-<span class="sig-name descname"><span class="pre">__is_new_centre_qualified</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">total_coord</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_overlapping</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#AortaSegmenter.AortaSegmenter.__is_new_centre_qualified" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="AortaSegmenter.AortaSegmenter.__is_new_slice_qualified">
+<span class="sig-name descname"><span class="pre">__is_new_slice_qualified</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">total_coord</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_overlapping</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#AortaSegmenter.AortaSegmenter.__is_new_slice_qualified" title="Permalink to this definition"></a></dt>
 <dd><p>Return True if it satisfies the following conditions:</p>
 <ol class="arabic simple">
 <li><p>The number of white pixels of the segmented result is smaller than the previous size multiplis some ratio (the ratio could change depends on the segmentation type).</p></li>
@@ -444,11 +435,11 @@ return True if there are any voxel intersect or overlaps on each other between t
 <dl class="py method">
 <dt class="sig sig-object py" id="AortaSegmenter.AortaSegmenter.__prepare_label_map">
 <span class="sig-name descname"><span class="pre">__prepare_label_map</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#AortaSegmenter.AortaSegmenter.__prepare_label_map" title="Permalink to this definition"></a></dt>
-<dd><p>Get a seed from the original image. The algorithm will overwrite three pixels as white pixels. The pixels are decided by the previous centre, derived by count_pixels function.
-For ascending aorta segmentation, the algorithm also takes extra seeds. These seeds will then dilate with 3*3 grid</p>
+<dd><p>Create a label map image that has a circle-like shape.
+The pixels within the circle are labeled as white pixels (value of 1), the other are labeled as black pixels (value of 0).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>An image slice with some pixels value overwrite to white pixel (value of 1)</p>
+<dd class="field-odd"><p>A label map image that has a circle like shape.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>SITK::IMAGE</p>
@@ -469,11 +460,11 @@ If not, and it reached the point where maximum consecutive skips is allowed, the
 <dl class="py method">
 <dt class="sig sig-object py" id="AortaSegmenter.AortaSegmenter.begin_segmentation">
 <span class="sig-name descname"><span class="pre">begin_segmentation</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#AortaSegmenter.AortaSegmenter.begin_segmentation" title="Permalink to this definition"></a></dt>
-<dd><p>The api is available to the user’s to perform axial segmentation.
-Depending on the user’s inputs, it will perform Descending aorta segmentation or Ascending aorta segmentation.
-It first set up a few variables, get the original seed values,
-then jump to the main loop which perform segmentation superior to inferior from the user’s seed slice,
-and the main loop that performs segmentation inferior to superior from the user’s seed slice.</p>
+<dd><p>This is the main entry point of the axial segmentation.
+This api should be called to perform Descending aorta segmentation first
+(superior to inferior, then inferior to superior starting from the seed slice).
+After getting the result of Descending aorta segmentation, this api should perform Ascending aorta segmentation
+(superior to inferior, then inferior to superior starting from the seed slice).</p>
 </dd></dl>
 
 <dl class="py property">

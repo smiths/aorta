@@ -24,7 +24,7 @@ The algorithm works best with the chest volume cropped to a rectangular prism th
 
 After cropping the volume, which only contains the region of interest, the algorithm needs a set of variables inputs from the user. These variables are:
 
-1. :term:`Descending Aorta` and :term:`Ascending Aorta` centre coordinate.
+1. A centre coordinate of :term:`Descending Aorta` and :term:`Ascending Aorta` located on a :term:`slice` (a voxel).
 2. :term:`Qualified coefficient`
 3. An integer to indicate the number of slices that the algorithm is allowed to skip consecutively.
 
@@ -32,25 +32,26 @@ After cropping the volume, which only contains the region of interest, the algor
 The main ideas of the algorithm
 *******************************
 
-At the beginning of the algorithm, the user inputs the integer coordinates indicating the position of the descending aorta or ascending aorta centre.
+At the beginning of the algorithm, the user inputs the integer coordinates indicating the position of the descending aorta or ascending aorta centre on a single :term:`slice`. The algorithm works separately on the descending aorta segmentation and the ascending aorta segmentation. Thus, it will ask users to input the coordinate of the descending aorta centre. After completing this segmentation, it will prompt the user for the input variable of the ascending aorta.
 
 .. note::
-   The algorithm works separately on the descending aorta segmentation and the ascending aorta segmentation. Thus, it will ask users to input the coordinate of the descending aorta centre. After completing this segmentation, it will prompt the user for the input variable of the ascending aorta.
+   The user's chosen slice will be used as a reference throughout the workflow of the algorithm. Therefore, changing the input of the centre coordinates on a different slice could generate a slightly different segmentation result.
+   
 
-The user's chosen slice will be used as a reference throughout the workflow of the algorithm. Therefore, changing the input of the centre coordinate and different slices could generate a slightly different segmentation result
+This algorithm segments each :term:`slice` with `SITK\:\:ThresholdSegmentationLevelSetImageFilter <https://simpleitk.org/doxygen/latest/html/classitk_1_1simple_1_1ThresholdSegmentationLevelSetImageFilter.html>`_. The principles of this image filter can be explained with two terms: :term:`Level sets` segmentation method, and a :term:`threshold` range that defines the intensity of the acceptable pixel. The following steps elaborate on how the algorithm calculated the necessary values to perform segmentation.
 
-For each slice starting from the user's selected slice going in the :term:`inferior` or :term:`superior` direction
+For each slice starting from the user's selected slice, going in the :term:`inferior` first, then :term:`superior` direction:
 
-1. The algorithm generates a :term:`label map` withs a circle-like shape around the centre coordinate by labeling the centre pixel to a white pixel label(value of 1), then use `SITK\:\:BinaryDilateImageFilter <https://simpleitk.org/doxygen/latest/html/classitk_1_1simple_1_1BinaryDilateImageFilter.html>`_ to perform :term:`binary dilation` to generate the circle-like shape, where each of the pixels in the circle is assigned to white pixel label.
-
-
-2. By using `SITK\:\:LabelStatisticsImageFilter <https://simpleitk.org/doxygen/latest/html/classitk_1_1simple_1_1LabelStatisticsImageFilter.html>`_, the algorithm gets the mean and the sigma of the pixels labeled as white pixel label. The algorithm uses :term:`Threshold coefficient` to calculate the lower and upper threshold to be used in the following steps.
+1. By using `SITK\:\:BinaryDilateImageFilter <https://simpleitk.org/doxygen/latest/html/classitk_1_1simple_1_1BinaryDilateImageFilter.html>`_ to perform :term:`binary dilation`, the algorithm generates a :term:`label map` image which contains a circle-like shape around the centre coordinate (user input's or calculated by the algorithm). Each pixel within the circle will be labeled as a white pixel (value of 1), and the rest of the pixels are labeled as black pixels (value of 0).
 
 
-3. The algorithm then creates another image with `SITK\:\:SignedMaurerDistanceMapImageFilter <https://simpleitk.org/doxygen/latest/html/classitk_1_1simple_1_1SignedMaurerDistanceMapImageFilter.html>`_, the :term:`Euclidean distance transform` of a binary image as the image intensity map, and uses it in `SITK\:\:ThresholdSegmentationLevelSetImageFilter <https://simpleitk.org/doxygen/latest/html/classitk_1_1simple_1_1ThresholdSegmentationLevelSetImageFilter.html>`_ and the threshold range mentioned above to create a :term:`Segmented slice`.
+2. By using `SITK\:\:LabelStatisticsImageFilter <https://simpleitk.org/doxygen/latest/html/classitk_1_1simple_1_1LabelStatisticsImageFilter.html>`_, the algorithm gets the mean and the standard deviation of the intensity values of the pixels that were labeled as the white pixel in the previous step. The algorithm uses :term:`threshold coefficient` to calculate the lower and upper :term:`threshold` to be used in the next step.
 
 
-4. The algorithm determines whether to accept the :term:`Segmented slice` or not, based on the number of white pixels on the segmented slice, and the :term:`Qualified coefficient` to control the limit.
+3. With `SITK\:\:SignedMaurerDistanceMapImageFilter <https://simpleitk.org/doxygen/latest/html/classitk_1_1simple_1_1SignedMaurerDistanceMapImageFilter.html>`_, the algorithm creates another image, the :term:`Euclidean distance transform` of the label image created in step 1, and uses it as the seed image (:term:`contour line`) in `SITK\:\:ThresholdSegmentationLevelSetImageFilter <https://simpleitk.org/doxygen/latest/html/classitk_1_1simple_1_1ThresholdSegmentationLevelSetImageFilter.html>`_, with the lower and upper threshold value calculated in step 2. The filtered image is the :term:`segmented slice`.
+
+
+4. The algorithm determines whether to accept the :term:`segmented slice` or not, based on the number of white pixels on the segmented slice, and the :term:`Qualified coefficient` to control the limit.
 
     .. note::
 
@@ -66,8 +67,8 @@ For each slice starting from the user's selected slice going in the :term:`infer
        
        The algorithm will replace these skipped slices with the calculated intersection of the previous and the next slice.
 
-The pseudocode of the algorithm
-*******************************
+The simplified version of the algorithm
+***************************************
 
 .. code-block:: python
    :linenos:
@@ -91,7 +92,7 @@ The pseudocode of the algorithm
    segment_filter = sitk.ThresholdSegmentationLevelSetImageFilter()
    skipped_slice = []
 
-   # The stats of the user's chosen slice will be used as reference
+   # The statistics of the user's chosen slice will be used as reference
    # to determine whether a new segmented slice is acceptable
    segmented_slice = segment_single_slice(seed_slice_index, seed_aorta_centre)
    
@@ -114,11 +115,13 @@ The pseudocode of the algorithm
        # prev_centre is the new derived centre from last segmented slice
        segmented_slice = segment_single_slice(slice_i, prev_centre)
 
-       # element-wise operation, exactly what we doing with the double for-loop to assign white pixel and black pixel
+       # element-wise operation
+       # exactly what we doing with the double for-loop
+       # to assign white pixel and black pixel
        new_slice = segmented_slice > black_pixel
 
        total_coord, centre = count_pixels(new_slice)
-       if is_new_centre_qualified(total_coord):
+       if is_new_slice_qualified(total_coord):
           skip_counter = 0
           # processing_image is the segmented volume returned
           processing_image[:, :, slice_i] = new_slice
@@ -144,7 +147,7 @@ The pseudocode of the algorithm
       label_map = curr_slice.copy_size()
       spacing = 3
       for i = -1 to 1 do:
-         circle_x = prev_centre[0] + spacing*j
+         circle_x = prev_centre[0] + spacing*i
          label_map[(circle_x, prev_centre[1])] = white_pixel
       label_map = sitk.BinaryDilate(label_map, [3] * 2) 
       return label_map
@@ -183,7 +186,7 @@ The pseudocode of the algorithm
       new_centre = (x_coord/num_of_white_pixel, y_coord/num_of_white_pixel)
       return num_of_white_pixel, new_centre
 
-   def is_new_centre_qualified(new_size):
+   def is_new_slice_qualified(new_size):
       # compare new slice's number of white pixel to
       # the original slice and the previous size
 
