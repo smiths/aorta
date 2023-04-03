@@ -199,7 +199,7 @@ class AortaSegmenter():
             Boolean
         """ # noqa
         cmp_prev_size = bool(total_coord < 2*self._previous_size)
-        slicer_larger_than = bool(
+        slice_larger_than = bool(
             total_coord >
             (self._original_size/self._qualified_coef)
         )
@@ -208,7 +208,7 @@ class AortaSegmenter():
             (self._original_size*self._qualified_coef)
         )
         if self._seg_dir == SegDir.Inferior_to_Superior:
-            slicer_larger_than = bool(
+            slice_larger_than = bool(
                 total_coord >
                 (self._previous_size/self._qualified_coef)
             )
@@ -225,7 +225,7 @@ class AortaSegmenter():
                     total_coord <
                     (self._qualified_overlap_coef * self._previous_size)
                 )
-        return cmp_prev_size and slicer_larger_than and cmp_original_size
+        return cmp_prev_size and slice_larger_than and cmp_original_size
 
     def __prepare_label_map(self):
         """Create a label map image that has a circle-like shape.
