@@ -42,7 +42,7 @@ This algorithm segments each :term:`slice` with `SITK\:\:ThresholdSegmentationLe
 
 For each slice starting from the user's selected slice, going in the :term:`inferior` first, then :term:`superior` direction:
 
-1. With `SITK\:\:BinaryDilateImageFilter <https://simpleitk.org/doxygen/latest/html/classitk_1_1simple_1_1BinaryDilateImageFilter.html>`_ to perform :term:`binary dilation`, the algorithm generates a :term:`label map` image which contains a circle-like shape around the centre coordinate (user input's or calculated by the algorithm). Each pixel within the circle will be labeled as a white pixel (value of 1), and the rest of the pixels are labeled as black pixels (value of 0).
+1. The algorithm uses `SITK\:\:BinaryDilateImageFilter <https://simpleitk.org/doxygen/latest/html/classitk_1_1simple_1_1BinaryDilateImageFilter.html>`_ to perform :term:`binary dilation` to generate a circle-like shape around the centre coordinate (user input's or calculated by the algorithm). Each pixel within this shape will be labeled as a white pixel (value of 1), and the rest of the pixels are labeled as black pixels (value of 0). The generated result is the :term:`label map` image, and we will use it in the next few steps.
 
 
 2. With `SITK\:\:SignedMaurerDistanceMapImageFilter <https://simpleitk.org/doxygen/latest/html/classitk_1_1simple_1_1SignedMaurerDistanceMapImageFilter.html>`_, the algorithm creates another image, the :term:`Euclidean distance transform` of the label image. This is used as a :term:`contour line` that helps build the gradient mentioned in :term:`Level sets`.
@@ -160,17 +160,22 @@ The simplified version of the algorithm
       curr_slice = cropped_image[:,:, current_index]
       # create a label map
       label_map = generate_label_map(curr_slice, prev_centre)
+
+      # calculate the Euclidean distance transform and use it to perform segmentation
+      dis_map = sitk.SignedMaurerDistanceMap(label_map)
+
       # Calculate statistics associated with white_pixel label
       stats = sitk.LabelStatisticsImageFilter()
       stats.Execute(curr_slice, label_map)
       # Threshold for SITK::ThresholdSegmentationLevelSetImageFilter
       # stats.GetMean(white_pixel) returns the mean intensity values of the pixels labeled white pixels.
-      lower_threshold = (stats.GetMean(white_pixel) - threshold_coef*stats.GetSigma(white_pixel))
-      upper_threshold = (stats.GetMean(white_pixel) + threshold_coef*stats.GetSigma(white_pixel))
-      # calculate the Euclidean distance transform and use it to perform segmentation
-      dis_map = sitk.SignedMaurerDistanceMap(label_map)
+      intensity_mean = stats.GetMean(white_pixel) 
+      intensity_std = stats.GetSigma(white_pixel)
+      lower_threshold = (intensity_mean- threshold_coef*intensity_std)
+      upper_threshold = (intensity_mean + threshold_coef*intensity_std)
       segment_filter.SetLowerThreshold(lower_threshold)
       segment_filter.SetUpperThreshold(upper_threshold)
+      
       # Segmentated slice, a ndarrays of shape (x, y)
       return segment_filter.Execute(dis_map, curr_slice)
 

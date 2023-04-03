@@ -63,31 +63,31 @@ Glossary of Terms Used in AortaGeomRecon Documentation
 
         .. figure:: Contour2D.png
            :alt: Controu line map
+           :align: center
            :width: 300
            :height: 300
 
            Fig 2. A contour line map
 
     Level sets
-        `Level Sets <https://profs.etsmtl.ca/hlombaert/levelset/>`_ are an important category of modern image segmentation techniques based on partial differential equations (PDE), i.e. progressive evaluation of the differences among neighboring pixels to find object boundaries. The pictures below demonstrate an example of how Level Sets method work on finding the region of the heart
+        `Level Sets <https://profs.etsmtl.ca/hlombaert/levelset/>`_ are an important category of modern image segmentation techniques based on partial differential equations (PDE), i.e. progressive evaluation of the differences among neighboring pixels to find object boundaries. The pictures below demonstrate an example of how Level Sets method work on finding the region of the heart. It starts with a seed contour that is within the region of interest, then by finding the gradient based on the contour line, the segmentation result will propagate towards outside of the region until the maximum difference between the neighboring pixels are reached.
 
-        .. figure:: heart-1.png
+        |fig3| |fig4| |fig5|
+
+        .. |fig3| image:: heart-1.png
+           :width: 32%
            :alt: Distance transformation
 
-           Fig 3. The seed contour
-
-        .. figure:: heart-2.png
+        .. |fig4| image:: heart-2.png
+           :width: 32%
            :alt: Distance transformation
 
-           Fig 4. The result after some iterations
-
-        .. figure:: heart-3.png
+        .. |fig5| image:: heart-3.png
+           :width: 32%
            :alt: Distance transformation
-
-           Fig 5. The final result
     
     threshold
-        A threshold is an amount, level, or limit on a scale. When the threshold is reached, something else happens or changes.
+        A threshold is an amount, level, or limit on a scale. When the threshold is reached, something else happens or changes. For `SITK\:\:ThresholdSegmentationLevelSetImageFilter <https://simpleitk.org/doxygen/latest/html/classitk_1_1simple_1_1ThresholdSegmentationLevelSetImageFilter.html>`_, this inputs decides whether a new pixel should be included in the segmentation region or not based on the threshold intensity values. The algorithm needs a lower and upper threshold.
 
     threshold coefficient
         This coefficient is used to compute the lower and upper threshold passing through the segmentation filter `SITK\:\:ThresholdSegmentationLevelSetImageFilter <https://simpleitk.org/doxygen/latest/html/classitk_1_1simple_1_1ThresholdSegmentationLevelSetImageFilter.html>`_. The algorithm first uses `SITK\:\:LabelStatisticsImageFilter  <https://simpleitk.org/doxygen/latest/html/classitk_1_1simple_1_1LabelStatisticsImageFilter.html>`_ to get the mean and the standard deviation of the intensity values of the pixels that are labeled as the white pixel. Larger values with this coefficient imply a larger range of thresholds when performing the segmentation, which leads to a larger segmented region.
@@ -103,10 +103,11 @@ Glossary of Terms Used in AortaGeomRecon Documentation
         This coefficient is used when the algorithm is determining whether a new segmented slice is acceptable in terms of the size of the segmented regions. The larger the coefficient, the looser the condition to accept the new segmented slice.
 
     Euclidean distance transform
-        The euclidean distance transform is the map labeling each pixel of the image with the distance to the nearest obstacle pixel (black pixel for this project).
+        The euclidean distance transform is the map labeling each pixel of the image with the distance to the nearest obstacle pixel (black pixel for this project). `SITK\:\:SignedMaurerDistanceMapImageFilter <https://simpleitk.org/doxygen/latest/html/classitk_1_1simple_1_1SignedMaurerDistanceMapImageFilter.html>`_ will also reverse propagate the obstacle pixel by setting them to a lower values (the outmost obstacle pixel will have the lowest value.)
 
         .. figure:: Distance_Transformation.gif
            :alt: Distance transformation
+           :align: center
 
            The euclidean distance transform image
 
