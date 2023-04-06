@@ -11,21 +11,11 @@ class SegmentDirection(Enum):
 
 
 class SegmentType(Enum):
+    """Enum type describing the segmentation phase,
+    this will be used in the algorithm to run different codes.
+    """
     descending_aorta = 1
     ascending_aorta = 2
-    sagittal_front = 3
-    sagittal = 4
-
-    def is_axial_seg(seg_type):
-        """Return True if the segmentation type is
-        descending or ascending aorta segmentation, False otherwise.
-        """
-        return (seg_type.value == SegmentType.descending_aorta.value
-                or seg_type.value == SegmentType.ascending_aorta.value)
-
-    def is_sagittal_seg(seg_type):
-        return (seg_type.value == SegmentType.sagittal_front.value
-                or seg_type.value == SegmentType.sagittal.value)
 
     def __eq__(self, other):
         """Overrides the default implementation"""
@@ -36,5 +26,7 @@ class SegmentType(Enum):
 
 
 class PixelValue(Enum):
+    """Enum type describing the values of the pixel in the image.
+    """
     white_pixel = 1
     black_pixel = 0

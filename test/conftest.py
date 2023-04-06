@@ -1,12 +1,12 @@
 
 
 def pytest_addoption(parser):
-    """Add argument parser to pytest, we can pass parameters to pytest.
+    """Add argument parser to pytest. We can pass parameters to pytest.
     """
     parser.addoption("--testCase", action="store", default=0)
     parser.addoption("--limit", action="store", default=0.05)
     parser.addoption("--qualifiedCoef", action="store", default=2.2)
-    parser.addoption("--ffactor", action="store", default=3.5)
+    parser.addoption("--thresholdCoef", action="store", default=3.5)
 
 
 def pytest_generate_tests(metafunc):
@@ -20,9 +20,9 @@ def pytest_generate_tests(metafunc):
     if 'qualifiedCoef' in metafunc.fixturenames and option_value is not None:
         metafunc.parametrize("qualifiedCoef", [option_value])
 
-    option_value = float(metafunc.config.option.ffactor)
-    if 'ffactor' in metafunc.fixturenames and option_value is not None:
-        metafunc.parametrize("ffactor", [option_value])
+    option_value = float(metafunc.config.option.thresholdCoef)
+    if 'thresholdCoef' in metafunc.fixturenames and option_value is not None:
+        metafunc.parametrize("thresholdCoef", [option_value])
 
     option_value = int(metafunc.config.option.testCase)
     if 'testCase' in metafunc.fixturenames and option_value is not None:

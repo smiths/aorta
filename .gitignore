@@ -297,3 +297,6 @@ src/result/*
 src/*/__pycache__/*
 src/SlicerExtension/AortaGeometryReconstructor/AortaGeomReconDisplayModule/AortaGeomReconDisplayModuleLib/__pycache__/*
 src/SlicerExtension/AortaGeometryReconstructor/AortaGeomReconDisplayModule/__pycache__/*
+
+# Design doc files
+docs/Design/DesignDocument/test/sample/*.vtk

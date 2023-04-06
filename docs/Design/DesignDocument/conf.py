@@ -1,3 +1,5 @@
+# flake8: noqa
+
 # Configuration file for the Sphinx documentation builder.
 #
 # This file only contains a selection of the most common options. For a full
@@ -13,12 +15,16 @@
 import os
 import sys
 project_path = os.path.abspath('../../../')
-AGR_module_path = os.path.join(project_path, "src/SlicerExtension/")
-AGR_module_path = os.path.join(AGR_module_path, "AortaGeometryReconstructor/")
+test_path = os.path.join(project_path, "test")
+sys.path.insert(0, test_path)
+AGR_module_path = os.path.join(project_path, "src")
+AGR_module_path = os.path.join(AGR_module_path, "SlicerExtension")
+AGR_module_path = os.path.join(AGR_module_path, "AortaGeometryReconstructor")
 AGR_module_path = os.path.join(AGR_module_path, "AortaGeomReconDisplayModule")
-
-sys.path.insert(0, project_path)
 sys.path.insert(0, AGR_module_path)
+AGR_lib_module_path = os.path.join(AGR_module_path, "AortaGeomReconDisplayModuleLib")
+sys.path.insert(0, AGR_lib_module_path)
+sys.path.insert(0, project_path)
 
 
 # -- Project information -----------------------------------------------------
@@ -34,6 +40,7 @@ author = 'Jingyi Lin'
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = ["sphinx.ext.todo", "sphinx.ext.napoleon"]
+# autodoc_mock_imports = ["vtk", "sitkUtils", "PythonQt", "slicer", "ScriptedLoadableModule"]
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -42,7 +49,7 @@ templates_path = ['_templates']
 # directories to ignore when looking for source files.
 # This pattern also affects html_static_path and html_extra_path.
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
-# autodoc_default_options = {"members": True, "undoc-members": True, "private-members": True} # noqa
+autodoc_default_options = {"members": True, "undoc-members": True, "private-members": True} # noqa
 
 # -- Options for HTML output -------------------------------------------------
 
@@ -55,3 +62,6 @@ html_theme = 'sphinx_rtd_theme'
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
+html_css_files = [
+    '_static/custom.css',
+]

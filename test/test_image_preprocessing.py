@@ -7,6 +7,14 @@ import os
 
 
 def print_result(ref_image, test_image, seg_type):
+    """Print mean square error, mean absolute error, root mean square error 
+    and Sørensen–Dice coefficient between the reference image and the test image
+
+    Args:
+        ref_image (numpy.ndarrays): reference image's numpy ndarrays representation
+
+        test_image (numpy.ndarrays): test image's numpy ndarrays representation
+    """ # noqa
     print(
         "{} mean_square_error".format(seg_type),
         mean_square_error(ref_image, test_image)
@@ -26,6 +34,13 @@ def print_result(ref_image, test_image, seg_type):
 
 
 def transform_image(cropped_image):
+    """Perform histogram equalization for Digital Image Enhancement
+
+    Args:
+        cropped_image (SITK::image): The cropped image read from /project-repo/test/sample/folder
+    Returns:
+        (SITK::image): equalized cropped image.
+    """ # noqa
     img_array = sitk.GetArrayFromImage(
         (sitk.Cast(sitk.RescaleIntensity(cropped_image), sitk.sitkUInt8)))
     histogram_array = np.bincount(img_array.flatten(), minlength=256)
@@ -44,7 +59,7 @@ def transform_image(cropped_image):
 
 
 def get_cropped_volume_image(testCase):
-    """Read the cropped volume
+    """Read the cropped volume from /project-repo/test/sample
 
     Returns:
         SITK: The cropped volume sitk image
@@ -65,11 +80,11 @@ def get_cropped_volume_image(testCase):
 
 
 def read_desc_volume_image(testCase):
-    """Read the segmented descending aorta volume
+    """Read the segmented descending aorta volume from /project-repo/test/sample
 
     Returns:
         SITK: The segmented descending aorta sitk image
-    """
+    """ # noqa
     sample = 43681283
     if testCase == 1:
         sample = 22429388
@@ -86,12 +101,11 @@ def read_desc_volume_image(testCase):
 
 
 def read_asc_volume_image(testCase):
-    """Read the segmented ascending and descending aorta volume
-
+    """Read the segmented ascending and descending aorta volume from /project-repo/test/sample
 
     Returns:
         SITK: The segmented ascending and descending aorta sitk image
-    """
+    """ # noqa
     sample = 43681283
     if testCase == 1:
         sample = 22429388
@@ -108,12 +122,12 @@ def read_asc_volume_image(testCase):
 
 
 def read_final_volume_image(testCase):
-    """Read the final segmented aorta volume
+    """Read the sagittal segmented aorta volume from /project-repo/test/sample
 
 
     Returns:
         SITK: The final segmented aorta sitk image
-    """
+    """ # noqa
     sample = 43681283
     if testCase == 1:
         sample = 22429388
@@ -130,36 +144,83 @@ def read_final_volume_image(testCase):
 
 
 def DSC(ref_image, test_image):
-    """Calculate the Dice similarity coefficient
+    """Calculate the Dice similarity coefficient.
 
     Args:
-        ref_image (numpy.ndarrays): nda to compare
+        ref_image (numpy.ndarrays): reference image's numpy ndarrays representation
 
-        test_image (numpy.ndarrays): nda to compare
+        test_image (numpy.ndarrays): test image's numpy ndarrays representation
 
     Returns:
         float: The Dice similarity coefficient of the reference and test image
-    """
+    """ # noqa
     two_TP = np.count_nonzero(np.logical_and(ref_image, test_image))*2
     total = (np.count_nonzero(ref_image) + np.count_nonzero(test_image))
     return two_TP/total
 
 
 def root_mse(ref_image, test_image):
+    """Calculate the root mean square error between reference image and test image.
+
+    Args:
+        ref_image (numpy.ndarrays): reference image's numpy ndarrays representation
+
+        test_image (numpy.ndarrays): test image's numpy ndarrays representation
+
+    Returns:
+        float: The Dice similarity coefficient of the reference and test image
+    """ # noqa
     return np.sqrt(mean_square_error(ref_image, test_image))
 
 
 def mean_absolute_error(ref_image, test_image):
+    """Calculate the mean absolute error between reference image and test image.
+
+    Args:
+        ref_image (numpy.ndarrays): reference image's numpy ndarrays representation
+
+        test_image (numpy.ndarrays): test image's numpy ndarrays representation
+
+    Returns:
+        float: The Dice similarity coefficient of the reference and test image
+    """ # noqa
     npsum = np.sum(np.abs(np.subtract(ref_image, test_image)))
     return npsum/np.count_nonzero(np.logical_or(ref_image, test_image))
 
 
 def mean_square_error(ref_image, test_image):
+    """Calculate the mean square error between reference image and test image.
+    This function only counts if there is a white_pixel on either reference image or test image, ignoring the black pixels
+
+    Args:
+        ref_image (numpy.ndarrays): reference image's numpy ndarrays representation
+
+        test_image (numpy.ndarrays): test image's numpy ndarrays representation
+
+    Returns:
+        float: The Dice similarity coefficient of the reference and test image
+    """ # noqa
     npsum = np.sum(np.square(np.subtract(ref_image, test_image)))
     return npsum/np.count_nonzero(np.logical_or(ref_image, test_image))
 
 
-def test_compare_des(limit, qualifiedCoef, ffactor, testCase):
+def test_compare_des(limit, qualifiedCoef, thresholdCoef, testCase):
+    """Read a test cases' cropped volume from /project-repo/test/sample,
+    perform descending aorta segmentation,
+    and compare the result with the existing volume from /project-repo/test/sample.
+
+    Args:
+        limit (float): the maximum Dice similarity coefficient difference allowed to pass the test.
+
+        qualifiedCoef (float): the qualified coefficient value to process descending aorta segmentation.
+
+        thresholdCoef (float): the factor used to determine the lower and upper threshold for label statistics image filter.
+
+        testCase (int): the test case to run the test (0-5).
+
+    Returns:
+        Boolean: Pass the test if the Sørensen–Dice coefficient between test image and reference image is within the limit set by user.
+    """ # noqa
     starting_slice = 829
     aorta_centre = [23, 28]
     cropped_image = get_cropped_volume_image(testCase)
@@ -184,7 +245,7 @@ def test_compare_des(limit, qualifiedCoef, ffactor, testCase):
         starting_slice=starting_slice, aorta_centre=aorta_centre,
         num_slice_skipping=3,
         qualified_coef=qualifiedCoef,
-        filter_factor=ffactor,
+        threshold_coef=thresholdCoef,
         processing_image=None,
         seg_type=SegType.descending_aorta
     )
@@ -193,15 +254,11 @@ def test_compare_des(limit, qualifiedCoef, ffactor, testCase):
     test_image = desc_axial_segmenter.processing_image
     ref_image = read_desc_volume_image(testCase)
     print("qualified slicefactor : {}".format(qualifiedCoef))
-    print("filter factor : {}".format(ffactor))
+    print("filter factor : {}".format(thresholdCoef))
     nda_ref = sitk.GetArrayFromImage(ref_image)
     nda_test = sitk.GetArrayFromImage(test_image)
     DSC_error = 1-DSC(nda_ref, nda_test)
     print_result(nda_ref, nda_test, SegType.descending_aorta)
-    writer = sitk.ImageFileWriter()
-    writer.SetImageIO("VTKImageIO")
-    writer.SetFileName("des_test_case3.vtk")
-    writer.Execute(test_image)
     assert (DSC_error < limit)
     return test_image
 
@@ -209,10 +266,26 @@ def test_compare_des(limit, qualifiedCoef, ffactor, testCase):
 def test_compare_asc(
     limit,
     qualifiedCoef,
-    ffactor,
+    thresholdCoef,
     testCase,
     processing_image=None
         ):
+    """Read a test cases' partially segmented volume (descending aorta) from /project-repo/test/sample,
+    perform ascending aorta segmentation,
+    and compare the result with the existing ascending aorta volume from /project-repo/test/sample
+
+    Args:
+        limit (float): the maximum Dice similarity coefficient difference allowed to pass the test.
+
+        qualifiedCoef (float): the qualified coefficient value to process descending aorta segmentation.
+
+        thresholdCoef (float): the factor used to determine the lower and upper threshold for label statistics image filter.
+
+        testCase (int): the test case to run the test (0-5).
+
+    Returns:
+        Boolean: Pass the test if the Sørensen–Dice coefficient between test image and reference image is within the limit set by user.
+    """ # noqa
     cropped_image = get_cropped_volume_image(testCase)
     cropped_image = transform_image(cropped_image)
     if not processing_image:
@@ -239,7 +312,7 @@ def test_compare_asc(
         starting_slice=starting_slice, aorta_centre=aorta_centre,
         num_slice_skipping=3,
         qualified_coef=qualifiedCoef,
-        filter_factor=ffactor,
+        threshold_coef=thresholdCoef,
         processing_image=processing_image,
         seg_type=SegType.ascending_aorta
     )
@@ -247,15 +320,11 @@ def test_compare_asc(
     test_image = asc_axial_segmenter.processing_image
     ref_image = read_asc_volume_image(testCase)
     print("qualified slicefactor : {}".format(qualifiedCoef))
-    print("filter factor : {}".format(ffactor))
+    print("filter factor : {}".format(thresholdCoef))
     nda_ref = sitk.GetArrayFromImage(ref_image)
     nda_test = sitk.GetArrayFromImage(test_image)
     DSC_error = 1-DSC(nda_ref, nda_test)
     print_result(nda_ref, nda_test, SegType.ascending_aorta)
-    writer = sitk.ImageFileWriter()
-    writer.SetImageIO("VTKImageIO")
-    writer.SetFileName("asc_test_case2.vtk")
-    writer.Execute(test_image)
     assert (DSC_error < limit)
     return test_image
 
@@ -263,10 +332,25 @@ def test_compare_asc(
 def test_asc_and_final(
     limit,
     qualifiedCoef,
-    ffactor,
+    thresholdCoef,
     testCase,
     processing_image=None
         ):
+    """Compare the  partially segmented aorta volume (descending and ascending aorta)
+    to a fully segmented aorta volume (descending, ascending and sagittal).
+
+    Args:
+        limit (float): the maximum Dice similarity coefficient difference allowed to pass the test.
+
+        qualifiedCoef (float): the qualified coefficient value to process descending aorta segmentation.
+
+        thresholdCoef (float): the factor used to determine the lower and upper threshold for label statistics image filter.
+
+        testCase (int): the test case to run the test (0-5).
+
+    Returns:
+        Boolean: Pass the test if the Sørensen–Dice coefficient between test image and reference image is within the limit set by user.
+    """ # noqa
     ref_image = read_asc_volume_image(testCase)
     test_image = read_final_volume_image(testCase)
     nda_ref = sitk.GetArrayFromImage(ref_image)
@@ -279,24 +363,40 @@ def test_asc_and_final(
 def test_compare_final_volume(
     limit,
     qualifiedCoef,
-    ffactor,
+    thresholdCoef,
     testCase,
     processing_image=None
         ):
+    """Read a test cases' partially segmented volume (descending and ascending aorta) from /project-repo/test/sample,
+    perform sagittal aorta segmentation,
+    and compare the result with the existing sagittal aorta volume from /project-repo/test/sample
+
+    Args:
+        limit (float): the maximum Dice similarity coefficient difference allowed to pass the test.
+
+        qualifiedCoef (float): the qualified coefficient value to process descending aorta segmentation.
+
+        thresholdCoef (float): the factor used to determine the lower and upper threshold for label statistics image filter.
+
+        testCase (int): the test case to run the test (0-5).
+
+    Returns:
+        Boolean: Pass the test if the Sørensen–Dice coefficient between test image and reference image is within the limit set by user.
+    """ # noqa
     cropped_image = get_cropped_volume_image(testCase)
     cropped_image = transform_image(cropped_image)
     if not processing_image:
         processing_image = read_asc_volume_image()
     if not qualifiedCoef:
         qualifiedCoef = 2.2
-    if not ffactor:
-        ffactor = 3.5
+    if not thresholdCoef:
+        thresholdCoef = 3.5
     sagittal_segmenter = AortaSegmenter(
         cropped_image=cropped_image,
         starting_slice=None, aorta_centre=None,
         num_slice_skipping=3,
         qualified_slice_factor=qualifiedCoef,
-        filter_factor=ffactor,
+        threshold_coef=thresholdCoef,
         processing_image=processing_image,
         seg_type=SegType.sagittal_segmenter
     )
@@ -304,7 +404,7 @@ def test_compare_final_volume(
     test_image = sagittal_segmenter.processing_image
     ref_image = read_final_volume_image(testCase)
     print("qualified slicefactor : {}".format(qualifiedCoef))
-    print("filter factor : {}".format(ffactor))
+    print("filter factor : {}".format(thresholdCoef))
     nda_ref = sitk.GetArrayFromImage(ref_image)
     nda_test = sitk.GetArrayFromImage(test_image)
     DSC_error = 1-DSC(nda_ref, nda_test)
@@ -313,13 +413,49 @@ def test_compare_final_volume(
     return test_image
 
 
-def test_prepared_segmenting_image(
-    limit,
-    qualifiedCoef,
-    ffactor,
-    testCase
-        ):
-    processing_image = test_compare_des(
-        limit, qualifiedCoef, ffactor, testCase)
-    processing_image = test_compare_asc(
-        limit, qualifiedCoef, ffactor, testCase, processing_image)
+def test_debug(limit, qualifiedCoef, thresholdCoef, testCase):
+    """Debug the general workflow of the axial segmentation algorithm.
+
+    Args:
+        limit (float): the maximum Dice similarity coefficient difference allowed to pass the test.
+
+        qualifiedCoef (float): the qualified coefficient value to process descending aorta segmentation.
+
+        thresholdCoef (float): the factor used to determine the lower and upper threshold for label statistics image filter.
+
+        testCase (int): the test case to run the test (0-5).
+
+    Returns:
+        Boolean: Pass the test if the Sørensen–Dice coefficient between test image and reference image is within the limit set by user.
+    """ # noqa
+    starting_slice = 829
+    aorta_centre = [23, 28]
+    cropped_image = get_cropped_volume_image(testCase)
+    cropped_image = transform_image(cropped_image)
+    if testCase == 1:
+        starting_slice = 857
+        aorta_centre = [90, 34]
+    elif testCase == 2:
+        starting_slice = 1202
+        aorta_centre = [20, 15]
+    elif testCase == 3:
+        starting_slice = 962
+        aorta_centre = [38, 26]
+    elif testCase == 4:
+        starting_slice = 824
+        aorta_centre = [19, 20]
+    elif testCase == 5:
+        starting_slice = 919
+        aorta_centre = [29, 15]
+    desc_axial_segmenter = AortaSegmenter(
+        cropped_image=cropped_image,
+        starting_slice=starting_slice, aorta_centre=aorta_centre,
+        num_slice_skipping=3,
+        qualified_coef=qualifiedCoef,
+        threshold_coef=thresholdCoef,
+        processing_image=None,
+        seg_type=SegType.descending_aorta,
+        debug=True
+    )
+
+    desc_axial_segmenter.begin_segmentation()
