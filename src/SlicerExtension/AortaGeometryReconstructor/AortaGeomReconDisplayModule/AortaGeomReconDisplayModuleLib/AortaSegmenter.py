@@ -147,7 +147,7 @@ class AortaSegmenter():
         counter = 0
         is_overlapping = False
         for slice_i in range(self._start, self._end, self._step):
-            if self._debug_mod and abs(slice_i-self._start)==10:
+            if self._debug_mod and abs(slice_i-self._start) == 10:
                 return
             self._cur_img_slice = self._cropped_image[:, :, slice_i]
             segmented_slice = self.__get_image_segment()
