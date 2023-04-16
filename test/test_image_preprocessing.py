@@ -1,9 +1,9 @@
-from src.SlicerExtension.AortaGeometryReconstructor.AortaGeomReconDisplayModule.AortaGeomReconDisplayModuleLib.AortaSegmenter import AortaSegmenter # noqa
-from src.SlicerExtension.AortaGeometryReconstructor.AortaGeomReconDisplayModule.AortaGeomReconDisplayModuleLib.AortaGeomReconEnums import SegmentType as SegType # noqa
-
 import SimpleITK as sitk
 import numpy as np
 import os
+
+from src.SlicerExtension.AortaGeometryReconstructor.AortaGeomReconDisplayModule.AortaGeomReconDisplayModuleLib.AortaSegmenter import AortaSegmenter # noqa
+from src.SlicerExtension.AortaGeometryReconstructor.AortaGeomReconDisplayModule.AortaGeomReconDisplayModuleLib.AortaGeomReconEnums import SegmentType as SegType # noqa
 
 
 def print_result(ref_image, test_image, seg_type):
@@ -31,31 +31,6 @@ def print_result(ref_image, test_image, seg_type):
         "{} Sørensen–Dice coefficient".format(seg_type),
         DSC(ref_image, test_image)
     )
-
-
-def transform_image(cropped_image):
-    """Perform histogram equalization for Digital Image Enhancement
-
-    Args:
-        cropped_image (SITK::image): The cropped image read from /project-repo/test/sample/folder
-    Returns:
-        (SITK::image): equalized cropped image.
-    """ # noqa
-    img_array = sitk.GetArrayFromImage(
-        (sitk.Cast(sitk.RescaleIntensity(cropped_image), sitk.sitkUInt8)))
-    histogram_array = np.bincount(img_array.flatten(), minlength=256)
-    num_pixels = np.sum(histogram_array)
-    histogram_array = histogram_array/num_pixels
-    chistogram_array = np.cumsum(histogram_array)
-    transform_map = np.floor(255 * chistogram_array).astype(np.uint8)
-    img_list = list(img_array.flatten())
-    eq_img_list = [transform_map[p] for p in img_list]
-    eq_img_array = np.reshape(np.asarray(eq_img_list), img_array.shape)
-    eq_img = sitk.GetImageFromArray(eq_img_array)
-    eq_img.CopyInformation(cropped_image)
-    median = sitk.MedianImageFilter()
-    median_img = sitk.Cast(median.Execute(eq_img), sitk.sitkUInt8)
-    return median_img
 
 
 def get_cropped_volume_image(testCase):
@@ -224,7 +199,6 @@ def test_compare_des(limit, qualifiedCoef, thresholdCoef, testCase):
     starting_slice = 829
     aorta_centre = [23, 28]
     cropped_image = get_cropped_volume_image(testCase)
-    cropped_image = transform_image(cropped_image)
     if testCase == 1:
         starting_slice = 857
         aorta_centre = [90, 34]
@@ -287,7 +261,6 @@ def test_compare_asc(
         Boolean: Pass the test if the Sørensen–Dice coefficient between test image and reference image is within the limit set by user.
     """ # noqa
     cropped_image = get_cropped_volume_image(testCase)
-    cropped_image = transform_image(cropped_image)
     if not processing_image:
         processing_image = read_desc_volume_image(testCase)
     starting_slice = 749
@@ -384,7 +357,6 @@ def test_compare_final_volume(
         Boolean: Pass the test if the Sørensen–Dice coefficient between test image and reference image is within the limit set by user.
     """ # noqa
     cropped_image = get_cropped_volume_image(testCase)
-    cropped_image = transform_image(cropped_image)
     if not processing_image:
         processing_image = read_asc_volume_image()
     if not qualifiedCoef:
@@ -431,7 +403,6 @@ def test_debug(limit, qualifiedCoef, thresholdCoef, testCase):
     starting_slice = 829
     aorta_centre = [23, 28]
     cropped_image = get_cropped_volume_image(testCase)
-    cropped_image = transform_image(cropped_image)
     if testCase == 1:
         starting_slice = 857
         aorta_centre = [90, 34]
