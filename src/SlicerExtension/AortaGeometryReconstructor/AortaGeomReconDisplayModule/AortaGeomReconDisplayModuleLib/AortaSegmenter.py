@@ -42,8 +42,8 @@ class AortaSegmenter():
 
     def __init__(
             self, cropped_image, starting_slice, aorta_centre,
-            num_slice_skipping, processing_image, seg_type,
-            qualified_coef=2.2, threshold_coef=3.5, debug=False
+            processing_image, seg_type, qualified_coef=2.2,
+            threshold_coef=3.5, num_slice_skipping=3, debug=False
     ):
         self._starting_slice = starting_slice
         self._aorta_centre = aorta_centre
@@ -67,7 +67,7 @@ class AortaSegmenter():
         no_iteration = 600
         curvature_scaling = 0.5
         propagation_scaling = 1
-        # self._stats_filter = sitk.LabelStatisticsImageFilter()
+        self._stats_filter = sitk.LabelStatisticsImageFilter()
         self._segment_filter = sitk.ThresholdSegmentationLevelSetImageFilter()
         self._segment_filter.SetMaximumRMSError(rms_error)
         self._segment_filter.SetNumberOfIterations(no_iteration)
@@ -76,7 +76,9 @@ class AortaSegmenter():
         self._segment_filter.ReverseExpansionDirectionOn()
         self._skipped_slices = []
 
-        # Initializing current total pixels
+        # Initializing processing image
+        # For Ascending Aorta segmentation,
+        # self._processing_image should be passed to the API by the caller.
         if not self._processing_image:
             self._processing_image = sitk.Image(
                 self._cropped_image.GetSize(), sitk.sitkUInt8)
@@ -102,9 +104,6 @@ class AortaSegmenter():
             total_coord, centre, seeds = self.__count_pixel_asc(new_slice)
             self._processing_image[:, :, slice_num] = (
                 new_slice | self._processing_image[:, :, slice_num])
-
-        if self._debug_mod:
-            return
 
         self._prev_seeds = seeds
         self._original_size = total_coord
@@ -148,6 +147,8 @@ class AortaSegmenter():
         counter = 0
         is_overlapping = False
         for slice_i in range(self._start, self._end, self._step):
+            if self._debug_mod and abs(slice_i-self._start)==10:
+                return
             self._cur_img_slice = self._cropped_image[:, :, slice_i]
             segmented_slice = self.__get_image_segment()
             new_slice_i = segmented_slice > PixelValue.black_pixel.value
@@ -236,6 +237,7 @@ class AortaSegmenter():
         """ # noqa
         label_map = sitk.Image(self._cur_img_slice.GetSize(), sitk.sitkUInt8)
         label_map.CopyInformation(self._cur_img_slice)
+        label_map[self._prev_centre] = PixelValue.white_pixel.value
         # add original seed and additional seeds three pixels apart
         spacing = 3
         for j in range(-1, 2):
@@ -264,11 +266,11 @@ class AortaSegmenter():
         dis_map = sitk.SignedMaurerDistanceMap(
             label_map, insideIsPositive=True, useImageSpacing=True)
 
-        stats = sitk.LabelStatisticsImageFilter()
-        stats.Execute(self._cur_img_slice, label_map)
+        self._stats_filter.Execute(self._cur_img_slice, label_map)
 
-        intensity_mean = stats.GetMean(PixelValue.white_pixel.value)
-        std = stats.GetSigma(PixelValue.white_pixel.value)
+        intensity_mean = self._stats_filter.GetMean(
+            PixelValue.white_pixel.value)
+        std = self._stats_filter.GetSigma(PixelValue.white_pixel.value)
         lower_threshold = (intensity_mean - self._threshold_coef*std)
         upper_threshold = (intensity_mean + self._threshold_coef*std)
 
