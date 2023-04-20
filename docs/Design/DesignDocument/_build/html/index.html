@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Welcome to AortaGeomRecon’s design document! &mdash; AortaGeomRecon  documentation</title>
@@ -15,7 +15,6 @@
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
@@ -28,15 +27,11 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-
-          
-          
-          <a href="#" class="icon icon-home">
-            AortaGeomRecon
+            <a href="#" class="icon icon-home"> AortaGeomRecon
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -63,7 +58,7 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="#" class="icon icon-home" aria-label="Home"></a></li>
+      <li><a href="#" class="icon icon-home"></a></li>
       <li class="breadcrumb-item active">Welcome to AortaGeomRecon’s design document!</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
@@ -75,16 +70,16 @@
            <div itemprop="articleBody">
              
   <section id="welcome-to-aortageomrecon-s-design-document">
-<h1>Welcome to AortaGeomRecon’s design document!<a class="headerlink" href="#welcome-to-aortageomrecon-s-design-document" title="Permalink to this heading"></a></h1>
+<h1>Welcome to AortaGeomRecon’s design document!<a class="headerlink" href="#welcome-to-aortageomrecon-s-design-document" title="Permalink to this headline"></a></h1>
 <p>This is the design document for the AortaGeomRecon module, a <a class="reference internal" href="glossary.html#term-3D-Slicer"><span class="xref std std-term">3D Slicer</span></a> extension to perform <a class="reference internal" href="glossary.html#term-Aorta"><span class="xref std std-term">Aorta</span></a> segmentation and Aorta geometry reconstruction.</p>
 <p>You can find the source code, the installation guide, and the user manual in the project’s <a class="reference external" href="https://github.com/smiths/aorta">repository</a>.</p>
 <section id="overview">
-<h2>Overview<a class="headerlink" href="#overview" title="Permalink to this heading"></a></h2>
+<h2>Overview<a class="headerlink" href="#overview" title="Permalink to this headline"></a></h2>
 <p>Automatic aorta segmentation in thoracic computed tomography (CT) scans is important for aortic calcification quantification and to guide the segmentation of other central vessels. The work to manually segment regions of interest can be time-consuming and repetitive, and there are some automatic aorta segmentation algorithms posted. This project implemented a semi-automatic algorithm that can extract the 3-dimensional segmentation of the aorta.</p>
 </section>
 <hr class="docutils" />
 <section id="the-steps-before-applying-the-main-algorithm">
-<h2>The steps before applying the main algorithm<a class="headerlink" href="#the-steps-before-applying-the-main-algorithm" title="Permalink to this heading"></a></h2>
+<h2>The steps before applying the main algorithm<a class="headerlink" href="#the-steps-before-applying-the-main-algorithm" title="Permalink to this headline"></a></h2>
 <p>The algorithm works best with the chest volume cropped to a rectangular prism that contains the aorta and parts of the other organs such as the backbone, blood vessels, and the heart. This can be done with <a class="reference internal" href="glossary.html#term-3D-Slicer"><span class="xref std std-term">3D Slicer</span></a> and its submodule <a class="reference external" href="https://slicer.readthedocs.io/en/latest/user_guide/modules/volumerendering.html">Volume rendering</a>. A detailed guide can be found on the <a class="reference external" href="https://github.com/smiths/aorta#to-use-volume-rendering-to-crop-a-voi">volume rendering and cropping section</a> of the user instructions.</p>
 <p>After cropping the volume, which only contains the region of interest, the algorithm needs a set of variables inputs from the user. These variables are:</p>
 <ol class="arabic simple">
@@ -94,7 +89,7 @@
 </ol>
 </section>
 <section id="the-main-ideas-of-the-algorithm">
-<h2>The main ideas of the algorithm<a class="headerlink" href="#the-main-ideas-of-the-algorithm" title="Permalink to this heading"></a></h2>
+<h2>The main ideas of the algorithm<a class="headerlink" href="#the-main-ideas-of-the-algorithm" title="Permalink to this headline"></a></h2>
 <p>At the beginning of the algorithm, the user inputs the integer coordinates indicating the position of the descending aorta or ascending aorta centre on a single <a class="reference internal" href="glossary.html#term-slice"><span class="xref std std-term">slice</span></a>. The algorithm works separately on the descending aorta segmentation and the ascending aorta segmentation. Thus, it will ask users to input the coordinate of the descending aorta centre. After completing this segmentation, it will prompt the user for the input variable of the ascending aorta.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -102,32 +97,34 @@
 </div>
 <p>This algorithm segments each <a class="reference internal" href="glossary.html#term-slice"><span class="xref std std-term">slice</span></a> with <a class="reference external" href="https://simpleitk.org/doxygen/latest/html/classitk_1_1simple_1_1ThresholdSegmentationLevelSetImageFilter.html">SITK::ThresholdSegmentationLevelSetImageFilter</a>. The principles of this image filter can be explained with two terms: <a class="reference internal" href="glossary.html#term-Level-sets"><span class="xref std std-term">Level sets</span></a> segmentation method, and a <a class="reference internal" href="glossary.html#term-threshold"><span class="xref std std-term">threshold</span></a> range that defines the intensity of the acceptable pixel. The following steps elaborate on how the algorithm calculated the necessary values to perform segmentation.</p>
 <p>For each slice starting from the user’s selected slice, going in the <a class="reference internal" href="glossary.html#term-inferior"><span class="xref std std-term">inferior</span></a> first, then <a class="reference internal" href="glossary.html#term-superior"><span class="xref std std-term">superior</span></a> direction:</p>
-<ol class="arabic">
-<li><p>The algorithm uses <a class="reference external" href="https://simpleitk.org/doxygen/latest/html/classitk_1_1simple_1_1BinaryDilateImageFilter.html">SITK::BinaryDilateImageFilter</a> to perform <a class="reference internal" href="glossary.html#term-binary-dilation"><span class="xref std std-term">binary dilation</span></a> to generate a circle-like shape around the centre coordinate (user input’s or calculated by the algorithm). Each pixel within this shape will be labeled as a white pixel (value of 1), and the rest of the pixels are labeled as black pixels (value of 0). The generated result is the <a class="reference internal" href="glossary.html#term-label-map"><span class="xref std std-term">label map</span></a> image, and we will use it in the next few steps.</p></li>
-<li><p>With <a class="reference external" href="https://simpleitk.org/doxygen/latest/html/classitk_1_1simple_1_1SignedMaurerDistanceMapImageFilter.html">SITK::SignedMaurerDistanceMapImageFilter</a>, the algorithm creates another image, the <a class="reference internal" href="glossary.html#term-Euclidean-distance-transform"><span class="xref std std-term">Euclidean distance transform</span></a> of the label image. This is used as a <a class="reference internal" href="glossary.html#term-contour-line"><span class="xref std std-term">contour line</span></a> that helps build the gradient mentioned in <a class="reference internal" href="glossary.html#term-Level-sets"><span class="xref std std-term">Level sets</span></a>.</p></li>
-<li><p>By using <a class="reference external" href="https://simpleitk.org/doxygen/latest/html/classitk_1_1simple_1_1LabelStatisticsImageFilter.html">SITK::LabelStatisticsImageFilter</a>, the algorithm gets the mean and the standard deviation of the intensity values of the pixels that were labeled as the white pixel in the previous step. The algorithm uses <a class="reference internal" href="glossary.html#term-threshold-coefficient"><span class="xref std std-term">threshold coefficient</span></a> to calculate the lower and upper <a class="reference internal" href="glossary.html#term-threshold"><span class="xref std std-term">threshold</span></a> to be used in the next step.</p></li>
-<li><p>With <a class="reference external" href="https://simpleitk.org/doxygen/latest/html/classitk_1_1simple_1_1ThresholdSegmentationLevelSetImageFilter.html">SITK::ThresholdSegmentationLevelSetImageFilter</a>,  the seed image calculated in step 2, and the lower and upper threshold value calculated in step 3, the algorithm performs segmentation and generated a <a class="reference internal" href="glossary.html#term-segmented-slice"><span class="xref std std-term">segmented slice</span></a>.</p></li>
-<li><p>The algorithm determines whether to accept the <a class="reference internal" href="glossary.html#term-segmented-slice"><span class="xref std std-term">segmented slice</span></a> or not, based on the number of white pixels on the segmented slice, and the <a class="reference internal" href="glossary.html#term-Qualified-coefficient"><span class="xref std std-term">Qualified coefficient</span></a> to control the limit.</p>
+<p>1. <strong>[Create a label map]</strong>
+The algorithm uses <a class="reference external" href="https://simpleitk.org/doxygen/latest/html/classitk_1_1simple_1_1BinaryDilateImageFilter.html">SITK::BinaryDilateImageFilter</a> to perform <a class="reference internal" href="glossary.html#term-binary-dilation"><span class="xref std std-term">binary dilation</span></a> to generate a circle-like shape around the centre coordinate (user input’s or calculated by the algorithm). Each pixel within this shape will be labeled as a white pixel (value of 1), and the rest of the pixels are labeled as black pixels (value of 0). The generated result is the <a class="reference internal" href="glossary.html#term-label-map"><span class="xref std std-term">label map</span></a> image, and we will use it in the next few steps.</p>
+<p>2. <strong>[Create a distance map]</strong>
+With <a class="reference external" href="https://simpleitk.org/doxygen/latest/html/classitk_1_1simple_1_1SignedMaurerDistanceMapImageFilter.html">SITK::SignedMaurerDistanceMapImageFilter</a>, the algorithm creates another image, the <a class="reference internal" href="glossary.html#term-Euclidean-distance-transform"><span class="xref std std-term">Euclidean distance transform</span></a> of the label image. This is used as a <a class="reference internal" href="glossary.html#term-contour-line"><span class="xref std std-term">contour line</span></a> that helps build the gradient mentioned in <a class="reference internal" href="glossary.html#term-Level-sets"><span class="xref std std-term">Level sets</span></a>.</p>
+<p>3. <strong>[Calculate a threshold range]</strong>
+By using <a class="reference external" href="https://simpleitk.org/doxygen/latest/html/classitk_1_1simple_1_1LabelStatisticsImageFilter.html">SITK::LabelStatisticsImageFilter</a>, the algorithm gets the mean and the standard deviation of the intensity values of the pixels that were labeled as the white pixel in the previous step. The algorithm uses <a class="reference internal" href="glossary.html#term-threshold-coefficient"><span class="xref std std-term">threshold coefficient</span></a> to calculate the lower and upper <a class="reference internal" href="glossary.html#term-threshold"><span class="xref std std-term">threshold</span></a> to be used in the next step.</p>
+<p>4. <strong>[Segment a single slice]</strong>
+With <a class="reference external" href="https://simpleitk.org/doxygen/latest/html/classitk_1_1simple_1_1ThresholdSegmentationLevelSetImageFilter.html">SITK::ThresholdSegmentationLevelSetImageFilter</a>,  the seed image calculated in step 2, and the lower and upper threshold value calculated in step 3, the algorithm performs segmentation and generated a <a class="reference internal" href="glossary.html#term-segmented-slice"><span class="xref std std-term">segmented slice</span></a>.</p>
+<p>5. <strong>[Determine an acceptable segmented slice]</strong>
+The algorithm determines whether to accept the <a class="reference internal" href="glossary.html#term-segmented-slice"><span class="xref std std-term">segmented slice</span></a> or not, based on the number of white pixels on the segmented slice, and the <a class="reference internal" href="glossary.html#term-Qualified-coefficient"><span class="xref std std-term">Qualified coefficient</span></a> to control the limit.</p>
 <blockquote>
 <div><div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>To determine whether a segmented slice is acceptable, different conditions are verified for <a class="reference internal" href="glossary.html#term-Descending-Aorta"><span class="xref std std-term">Descending Aorta</span></a> and <a class="reference internal" href="glossary.html#term-Ascending-Aorta"><span class="xref std std-term">Ascending Aorta</span></a>. These conditions check are all involved with the <a class="reference internal" href="glossary.html#term-Qualified-coefficient"><span class="xref std std-term">Qualified coefficient</span></a>, which is decided by the user. In simple terms, the larger the <a class="reference internal" href="glossary.html#term-Qualified-coefficient"><span class="xref std std-term">Qualified coefficient</span></a>, the looser the condition on accepting a segmented slice.</p>
 </div>
 </div></blockquote>
-</li>
-<li><p>If the algorithm accepted this segmented slice, a new centre coordinate is calculated and used as the seed coordinate for segmenting the next slice.</p></li>
-<li><p>When a segmented slice is not acceptable, the algorithm will skip this slice if the number of consecutive skipped slices is less than the user’s limit. Otherwise, the algorithm will stop the segmentation loop.</p>
+<p>6. <strong>[Calculate new centre]</strong>
+If the algorithm accepted this segmented slice, a new centre coordinate is calculated and used as the seed coordinate for segmenting the next slice.</p>
+<p>When a segmented slice is not acceptable, the algorithm will skip this slice if the number of consecutive skipped slices is less than the user’s limit. Otherwise, the algorithm will stop the segmentation loop.</p>
 <blockquote>
 <div><div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>The algorithm will replace these skipped slices with the calculated intersection of the previous and the next slice.</p>
 </div>
 </div></blockquote>
-</li>
-</ol>
 </section>
 <section id="the-simplified-version-of-the-algorithm">
-<h2>The simplified version of the algorithm<a class="headerlink" href="#the-simplified-version-of-the-algorithm" title="Permalink to this heading"></a></h2>
+<h2>The simplified version of the algorithm<a class="headerlink" href="#the-simplified-version-of-the-algorithm" title="Permalink to this headline"></a></h2>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">  1</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="linenos">  2</span><span class="sd">inputs to the program</span>
 <span class="linenos">  3</span><span class="sd">   cropped_image: n-dimensional array with a shape of (x, y, z)</span>
@@ -273,7 +270,7 @@
 </div>
 </section>
 <section id="indices-and-tables">
-<h2>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this heading"></a></h2>
+<h2>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline"></a></h2>
 <div class="line-block">
 <div class="line"><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></div>
 <div class="line"><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></div>
