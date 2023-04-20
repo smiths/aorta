@@ -194,14 +194,15 @@ The symbols are listed in alphabetical order.
   \textbf{symbol} & \textbf{type} & \textbf{description}\\
   \midrule
 \\
-\textit{slc} &  $\mathbb{R}^{m \times n}$ &  Slice
+\textit{v} &  $\mathbb{R}$ &  A voxel reports the intensity of a single point on a grey-scale 3 dimensional image.
 \\
-<<<<<<< HEAD
-\textit{MAE} & $\mathbb{R}$ &  mean absolute error
-\\
-\textit{RMAE} & $\mathbb{R}$ & root mean absolute error
+\textit{slice} &  $\mathbb{R}^{m \times n}$ &  A slice is a 2 dimensional image view from the superior to inferior direction.
 \\ 
 \textit{volume} & $\mathbb{R}^{m \times n \times p}$ &  Volume formed by a sequence of slice
+\\
+\textit{Sv} & $\mathbb{N}^{3}$ &  A coordinate indicates the indexes of a starting voxel.
+\\
+\textit{S} & $\mathbb{N}^{3}$ &  The size to crop a rectangular shaped subset of a volume.
 \\
 \bottomrule
 \caption{Table of Symbols}
@@ -241,7 +242,6 @@ The symbols are listed in alphabetical order.
   PS & Physical System Description\\
   R & Requirement\\
   SRS & Software Requirements Specification\\
-  SITK & Simple ITK\\
   T & Theoretical Model\\
   \bottomrule
 \end{tabular}\\
@@ -759,11 +759,11 @@ models. The dimension of each quantity is also given.
 \begin{tabular}{| p{\colAwidth} | p{\colBwidth}|}
 \hline
 \rowcolor[gray]{0.9}
-Number& DD\refstepcounter{datadefnum}\thedatadefnum \label{voxel}\\
+Number& DD\refstepcounter{datadefnum}\thedatadefnum \label{v}\\
 \hline
 Label& \bf Voxel \\
 \hline
-Symbol & $ \text{voxel} : \mathbb{R}^{m \times n}$\\
+Symbol & $ \text{v} : \mathbb{R}^{m \times n}$\\
 \hline
 % Units& $Mt^{-3}$\\
 % \hline
@@ -794,7 +794,7 @@ Number& DD\refstepcounter{datadefnum}\thedatadefnum \label{slice}\\
 \hline
 Label& \bf Image/Slice \\
 \hline
-Symbol & $ \text{slc} : \mathbb{R}^{m \times n}$\\
+Symbol & $ \text{slice} : \mathbb{R}^{m \times n}$\\
 \hline
 % Units& $Mt^{-3}$\\
 % \hline
@@ -803,7 +803,7 @@ Symbol & $ \text{slc} : \mathbb{R}^{m \times n}$\\
   Equation& - \\
   \hline
   Description & 
-                A visual representation of something that is represented using only two spatial dimensions with a sequence of arrays where a voxel (\ddref{voxel}) represents the color or intensity.
+                A visual representation of something that is represented using only two spatial dimensions with a sequence of arrays where a voxel (\ddref{v}) represents the color or intensity. Each move in the Z plane is considered as one slice
   \\
   \hline
   Sources & \\
@@ -844,32 +844,6 @@ Symbol & $ \text{volume} : \mathbb{R}^{m \times n \times p}$\\
 \end{tabular}
 \end{minipage}\\
 
-\subsubsection{Data Types}\label{sec_datatypes}
-
-
-This section collects and defines all the data types needed to document the
-models. 
-
-~\newline
-
-\noindent
-\begin{minipage}{\textwidth}
-\renewcommand*{\arraystretch}{1.5}
-\begin{tabular}{| p{\colAwidth} | p{\colBwidth}|}
-  \hline
-  \rowcolor[gray]{0.9}
-  Type Name & Name for Type\\
-  \hline
-  Type Def & mathematical definition of the type\\
-  \hline
-  Description & description here
-  \\
-  \hline
-  Sources & Citation here, if the type is borrowed from another source\\
-  \hline
-\end{tabular}
-\end{minipage}\\
-
 \subsubsection{Instance Models} \label{sec_instance}    
 
 This section transforms the problem defined in Section~\ref{Sec_pd} into 
@@ -898,7 +872,19 @@ The goals \gsref{Gsegment} are solved by finding \iref{roi} and perform \iref{se
   \hline
   Output& $ \text{V}_\text{out} : \mathbb{R}^{m_o \times n_o \times p_o}$\\
   \hline
-  Description & The regions of interest is a subset (shaped like a box) of the 3D Vout. This subset contains the anatomical structure that the users wants to read, process or extract.  \newline For Starting\_voxel, $ 0 \leq  Sv_m  \leq m_i  \wedge  0 \leq  Sv_n \leq n_i   \wedge  0 \leq  Sv_p \leq p_i $.  \newline For Vout, $ m_o = Sv_m + S_m \leq m_i  \wedge  n_o = Sv_n+S_n \leq n_i  \wedge p_o = Sv_p+S_p \leq p_i $.
+  Description & The regions of interest is a subset (shaped like a box) of the 3D Vout. This subset contains the anatomical structure that the users wants to read, process or extract. 
+~\newline For Starting\_voxel:
+\begin{center}
+$ 0\leq Sv_m\leq m_i  \; \wedge \;  0 \leq  Sv_n \leq n_i   \; \wedge \;  0 \leq  Sv_p \leq p_i $. 
+\end{center}
+ For Size:
+\begin{center}
+$ 0 \leq  S_m  \leq m_i  \; \wedge \;  0 \leq  S_n \leq n_i   \; \wedge \;  0 \leq  S_p \leq p_i $.
+\end{center}
+For Vout:
+\begin{center}
+$ m_o = Sv_m + S_m \leq m_i  \; \wedge \;  n_o = Sv_n+S_n \leq n_i  \; \wedge \; p_o = Sv_p+S_p \leq p_i $. 
+\end{center}
   \\
   \hline
   Sources&  \\
@@ -922,11 +908,22 @@ The goals \gsref{Gsegment} are solved by finding \iref{roi} and perform \iref{se
   \hline
   Label& \bf Segmentation \\
   \hline
-  Input & $ \text{Vin} : \mathbb{R}^{m \times n \times p}$ \\
+  Input & $ \text{V}_\text{in} : \mathbb{R}^{m \times n \times p}$, $ \text{Seed} : \mathbb{N}^{3}$ \\
   \hline
-  Output& $ \text{Vout} : \mathbb{R}^{m \times n \times p}$\\
+  Output& $ \text{V}_\text{out} : \mathbb{R}^{m \times n \times p}$\\
   \hline
-  Description & The process of extract a region of interest from the original 3D image. The extracted region of interest can be represented with high intensity pixel value. The rest of the image should have a lower intensity pixe valuel.
+  Description & The process of extract an anotomical structure from the original 3D volume. The extracted anotomical structure is represented with high intensity pixel value. The rest of the image should have a lower intensity pixe value.
+For Vout:
+\begin{center}
+$ \forall i,j,k : \mathbb{N} \{i \in [0, m-1]  \; \wedge \; j \in [0,n-1] \; \wedge \; k \in [0, p-1	] \} $.
+\[
+  \text{V}_\text{out}[i,j,k] = 
+  \begin{cases} 
+   HIGH & \text{if } \text{V}_\text{in}[i,j,k] = \text{part of the anotomical structure} \\
+   LOW  & \text{otherwise}
+  \end{cases}
+\]
+\end{center}
   \\
   \hline
   Sources& \\
