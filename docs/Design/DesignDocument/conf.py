@@ -21,6 +21,7 @@ AGR_module_path = os.path.join(project_path, "src")
 AGR_module_path = os.path.join(AGR_module_path, "SlicerExtension")
 AGR_module_path = os.path.join(AGR_module_path, "AortaGeometryReconstructor")
 AGR_module_path = os.path.join(AGR_module_path, "AortaGeomReconDisplayModule")
+
 sys.path.insert(0, AGR_module_path)
 AGR_lib_module_path = os.path.join(AGR_module_path, "AortaGeomReconDisplayModuleLib")
 sys.path.insert(0, AGR_lib_module_path)
@@ -39,6 +40,7 @@ author = 'Jingyi Lin'
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
+
 extensions = ["sphinx.ext.todo", "sphinx.ext.napoleon"]
 # autodoc_mock_imports = ["vtk", "sitkUtils", "PythonQt", "slicer", "ScriptedLoadableModule"]
 

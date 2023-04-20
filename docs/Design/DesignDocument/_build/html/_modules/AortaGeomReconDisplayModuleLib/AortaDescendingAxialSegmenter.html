@@ -36,8 +36,7 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../modules.html">Project</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../test.html">test package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">test</a></li>
 </ul>
 
         </div>
@@ -81,29 +80,32 @@
 <span class="kn">from</span> <span class="nn">AortaGeomReconDisplayModuleLib.AortaGeomReconEnums</span> <span class="kn">import</span> <span class="n">SegmentType</span> <span class="k">as</span> <span class="n">SegType</span> <span class="c1"># noqa</span>
 
 
-<div class="viewcode-block" id="AortaDescendingAxialSegmenter"><a class="viewcode-back" href="../../AortaGeomReconDisplayModuleLib.html#AortaGeomReconDisplayModuleLib.AortaDescendingAxialSegmenter.AortaDescendingAxialSegmenter">[docs]</a><span class="k">class</span> <span class="nc">AortaDescendingAxialSegmenter</span><span class="p">(</span><span class="n">AortaAxialSegmenter</span><span class="p">):</span>
+<div class="viewcode-block" id="AortaDescendingAxialSegmenter"><a class="viewcode-back" href="../../backup/AortaGeomReconDisplayModuleLib.html#AortaGeomReconDisplayModuleLib.AortaDescendingAxialSegmenter.AortaDescendingAxialSegmenter">[docs]</a><span class="k">class</span> <span class="nc">AortaDescendingAxialSegmenter</span><span class="p">(</span><span class="n">AortaAxialSegmenter</span><span class="p">):</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">starting_slice</span><span class="p">,</span> <span class="n">aorta_centre</span><span class="p">,</span> <span class="n">num_slice_skipping</span><span class="p">,</span>
-                 <span class="n">qualified_slice_factor</span><span class="p">,</span> <span class="n">cropped_image</span><span class="p">):</span>
+                 <span class="n">qualified_coef</span><span class="p">,</span> <span class="n">cropped_image</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">starting_slice</span><span class="o">=</span><span class="n">starting_slice</span><span class="p">,</span>
                          <span class="n">aorta_centre</span><span class="o">=</span><span class="n">aorta_centre</span><span class="p">,</span>
                          <span class="n">num_slice_skipping</span><span class="o">=</span><span class="n">num_slice_skipping</span><span class="p">,</span>
-                         <span class="n">qualified_slice_factor</span><span class="o">=</span><span class="n">qualified_slice_factor</span><span class="p">,</span>
+                         <span class="n">qualified_coef</span><span class="o">=</span><span class="n">qualified_coef</span><span class="p">,</span>
                          <span class="n">cropped_image</span><span class="o">=</span><span class="n">cropped_image</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">__prepare_seed</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Get a seed from the original image. We will add extra space</span>
 <span class="sd">        and use it to get the labeled image statistics.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">seg_2d</span> <span class="o">=</span> <span class="n">sitk</span><span class="o">.</span><span class="n">Image</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cur_img_slice</span><span class="o">.</span><span class="n">GetSize</span><span class="p">(),</span> <span class="n">sitk</span><span class="o">.</span><span class="n">sitkUInt8</span><span class="p">)</span>
-        <span class="n">seg_2d</span><span class="o">.</span><span class="n">CopyInformation</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cur_img_slice</span><span class="p">)</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            SITK::IMAGE: An image slice with aorta centre and some extra spacing.</span>
+<span class="sd">        &quot;&quot;&quot;</span> <span class="c1"># noqa</span>
+        <span class="n">seed</span> <span class="o">=</span> <span class="n">sitk</span><span class="o">.</span><span class="n">Image</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cur_img_slice</span><span class="o">.</span><span class="n">GetSize</span><span class="p">(),</span> <span class="n">sitk</span><span class="o">.</span><span class="n">sitkUInt8</span><span class="p">)</span>
+        <span class="n">seed</span><span class="o">.</span><span class="n">CopyInformation</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cur_img_slice</span><span class="p">)</span>
         <span class="c1"># add original seed and additional seeds three pixels apart</span>
         <span class="n">spacing</span> <span class="o">=</span> <span class="mi">3</span>
         <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">):</span>
             <span class="n">one</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prev_centre</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">spacing</span><span class="o">*</span><span class="n">j</span>
-            <span class="n">seg_2d</span><span class="p">[(</span><span class="n">one</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prev_centre</span><span class="p">[</span><span class="mi">1</span><span class="p">])]</span> <span class="o">=</span> <span class="mi">1</span>
-        <span class="n">seg_2d</span> <span class="o">=</span> <span class="n">sitk</span><span class="o">.</span><span class="n">BinaryDilate</span><span class="p">(</span><span class="n">seg_2d</span><span class="p">,</span> <span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">*</span> <span class="mi">2</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">seg_2d</span>
+            <span class="n">seed</span><span class="p">[(</span><span class="n">one</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prev_centre</span><span class="p">[</span><span class="mi">1</span><span class="p">])]</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">seed</span> <span class="o">=</span> <span class="n">sitk</span><span class="o">.</span><span class="n">BinaryDilate</span><span class="p">(</span><span class="n">seed</span><span class="p">,</span> <span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">*</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">seed</span>
 
     <span class="k">def</span> <span class="nf">__get_label_statistics</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;From the labeled image we can derive descriptive intensity.</span>
@@ -111,16 +113,16 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            numpy.ndarray: labeled statistics of the original image.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">seg_2d</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__prepare_seed</span><span class="p">()</span>
+        <span class="n">seed</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__prepare_seed</span><span class="p">()</span>
         <span class="c1"># determine threshold values based on seed location</span>
         <span class="n">factor</span> <span class="o">=</span> <span class="mf">3.5</span>
         <span class="n">stats</span> <span class="o">=</span> <span class="n">sitk</span><span class="o">.</span><span class="n">LabelStatisticsImageFilter</span><span class="p">()</span>
-        <span class="n">stats</span><span class="o">.</span><span class="n">Execute</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cur_img_slice</span><span class="p">,</span> <span class="n">seg_2d</span><span class="p">)</span>
+        <span class="n">stats</span><span class="o">.</span><span class="n">Execute</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cur_img_slice</span><span class="p">,</span> <span class="n">seed</span><span class="p">)</span>
         <span class="n">lower_threshold</span> <span class="o">=</span> <span class="n">stats</span><span class="o">.</span><span class="n">GetMean</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">-</span><span class="n">factor</span><span class="o">*</span><span class="n">stats</span><span class="o">.</span><span class="n">GetSigma</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
         <span class="n">upper_threshold</span> <span class="o">=</span> <span class="n">stats</span><span class="o">.</span><span class="n">GetMean</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">+</span><span class="n">factor</span><span class="o">*</span><span class="n">stats</span><span class="o">.</span><span class="n">GetSigma</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
         <span class="c1"># use filter to apply threshold to image</span>
         <span class="n">init_ls</span> <span class="o">=</span> <span class="n">sitk</span><span class="o">.</span><span class="n">SignedMaurerDistanceMap</span><span class="p">(</span>
-            <span class="n">seg_2d</span><span class="p">,</span> <span class="n">insideIsPositive</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">useImageSpacing</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">seed</span><span class="p">,</span> <span class="n">insideIsPositive</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">useImageSpacing</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
         <span class="c1"># segment the aorta using the seed values and threshold values</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_segment_filter</span><span class="o">.</span><span class="n">SetLowerThreshold</span><span class="p">(</span><span class="n">lower_threshold</span><span class="p">)</span>
@@ -161,24 +163,24 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_seg_dir</span> <span class="o">==</span> <span class="n">SegDir</span><span class="o">.</span><span class="n">Superior_to_Inferior</span><span class="p">:</span>
             <span class="n">slicer_larger_than</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span>
                 <span class="n">total_coord</span> <span class="o">&gt;</span>
-                <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_original_size</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">qualified_slice_factor</span><span class="p">)</span>
+                <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_original_size</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">_qualified_coef</span><span class="p">)</span>
             <span class="p">)</span>
             <span class="n">cmp_original_size</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span>
                 <span class="n">total_coord</span> <span class="o">&lt;</span>
-                <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_original_size</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">qualified_slice_factor</span><span class="p">)</span>
+                <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_original_size</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_qualified_coef</span><span class="p">)</span>
             <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">slicer_larger_than</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span>
                 <span class="n">total_coord</span> <span class="o">&gt;</span>
-                <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_previous_size</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">qualified_slice_factor</span><span class="p">)</span>
+                <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_previous_size</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">_qualified_coef</span><span class="p">)</span>
             <span class="p">)</span>
             <span class="n">cmp_original_size</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span>
                 <span class="n">total_coord</span> <span class="o">&lt;</span>
-                <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_original_size</span><span class="o">*</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">qualified_slice_factor</span><span class="o">+</span><span class="mf">0.3</span><span class="p">))</span>
+                <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_original_size</span><span class="o">*</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_qualified_coef</span><span class="o">+</span><span class="mf">0.3</span><span class="p">))</span>
             <span class="p">)</span>
         <span class="k">return</span> <span class="n">cmp_prev_size</span> <span class="ow">and</span> <span class="n">slicer_larger_than</span> <span class="ow">and</span> <span class="n">cmp_original_size</span>
 
-<div class="viewcode-block" id="AortaDescendingAxialSegmenter.segmentation"><a class="viewcode-back" href="../../AortaGeomReconDisplayModuleLib.html#AortaGeomReconDisplayModuleLib.AortaDescendingAxialSegmenter.AortaDescendingAxialSegmenter.segmentation">[docs]</a>    <span class="k">def</span> <span class="nf">segmentation</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="AortaDescendingAxialSegmenter.segmentation"><a class="viewcode-back" href="../../backup/AortaGeomReconDisplayModuleLib.html#AortaGeomReconDisplayModuleLib.AortaDescendingAxialSegmenter.AortaDescendingAxialSegmenter.segmentation">[docs]</a>    <span class="k">def</span> <span class="nf">segmentation</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;From the starting slice to the superior or the inferior,</span>
 <span class="sd">        use label statistics to see if a circle can be segmented.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -201,7 +203,7 @@
                 <span class="n">total_coord</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_previous_size</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_previous_size</span> <span class="o">=</span> <span class="n">total_coord</span></div>
 
-<div class="viewcode-block" id="AortaDescendingAxialSegmenter.begin_segmentation"><a class="viewcode-back" href="../../AortaGeomReconDisplayModuleLib.html#AortaGeomReconDisplayModuleLib.AortaDescendingAxialSegmenter.AortaDescendingAxialSegmenter.begin_segmentation">[docs]</a>    <span class="k">def</span> <span class="nf">begin_segmentation</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="AortaDescendingAxialSegmenter.begin_segmentation"><a class="viewcode-back" href="../../backup/AortaGeomReconDisplayModuleLib.html#AortaGeomReconDisplayModuleLib.AortaDescendingAxialSegmenter.AortaDescendingAxialSegmenter.begin_segmentation">[docs]</a>    <span class="k">def</span> <span class="nf">begin_segmentation</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># Descending Aorta Segmentation</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_segment_filter</span> <span class="o">=</span> <span class="n">sitk</span><span class="o">.</span><span class="n">ThresholdSegmentationLevelSetImageFilter</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_segment_filter</span><span class="o">.</span><span class="n">SetMaximumRMSError</span><span class="p">(</span><span class="mf">0.02</span><span class="p">)</span>

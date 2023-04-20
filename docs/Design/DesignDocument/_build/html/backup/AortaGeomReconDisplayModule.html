@@ -64,8 +64,278 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
+<<<<<<< HEAD
+  <section id="module-AortaGeomReconDisplayModule">
+<span id="aortageomrecondisplaymodule-module"></span><h1>AortaGeomReconDisplayModule module<a class="headerlink" href="#module-AortaGeomReconDisplayModule" title="Permalink to this headline"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="AortaGeomReconDisplayModule.AGR_phase">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">AortaGeomReconDisplayModule.</span></span><span class="sig-name descname"><span class="pre">AGR_phase</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/AortaGeomReconDisplayModule.html#AGR_phase"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#AortaGeomReconDisplayModule.AGR_phase" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">enum.Enum</span></code></p>
+<p>An enumeration.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="AortaGeomReconDisplayModule.AGR_phase.crop_aorta">
+<span class="sig-name descname"><span class="pre">crop_aorta</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'Phase</span> <span class="pre">1</span> <span class="pre">Crop</span> <span class="pre">Aorta'</span></em><a class="headerlink" href="#AortaGeomReconDisplayModule.AGR_phase.crop_aorta" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="AortaGeomReconDisplayModule.AGR_phase.segment_asc_aorta">
+<span class="sig-name descname"><span class="pre">segment_asc_aorta</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'Phase</span> <span class="pre">3</span> <span class="pre">Ascending</span> <span class="pre">Aorta</span> <span class="pre">Segmentation'</span></em><a class="headerlink" href="#AortaGeomReconDisplayModule.AGR_phase.segment_asc_aorta" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="AortaGeomReconDisplayModule.AGR_phase.segment_desc_aorta">
+<span class="sig-name descname"><span class="pre">segment_desc_aorta</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'Phase</span> <span class="pre">2</span> <span class="pre">Descending</span> <span class="pre">Aorta</span> <span class="pre">Segmentation'</span></em><a class="headerlink" href="#AortaGeomReconDisplayModule.AGR_phase.segment_desc_aorta" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="AortaGeomReconDisplayModule.AGR_phase.segment_sagittaly">
+<span class="sig-name descname"><span class="pre">segment_sagittaly</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'Phase</span> <span class="pre">4</span> <span class="pre">Sagittal</span> <span class="pre">Segmentation'</span></em><a class="headerlink" href="#AortaGeomReconDisplayModule.AGR_phase.segment_sagittaly" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="AortaGeomReconDisplayModule.AortaGeomReconDisplayModule">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">AortaGeomReconDisplayModule.</span></span><span class="sig-name descname"><span class="pre">AortaGeomReconDisplayModule</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/AortaGeomReconDisplayModule.html#AortaGeomReconDisplayModule"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#AortaGeomReconDisplayModule.AortaGeomReconDisplayModule" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">slicer.ScriptedLoadableModule.ScriptedLoadableModule</span></code></p>
+<p>Uses ScriptedLoadableModule base class, available at:
+<a class="reference external" href="https://github.com/Slicer/Slicer/blob/master/Base/Python/slicer/ScriptedLoadableModule.py">https://github.com/Slicer/Slicer/blob/master/Base/Python/slicer/ScriptedLoadableModule.py</a></p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="AortaGeomReconDisplayModule.AortaGeomReconDisplayModuleLogic">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">AortaGeomReconDisplayModule.</span></span><span class="sig-name descname"><span class="pre">AortaGeomReconDisplayModuleLogic</span></span><a class="reference internal" href="../_modules/AortaGeomReconDisplayModule.html#AortaGeomReconDisplayModuleLogic"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#AortaGeomReconDisplayModule.AortaGeomReconDisplayModuleLogic" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">slicer.ScriptedLoadableModule.ScriptedLoadableModuleLogic</span></code></p>
+<p>This class should implement all the actual
+computation done by your module.  The interface
+should be such that other python code can import
+this class and make use of the functionality without
+requiring an instance of the Widget.
+Uses ScriptedLoadableModuleLogic base class, available at:
+<a class="reference external" href="https://github.com/Slicer/Slicer/blob/master/Base/Python/slicer/ScriptedLoadableModule.py">https://github.com/Slicer/Slicer/blob/master/Base/Python/slicer/ScriptedLoadableModule.py</a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="AortaGeomReconDisplayModule.AortaGeomReconDisplayModuleLogic.anyEmptySeed">
+<span class="sig-name descname"><span class="pre">anyEmptySeed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ui</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phase</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/AortaGeomReconDisplayModule.html#AortaGeomReconDisplayModuleLogic.anyEmptySeed"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#AortaGeomReconDisplayModule.AortaGeomReconDisplayModuleLogic.anyEmptySeed" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="AortaGeomReconDisplayModule.AortaGeomReconDisplayModuleLogic.createDefaultParameters">
+<span class="sig-name descname"><span class="pre">createDefaultParameters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parameterNode</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/AortaGeomReconDisplayModule.html#AortaGeomReconDisplayModuleLogic.createDefaultParameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#AortaGeomReconDisplayModule.AortaGeomReconDisplayModuleLogic.createDefaultParameters" title="Permalink to this definition"></a></dt>
+<dd><p>Initialize parameter node with default settings.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="AortaGeomReconDisplayModule.AortaGeomReconDisplayModuleLogic.getPlaneIntersectionPoint">
+<span class="sig-name descname"><span class="pre">getPlaneIntersectionPoint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">volumeNode</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axialNode</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ortho1Node</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ortho2Node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/AortaGeomReconDisplayModule.html#AortaGeomReconDisplayModuleLogic.getPlaneIntersectionPoint"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#AortaGeomReconDisplayModule.AortaGeomReconDisplayModuleLogic.getPlaneIntersectionPoint" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="AortaGeomReconDisplayModule.AortaGeomReconDisplayModuleLogic.processAscendingAorta">
+<span class="sig-name descname"><span class="pre">processAscendingAorta</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ascAortaSeed</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qualified_coef</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_slice_skipping</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/AortaGeomReconDisplayModule.html#AortaGeomReconDisplayModuleLogic.processAscendingAorta"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#AortaGeomReconDisplayModule.AortaGeomReconDisplayModuleLogic.processAscendingAorta" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="AortaGeomReconDisplayModule.AortaGeomReconDisplayModuleLogic.processDescendingAorta">
+<span class="sig-name descname"><span class="pre">processDescendingAorta</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">descAortaSeed</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qualified_coef</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_slice_skipping</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/AortaGeomReconDisplayModule.html#AortaGeomReconDisplayModuleLogic.processDescendingAorta"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#AortaGeomReconDisplayModule.AortaGeomReconDisplayModuleLogic.processDescendingAorta" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="AortaGeomReconDisplayModule.AortaGeomReconDisplayModuleLogic.processSagittaly">
+<span class="sig-name descname"><span class="pre">processSagittaly</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">qualified_coef</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_slice_skipping</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/AortaGeomReconDisplayModule.html#AortaGeomReconDisplayModuleLogic.processSagittaly"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#AortaGeomReconDisplayModule.AortaGeomReconDisplayModuleLogic.processSagittaly" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="AortaGeomReconDisplayModule.AortaGeomReconDisplayModuleLogic.resetDefaultParameters">
+<span class="sig-name descname"><span class="pre">resetDefaultParameters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parameterNode</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/AortaGeomReconDisplayModule.html#AortaGeomReconDisplayModuleLogic.resetDefaultParameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#AortaGeomReconDisplayModule.AortaGeomReconDisplayModuleLogic.resetDefaultParameters" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="AortaGeomReconDisplayModule.AortaGeomReconDisplayModuleLogic.setDefaultParameters">
+<span class="sig-name descname"><span class="pre">setDefaultParameters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parameterNode</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/AortaGeomReconDisplayModule.html#AortaGeomReconDisplayModuleLogic.setDefaultParameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#AortaGeomReconDisplayModule.AortaGeomReconDisplayModuleLogic.setDefaultParameters" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="AortaGeomReconDisplayModule.AortaGeomReconDisplayModuleLogic.transform_image">
+<span class="sig-name descname"><span class="pre">transform_image</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cropped_volume</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/AortaGeomReconDisplayModule.html#AortaGeomReconDisplayModuleLogic.transform_image"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#AortaGeomReconDisplayModule.AortaGeomReconDisplayModuleLogic.transform_image" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="AortaGeomReconDisplayModule.AortaGeomReconDisplayModuleTest">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">AortaGeomReconDisplayModule.</span></span><span class="sig-name descname"><span class="pre">AortaGeomReconDisplayModuleTest</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/AortaGeomReconDisplayModule.html#AortaGeomReconDisplayModuleTest"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#AortaGeomReconDisplayModule.AortaGeomReconDisplayModuleTest" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">slicer.ScriptedLoadableModule.ScriptedLoadableModuleTest</span></code></p>
+<p>This is the test case for your scripted module.
+Uses ScriptedLoadableModuleTest base class, available at:
+<a class="reference external" href="https://github.com/Slicer/Slicer/blob/master/Base/Python/slicer/ScriptedLoadableModule.py">https://github.com/Slicer/Slicer/blob/master/Base/Python/slicer/ScriptedLoadableModule.py</a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="AortaGeomReconDisplayModule.AortaGeomReconDisplayModuleTest.runTest">
+<span class="sig-name descname"><span class="pre">runTest</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/AortaGeomReconDisplayModule.html#AortaGeomReconDisplayModuleTest.runTest"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#AortaGeomReconDisplayModule.AortaGeomReconDisplayModuleTest.runTest" title="Permalink to this definition"></a></dt>
+<dd><p>Run as few or as many tests as needed here.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="AortaGeomReconDisplayModule.AortaGeomReconDisplayModuleTest.setUp">
+<span class="sig-name descname"><span class="pre">setUp</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/AortaGeomReconDisplayModule.html#AortaGeomReconDisplayModuleTest.setUp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#AortaGeomReconDisplayModule.AortaGeomReconDisplayModuleTest.setUp" title="Permalink to this definition"></a></dt>
+<dd><p>Do whatever is needed to reset the state
+- typically a scene clear will be enough.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="AortaGeomReconDisplayModule.AortaGeomReconDisplayModuleTest.test_AortaGeomReconDisplayModule1">
+<span class="sig-name descname"><span class="pre">test_AortaGeomReconDisplayModule1</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/AortaGeomReconDisplayModule.html#AortaGeomReconDisplayModuleTest.test_AortaGeomReconDisplayModule1"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#AortaGeomReconDisplayModule.AortaGeomReconDisplayModuleTest.test_AortaGeomReconDisplayModule1" title="Permalink to this definition"></a></dt>
+<dd><p>Ideally you should have several levels of tests.
+At the lowest level tests should exercise
+the functionality of the logic
+with different inputs (both valid and invalid).
+At higher levels your tests should emulate the
+way the user would interact with your code
+and confirm that it still works the way you intended.
+One of the most important features of the tests is that
+it should alert other
+developers when their changes will have an impact on
+the behavior of your module.
+For example, if a developer removes a feature that you depend on,
+your test should break so they know that the feature is needed.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="AortaGeomReconDisplayModule.AortaGeomReconDisplayModuleWidget">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">AortaGeomReconDisplayModule.</span></span><span class="sig-name descname"><span class="pre">AortaGeomReconDisplayModuleWidget</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/AortaGeomReconDisplayModule.html#AortaGeomReconDisplayModuleWidget"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#AortaGeomReconDisplayModule.AortaGeomReconDisplayModuleWidget" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">slicer.ScriptedLoadableModule.ScriptedLoadableModuleWidget</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">slicer.util.VTKObservationMixin</span></code></p>
+<p>Uses ScriptedLoadableModuleWidget base class, available at:
+<a class="reference external" href="https://github.com/Slicer/Slicer/blob/master/Base/Python/slicer/ScriptedLoadableModule.py">https://github.com/Slicer/Slicer/blob/master/Base/Python/slicer/ScriptedLoadableModule.py</a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="AortaGeomReconDisplayModule.AortaGeomReconDisplayModuleWidget.cleanup">
+<span class="sig-name descname"><span class="pre">cleanup</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/AortaGeomReconDisplayModule.html#AortaGeomReconDisplayModuleWidget.cleanup"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#AortaGeomReconDisplayModule.AortaGeomReconDisplayModuleWidget.cleanup" title="Permalink to this definition"></a></dt>
+<dd><p>Called when the application closes and the module widget is destroyed.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="AortaGeomReconDisplayModule.AortaGeomReconDisplayModuleWidget.enter">
+<span class="sig-name descname"><span class="pre">enter</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/AortaGeomReconDisplayModule.html#AortaGeomReconDisplayModuleWidget.enter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#AortaGeomReconDisplayModule.AortaGeomReconDisplayModuleWidget.enter" title="Permalink to this definition"></a></dt>
+<dd><p>Called each time the user opens this module.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="AortaGeomReconDisplayModule.AortaGeomReconDisplayModuleWidget.exit">
+<span class="sig-name descname"><span class="pre">exit</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/AortaGeomReconDisplayModule.html#AortaGeomReconDisplayModuleWidget.exit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#AortaGeomReconDisplayModule.AortaGeomReconDisplayModuleWidget.exit" title="Permalink to this definition"></a></dt>
+<dd><p>Called each time the user opens a different module.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="AortaGeomReconDisplayModule.AortaGeomReconDisplayModuleWidget.initializeParameterNode">
+<span class="sig-name descname"><span class="pre">initializeParameterNode</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/AortaGeomReconDisplayModule.html#AortaGeomReconDisplayModuleWidget.initializeParameterNode"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#AortaGeomReconDisplayModule.AortaGeomReconDisplayModuleWidget.initializeParameterNode" title="Permalink to this definition"></a></dt>
+<dd><p>Ensure parameter node exists and observed.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="AortaGeomReconDisplayModule.AortaGeomReconDisplayModuleWidget.onApplyButton">
+<span class="sig-name descname"><span class="pre">onApplyButton</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/AortaGeomReconDisplayModule.html#AortaGeomReconDisplayModuleWidget.onApplyButton"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#AortaGeomReconDisplayModule.AortaGeomReconDisplayModuleWidget.onApplyButton" title="Permalink to this definition"></a></dt>
+<dd><p>Run processing when user clicks “Apply” button.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="AortaGeomReconDisplayModule.AortaGeomReconDisplayModuleWidget.onMouseMoved">
+<span class="sig-name descname"><span class="pre">onMouseMoved</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">observer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eventid</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/AortaGeomReconDisplayModule.html#AortaGeomReconDisplayModuleWidget.onMouseMoved"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#AortaGeomReconDisplayModule.AortaGeomReconDisplayModuleWidget.onMouseMoved" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="AortaGeomReconDisplayModule.AortaGeomReconDisplayModuleWidget.onResetButton">
+<span class="sig-name descname"><span class="pre">onResetButton</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/AortaGeomReconDisplayModule.html#AortaGeomReconDisplayModuleWidget.onResetButton"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#AortaGeomReconDisplayModule.AortaGeomReconDisplayModuleWidget.onResetButton" title="Permalink to this definition"></a></dt>
+<dd><p>Run processing when user clicks “Reset” button.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="AortaGeomReconDisplayModule.AortaGeomReconDisplayModuleWidget.onRevertButton">
+<span class="sig-name descname"><span class="pre">onRevertButton</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/AortaGeomReconDisplayModule.html#AortaGeomReconDisplayModuleWidget.onRevertButton"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#AortaGeomReconDisplayModule.AortaGeomReconDisplayModuleWidget.onRevertButton" title="Permalink to this definition"></a></dt>
+<dd><p>Run processing when user clicks “Revert” button.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="AortaGeomReconDisplayModule.AortaGeomReconDisplayModuleWidget.onSceneEndClose">
+<span class="sig-name descname"><span class="pre">onSceneEndClose</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">caller</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">event</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/AortaGeomReconDisplayModule.html#AortaGeomReconDisplayModuleWidget.onSceneEndClose"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#AortaGeomReconDisplayModule.AortaGeomReconDisplayModuleWidget.onSceneEndClose" title="Permalink to this definition"></a></dt>
+<dd><p>Called just after the scene is closed.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="AortaGeomReconDisplayModule.AortaGeomReconDisplayModuleWidget.onSceneStartClose">
+<span class="sig-name descname"><span class="pre">onSceneStartClose</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">caller</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">event</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/AortaGeomReconDisplayModule.html#AortaGeomReconDisplayModuleWidget.onSceneStartClose"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#AortaGeomReconDisplayModule.AortaGeomReconDisplayModuleWidget.onSceneStartClose" title="Permalink to this definition"></a></dt>
+<dd><p>Called just before the scene is closed.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="AortaGeomReconDisplayModule.AortaGeomReconDisplayModuleWidget.onSkipButton">
+<span class="sig-name descname"><span class="pre">onSkipButton</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/AortaGeomReconDisplayModule.html#AortaGeomReconDisplayModuleWidget.onSkipButton"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#AortaGeomReconDisplayModule.AortaGeomReconDisplayModuleWidget.onSkipButton" title="Permalink to this definition"></a></dt>
+<dd><p>Run processing when user clicks “Skip” button.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="AortaGeomReconDisplayModule.AortaGeomReconDisplayModuleWidget.setParameterNode">
+<span class="sig-name descname"><span class="pre">setParameterNode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inputParameterNode</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/AortaGeomReconDisplayModule.html#AortaGeomReconDisplayModuleWidget.setParameterNode"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#AortaGeomReconDisplayModule.AortaGeomReconDisplayModuleWidget.setParameterNode" title="Permalink to this definition"></a></dt>
+<dd><p>Set and observe parameter node.
+Observation is needed because
+when the parameter node is changed
+then the GUI must be updated immediately.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="AortaGeomReconDisplayModule.AortaGeomReconDisplayModuleWidget.setup">
+<span class="sig-name descname"><span class="pre">setup</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/AortaGeomReconDisplayModule.html#AortaGeomReconDisplayModuleWidget.setup"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#AortaGeomReconDisplayModule.AortaGeomReconDisplayModuleWidget.setup" title="Permalink to this definition"></a></dt>
+<dd><p>Called when the user opens the module the first time
+and the widget is initialized.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="AortaGeomReconDisplayModule.AortaGeomReconDisplayModuleWidget.showPhaseAAS">
+<span class="sig-name descname"><span class="pre">showPhaseAAS</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/AortaGeomReconDisplayModule.html#AortaGeomReconDisplayModuleWidget.showPhaseAAS"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#AortaGeomReconDisplayModule.AortaGeomReconDisplayModuleWidget.showPhaseAAS" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="AortaGeomReconDisplayModule.AortaGeomReconDisplayModuleWidget.showPhaseCropAorta">
+<span class="sig-name descname"><span class="pre">showPhaseCropAorta</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/AortaGeomReconDisplayModule.html#AortaGeomReconDisplayModuleWidget.showPhaseCropAorta"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#AortaGeomReconDisplayModule.AortaGeomReconDisplayModuleWidget.showPhaseCropAorta" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="AortaGeomReconDisplayModule.AortaGeomReconDisplayModuleWidget.showPhaseDAS">
+<span class="sig-name descname"><span class="pre">showPhaseDAS</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/AortaGeomReconDisplayModule.html#AortaGeomReconDisplayModuleWidget.showPhaseDAS"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#AortaGeomReconDisplayModule.AortaGeomReconDisplayModuleWidget.showPhaseDAS" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="AortaGeomReconDisplayModule.AortaGeomReconDisplayModuleWidget.showPhaseSAS">
+<span class="sig-name descname"><span class="pre">showPhaseSAS</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/AortaGeomReconDisplayModule.html#AortaGeomReconDisplayModuleWidget.showPhaseSAS"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#AortaGeomReconDisplayModule.AortaGeomReconDisplayModuleWidget.showPhaseSAS" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="AortaGeomReconDisplayModule.AortaGeomReconDisplayModuleWidget.updateGUIFromParameterNode">
+<span class="sig-name descname"><span class="pre">updateGUIFromParameterNode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">caller</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">event</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/AortaGeomReconDisplayModule.html#AortaGeomReconDisplayModuleWidget.updateGUIFromParameterNode"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#AortaGeomReconDisplayModule.AortaGeomReconDisplayModuleWidget.updateGUIFromParameterNode" title="Permalink to this definition"></a></dt>
+<dd><p>This method is called whenever parameter node is changed.
+The module GUI is updated to show
+the current state of the parameter node.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="AortaGeomReconDisplayModule.AortaGeomReconDisplayModuleWidget.updateParameterNodeFromGUI">
+<span class="sig-name descname"><span class="pre">updateParameterNodeFromGUI</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">caller</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">event</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/AortaGeomReconDisplayModule.html#AortaGeomReconDisplayModuleWidget.updateParameterNodeFromGUI"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#AortaGeomReconDisplayModule.AortaGeomReconDisplayModuleWidget.updateParameterNodeFromGUI" title="Permalink to this definition"></a></dt>
+<dd><p>This method is called when the user makes any change in the GUI.
+The changes are saved into the parameter node
+(so that they are restored when the scene is saved and loaded).</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="AortaGeomReconDisplayModule.registerSampleData">
+<span class="sig-prename descclassname"><span class="pre">AortaGeomReconDisplayModule.</span></span><span class="sig-name descname"><span class="pre">registerSampleData</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/AortaGeomReconDisplayModule.html#registerSampleData"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#AortaGeomReconDisplayModule.registerSampleData" title="Permalink to this definition"></a></dt>
+<dd><p>Add data sets to Sample Data module.</p>
+</dd></dl>
+
+=======
   <section id="aortageomrecondisplaymodule-module">
 <h1>AortaGeomReconDisplayModule module<a class="headerlink" href="#aortageomrecondisplaymodule-module" title="Permalink to this headline"></a></h1>
+>>>>>>> design-document
 </section>
 
 

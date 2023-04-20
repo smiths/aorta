@@ -36,8 +36,7 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../modules.html">AortaGeomReconDisplayModuleLib</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../test.html">test package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">test</a></li>
 </ul>
 
         </div>
@@ -68,7 +67,7 @@
 <span></span><span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span>
 
 
-<div class="viewcode-block" id="SegmentDirection"><a class="viewcode-back" href="../../AortaGeomReconDisplayModuleLib.html#AortaGeomReconDisplayModuleLib.AortaGeomReconEnums.SegmentDirection">[docs]</a><span class="k">class</span> <span class="nc">SegmentDirection</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+<div class="viewcode-block" id="SegmentDirection"><a class="viewcode-back" href="../../backup/AortaGeomReconDisplayModuleLib.html#AortaGeomReconDisplayModuleLib.AortaGeomReconEnums.SegmentDirection">[docs]</a><span class="k">class</span> <span class="nc">SegmentDirection</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Enum type describing the segmentation direction.</span>
 <span class="sd">    Superior is where the human head is located.</span>
 <span class="sd">    Inferior is where the human feet is located.</span>
@@ -77,20 +76,20 @@
     <span class="n">Inferior_to_Superior</span> <span class="o">=</span> <span class="mi">2</span></div>
 
 
-<div class="viewcode-block" id="SegmentType"><a class="viewcode-back" href="../../AortaGeomReconDisplayModuleLib.html#AortaGeomReconDisplayModuleLib.AortaGeomReconEnums.SegmentType">[docs]</a><span class="k">class</span> <span class="nc">SegmentType</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+<div class="viewcode-block" id="SegmentType"><a class="viewcode-back" href="../../backup/AortaGeomReconDisplayModuleLib.html#AortaGeomReconDisplayModuleLib.AortaGeomReconEnums.SegmentType">[docs]</a><span class="k">class</span> <span class="nc">SegmentType</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
     <span class="n">descending_aorta</span> <span class="o">=</span> <span class="mi">1</span>
     <span class="n">ascending_aorta</span> <span class="o">=</span> <span class="mi">2</span>
     <span class="n">sagittal_front</span> <span class="o">=</span> <span class="mi">3</span>
     <span class="n">sagittal</span> <span class="o">=</span> <span class="mi">4</span>
 
-<div class="viewcode-block" id="SegmentType.is_axial_seg"><a class="viewcode-back" href="../../AortaGeomReconDisplayModuleLib.html#AortaGeomReconDisplayModuleLib.AortaGeomReconEnums.SegmentType.is_axial_seg">[docs]</a>    <span class="k">def</span> <span class="nf">is_axial_seg</span><span class="p">(</span><span class="n">seg_type</span><span class="p">):</span>
+<div class="viewcode-block" id="SegmentType.is_axial_seg"><a class="viewcode-back" href="../../backup/AortaGeomReconDisplayModuleLib.html#AortaGeomReconDisplayModuleLib.AortaGeomReconEnums.SegmentType.is_axial_seg">[docs]</a>    <span class="k">def</span> <span class="nf">is_axial_seg</span><span class="p">(</span><span class="n">seg_type</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return True if the segmentation type is</span>
 <span class="sd">        descending or ascending aorta segmentation, False otherwise.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">(</span><span class="n">seg_type</span> <span class="o">==</span> <span class="n">SegmentType</span><span class="o">.</span><span class="n">descending_aorta</span>
                 <span class="ow">or</span> <span class="n">seg_type</span> <span class="o">==</span> <span class="n">SegmentType</span><span class="o">.</span><span class="n">ascending_aorta</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="SegmentType.is_sagittal_seg"><a class="viewcode-back" href="../../AortaGeomReconDisplayModuleLib.html#AortaGeomReconDisplayModuleLib.AortaGeomReconEnums.SegmentType.is_sagittal_seg">[docs]</a>    <span class="k">def</span> <span class="nf">is_sagittal_seg</span><span class="p">(</span><span class="n">seg_type</span><span class="p">):</span>
+<div class="viewcode-block" id="SegmentType.is_sagittal_seg"><a class="viewcode-back" href="../../backup/AortaGeomReconDisplayModuleLib.html#AortaGeomReconDisplayModuleLib.AortaGeomReconEnums.SegmentType.is_sagittal_seg">[docs]</a>    <span class="k">def</span> <span class="nf">is_sagittal_seg</span><span class="p">(</span><span class="n">seg_type</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">(</span><span class="n">seg_type</span> <span class="o">==</span> <span class="n">SegmentType</span><span class="o">.</span><span class="n">sagittal_front</span>
                 <span class="ow">or</span> <span class="n">seg_type</span> <span class="o">==</span> <span class="n">SegmentType</span><span class="o">.</span><span class="n">sagittal</span><span class="p">)</span></div>
 
@@ -98,7 +97,7 @@
         <span class="k">return</span> <span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> segmentation&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_name_</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">,</span> <span class="s2">&quot; &quot;</span><span class="p">))</span></div>
 
 
-<div class="viewcode-block" id="PixelValue"><a class="viewcode-back" href="../../AortaGeomReconDisplayModuleLib.html#AortaGeomReconDisplayModuleLib.AortaGeomReconEnums.PixelValue">[docs]</a><span class="k">class</span> <span class="nc">PixelValue</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+<div class="viewcode-block" id="PixelValue"><a class="viewcode-back" href="../../backup/AortaGeomReconDisplayModuleLib.html#AortaGeomReconDisplayModuleLib.AortaGeomReconEnums.PixelValue">[docs]</a><span class="k">class</span> <span class="nc">PixelValue</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
     <span class="n">white_pixel</span> <span class="o">=</span> <span class="mi">1</span>
     <span class="n">black_pixel</span> <span class="o">=</span> <span class="mi">0</span></div>
 </pre></div>

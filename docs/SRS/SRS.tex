@@ -16,6 +16,7 @@
 \usepackage{caption}
 \usepackage{pdflscape}
 \usepackage{afterpage}
+\usepackage{subfig}
 
 \usepackage[round]{natbib}
 
@@ -126,8 +127,8 @@
 
 \begin{document}
 
-\title{Software Requirements Specification for \progname: subtitle describing software} 
-\author{Author Name(s)}
+\title{Software Requirements Specification for \progname{}} 
+\author{\authname}
 \date{\today}
 	
 \maketitle
@@ -145,8 +146,9 @@
 \begin{tabularx}{\textwidth}{p{3cm}p{2cm}X}
 \toprule {\bf Date} & {\bf Version} & {\bf Notes}\\
 \midrule
-Date 1 & 1.0 & Notes\\
-Date 2 & 1.1 & Notes\\
+2023-02-12 & 1.0 & Notes\\
+\midrule
+2023-03-01 & 1.01 & Modified system context image, coordinate systems, and goal statements.\\
 \bottomrule
 \end{tabularx}
 
@@ -164,62 +166,68 @@ used as described below.  For each unit, the symbol is given followed by a
 description of the unit and the SI name.
 ~\newline
 
-\renewcommand{\arraystretch}{1.2}
+%\renewcommand{\arraystretch}{1.2}
 %\begin{table}[ht]
-  \noindent \begin{tabular}{l l l} 
-    \toprule		
-    \textbf{symbol} & \textbf{unit} & \textbf{SI}\\
-    \midrule 
-    \si{\metre} & length & metre\\
-    \si{\kilogram} & mass	& kilogram\\
-    \si{\second} & time & second\\
-    \si{\celsius} & temperature & centigrade\\
-    \si{\joule} & energy & joule\\
-    \si{\watt} & power & watt (W = \si{\joule\per\second})\\
-    \bottomrule
-  \end{tabular}
+  % \noindent \begin{tabular}{l l l} 
+  %   \toprule		
+  %   \textbf{symbol} & \textbf{unit} & \textbf{SI}\\
+  %   \midrule 
+  %   \si{\metre} & length & metre\\
+  %   \si{\kilogram} & mass	& kilogram\\
+  %   \si{\second} & time & second\\
+  %   \si{\celsius} & temperature & centigrade\\
+  %   \si{\joule} & energy & joule\\
+  %   \si{\watt} & power & watt (W = \si{\joule\per\second})\\
+  %   \bottomrule
+  % \end{tabular}
   %	\caption{Provide a caption}
 %\end{table}
-
-\plt{Only include the units that your SRS actually uses.}
-
-\plt{Derived units, like newtons, pascal, etc, should show their derivation
-    (the units they are derived from) if their constituent units are in the
-    table of units (that is, if the units they are derived from are used in the
-    document).  For instance, the derivation of pascals as
-    $\si{\pascal}=\si{\newton\per\square\meter}$ is shown if newtons and m are
-    both in the table.  The derivations of newtons would not be shown if kg and
-    s are not both in the table.}
-
-\plt{The symbol for units named after people use capital letters, but the name
-  of the unit itself uses lower case.  For instance, pascals use the symbol Pa,
-  watts use the symbol W, teslas use the symbol T, newtons use the symbol N,
-  etc.  The one exception to this is degree Celsius.  Details on writing metric
-  units can be found on the 
-  \href{https://www.nist.gov/pml/weights-and-measures/writing-metric-units}
-  {NIST} web-page.}
 
 \subsection{Table of Symbols}
 
 The table that follows summarizes the symbols used in this document along with
-their units.  The choice of symbols was made to be consistent with the heat
-transfer literature and with existing documentation for solar water heating
-systems.  The symbols are listed in alphabetical order.
+their units.  The choice of symbols was made to be consistent with existing documentation for 3D Slicer program. 
+The symbols are listed in alphabetical order.
 
 \renewcommand{\arraystretch}{1.2}
-%\noindent \begin{tabularx}{1.0\textwidth}{l l X}
-\noindent \begin{longtable*}{l l p{12cm}} \toprule
-\textbf{symbol} & \textbf{unit} & \textbf{description}\\
-\midrule 
-$A_C$ & \si[per-mode=symbol] {\square\metre} & coil surface area
+\noindent \begin{longtable}{l p{2cm} p{12cm}} \toprule
+  \textbf{symbol} & \textbf{type} & \textbf{description}\\
+  \midrule
 \\
-$A_\text{in}$ & \si[per-mode=symbol] {\square\metre} & surface area over 
-which heat is transferred in
+\textit{LOW} &  $\mathbb{N}$ &   A low intensity values means 0 on a scale of 0 and 1, or 0 on a scale of 0 to 255.
 \\ 
+\textit{HIGH} &  $\mathbb{N}$ &  A high intensity values means 1 on a scale of 0 and 1, or 255 on a scale of 0 to 255.
+\\ 
+\textit{slice} &  $\mathbb{R}^{m \times n}$ &  A slice is a 2 dimensional image view from the superior to inferior direction.
+\\ 
+\textit{Sv} & $\mathbb{N}^{3}$ &  A coordinate indicates the indexes of a starting voxel.
+\\
+\textit{S} & $\mathbb{N}^{3}$ &  The size to crop a rectangular shaped subset of a volume.
+\\
+\textit{v} &  $\mathbb{R}$ &  A voxel reports the intensity of a single point on a grey-scale 3 dimensional image.
+\\
+\textit{volume} & $\mathbb{R}^{m \times n \times p}$ &  Volume formed by a sequence of slice
+\\
+
 \bottomrule
-\end{longtable*}
-\plt{Use your problems actual symbols.  The si package is a good idea to use for
-  units.}
+\caption{Table of Symbols}
+\label{Table of Symbols}
+\end{longtable}
+
+% \renewcommand{\arraystretch}{1.2}
+% %\noindent \begin{tabularx}{1.0\textwidth}{l l X}
+% \noindent \begin{longtable*}{l l p{12cm}} \toprule
+% \textbf{symbol} & \textbf{unit} & \textbf{description}\\
+% \midrule 
+% $A_C$ & \si[per-mode=symbol] {\square\metre} & coil surface area
+% \\
+% $A_\text{in}$ & \si[per-mode=symbol] {\square\metre} & surface area over 
+% which heat is transferred in
+% \\ 
+% \bottomrule
+% \end{longtable*}
+% \plt{Use your problems actual symbols.  The si package is a good idea to use for
+%   units.}
 
 \subsection{Abbreviations and Acronyms}
 
@@ -229,7 +237,9 @@ which heat is transferred in
   \textbf{symbol} & \textbf{description}\\
   \midrule 
   A & Assumption\\
+  \progname & Aorta Geometry Reconstructor\\
   DD & Data Definition\\
+  DICOM & Digital Imaging and Communications in Medicine\\
   GD & General Definition\\
   GS & Goal Statement\\
   IM & Instance Model\\
@@ -237,297 +247,333 @@ which heat is transferred in
   PS & Physical System Description\\
   R & Requirement\\
   SRS & Software Requirements Specification\\
-  \progname{} & \plt{put an expanded version of your program name here (as appropriate)}\\
   T & Theoretical Model\\
   \bottomrule
 \end{tabular}\\
 
-\plt{Add any other abbreviations or acronyms that you add}
+% \subsection{Mathematical Notation}
 
-\subsection{Mathematical Notation}
+% \plt{This section is optional, but should be included for projects that make use
+%   of notation to convey mathematical information.  For instance, if typographic
+%   conventions (like bold face font) are used to distinguish matrices, this
+%   should be stated here.  If symbols are used to show mathematical operations,
+%   these should be summarized here.  In some cases the easiest way to summarize
+%   the notation is to point to a text or other source that explains the
+%   notation.}
 
-\plt{This section is optional, but should be included for projects that make use
-  of notation to convey mathematical information.  For instance, if typographic
-  conventions (like bold face font) are used to distinguish matrices, this
-  should be stated here.  If symbols are used to show mathematical operations,
-  these should be summarized here.  In some cases the easiest way to summarize
-  the notation is to point to a text or other source that explains the
-  notation.}
-
-\plt{This section was added to the template because some students use very
-  domain specific notation.  This notation will not be readily understandable to
-  people outside of your domain.  It should be explained.}
+% \plt{This section was added to the template because some students use very
+%   domain specific notation.  This notation will not be readily understandable to
+%   people outside of your domain.  It should be explained.}
 
 \newpage
 
 \pagenumbering{arabic}
 
-\plt{This SRS template is based on \citet{SmithAndLai2005, SmithEtAl2007}.  It
-  will get you started.  You should not modify the section headings, without
-  first discussing the change with the course instructor.  Modification means
-  you are not following the template, which loses some of the advantage of a
-  template, especially standardization.  Although the bits shown below do not
-  include type information, you may need to add this information for your
-  problem.  If you are unsure, please can ask the instructor.}
+% \plt{This SRS template is based on \citet{SmithAndLai2005, SmithEtAl2007}.  It
+%   will get you started.  You should not modify the section headings, without
+%   first discussing the change with the course instructor.  Modification means
+%   you are not following the template, which loses some of the advantage of a
+%   template, especially standardization.  Although the bits shown below do not
+%   include type information, you may need to add this information for your
+%   problem.  If you are unsure, please can ask the instructor.}
 
-\plt{Feel free to change the appearance of the report by modifying the LaTeX
-  commands.}
+% \plt{Feel free to change the appearance of the report by modifying the LaTeX
+%   commands.}
 
-\plt{This template document assumes that a single program is being documented.
-  If you are documenting a family of models, you should start with a commonality
-  analysis.  A separate template is provided for this.  For program
-  families you should look at \cite{Smith2006, SmithMcCutchanAndCarette2017}.
-  Single family member programs are often programs based on a single physical
-  model.  General purpose tools are usually documented as a family.  Families of
-  physical models also come up.}
+% \plt{This template document assumes that a single program is being documented.
+%   If you are documenting a family of models, you should start with a commonality
+%   analysis.  A separate template is provided for this.  For program
+%   families you should look at \cite{Smith2006, SmithMcCutchanAndCarette2017}.
+%   Single family member programs are often programs based on a single physical
+%   model.  General purpose tools are usually documented as a family.  Families of
+%   physical models also come up.}
 
-\plt{The SRS is not generally written, or read, sequentially.  The SRS is a
-  reference document.  It is generally read in an ad hoc order, as the need
-  arises.  For writing an SRS, and for reading one for the first time, the
-  suggested order of sections is:
-\begin{itemize}
-\item Goal Statement
-\item Instance Models
-\item Requirements
-\item Introduction
-\item Specific System Description
-\end{itemize}
-}
+% \plt{The SRS is not generally written, or read, sequentially.  The SRS is a
+%   reference document.  It is generally read in an ad hoc order, as the need
+%   arises.  For writing an SRS, and for reading one for the first time, the
+%   suggested order of sections is:
+% \begin{itemize}
+% \item Goal Statement
+% \item Instance Models
+% \item Requirements
+% \item Introduction
+% \item Specific System Description
+% \end{itemize}
+% }
 
-\plt{Guiding principles for the SRS document:
-\begin{itemize}
-\item Do not repeat the same information at the same abstraction level.  If
-  information is repeated, the repetition should be at a different abstraction
-  level.  For instance, there will be overlap between the scope section and the
-  assumptions, but the scope section will not go into as much detail as the
-  assumptions section.
-\end{itemize}
-}
+% \plt{Guiding principles for the SRS document:
+% \begin{itemize}
+% \item Do not repeat the same information at the same abstraction level.  If
+%   information is repeated, the repetition should be at a different abstraction
+%   level.  For instance, there will be overlap between the scope section and the
+%   assumptions, but the scope section will not go into as much detail as the
+%   assumptions section.
+% \end{itemize}
+% }
 
-\plt{The template description comments should be disabled before submitting this
-  document for grading.}
+% \plt{The template description comments should be disabled before submitting this
+%   document for grading.}
 
-\plt{You can borrow any wording from the text given in the template.  It is part
-  of the template, and not considered an instance of academic integrity.  Of
-  course, you need to cite the source of the template.}
+% \plt{You can borrow any wording from the text given in the template.  It is part
+%   of the template, and not considered an instance of academic integrity.  Of
+%   course, you need to cite the source of the template.}
 
-\plt{When the documentation is done, it should be possible to trace back to the
-  source of every piece of information.  Some information will come from
-  external sources, like terminology.  Other information will be derived, like
-  General Definitions.}
+% \plt{When the documentation is done, it should be possible to trace back to the
+%   source of every piece of information.  Some information will come from
+%   external sources, like terminology.  Other information will be derived, like
+%   General Definitions.}
 
-\plt{An SRS document should have the following qualities: unambiguous,
-  consistent, complete, validatable, abstract and traceable.}
+% \plt{An SRS document should have the following qualities: unambiguous,
+%   consistent, complete, validatable, abstract and traceable.}
 
-\plt{The overall goal of the SRS is that someone that meets the Characteristics
-  of the Intended Reader (Section~\ref{sec_IntendedReader}) can learn,
-  understand and verify the captured domain knowledge.  They should not have to
-  trust the authors of the SRS on any statements.  They should be able to
-  independently verify/derive every statement made.}
+% \plt{The overall goal of the SRS is that someone that meets the Characteristics
+%   of the Intended Reader (Section~\ref{sec_IntendedReader}) can learn,
+%   understand and verify the captured domain knowledge.  They should not have to
+%   trust the authors of the SRS on any statements.  They should be able to
+%   independently verify/derive every statement made.}
 
 \section{Introduction}
 
-\plt{The introduction section is written to introduce the problem.  It starts
-  general and focuses on the problem domain. The general advice is to start with
-a paragraph or two that describes the problem, followed by a ``roadmap''
-paragraph.  A roadmap orients the reader by telling them what sub-sections to
-expect in the Introduction section.}
+This document provides an overview of the Software Requirements Specification
+(SRS) for the \progname{}. \progname{}
+provides a highly customizable aorta segmentation module, 
+and an interactive user interface to apply the segmentation workflow.
+
+% \plt{The introduction section is written to introduce the problem.  It starts
+%   general and focuses on the problem domain. The general advice is to start with
+% a paragraph or two that describes the problem, followed by a ``roadmap''
+% paragraph.  A roadmap orients the reader by telling them what sub-sections to
+% expect in the Introduction section.}
 
 \subsection{Purpose of Document}
+The main purpose of this document is to provide sufficient information to
+understand what \progname{} module does. The goals and theoretical models used in the
+\progname{} segmentation module implementation are provided,
+with an emphasis on explicitly identifying assumptions and unambiguous
+definitions.
 
-\plt{This section summarizes the purpose of the SRS document.  It does not focus
-  on the problem itself.  The problem is described in the ``Problem
-  Description'' section (Section~\ref{Sec_pd}).  The purpose is for the document
-  in the context of the project itself, not in the context of this course.
-  Although the ``purpose'' of the document is to get a grade, you should not
-  mention this.  Instead, ``fake it'' as if this is a real project.  The purpose
-  section will be similar between projects.  The purpose of the document is the
-  purpose of the SRS, including communication, planning for the design stage,
-  etc.}
+% \plt{This section summarizes the purpose of the SRS document.  It does not focus
+%   on the problem itself.  The problem is described in the ``Problem
+%   Description'' section (Section~\ref{Sec_pd}).  The purpose is for the document
+%   in the context of the project itself, not in the context of this course.
+%   Although the ``purpose'' of the document is to get a grade, you should not
+%   mention this.  Instead, ``fake it'' as if this is a real project.  The purpose
+%   section will be similar between projects.  The purpose of the document is the
+%   purpose of the SRS, including communication, planning for the design stage,
+%   etc.}
 
 \subsection{Scope of Requirements} 
 
-\plt{Modelling the real world requires simplification.  The full complexity of
-  the actual physics, chemistry, biology is too much for existing models, and
-  for existing computational solution techniques.  Rather than say what is in
-  the scope, it is usually easier to say what is not.  You can think of it as
-  the scope is initially everything, and then it is constrained to create the
-  actual scope.  For instance, the problem can be restricted to 2 dimensions, or
-  it can ignore the effect of temperature (or pressure) on the material
-  properties, etc.}  
+% \plt{Modelling the real world requires simplification.  The full complexity of
+%   the actual physics, chemistry, biology is too much for existing models, and
+%   for existing computational solution techniques.  Rather than say what is in
+%   the scope, it is usually easier to say what is not.  You can think of it as
+%   the scope is initially everything, and then it is constrained to create the
+%   actual scope.  For instance, the problem can be restricted to 2 dimensions, or
+%   it can ignore the effect of temperature (or pressure) on the material
+%   properties, etc.}  
 
-\plt{The scope section is related to the assumptions section
-  (Section~\ref{sec_assumpt}).  However, the scope and the assumptions are not
-  at the same level of abstraction.  The scope is at a high level.  The focus is
-  on the ``big picture'' assumptions.  The assumptions section lists, and
-  describes, all of the assumptions.}
+% \plt{The scope section is related to the assumptions section
+%   (Section~\ref{sec_assumpt}).  However, the scope and the assumptions are not
+%   at the same level of abstraction.  The scope is at a high level.  The focus is
+%   on the ``big picture'' assumptions.  The assumptions section lists, and
+%   describes, all of the assumptions.}
 
-\subsection{Characteristics of Intended Reader} \label{sec_IntendedReader}
+% \subsection{Characteristics of Intended Reader} \label{sec_IntendedReader}
 
-\plt{This section summarizes the skills and knowledge of the readers of the
-  SRS.  It does NOT have the same purpose as the ``User Characteristics''
-  section (Section~\ref{SecUserCharacteristics}).  The intended readers are the
-  people that will read, review and maintain the SRS.  They are the people that
-  will conceivably design the software that is intended to meet the
-  requirements.  The user, on the other hand, is the person that uses the
-  software that is built.  They may never read this SRS document.  Of course,
-  the same person could be a ``user'' and an ``intended reader.''}
+% \plt{This section summarizes the skills and knowledge of the readers of the
+%   SRS.  It does NOT have the same purpose as the ``User Characteristics''
+%   section (Section~\ref{SecUserCharacteristics}).  The intended readers are the
+%   people that will read, review and maintain the SRS.  They are the people that
+%   will conceivably design the software that is intended to meet the
+%   requirements.  The user, on the other hand, is the person that uses the
+%   software that is built.  They may never read this SRS document.  Of course,
+%   the same person could be a ``user'' and an ``intended reader.''}
 
-\plt{The intended reader characteristics should be written as unambiguously and
-  as specifically as possible.  Rather than say, the user should have an
-  understanding of physics, say what kind of physics and at what level.  For
-  instance, is high school physics adequate, or should the reader have had a
-  graduate course on advanced quantum mechanics?}
+% \plt{The intended reader characteristics should be written as unambiguously and
+%   as specifically as possible.  Rather than say, the user should have an
+%   understanding of physics, say what kind of physics and at what level.  For
+%   instance, is high school physics adequate, or should the reader have had a
+%   graduate course on advanced quantum mechanics?}
 
 \subsection{Organization of Document}
 
-\plt{This section provides a roadmap of the SRS document.  It will help the
-  reader orient themselves.  It will provide direction that will help them
-  select which sections they want to read, and in what order.  This section will
-  be similar between project.}
+%\plt{This section provides a roadmap of the SRS document.  It will help the
+%  reader orient themselves.  It will provide direction that will help them
+%  select which sections they want to read, and in what order.  This section will
+%  be similar between project.}
+
+The organization of this document follows the template for an SRS for
+scientific computing software proposed by \cite{Koothoor2013} and
+\cite{SmithAndLai2005}. The presentation
+follows the standard pattern of presenting goals, theories, definitions and
+assumptions. The goal statements are refined to the theoretical models, and
+theoretical
+models to the instance models. For readers that would like a more bottom-up
+approach, they can start reading the instance models in Section
+\ref{sssec:im} and trace back to find any additional information they
+require. 
 
 \section{General System Description}
 
 This section provides general information about the system.  It identifies the
 interfaces between the system and its environment, describes the user
-characteristics and lists the system constraints.  \plt{This text can likely be
-  borrowed verbatim.}
-
-\plt{The purpose of this section is to provide general information about the
-  system so the specific requirements in the next section will be easier to
-  understand. The general system description section is designed to be
-  changeable independent of changes to the functional requirements documented in
-  the specific system description. The general system description provides a
-  context for a family of related models.  The general description can stay the
-  same, while specific details are changed between family members.}
+characteristics and lists the system constraints.  
 
 \subsection{System Context}
+Figure \ref{Fig_SystemContext} shows the system context.  A circle represents an
+external entity outside the software, the user in this case.  A rectangle
+represents the software system itself.  Arrows are used to show the data
+flow between the system and its environment. \\ \\ \\ \\ \\ \\ \\
 
-\plt{Your system context will include a figure that shows the abstract view of
-  the software.  Often in a scientific context, the program can be viewed
-  abstractly following the design pattern of Inputs $\rightarrow$ Calculations
-  $\rightarrow$ Outputs.  The system context will therefore often follow this
-  pattern.  The user provides inputs, the system does the calculations, and then
-  provides the outputs to the user.  The figure should not show all of the
-  inputs, just an abstract view of the main categories of inputs (like material
-  properties, geometry, etc.).  Likewise, the outputs should be presented from
-  an abstract point of view.  In some cases the diagram will show other external
-  entities, besides the user.  For instance, when the software product is a
-  library, the user will be another software program, not an actual end user.
-  If there are system constraints that the software must work with external
-  libraries, these libraries can also be shown on the System Context diagram.
-  They should only be named with a specific library name if this is required by
-  the system constraint.}
 
 \begin{figure}[h!]
 \begin{center}
- \includegraphics[width=0.6\textwidth]{SystemContextFigure}
+ \includegraphics[width=1\textwidth]{AortaSystemContext.png}
 \caption{System Context}
 \label{Fig_SystemContext} 
 \end{center}
 \end{figure}
 
-\plt{For each of the entities in the system context diagram its responsibilities
-  should be listed.  Whenever possible the system should check for data quality,
-  but for some cases the user will need to assume that responsibility.  The list
-  of responsibilites should be about the inputs and outputs only, and they
-  should be abstract.  Details should not be presented here.  However, the
-  information should not be so abstract as to just say ``inputs'' and
-  ``outputs''.  A summarizing phrase can be used to characterize the inputs.
-  For instance, saying ``material properties'' provides some information, but it
-  stays away from the detail of listing every required properties.}
 
 \begin{itemize}
 \item User Responsibilities:
 \begin{itemize}
-\item 
+\item Provide the input data to the system
+\item Ensure the input meets the necessary assumptions
+\item Verify the result meets their requirements, otherwise repeat the process with a different seed values.
 \end{itemize}
 \item \progname{} Responsibilities:
 \begin{itemize}
-\item Detect data type mismatch, such as a string of characters instead of a
-  floating point number
-\item 
+\item Provide DICOM data reader which can take a path to a folder containing DICOM files.
+\item Provide crop functionality to easily select a region of interest. 
+\item Provide simple interactions to obtain and store the users' inputs. This includes a data probe to read voxel location which stored as a coordinate, and text inputs for real numbers.
+\item Provide visualization on the result data.
 \end{itemize}
 \end{itemize}
 
 \subsection{User Characteristics} \label{SecUserCharacteristics}
+The end user of \progname{} have taking the university level anatomy introduction course, and is capable to point out the center of the descending aorta and the ascending aorta.
 
-\plt{This section summarizes the knowledge/skills expected of the user.
-  Measuring usability, which is often a required non-function requirement,
-  requires knowledge of a typical user.  As mentioned above, the user is a
-  different role from the ``intended reader,'' as given in
-  Section~\ref{sec_IntendedReader}.  As in Section~\ref{sec_IntendedReader}, the
-  user characteristics should be specific an unambiguous.  For instance, ``The
-  end user of \progname{} should have an understanding of undergraduate Level 1
-  Calculus and Physics.''}
+% \plt{This section summarizes the knowledge/skills expected of the user.
+%   Measuring usability, which is often a required non-function requirement,
+%   requires knowledge of a typical user.  As mentioned above, the user is a
+%   different role from the ``intended reader,'' as given in
+%   Section~\ref{sec_IntendedReader}.  As in Section~\ref{sec_IntendedReader}, the
+%   user characteristics should be specific an unambiguous.  For instance, ``The
+%   end user of \progname{} should have an understanding of undergraduate Level 1
+%   Calculus and Physics.''}
 
 \subsection{System Constraints}
-
-\plt{System constraints differ from other type of requirements because they
-  limit the developers' options in the system design and they identify how the
-  eventual system must fit into the world. This is the only place in the SRS
-  where design decisions can be specified.  That is, the quality requirement for
-  abstraction is relaxed here.  However, system constraints should only be
-  included if they are truly required.}
+% Intended environment to run the program on are the Windows 10 systems.
+% \plt{System constraints differ from other type of requirements because they
+%   limit the developers' options in the system design and they identify how the
+%   eventual system must fit into the world. This is the only place in the SRS
+%   where design decisions can be specified.  That is, the quality requirement for
+%   abstraction is relaxed here.  However, system constraints should only be
+%   included if they are truly required.}
 
 \section{Specific System Description}
 
 This section first presents the problem description, which gives a high-level
 view of the problem to be solved.  This is followed by the solution characteristics
 specification, which presents the assumptions, theories, definitions and finally
-the instance models.  \plt{Add any project specific details that are relevant
-  for the section overview.}
+the instance models.  
+
+% \plt{Add any project specific details that are relevant
+%   for the section overview.}
 
 \subsection{Problem Description} \label{Sec_pd}
 
-\progname{} is intended to solve ... \plt{What problem does your program solve?
-The description here should be in the problem space, not the solution space.}
+The main purpose of \progname{} is to semi-automatically segment a 3D aorta geometry from a chest CT scan.
 
-\subsubsection{Terminology and  Definitions}
+\subsubsection{Organ segmentation}
+The organ segmentation or the organ boundary is useful for orientation and identification of the regions of interests inside the organ during the diagnostic or treatment procedure. The aorta segmentation is important for aortic calcification quantification and to guide the segmentation of other central vessels.
 
-\plt{This section is expressed in words, not with equations.  It provide the
-  meaning of the different words and phrases used in the domain of the problem.
-The terminology is used to introduce concepts from the world outside of the
-mathematical model  The terminology provides a real world connection to give the
-mathematical model meaning.}
-
+\subsubsection{Coordinate Systems}
 This subsection provides a list of terms that are used in the subsequent
 sections and their meaning, with the purpose of reducing ambiguity and making it
-easier to correctly understand the requirements:
+easier to correctly understand the requirements. \\
 
+\noindent While working with medical images, it is necessary to be familiar with the different coordinate systems of the medical literarure and how data (voxels' orientation) is interpreted in different medical and non-medical software. Each coordinate system uses one or more numbers (coordinates) to uniquely determine the position of a point (in the medical context, we refer to each point as a voxel). The purpose of this section is to introduce some of the coordinate systems related to the medical imaging. There are different coordinate systems to represent data. A knowledge of the following coordinate systems is needed to work with the medical images.
+
+\paragraph{Cartesian Coordinate System}
+A Cartesian coordinate system is a coordinate system that specifies each point uniquely in a 2D plane by a pair of numerical coordinates or in a 3D space by three numerical coordinates. We assume a right-hand Cartesian coordinate system throughout this document.
+
+\paragraph{World Coordinate System}
+World Coordinate System (WCS) is a Cartesian coordinate system that describes the physical coordinates associated with a model such as an MRI scanner or a patient. While each model has its own coordinate system, without a universal coordinate system such as WCS, they cannot interact with each other. For model interaction to be possible, their coordinate systems must be transformed into the WCS. Figure \ref{WCS} shows the WCS corresponding space and axes.
+\begin{figure}[hbpt!]
+\centering
+\includegraphics[width=50mm]{worldCoordinateSystem.png}
+\caption{World Coordinate System Space and Axes~\cite{slicerWCS}}
+\label{WCS}
+\end{figure}
+\paragraph{Anatomical Coordinate System}
+Anatomical coordinate system, also known as patient coordinate system, is a right-handed 3D coordinate system that describes the standard anatomical position of a human using the following 3 orthogonal planes:
 \begin{itemize}
-
-\item 
-
+\item{Axial / Transverse plane:} is a plane parallel to the ground that separates the body into head (superior) and tail (inferior) positions.
+\item{Coronal / Frontal plane:} is a plane perpendicular to the ground that divides the body into front (anterior) and back (posterior) positions.
+\item{Sagittal / Median plane:} is a plane that divides the body into right and left positions.
 \end{itemize}
+Figure \ref{ACS} shows this coordinate system.
+
+\begin{figure}[htbp!] 
+\centering
+\subfloat{
+\includegraphics[width=80mm]{anatomicalCoordinateSystem1.png}
+}
+
+\subfloat{
+\includegraphics[width=60mm]{anatomicalCoordinateSystem2.png}
+}
+\caption{Anatomical Coordinate System Space and Axes~\cite{slicerWCS}} %without this we cannot have label
+\label{ACS}
+\end{figure}
+\indent
+
+Medical applications follow an anatomical coordinate system to store voxels in sequences. Depending on how the data is stored, this coordinate system can be divided into different bases. The most common ones are:
+\begin{itemize}
+\item{LPS Coordinate System:}
+
+The LPS coordinate system is used in DICOM images and by the ITK toolkit. In this system, voxels are ordered from left to right in a row, rows are ordered from posterior to anterior, and slices are stored from inferior to superior.
+\indent
+LPS stands for Left-Posterior-Superior which indicates the directions that spatial axes are increasing.
+% RAI Radiological preferred axes.
+\item{RAS Coordinate System:}
+
+The RAS coordiante system is the preferred basis for Neurological applications such as 3dfim+, and 3D Slicer. RAS stands for Right-Anterior-Superior is similar to LPS with the first two axes flipped.
+\end{itemize}
+
+\paragraph{Image Coordinate System}
+To specify locations in an image we need to know to which coordinate system it is referenced. Different software may use different orders as their index convention.
+
 
 \subsubsection{Physical System Description} \label{sec_phySystDescrip}
 
-\plt{The purpose of this section is to clearly and unambiguously state the
-  physical system that is to be modelled. Effective problem solving requires a
-  logical and organized approach. The statements on the physical system to be
-  studied should cover enough information to solve the problem. The physical
-  description involves element identification, where elements are defined as
-  independent and separable items of the physical system. Some example elements
-  include acceleration due to gravity, the mass of an object, and the size and
-  shape of an object. Each element should be identified and labelled, with their
-  interesting properties specified clearly. The physical description can also
-  include interactions of the elements, such as the following: i) the
-  interactions between the elements and their physical environment; ii) the
-  interactions between elements; and, iii) the initial or boundary conditions.}
+% \plt{The purpose of this section is to clearly and unambiguously state the
+%   physical system that is to be modelled. Effective problem solving requires a
+%   logical and organized approach. The statements on the physical system to be
+%   studied should cover enough information to solve the problem. The physical
+%   description involves element identification, where elements are defined as
+%   independent and separable items of the physical system. Some example elements
+%   include acceleration due to gravity, the mass of an object, and the size and
+%   shape of an object. Each element should be identified and labelled, with their
+%   interesting properties specified clearly. The physical description can also
+%   include interactions of the elements, such as the following: i) the
+%   interactions between the elements and their physical environment; ii) the
+%   interactions between elements; and, iii) the initial or boundary conditions.}
 
-The physical system of \progname{}, as shown in Figure~?,
-includes the following elements:
+We do not study the physical system for DICOM or how the data is actually generated.
 
-\begin{itemize}
+% \begin{itemize}
 
-\item[PS1:] 
+% \item[PS1:] 
 
-\item[PS2:] ...
+% \item[PS2:] ...
 
-\end{itemize}
+% \end{itemize}
 
-\plt{A figure here makes sense for most SRS documents}
+% \plt{A figure here makes sense for most SRS documents}
 
 % \begin{figure}[h!]
 % \begin{center}
@@ -541,88 +587,29 @@ includes the following elements:
 
 \subsubsection{Goal Statements}
 
-\plt{The goal statements refine the ``Problem Description''
-  (Section~\ref{Sec_pd}).  A goal is a functional objective the system under
-  consideration should achieve. Goals provide criteria for sufficient
-  completeness of a requirements specification and for requirements
-  pertinence. Goals will be refined in Section “Instanced Models”
-  (Section~\ref{sec_instance}). Large and complex goals should be decomposed
-  into smaller sub-goals.  The goals are written abstractly, with a minimal
-  amount of technical language.  They should be understandable by non-domain
-  experts.}
+% \plt{The goal statements refine the ``Problem Description''
+%   (Section~\ref{Sec_pd}).  A goal is a functional objective the system under
+%   consideration should achieve. Goals provide criteria for sufficient
+%   completeness of a requirements specification and for requirements
+%   pertinence. Goals will be refined in Section “Instanced Models”
+%   (Section~\ref{sec_instance}). Large and complex goals should be decomposed
+%   into smaller sub-goals.  The goals are written abstractly, with a minimal
+%   amount of technical language.  They should be understandable by non-domain
+%   experts.}
 
-\noindent Given the \plt{inputs}, the goal statements are:
+\noindent Given the DICOM image that includes patient's chest,
+the descending aorta center voxel coordinate,
+and the ascending aorta center voxel coordinate, the goal statements is:
 
 \begin{itemize}
 
-\item[GS\refstepcounter{goalnum}\thegoalnum \label{G_meaningfulLabel}:] \plt{One
-    sentence description of the goal.  There may be more than one.  Each Goal
-    should have a meaningful label.}
+\item[GS\refstepcounter{goalnum}\thegoalnum \label{Gsegment}:] 
+Extract the three dimensional segmentation of the aorta.
 
 \end{itemize}
 
-\subsection{Solution Characteristics Specification}
-
-\plt{This section specifies the information in the solution domain of the system
-  to be developed. This section is intended to express what is required in
-  such a way that analysts and stakeholders get a clear picture, and the
-  latter will accept it. The purpose of this section is to reduce the problem
-  into one expressed in mathematical terms. Mathematical expertise is used to
-  extract the essentials from the underlying physical description of the
-  problem, and to collect and substantiate all physical data pertinent to the
-  problem.}
-
-\plt{This section presents the solution characteristics by successively refining
-  models.  It starts with the abstract/general Theoretical Models (TMs) and
-  refines them to the concrete/specific Instance Models (IMs).  If necessary
-  there are intermediate refinements to General Definitions (GDs).  All of these
-  refinements can potentially use Assumptions (A) and Data Definitions (DD).
-  TMs are refined to create new models, that are called GMs or IMs. DDs are not
-  refined; they are just used. GDs and IMs are derived, or refined, from other
-  models. DDs are not derived; they are just given. TMs are also just given, but
-  they are refined, not used.  If a potential DD includes a derivation, then
-  that means it is refining other models, which would make it a GD or an IM.}
-
-\plt{The above makes a distinction between ``refined'' and ``used.'' A model is
-  refined to another model if it is changed by the refinement. When we change a
-  general 3D equation to a 2D equation, we are making a refinement, by applying
-  the assumption that the third dimension does not matter. If we use a
-  definition, like the definition of density, we aren't refining, or changing
-  that definition, we are just using it.}
-
-\plt{The same information can be a TM in one problem and a DD in another.  It is
-  about how the information is used.  In one problem the definition of
-  acceleration can be a TM, in another it would be a DD.}
-
-\plt{There is repetition between the information given in the different chunks
-  (TM, GDs etc) with other information in the document.  For instance, the
-  meaning of the symbols, the units etc are repeated.  This is so that the
-  chunks can stand on their own when being read by a reviewer/user.  It also
-  facilitates reuse of the models in a different context.}
-
-\noindent \plt{The relationships between the parts of the document are show in
-  the following figure.  In this diagram ``may ref'' has the same role as
-  ``uses'' above.  The figure adds ``Likely Changes,'' which are able to
-  reference (use) Assumptions.}
-
-\begin{figure}[H]
-  \includegraphics[scale=0.9]{RelationsBetweenTM_GD_IM_DD_A.pdf}
-\end{figure}
-
-The instance models that govern \progname{} are presented in
-Subsection~\ref{sec_instance}.  The information to understand the meaning of the
-instance models and their derivation is also presented, so that the instance
-models can be verified.
 
 \subsubsection{Assumptions} \label{sec_assumpt}
-
-\plt{The assumptions are a refinement of the scope.  The scope is general, where
-  the assumptions are specific.  All assumptions should be listed, even those
-  that domain experts know so well that they are rarely (if ever) written down.}
-\plt{The document should not take for granted that the reader knows which
-  assumptions have been made. In the case of unusual assumptions, it is
-  recommended that the documentation either include, or point to, an explanation
-  and justification for the assumption.}
 
 This section simplifies the original problem and helps in developing the
 theoretical model by filling in the missing information for the physical
@@ -632,12 +619,9 @@ likely change [LC], in which the respective assumption is used.
 
 \begin{itemize}
 
-\item[A\refstepcounter{assumpnum}\theassumpnum \label{A_meaningfulLabel}:]
-  \plt{Short description of each assumption.  Each assumption
-    should have a meaningful label.  Use cross-references to identify the
-    appropriate traceability to T, GD, DD etc., using commands like dref, ddref
-    etc.  Each assumption should be atomic - that is, there should not be an
-    explicit (or implicit) ``and'' in the text of an assumption.}
+\item[A\refstepcounter{assumpnum}\theassumpnum \label{A_aorta_volume}:]
+The 3D image provided by the user must contains a visually distingushable aorta volume [\ddref{segmentation}].
+
 
 \end{itemize}
 
@@ -767,20 +751,12 @@ between the environment and the object (\si{\celsius}).
 
 \subsubsection{Data Definitions}\label{sec_datadef}
 
-\plt{The Data Definitions are definitions of symbols and equations that are
-  given for the problem.  They are not derived; they are simply used by other
-  models.  For instance, if a problem depends on density, there may be a data
-  definition for the equation defining density.  The DDs are given information
-  that you can use in your other modules.}
-
-\plt{All Data Definitions should be used (referenced) by at least one other
-  model.}
 
 This section collects and defines all the data needed to build the instance
-models. The dimension of each quantity is also given.  \plt{Modify the examples
-  below for your problem, and add additional definitions as appropriate.}
+models. The dimension of each quantity is also given. 
 
 ~\newline
+
 
 \noindent
 \begin{minipage}{\textwidth}
@@ -788,93 +764,100 @@ models. The dimension of each quantity is also given.  \plt{Modify the examples
 \begin{tabular}{| p{\colAwidth} | p{\colBwidth}|}
 \hline
 \rowcolor[gray]{0.9}
-Number& DD\refstepcounter{datadefnum}\thedatadefnum \label{FluxCoil}\\
+Number& DD\refstepcounter{datadefnum}\thedatadefnum \label{v}\\
 \hline
-Label& \bf Heat flux out of coil\\
+Label& \bf Voxel \\
 \hline
-Symbol &$q_C$\\
+Symbol & $ \text{v} : \mathbb{R}$\\
 \hline
 % Units& $Mt^{-3}$\\
 % \hline
-  SI Units & \si{\watt\per\square\metre}\\
+  SI Units & - \\
   \hline
-  Equation&$q_C(t) = h_C (T_C - T_W(t))$, over area $A_C$\\
+  Equation& - \\
   \hline
   Description & 
-                $T_C$ is the temperature of the coil (\si{\celsius}).  $T_W$ is the temperature of the water (\si{\celsius}).  
-                The heat flux out of the coil, $q_C$ (\si{\watt\per\square\metre}), is found by
-                assuming that Newton's Law 
-                of Cooling applies (\aref{A_Newt_coil}).  This law (\dref{NL}) is used on the surface of
-                the coil, which has area $A_C$ (\si{\square\metre}) and heat 
-                transfer coefficient $h_C$
-                (\si{\watt\per\square\metre\per\celsius}).  This equation
-                assumes that the temperature of the coil is constant over time (\aref{A_tcoil}) and that it does not vary along the length
-                of the coil (\aref{A_tlcoil}).
+                A slice (\ddref{slice}) consists of n $\times$ n voxels. A real number is assigned to each voxel to reports the intensity on a grey-scale image.
   \\
   \hline
-  Sources& Citation here \\
+  Sources & \\
   \hline
-  Ref.\ By & \iref{ewat}\\
+  Ref.\ By & \ddref{slice}\\
   \hline
 \end{tabular}
-\end{minipage}\\
+\end{minipage}\\ \\
 
-\subsubsection{Data Types}\label{sec_datatypes}
-
-\plt{This section is optional.  In many scientific computing programs it isn't
-  necessary, since the inputs and outpus are straightforward types, like reals,
-  integers, and sequences of reals and integers.  However, for some problems it
-  is very helpful to capture the type information.}
-
-\plt{The data types are not derived; they are simply stated and used by other
-  models.}
-
-\plt{All data types must be used by at least one of the models.}
-
-\plt{For the mathematical notation for expressing types, the recommendation is
-  to use the notation of~\citet{HoffmanAndStrooper1995}.}
-
-This section collects and defines all the data types needed to document the
-models. \plt{Modify the examples below for your problem, and add additional
-  definitions as appropriate.}
-
-~\newline
+% -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 \noindent
 \begin{minipage}{\textwidth}
 \renewcommand*{\arraystretch}{1.5}
 \begin{tabular}{| p{\colAwidth} | p{\colBwidth}|}
+\hline
+\rowcolor[gray]{0.9}
+Number& DD\refstepcounter{datadefnum}\thedatadefnum \label{slice}\\
+\hline
+Label& \bf Image/Slice \\
+\hline
+Symbol & $ \text{slice} : \mathbb{R}^{m \times n}$\\
+\hline
+% Units& $Mt^{-3}$\\
+% \hline
+  SI Units & - \\
   \hline
-  \rowcolor[gray]{0.9}
-  Type Name & Name for Type\\
+  Equation& - \\
   \hline
-  Type Def & mathematical definition of the type\\
-  \hline
-  Description & description here
+  Description & 
+                A visual representation of something that is represented using only two spatial dimensions with a sequence of arrays where a voxel (\ddref{v}) represents the color or intensity. Each move in the Z plane is considered as one slice
   \\
   \hline
-  Sources & Citation here, if the type is borrowed from another source\\
+  Sources & \\
+  \hline
+  Ref.\ By & \ddref{volume}\\
+  \hline
+\end{tabular}
+\end{minipage}\\ \\
+
+% -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+\noindent
+\begin{minipage}{\textwidth}
+\renewcommand*{\arraystretch}{1.5}
+\begin{tabular}{| p{\colAwidth} | p{\colBwidth}|}
+\hline
+\rowcolor[gray]{0.9}
+Number& DD\refstepcounter{datadefnum}\thedatadefnum \label{volume}\\
+\hline
+Label& \bf Volume\\
+\hline
+Symbol & $ \text{volume} : \mathbb{R}^{m \times n \times p}$\\
+\hline
+% Units& $Mt^{-3}$\\
+% \hline
+  SI Units & - \\
+  \hline
+  Equation& - \\
+  \hline
+  Description & 
+                A three dimensional image is a sequence of some images/slices (\ddref{slice}).
+  \\
+  \hline
+  Sources & \\
+  \hline
+  Ref.\ By & \iref{roi}\\
   \hline
 \end{tabular}
 \end{minipage}\\
 
 \subsubsection{Instance Models} \label{sec_instance}    
 
-\plt{The motivation for this section is to reduce the problem defined in
-  ``Physical System Description'' (Section~\ref{sec_phySystDescrip}) to one
-  expressed in mathematical terms. The IMs are built by refining the TMs and/or
-  GDs.  This section should remain abstract.  The SRS should specify the
-  requirements without considering the implementation.}
-
 This section transforms the problem defined in Section~\ref{Sec_pd} into 
 one which is expressed in mathematical terms. It uses concrete symbols defined 
 in Section~\ref{sec_datadef} to replace the abstract symbols in the models 
-identified in Sections~\ref{sec_theoretical} and~\ref{sec_gendef}.
+identified in Sections~\ref{sec_theoretical} and~\ref{sec_gendef}. \\
 
-The goals \plt{reference your goals} are solved by \plt{reference your instance
-  models}.  \plt{other details, with cross-references where appropriate.}
-\plt{Modify the examples below for your problem, and add additional models as
-  appropriate.}
+\noindent 
+The goals \gsref{Gsegment} are solved by finding \iref{roi} and perform \iref{segmentation} on the descending and ascending aorta.
 
 ~\newline
 
@@ -886,31 +869,71 @@ The goals \plt{reference your goals} are solved by \plt{reference your instance
 \begin{tabular}{| p{\colAwidth} | p{\colBwidth}|}
   \hline
   \rowcolor[gray]{0.9}
-  Number& IM\refstepcounter{instnum}\theinstnum \label{ewat}\\
+  Number& IM\refstepcounter{instnum}\theinstnum \label{roi}\\
   \hline
-  Label& \bf Energy balance on water to find $T_W$\\
+  Label& \bf Region of interest \\
   \hline
-  Input&$m_W$, $C_W$, $h_C$, $A_C$, $h_P$, $A_P$, $t_\text{final}$, $T_C$, 
-  $T_\text{init}$, $T_P(t)$ from \iref{epcm}\\
-  & The input is constrained so that $T_\text{init} \leq T_C$ (\aref{A_charge})\\
+  Inputs & $ \text{V}_\text{in} : \mathbb{R}^{m_i \times n_i \times p_i}$ , $\text{Starting\_voxel (Sv)} : \mathbb{N}^{3}$, $\text{Size (S)} : \mathbb{N}^{3}$,  \\
   \hline
-  Output&$T_W(t)$, $0\leq t \leq t_\text{final}$, such that\\
-  &$\frac{dT_W}{dt} = \frac{1}{\tau_W}[(T_C - T_W(t)) + {\eta}(T_P(t) - T_W(t))]$,\\
-  &$T_W(0) = T_P(0) = T_\text{init}$ (\aref{A_InitTemp}) and $T_P(t)$ from \iref{epcm} \\
+  Output& $ \text{V}_\text{out} : \mathbb{R}^{m_o \times n_o \times p_o}$\\
   \hline
-  Description&$T_W$ is the water temperature (\si{\celsius}).\\
-  &$T_P$ is the PCM temperature (\si{\celsius}).\\
-  &$T_C$ is the coil temperature (\si{\celsius}).\\
-  &$\tau_W = \frac{m_W C_W}{h_C A_C}$ is a constant (\si{\second}).\\
-  &$\eta = \frac{h_P A_P}{h_C A_C}$ is a constant (dimensionless).\\
-  & The above equation applies as long as the water is in liquid form,
-  $0<T_W<100^o\text{C}$, where $0^o\text{C}$ and $100^o\text{C}$ are the melting
-  and boiling points of water, respectively (\aref{A_OpRange}, \aref{A_Pressure}).
+  Description & The regions of interest is a subset (shaped like a box) of the 3D Vout. This subset contains the anatomical structure that the users wants to read, process or extract. 
+~\newline For Starting\_voxel:
+\begin{center}
+$ 0\leq Sv_m\leq m_i  \; \wedge \;  0 \leq  Sv_n \leq n_i   \; \wedge \;  0 \leq  Sv_p \leq p_i $. 
+\end{center}
+ For Size:
+\begin{center}
+$ 0 \leq  S_m  \leq m_i  \; \wedge \;  0 \leq  S_n \leq n_i   \; \wedge \;  0 \leq  S_p \leq p_i $.
+\end{center}
+For $ \text{V}_\text{out}$:
+\begin{center}
+$ m_o = Sv_m + S_m \leq m_i  \; \wedge \;  n_o = Sv_n+S_n \leq n_i  \; \wedge \; p_o = Sv_p+S_p \leq p_i $. 
+\end{center}
   \\
   \hline
-  Sources& Citation here \\
+  Sources&  \\
   \hline
-  Ref.\ By & \iref{epcm}\\
+  Ref.\ By & \iref{segmentation} \\
+  \hline
+\end{tabular}
+\end{minipage}\\
+
+~\newline
+
+%Instance Model 1
+
+\noindent
+\begin{minipage}{\textwidth}
+\renewcommand*{\arraystretch}{1.5}
+\begin{tabular}{| p{\colAwidth} | p{\colBwidth}|}
+  \hline
+  \rowcolor[gray]{0.9}
+  Number& IM\refstepcounter{instnum}\theinstnum \label{segmentation}\\
+  \hline
+  Label& \bf Segmentation \\
+  \hline
+  Input & $ \text{V}_\text{in} : \mathbb{R}^{m \times n \times p}$, $ \text{Seed} : \mathbb{N}^{3}$ \\
+  \hline
+  Output& $ \text{V}_\text{out} : \mathbb{R}^{m \times n \times p}$\\
+  \hline
+  Description & The process of extract an anotomical structure from the original 3D volume. The extracted anotomical structure is represented with high intensity pixel value. The rest of the image should have a lower intensity pixel value.
+\newline For Vout:
+\begin{center}
+$ \forall i,j,k : \mathbb{N} \{i \in [0, m-1]  \; \wedge \; j \in [0,n-1] \; \wedge \; k \in [0, p-1	] \} $.
+\[
+  \text{V}_\text{out}[i,j,k] = 
+  \begin{cases} 
+   HIGH & \text{if } \text{V}_\text{in}[i,j,k] = \text{part of the anotomical structure} \\
+   LOW  & \text{otherwise}
+  \end{cases}
+\]
+\end{center}
+  \\
+  \hline
+  Sources& \\
+  \hline
+  Ref.\ By & \rref{R_Outputs}, \lcref{LC_seg_algorithm} \\
   \hline
 \end{tabular}
 \end{minipage}\\
@@ -919,9 +942,6 @@ The goals \plt{reference your goals} are solved by \plt{reference your instance
 
 \subsubsection*{Derivation of ...}
 
-\plt{The derivation shows how the IM is derived from the TMs/GDs.  In cases
-  where the derivation cannot be described under the Description field, it will
-  be necessary to include this subsection.}
 
 \subsubsection{Input Data Constraints} \label{sec_DataConstraints}    
 
@@ -1000,9 +1020,6 @@ A correct solution must exhibit \plt{fill in the details}.  \plt{These
 
 \section{Requirements}
 
-\plt{The requirements refine the goal statement.  They will make heavy use of
-  references to the instance models.}
-
 This section provides the functional requirements, the business tasks that the
 software is expected to complete, and the nonfunctional requirements, the
 qualities that the software is expected to exhibit.
@@ -1010,18 +1027,21 @@ qualities that the software is expected to exhibit.
 \subsection{Functional Requirements}
 
 \noindent \begin{itemize}
+\item[R\refstepcounter{reqnum}\thereqnum \label{R_Inputs}:] Input the following
+  functions, data and parameters:
+  \renewcommand{\arraystretch}{1.2}
+%\noindent \begin{tabularx}{1.0\textwidth}{l l X}
+  \noindent \begin{longtable*}{l l p{12cm}} \toprule
+         \textbf{symbol}  & \textbf{description}\\
+         \midrule 
+$X$ & CT Scans volume
+(\ddref{volume}))\\ %comparing value used for excluding correlation coefficients
+         \bottomrule
+\end{longtable*}
 
-\item[R\refstepcounter{reqnum}\thereqnum \label{R_Inputs}:] \plt{Requirements
-    for the inputs that are supplied by the user.  This information has to be
-    explicit.}
+\item[R\refstepcounter{reqnum}\thereqnum \label{R_Outputs}:] Output a region of interest that only contains aorta.
 
-\item[R\refstepcounter{reqnum}\thereqnum \label{R_OutputInputs}:] \plt{It isn't
-    always required, but often echoing the inputs as part of the output is a
-    good idea.}
-
-\item[R\refstepcounter{reqnum}\thereqnum \label{R_Calculate}:] \plt{Calculation
-    related requirements.}
-
+\item[R\refstepcounter{reqnum}\thereqnum \label{R_Visualize}:] Visualize the inputs or outputs data.
 \item[R\refstepcounter{reqnum}\thereqnum \label{R_VerifyOutput}:]
   \plt{Verification related requirements.}
 
@@ -1035,23 +1055,6 @@ qualities that the software is expected to exhibit.
 
 \subsection{Nonfunctional Requirements}
 
-\plt{List your nonfunctional requirements.  You may consider using a fit
-  criterion to make them verifiable.}
-\plt{The goal is for the nonfunctional requirements to be unambiguous, abstract
-  and verifiable.  This isn't easy to show succinctly, so a good strategy may be
-to give a ``high level'' view of the requirement, but allow for the details to
-be covered in the Verification and Validation document.}
-\plt{An absolute requirement on a quality of the system is rarely needed.  For
-  instance, an accuracy of 0.0101 \% is likely fine, even if the requirement is
-  for 0.01 \% accuracy.  Therefore, the emphasis will often be more on
-  describing now well the quality is achieved, through experimentation, and
-  possibly theory, rather than meeting some bar that was defined a priori.}
-\plt{You do not need an entry for correctness in your NFRs.  The purpose of the
-  SRS is to record the requirements that need to be satisfied for correctness.
-  Any statement of correctness would just be redundant. Rather than discuss
-  correctness, you can characterize how far away from the correct (true)
-  solution you are allowed to be.  This is discussed under accuracy.}
-
 \noindent \begin{itemize}
 
 \item[NFR\refstepcounter{nfrnum}\thenfrnum \label{NFR_Accuracy}:]
@@ -1063,11 +1066,7 @@ be covered in the Verification and Validation document.}
     Validation Plan.''  A link to the VnV plan would be a nice extra.}
 
 \item[NFR\refstepcounter{nfrnum}\thenfrnum \label{NFR_Usability}:] \textbf{Usability}
-  \plt{Characterize the usability by giving the context/use for the software.
-    You should likely reference the user characteristics section.  The level of
-    usability achieved by the software shall be described following the
-    procedure given in Section~X of the Verification and Validation Plan.  A
-    link to the VnV plan would be a nice extra.}
+\progname{} should provide a graphical user interface to import any DICOM file folder, and to input the required parameters.
 
 \item[NFR\refstepcounter{nfrnum}\thenfrnum \label{NFR_Maintainability}:]
   \textbf{Maintainability} \plt{The effort required to make any of the likely
@@ -1092,20 +1091,10 @@ be covered in the Verification and Validation document.}
 
 \noindent \begin{itemize}
 
-\item[LC\refstepcounter{lcnum}\thelcnum\label{LC_meaningfulLabel}:] \plt{Give
-    the likely changes, with a reference to the related assumption (aref), as appropriate.}
-
+\item[LC\refstepcounter{lcnum}\thelcnum\label{LC_seg_algorithm}:] \iref{segmentation} There are various segmentation algorithms, each has a different procedure and inputs.
+	
 \end{itemize}
 
-\section{Unlikely Changes}    
-
-\noindent \begin{itemize}
-
-\item[LC\refstepcounter{lcnum}\thelcnum\label{LC_meaningfulLabel}:] \plt{Give
-    the unlikely changes.  The design can assume that the changes listed will
-    not occur.}
-
-\end{itemize}
 
 \section{Traceability Matrices and Graphs}
 

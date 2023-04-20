@@ -1,0 +1,1048 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AortaGeomReconDisplayModule &mdash; AortaGeomRecon  documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> AortaGeomRecon
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../modules.html">AortaGeomRecon</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">AortaGeomRecon</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Module code</a></li>
+      <li class="breadcrumb-item active">AortaGeomReconDisplayModule</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for AortaGeomReconDisplayModule</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+
+<span class="kn">import</span> <span class="nn">vtk</span>
+
+<span class="kn">import</span> <span class="nn">slicer</span>
+<span class="kn">from</span> <span class="nn">slicer.ScriptedLoadableModule</span> <span class="kn">import</span> <span class="o">*</span>  <span class="c1"># noqa: F403</span>
+<span class="kn">from</span> <span class="nn">slicer.util</span> <span class="kn">import</span> <span class="n">VTKObservationMixin</span>
+
+<span class="kn">from</span> <span class="nn">AortaGeomReconDisplayModuleLib.AortaDescendingAxialSegmenter</span> \
+    <span class="kn">import</span> <span class="nn">AortaDescendingAxialSegmenter</span>
+
+<span class="kn">from</span> <span class="nn">AortaGeomReconDisplayModuleLib.AortaAscendingAxialSegmenter</span> \
+    <span class="kn">import</span> <span class="nn">AortaAscendingAxialSegmenter</span>
+
+<span class="kn">from</span> <span class="nn">AortaGeomReconDisplayModuleLib.AortaSagitalSegmenter</span> \
+    <span class="kn">import</span> <span class="nn">AortaSagitalSegmenter</span>
+
+<span class="kn">import</span> <span class="nn">sitkUtils</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>  <span class="c1"># noqa: F401</span>
+<span class="kn">import</span> <span class="nn">SimpleITK</span> <span class="k">as</span> <span class="nn">sitk</span>
+
+
+<div class="viewcode-block" id="AGR_phase"><a class="viewcode-back" href="../backup/AortaGeomReconDisplayModule.html#AortaGeomReconDisplayModule.AGR_phase">[docs]</a><span class="k">class</span> <span class="nc">AGR_phase</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="n">crop_aorta</span> <span class="o">=</span> <span class="s2">&quot;Phase 1 Crop Aorta&quot;</span>
+    <span class="n">segment_desc_aorta</span> <span class="o">=</span> <span class="s2">&quot;Phase 2 Descending Aorta Segmentation&quot;</span>
+    <span class="n">segment_asc_aorta</span> <span class="o">=</span> <span class="s2">&quot;Phase 3 Ascending Aorta Segmentation&quot;</span>
+    <span class="n">segment_sagittaly</span> <span class="o">=</span> <span class="s2">&quot;Phase 4 Sagittal Segmentation&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s1">&#39;</span></div>
+
+<span class="c1">#</span>
+<span class="c1"># AortaGeomReconDisplayModule</span>
+<span class="c1">#</span>
+
+
+<div class="viewcode-block" id="AortaGeomReconDisplayModule"><a class="viewcode-back" href="../backup/AortaGeomReconDisplayModule.html#AortaGeomReconDisplayModule.AortaGeomReconDisplayModule">[docs]</a><span class="k">class</span> <span class="nc">AortaGeomReconDisplayModule</span><span class="p">(</span><span class="n">ScriptedLoadableModule</span><span class="p">):</span>  <span class="c1"># noqa: F405</span>
+    <span class="sd">&quot;&quot;&quot;Uses ScriptedLoadableModule base class, available at:</span>
+<span class="sd">    https://github.com/Slicer/Slicer/blob/master/Base/Python/slicer/ScriptedLoadableModule.py</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">):</span>
+        <span class="n">ScriptedLoadableModule</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">)</span>  <span class="c1"># noqa: F405</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">crosshairNode</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="c1"># TODO: make this more human readable by adding spaces</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">title</span> <span class="o">=</span> <span class="s2">&quot;AortaGeomReconDisplayModule&quot;</span>
+
+        <span class="c1"># TODO: set categories</span>
+        <span class="c1"># (folders where the module shows up in the module selector)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">categories</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Segmentation&quot;</span><span class="p">]</span>
+
+        <span class="c1"># TODO: add here list of module names that this module requires</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">dependencies</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Markups&quot;</span><span class="p">]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">contributors</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Jingyi Lin (McMaster University)&quot;</span><span class="p">]</span>
+
+        <span class="c1"># TODO: update with short description of the module</span>
+        <span class="c1"># and a link to online module documentation</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">helpText</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">This is an example of scripted loadable module bundled in an extension.</span>
+<span class="s2">See more information in &lt;a href=&quot;https://github.com/organization/projectname#AortaGeomReconDisplayModule&quot;&gt;module documentation&lt;/a&gt;.</span>
+<span class="s2">&quot;&quot;&quot;</span>  <span class="c1"># noqa: E501</span>
+
+        <span class="c1"># TODO: replace with organization, grant and thanks</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">acknowledgementText</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">This file was originally developed by Jean-Christophe Fillion-Robin, Kitware Inc., Andras Lasso, PerkLab,</span>
+<span class="s2">and Steve Pieper, Isomics, Inc. and was partially funded by NIH grant 3P41RR013218-12S1.</span>
+<span class="s2">&quot;&quot;&quot;</span>  <span class="c1"># noqa: E501</span>
+
+        <span class="c1"># Additional initialization step after application startup is complete</span>
+        <span class="n">slicer</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s2">&quot;startupCompleted()&quot;</span><span class="p">,</span> <span class="n">registerSampleData</span><span class="p">)</span></div>
+
+
+<span class="c1">#</span>
+<span class="c1"># Register sample data sets in Sample Data module</span>
+<span class="c1">#</span>
+
+<div class="viewcode-block" id="registerSampleData"><a class="viewcode-back" href="../backup/AortaGeomReconDisplayModule.html#AortaGeomReconDisplayModule.registerSampleData">[docs]</a><span class="k">def</span> <span class="nf">registerSampleData</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Add data sets to Sample Data module.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># It is always recommended to provide sample data</span>
+    <span class="c1"># for users to make it easy to try the module,</span>
+    <span class="c1"># but if no sample data is available then this method</span>
+    <span class="c1"># (and associated startupCompeted signal connection) can be removed.</span>
+
+    <span class="kn">import</span> <span class="nn">SampleData</span>
+    <span class="n">iconsPath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">),</span> <span class="s1">&#39;Resources/Icons&#39;</span><span class="p">)</span>
+
+    <span class="c1"># To ensure that the source code repository remains small</span>
+    <span class="c1"># (can be downloaded and installed quickly)</span>
+    <span class="c1"># it is recommended to store data sets</span>
+    <span class="c1"># that are larger than a few MB in a Github release.</span>
+
+    <span class="c1"># AortaGeomReconDisplayModule1</span>
+    <span class="n">SampleData</span><span class="o">.</span><span class="n">SampleDataLogic</span><span class="o">.</span><span class="n">registerCustomSampleDataSource</span><span class="p">(</span>
+        <span class="c1"># Category and sample name displayed in Sample Data module</span>
+        <span class="n">category</span><span class="o">=</span><span class="s1">&#39;AortaGeomReconDisplayModule&#39;</span><span class="p">,</span>
+        <span class="n">sampleName</span><span class="o">=</span><span class="s1">&#39;AortaGeomReconDisplayModule1&#39;</span><span class="p">,</span>
+
+        <span class="c1"># Thumbnail should have size of approximately</span>
+        <span class="c1"># 260x280 pixels and stored in Resources/Icons folder.</span>
+        <span class="c1"># It can be created by Screen Capture module,</span>
+        <span class="c1"># &quot;Capture all views&quot; option enabled,</span>
+        <span class="c1"># &quot;Number of images&quot; set to &quot;Single&quot;.</span>
+
+        <span class="n">thumbnailFileName</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+            <span class="n">iconsPath</span><span class="p">,</span> <span class="s1">&#39;AortaGeomReconDisplayModule1.png&#39;</span><span class="p">),</span>
+        <span class="c1"># Download URL and target file name</span>
+        <span class="n">uris</span><span class="o">=</span><span class="s2">&quot;https://github.com/Slicer/SlicerTestingData/releases/download/SHA256/998cb522173839c78657f4bc0ea907cea09fd04e44601f17c82ea27927937b95&quot;</span><span class="p">,</span>  <span class="c1"># noqa: E501</span>
+        <span class="n">fileNames</span><span class="o">=</span><span class="s1">&#39;AortaGeomReconDisplayModule1.nrrd&#39;</span><span class="p">,</span>
+        <span class="c1"># Checksum to ensure file integrity. Can be computed by this command:</span>
+        <span class="c1">#  import hashlib; print(hashlib.sha256(open(filename, &quot;rb&quot;).read()).hexdigest())  # noqa: E501</span>
+        <span class="n">checksums</span><span class="o">=</span><span class="s1">&#39;SHA256:998cb522173839c78657f4bc0ea907cea09fd04e44601f17c82ea27927937b95&#39;</span><span class="p">,</span>  <span class="c1"># noqa: E501</span>
+        <span class="c1"># This node name will be used when the data set is loaded</span>
+        <span class="n">nodeNames</span><span class="o">=</span><span class="s1">&#39;AortaGeomReconDisplayModule1&#39;</span>
+    <span class="p">)</span>
+
+    <span class="c1"># AortaGeomReconDisplayModule2</span>
+    <span class="n">SampleData</span><span class="o">.</span><span class="n">SampleDataLogic</span><span class="o">.</span><span class="n">registerCustomSampleDataSource</span><span class="p">(</span>
+        <span class="c1"># Category and sample name displayed in Sample Data module</span>
+        <span class="n">category</span><span class="o">=</span><span class="s1">&#39;AortaGeomReconDisplayModule&#39;</span><span class="p">,</span>
+        <span class="n">sampleName</span><span class="o">=</span><span class="s1">&#39;AortaGeomReconDisplayModule2&#39;</span><span class="p">,</span>
+        <span class="n">thumbnailFileName</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">iconsPath</span><span class="p">,</span> <span class="s1">&#39;AortaGeomReconDisplayModule2.png&#39;</span><span class="p">),</span>  <span class="c1"># noqa: E501</span>
+        <span class="c1"># Download URL and target file name</span>
+        <span class="n">uris</span><span class="o">=</span><span class="s2">&quot;https://github.com/Slicer/SlicerTestingData/releases/download/SHA256/1a64f3f422eb3d1c9b093d1a18da354b13bcf307907c66317e2463ee530b7a97&quot;</span><span class="p">,</span>  <span class="c1"># noqa: E501</span>
+        <span class="n">fileNames</span><span class="o">=</span><span class="s1">&#39;AortaGeomReconDisplayModule2.nrrd&#39;</span><span class="p">,</span>
+        <span class="n">checksums</span><span class="o">=</span><span class="s1">&#39;SHA256:1a64f3f422eb3d1c9b093d1a18da354b13bcf307907c66317e2463ee530b7a97&#39;</span><span class="p">,</span>  <span class="c1"># noqa: E501</span>
+        <span class="c1"># This node name will be used when the data set is loaded</span>
+        <span class="n">nodeNames</span><span class="o">=</span><span class="s1">&#39;AortaGeomReconDisplayModule2&#39;</span>
+    <span class="p">)</span></div>
+
+
+<span class="c1">#</span>
+<span class="c1"># AortaGeomReconDisplayModuleWidget</span>
+<span class="c1">#</span>
+
+
+<div class="viewcode-block" id="AortaGeomReconDisplayModuleWidget"><a class="viewcode-back" href="../backup/AortaGeomReconDisplayModule.html#AortaGeomReconDisplayModule.AortaGeomReconDisplayModuleWidget">[docs]</a><span class="k">class</span> <span class="nc">AortaGeomReconDisplayModuleWidget</span><span class="p">(</span><span class="n">ScriptedLoadableModuleWidget</span><span class="p">,</span> <span class="n">VTKObservationMixin</span><span class="p">):</span>  <span class="c1"># noqa: F405,E501</span>
+    <span class="sd">&quot;&quot;&quot;Uses ScriptedLoadableModuleWidget base class, available at:</span>
+<span class="sd">    https://github.com/Slicer/Slicer/blob/master/Base/Python/slicer/ScriptedLoadableModule.py</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Called when the user opens the module the first time</span>
+<span class="sd">        and the widget is initialized.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">ScriptedLoadableModuleWidget</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">)</span>  <span class="c1"># noqa: F405</span>
+
+        <span class="c1"># needed for parameter node observation</span>
+        <span class="n">VTKObservationMixin</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">logic</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_parameterNode</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_updatingGUIFromParameterNode</span> <span class="o">=</span> <span class="kc">False</span>
+
+<div class="viewcode-block" id="AortaGeomReconDisplayModuleWidget.setup"><a class="viewcode-back" href="../backup/AortaGeomReconDisplayModule.html#AortaGeomReconDisplayModule.AortaGeomReconDisplayModuleWidget.setup">[docs]</a>    <span class="k">def</span> <span class="nf">setup</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Called when the user opens the module the first time</span>
+<span class="sd">        and the widget is initialized.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">ScriptedLoadableModuleWidget</span><span class="o">.</span><span class="n">setup</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>  <span class="c1"># noqa: F405</span>
+
+        <span class="c1"># Load widget from .ui file (created by Qt Designer).</span>
+        <span class="c1"># Additional widgets can be instantiated manually</span>
+        <span class="c1"># and added to self.layout.</span>
+        <span class="n">uiWidget</span> <span class="o">=</span> <span class="n">slicer</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">loadUI</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">resourcePath</span><span class="p">(</span><span class="s1">&#39;UI/AortaGeomReconDisplayModule.ui&#39;</span><span class="p">))</span>  <span class="c1"># noqa: E501</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">uiWidget</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span> <span class="o">=</span> <span class="n">slicer</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">childWidgetVariables</span><span class="p">(</span><span class="n">uiWidget</span><span class="p">)</span>
+        <span class="c1"># self.ui.applyButton.toolTip = &quot;Compute output volume&quot;</span>
+        <span class="n">size</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">slicer</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">getNodes</span><span class="p">(</span><span class="s2">&quot;*cropped*&quot;</span><span class="p">,</span> <span class="n">useLists</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">applyButton</span><span class="o">.</span><span class="n">enabled</span> <span class="o">=</span> <span class="kc">False</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">size</span> <span class="k">else</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">revertButton</span><span class="o">.</span><span class="n">enabled</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">resetButton</span><span class="o">.</span><span class="n">enabled</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">skipButton</span><span class="o">.</span><span class="n">enabled</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="c1"># Set scene in MRML widgets.</span>
+        <span class="c1"># Make sure that in Qt designer the top-level qMRMLWidget&#39;s</span>
+        <span class="c1"># &quot;mrmlSceneChanged(vtkMRMLScene*)&quot; signal in</span>
+        <span class="c1"># is connected to each MRML widget&#39;s.</span>
+        <span class="c1"># &quot;setMRMLScene(vtkMRMLScene*)&quot; slot.</span>
+        <span class="n">uiWidget</span><span class="o">.</span><span class="n">setMRMLScene</span><span class="p">(</span><span class="n">slicer</span><span class="o">.</span><span class="n">mrmlScene</span><span class="p">)</span>
+
+        <span class="c1"># Create logic class.</span>
+        <span class="c1"># Logic implements all computations that should be possible to run</span>
+        <span class="c1"># in batch mode, without a graphical user interface.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logic</span> <span class="o">=</span> <span class="n">AortaGeomReconDisplayModuleLogic</span><span class="p">()</span>
+
+        <span class="c1"># Connections</span>
+
+        <span class="c1"># These connections ensure that we update parameter node</span>
+        <span class="c1"># when scene is closed</span>
+        <span class="n">scene</span> <span class="o">=</span> <span class="n">slicer</span><span class="o">.</span><span class="n">mrmlScene</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">crosshairNode</span> <span class="o">=</span> <span class="n">slicer</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">getNode</span><span class="p">(</span><span class="s2">&quot;Crosshair&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">crosshairNode</span><span class="o">.</span><span class="n">AddObserver</span><span class="p">(</span>
+            <span class="n">slicer</span><span class="o">.</span><span class="n">vtkMRMLCrosshairNode</span><span class="o">.</span><span class="n">CursorPositionModifiedEvent</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">onMouseMoved</span>
+        <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">addObserver</span><span class="p">(</span><span class="n">scene</span><span class="p">,</span> <span class="n">scene</span><span class="o">.</span><span class="n">StartCloseEvent</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">onSceneStartClose</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">addObserver</span><span class="p">(</span><span class="n">scene</span><span class="p">,</span> <span class="n">scene</span><span class="o">.</span><span class="n">EndCloseEvent</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">onSceneEndClose</span><span class="p">)</span>
+
+        <span class="c1"># This will get Scene&#39;s all node objects</span>
+
+        <span class="c1"># These connections ensure that</span>
+        <span class="c1"># whenever user changes some settings on the GUI,</span>
+        <span class="c1"># that is saved in the MRML scene</span>
+        <span class="c1"># (in the selected parameter node).</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">ascAortaSeed</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span>
+            <span class="s2">&quot;coordinatesChanged(double*)&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">updateParameterNodeFromGUI</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">descAortaSeed</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span>
+            <span class="s2">&quot;coordinatesChanged(double*)&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">updateParameterNodeFromGUI</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">qualifiedCoefficient</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span>
+            <span class="s2">&quot;valueChanged(double)&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">updateParameterNodeFromGUI</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">numOfSkippingSlice</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span>
+            <span class="s2">&quot;valueChanged(double)&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">updateParameterNodeFromGUI</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">showPhaseCropAorta</span><span class="p">()</span>
+
+        <span class="c1"># Buttons</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">applyButton</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s1">&#39;clicked(bool)&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">onApplyButton</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">revertButton</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s1">&#39;clicked(bool)&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">onRevertButton</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">resetButton</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s1">&#39;clicked(bool)&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">onResetButton</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">skipButton</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s1">&#39;clicked(bool)&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">onSkipButton</span><span class="p">)</span>
+
+        <span class="n">sliceDisplayNodes</span> <span class="o">=</span> <span class="n">slicer</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">getNodesByClass</span><span class="p">(</span>
+            <span class="s2">&quot;vtkMRMLSliceDisplayNode&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">sliceDisplayNode</span> <span class="ow">in</span> <span class="n">sliceDisplayNodes</span><span class="p">:</span>
+            <span class="n">sliceDisplayNode</span><span class="o">.</span><span class="n">SetIntersectingSlicesVisibility</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+        <span class="n">sliceNodes</span> <span class="o">=</span> <span class="n">slicer</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">getNodesByClass</span><span class="p">(</span><span class="s1">&#39;vtkMRMLSliceNode&#39;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">sliceNode</span> <span class="ow">in</span> <span class="n">sliceNodes</span><span class="p">:</span>
+            <span class="n">sliceNode</span><span class="o">.</span><span class="n">Modified</span><span class="p">()</span>
+
+        <span class="c1"># Make sure parameter node is initialized (needed for module reload)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">initializeParameterNode</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="AortaGeomReconDisplayModuleWidget.cleanup"><a class="viewcode-back" href="../backup/AortaGeomReconDisplayModule.html#AortaGeomReconDisplayModule.AortaGeomReconDisplayModuleWidget.cleanup">[docs]</a>    <span class="k">def</span> <span class="nf">cleanup</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Called when the application closes and the module widget is destroyed.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">removeObservers</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="AortaGeomReconDisplayModuleWidget.enter"><a class="viewcode-back" href="../backup/AortaGeomReconDisplayModule.html#AortaGeomReconDisplayModule.AortaGeomReconDisplayModuleWidget.enter">[docs]</a>    <span class="k">def</span> <span class="nf">enter</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Called each time the user opens this module.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Make sure parameter node exists and observed</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">initializeParameterNode</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="AortaGeomReconDisplayModuleWidget.exit"><a class="viewcode-back" href="../backup/AortaGeomReconDisplayModule.html#AortaGeomReconDisplayModule.AortaGeomReconDisplayModuleWidget.exit">[docs]</a>    <span class="k">def</span> <span class="nf">exit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Called each time the user opens a different module.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Do not react to parameter node changes</span>
+        <span class="c1"># (GUI wlil be updated when the user enters into the module)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">removeObserver</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_parameterNode</span><span class="p">,</span>
+            <span class="n">vtk</span><span class="o">.</span><span class="n">vtkCommand</span><span class="o">.</span><span class="n">ModifiedEvent</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">updateGUIFromParameterNode</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="AortaGeomReconDisplayModuleWidget.onSceneStartClose"><a class="viewcode-back" href="../backup/AortaGeomReconDisplayModule.html#AortaGeomReconDisplayModule.AortaGeomReconDisplayModuleWidget.onSceneStartClose">[docs]</a>    <span class="k">def</span> <span class="nf">onSceneStartClose</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">caller</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Called just before the scene is closed.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Parameter node will be reset, do not use it anymore</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setParameterNode</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="AortaGeomReconDisplayModuleWidget.onSceneEndClose"><a class="viewcode-back" href="../backup/AortaGeomReconDisplayModule.html#AortaGeomReconDisplayModule.AortaGeomReconDisplayModuleWidget.onSceneEndClose">[docs]</a>    <span class="k">def</span> <span class="nf">onSceneEndClose</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">caller</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Called just after the scene is closed.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># If this module is shown while the scene is closed</span>
+        <span class="c1"># then recreate a new parameter node immediately</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">isEntered</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">initializeParameterNode</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="AortaGeomReconDisplayModuleWidget.initializeParameterNode"><a class="viewcode-back" href="../backup/AortaGeomReconDisplayModule.html#AortaGeomReconDisplayModule.AortaGeomReconDisplayModuleWidget.initializeParameterNode">[docs]</a>    <span class="k">def</span> <span class="nf">initializeParameterNode</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Ensure parameter node exists and observed.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Parameter node stores all user choices in parameter values,</span>
+        <span class="c1"># node selections, etc.</span>
+        <span class="c1"># so that when the scene is saved and reloaded,</span>
+        <span class="c1"># these settings are restored.</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">setParameterNode</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">logic</span><span class="o">.</span><span class="n">getParameterNode</span><span class="p">())</span></div>
+
+<div class="viewcode-block" id="AortaGeomReconDisplayModuleWidget.setParameterNode"><a class="viewcode-back" href="../backup/AortaGeomReconDisplayModule.html#AortaGeomReconDisplayModule.AortaGeomReconDisplayModuleWidget.setParameterNode">[docs]</a>    <span class="k">def</span> <span class="nf">setParameterNode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputParameterNode</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set and observe parameter node.</span>
+<span class="sd">        Observation is needed because</span>
+<span class="sd">        when the parameter node is changed</span>
+<span class="sd">        then the GUI must be updated immediately.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">inputParameterNode</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logic</span><span class="o">.</span><span class="n">createDefaultParameters</span><span class="p">(</span><span class="n">inputParameterNode</span><span class="p">)</span>
+
+        <span class="c1"># Unobserve previously selected parameter node</span>
+        <span class="c1"># and add an observer to the newly selected.</span>
+        <span class="c1"># Changes of parameter node are observed so that</span>
+        <span class="c1"># whenever parameters are changed by a script or any other module</span>
+        <span class="c1"># those are reflected immediately in the GUI.</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parameterNode</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">removeObserver</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_parameterNode</span><span class="p">,</span>
+                <span class="n">vtk</span><span class="o">.</span><span class="n">vtkCommand</span><span class="o">.</span><span class="n">ModifiedEvent</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">updateGUIFromParameterNode</span>
+            <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_parameterNode</span> <span class="o">=</span> <span class="n">inputParameterNode</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parameterNode</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">addObserver</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_parameterNode</span><span class="p">,</span>
+                <span class="n">vtk</span><span class="o">.</span><span class="n">vtkCommand</span><span class="o">.</span><span class="n">ModifiedEvent</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">updateGUIFromParameterNode</span>
+            <span class="p">)</span>
+
+        <span class="c1"># Initial GUI update</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">updateGUIFromParameterNode</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="AortaGeomReconDisplayModuleWidget.updateGUIFromParameterNode"><a class="viewcode-back" href="../backup/AortaGeomReconDisplayModule.html#AortaGeomReconDisplayModule.AortaGeomReconDisplayModuleWidget.updateGUIFromParameterNode">[docs]</a>    <span class="k">def</span> <span class="nf">updateGUIFromParameterNode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">caller</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">event</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This method is called whenever parameter node is changed.</span>
+<span class="sd">        The module GUI is updated to show</span>
+<span class="sd">        the current state of the parameter node.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parameterNode</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_updatingGUIFromParameterNode</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="c1"># Make sure GUI changes do not call updateParameterNodeFromGUI</span>
+        <span class="c1"># (it could cause infinite loop)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_updatingGUIFromParameterNode</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">phase</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parameterNode</span><span class="o">.</span><span class="n">GetParameter</span><span class="p">(</span><span class="s2">&quot;phase&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">phase</span> <span class="ow">or</span> <span class="n">phase</span> <span class="o">==</span> <span class="s1">&#39;1&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">showPhaseCropAorta</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">phase</span> <span class="o">==</span> <span class="s1">&#39;2&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">showPhaseDAS</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">phase</span> <span class="o">==</span> <span class="s1">&#39;3&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">showPhaseAAS</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">showPhaseSAS</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">ascAortaSeed</span><span class="o">.</span><span class="n">coordinates</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parameterNode</span><span class="o">.</span><span class="n">GetParameter</span><span class="p">(</span>
+            <span class="s2">&quot;ascAortaSeed&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">descAortaSeed</span><span class="o">.</span><span class="n">coordinates</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parameterNode</span><span class="o">.</span><span class="n">GetParameter</span><span class="p">(</span>
+            <span class="s2">&quot;descAortaSeed&quot;</span><span class="p">)</span>
+        <span class="n">temp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parameterNode</span><span class="o">.</span><span class="n">GetParameter</span><span class="p">(</span><span class="s2">&quot;qualified_coef&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">temp</span><span class="p">:</span>
+            <span class="n">temp</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">qualifiedCoefficient</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">temp</span><span class="p">)</span>
+
+        <span class="n">temp</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_parameterNode</span><span class="o">.</span><span class="n">GetParameter</span><span class="p">(</span><span class="s2">&quot;numOfSkippingSlice&quot;</span><span class="p">))</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">temp</span><span class="p">:</span>
+            <span class="n">temp</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">numOfSkippingSlice</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">temp</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">applyButton</span><span class="o">.</span><span class="n">enabled</span> <span class="o">=</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">logic</span><span class="o">.</span><span class="n">anyEmptySeed</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_parameterNode</span><span class="o">.</span><span class="n">GetParameter</span><span class="p">(</span><span class="s2">&quot;phase&quot;</span><span class="p">)</span>
+        <span class="p">)</span>
+
+        <span class="c1"># All the GUI updates are done</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_updatingGUIFromParameterNode</span> <span class="o">=</span> <span class="kc">False</span></div>
+
+<div class="viewcode-block" id="AortaGeomReconDisplayModuleWidget.updateParameterNodeFromGUI"><a class="viewcode-back" href="../backup/AortaGeomReconDisplayModule.html#AortaGeomReconDisplayModule.AortaGeomReconDisplayModuleWidget.updateParameterNodeFromGUI">[docs]</a>    <span class="k">def</span> <span class="nf">updateParameterNodeFromGUI</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">caller</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">event</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This method is called when the user makes any change in the GUI.</span>
+<span class="sd">        The changes are saved into the parameter node</span>
+<span class="sd">        (so that they are restored when the scene is saved and loaded).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parameterNode</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_updatingGUIFromParameterNode</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="n">wasModified</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parameterNode</span><span class="o">.</span><span class="n">StartModify</span><span class="p">()</span>
+
+        <span class="c1"># Modify all properties in a single batch</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_parameterNode</span><span class="o">.</span><span class="n">SetParameter</span><span class="p">(</span>
+            <span class="s2">&quot;ascAortaSeed&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">ascAortaSeed</span><span class="o">.</span><span class="n">coordinates</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_parameterNode</span><span class="o">.</span><span class="n">SetParameter</span><span class="p">(</span>
+            <span class="s2">&quot;descAortaSeed&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">descAortaSeed</span><span class="o">.</span><span class="n">coordinates</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_parameterNode</span><span class="o">.</span><span class="n">SetParameter</span><span class="p">(</span>
+            <span class="s2">&quot;qualified_coef&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">qualifiedCoefficient</span><span class="o">.</span><span class="n">value</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_parameterNode</span><span class="o">.</span><span class="n">SetParameter</span><span class="p">(</span>
+            <span class="s2">&quot;numOfSkippingSlice&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">numOfSkippingSlice</span><span class="o">.</span><span class="n">value</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">applyButton</span><span class="o">.</span><span class="n">enabled</span> <span class="o">=</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">logic</span><span class="o">.</span><span class="n">anyEmptySeed</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_parameterNode</span><span class="o">.</span><span class="n">GetParameter</span><span class="p">(</span><span class="s2">&quot;phase&quot;</span><span class="p">)</span>
+        <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_parameterNode</span><span class="o">.</span><span class="n">EndModify</span><span class="p">(</span><span class="n">wasModified</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="AortaGeomReconDisplayModuleWidget.showPhaseCropAorta"><a class="viewcode-back" href="../backup/AortaGeomReconDisplayModule.html#AortaGeomReconDisplayModule.AortaGeomReconDisplayModuleWidget.showPhaseCropAorta">[docs]</a>    <span class="k">def</span> <span class="nf">showPhaseCropAorta</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">revertButton</span><span class="o">.</span><span class="n">enabled</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">phaseLabel</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="n">AGR_phase</span><span class="o">.</span><span class="n">crop_aorta</span><span class="o">.</span><span class="n">value</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">ascAortaSeed</span><span class="o">.</span><span class="n">hide</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">descAortaSeed</span><span class="o">.</span><span class="n">hide</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">qualifiedCoefficient</span><span class="o">.</span><span class="n">hide</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">numOfSkippingSlice</span><span class="o">.</span><span class="n">hide</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">ascAortaSeedLabel</span><span class="o">.</span><span class="n">hide</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">descAortaSeedLabel</span><span class="o">.</span><span class="n">hide</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">qualifiedCoefficientLabel</span><span class="o">.</span><span class="n">hide</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">numOfSkippingSliceLabel</span><span class="o">.</span><span class="n">hide</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="AortaGeomReconDisplayModuleWidget.showPhaseDAS"><a class="viewcode-back" href="../backup/AortaGeomReconDisplayModule.html#AortaGeomReconDisplayModule.AortaGeomReconDisplayModuleWidget.showPhaseDAS">[docs]</a>    <span class="k">def</span> <span class="nf">showPhaseDAS</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_parameterNode</span><span class="o">.</span><span class="n">SetParameter</span><span class="p">(</span><span class="s2">&quot;phase&quot;</span><span class="p">,</span> <span class="s2">&quot;2&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">phaseLabel</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="n">AGR_phase</span><span class="o">.</span><span class="n">segment_desc_aorta</span><span class="o">.</span><span class="n">value</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">revertButton</span><span class="o">.</span><span class="n">enabled</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">ascAortaSeed</span><span class="o">.</span><span class="n">hide</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">ascAortaSeedLabel</span><span class="o">.</span><span class="n">hide</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">descAortaSeed</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">descAortaSeedLabel</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">qualifiedCoefficient</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">numOfSkippingSlice</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">qualifiedCoefficientLabel</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">numOfSkippingSliceLabel</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="AortaGeomReconDisplayModuleWidget.showPhaseAAS"><a class="viewcode-back" href="../backup/AortaGeomReconDisplayModule.html#AortaGeomReconDisplayModule.AortaGeomReconDisplayModuleWidget.showPhaseAAS">[docs]</a>    <span class="k">def</span> <span class="nf">showPhaseAAS</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_parameterNode</span><span class="o">.</span><span class="n">SetParameter</span><span class="p">(</span><span class="s2">&quot;phase&quot;</span><span class="p">,</span> <span class="s2">&quot;3&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">phaseLabel</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="n">AGR_phase</span><span class="o">.</span><span class="n">segment_asc_aorta</span><span class="o">.</span><span class="n">value</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">revertButton</span><span class="o">.</span><span class="n">enabled</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">descAortaSeed</span><span class="o">.</span><span class="n">hide</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">descAortaSeedLabel</span><span class="o">.</span><span class="n">hide</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">ascAortaSeed</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">ascAortaSeedLabel</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">qualifiedCoefficient</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">numOfSkippingSlice</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">qualifiedCoefficientLabel</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">numOfSkippingSliceLabel</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="AortaGeomReconDisplayModuleWidget.showPhaseSAS"><a class="viewcode-back" href="../backup/AortaGeomReconDisplayModule.html#AortaGeomReconDisplayModule.AortaGeomReconDisplayModuleWidget.showPhaseSAS">[docs]</a>    <span class="k">def</span> <span class="nf">showPhaseSAS</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_parameterNode</span><span class="o">.</span><span class="n">SetParameter</span><span class="p">(</span><span class="s2">&quot;phase&quot;</span><span class="p">,</span> <span class="s2">&quot;4&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">phaseLabel</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="n">AGR_phase</span><span class="o">.</span><span class="n">segment_sagittaly</span><span class="o">.</span><span class="n">value</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">revertButton</span><span class="o">.</span><span class="n">enabled</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">descAortaSeed</span><span class="o">.</span><span class="n">hide</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">descAortaSeedLabel</span><span class="o">.</span><span class="n">hide</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">ascAortaSeed</span><span class="o">.</span><span class="n">hide</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">ascAortaSeedLabel</span><span class="o">.</span><span class="n">hide</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">qualifiedCoefficient</span><span class="o">.</span><span class="n">hide</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">numOfSkippingSlice</span><span class="o">.</span><span class="n">hide</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">qualifiedCoefficientLabel</span><span class="o">.</span><span class="n">hide</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">numOfSkippingSliceLabel</span><span class="o">.</span><span class="n">hide</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="AortaGeomReconDisplayModuleWidget.onRevertButton"><a class="viewcode-back" href="../backup/AortaGeomReconDisplayModule.html#AortaGeomReconDisplayModule.AortaGeomReconDisplayModuleWidget.onRevertButton">[docs]</a>    <span class="k">def</span> <span class="nf">onRevertButton</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Run processing when user clicks &quot;Revert&quot; button.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">errorMessage</span> <span class="o">=</span> <span class="s2">&quot;Failed to clear inputs&quot;</span>
+        <span class="k">with</span> <span class="n">slicer</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">tryWithErrorDisplay</span><span class="p">(</span><span class="n">errorMessage</span><span class="p">,</span> <span class="n">waitCursor</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+            <span class="n">phase</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parameterNode</span><span class="o">.</span><span class="n">GetParameter</span><span class="p">(</span><span class="s2">&quot;phase&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">phase</span> <span class="o">==</span> <span class="s1">&#39;2&#39;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">showPhaseCropAorta</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_parameterNode</span><span class="o">.</span><span class="n">SetParameter</span><span class="p">(</span><span class="s2">&quot;phase&quot;</span><span class="p">,</span> <span class="s2">&quot;1&quot;</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">phase</span> <span class="o">==</span> <span class="s2">&quot;3&quot;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">showPhaseDAS</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_parameterNode</span><span class="o">.</span><span class="n">SetParameter</span><span class="p">(</span><span class="s2">&quot;phase&quot;</span><span class="p">,</span> <span class="s2">&quot;2&quot;</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">phase</span> <span class="o">==</span> <span class="s2">&quot;4&quot;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">showPhaseAAS</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_parameterNode</span><span class="o">.</span><span class="n">SetParameter</span><span class="p">(</span><span class="s2">&quot;phase&quot;</span><span class="p">,</span> <span class="s2">&quot;3&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="AortaGeomReconDisplayModuleWidget.onResetButton"><a class="viewcode-back" href="../backup/AortaGeomReconDisplayModule.html#AortaGeomReconDisplayModule.AortaGeomReconDisplayModuleWidget.onResetButton">[docs]</a>    <span class="k">def</span> <span class="nf">onResetButton</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Run processing when user clicks &quot;Reset&quot; button.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">errorMessage</span> <span class="o">=</span> <span class="s2">&quot;Failed to clear inputs&quot;</span>
+        <span class="k">with</span> <span class="n">slicer</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">tryWithErrorDisplay</span><span class="p">(</span><span class="n">errorMessage</span><span class="p">,</span> <span class="n">waitCursor</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logic</span><span class="o">.</span><span class="n">resetDefaultParameters</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">logic</span><span class="o">.</span><span class="n">getParameterNode</span><span class="p">())</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">showPhaseCropAorta</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="AortaGeomReconDisplayModuleWidget.onSkipButton"><a class="viewcode-back" href="../backup/AortaGeomReconDisplayModule.html#AortaGeomReconDisplayModule.AortaGeomReconDisplayModuleWidget.onSkipButton">[docs]</a>    <span class="k">def</span> <span class="nf">onSkipButton</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Run processing when user clicks &quot;Skip&quot; button.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">errorMessage</span> <span class="o">=</span> <span class="s2">&quot;Failed to skip this phase&quot;</span>
+        <span class="k">with</span> <span class="n">slicer</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">tryWithErrorDisplay</span><span class="p">(</span><span class="n">errorMessage</span><span class="p">,</span> <span class="n">waitCursor</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parameterNode</span><span class="o">.</span><span class="n">GetParameter</span><span class="p">(</span><span class="s2">&quot;phase&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;1&quot;</span><span class="p">:</span>
+                <span class="c1"># Update phase</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_parameterNode</span><span class="o">.</span><span class="n">SetParameter</span><span class="p">(</span><span class="s2">&quot;phase&quot;</span><span class="p">,</span> <span class="s2">&quot;2&quot;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">phaseLabel</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="n">AGR_phase</span><span class="o">.</span><span class="n">segment_desc_aorta</span><span class="o">.</span><span class="n">value</span>
+
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parameterNode</span><span class="o">.</span><span class="n">GetParameter</span><span class="p">(</span><span class="s2">&quot;phase&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;2&quot;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_parameterNode</span><span class="o">.</span><span class="n">SetParameter</span><span class="p">(</span><span class="s2">&quot;phase&quot;</span><span class="p">,</span> <span class="s2">&quot;3&quot;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">phaseLabel</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="n">AGR_phase</span><span class="o">.</span><span class="n">segment_asc_aorta</span><span class="o">.</span><span class="n">value</span>
+
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parameterNode</span><span class="o">.</span><span class="n">GetParameter</span><span class="p">(</span><span class="s2">&quot;phase&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;3&quot;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_parameterNode</span><span class="o">.</span><span class="n">SetParameter</span><span class="p">(</span><span class="s2">&quot;phase&quot;</span><span class="p">,</span> <span class="s2">&quot;4&quot;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">phaseLabel</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="n">AGR_phase</span><span class="o">.</span><span class="n">segment_sagittaly</span><span class="o">.</span><span class="n">value</span></div>
+
+<div class="viewcode-block" id="AortaGeomReconDisplayModuleWidget.onApplyButton"><a class="viewcode-back" href="../backup/AortaGeomReconDisplayModule.html#AortaGeomReconDisplayModule.AortaGeomReconDisplayModuleWidget.onApplyButton">[docs]</a>    <span class="k">def</span> <span class="nf">onApplyButton</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Run processing when user clicks &quot;Apply&quot; button.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">errorMessage</span> <span class="o">=</span> <span class="s2">&quot;Failed to compute results.&quot;</span>
+        <span class="n">sceneObj</span> <span class="o">=</span> <span class="n">slicer</span><span class="o">.</span><span class="n">mrmlScene</span>
+        <span class="k">with</span> <span class="n">slicer</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">tryWithErrorDisplay</span><span class="p">(</span><span class="n">errorMessage</span><span class="p">,</span> <span class="n">waitCursor</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+            <span class="c1"># Compute output</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parameterNode</span><span class="o">.</span><span class="n">GetParameter</span><span class="p">(</span><span class="s2">&quot;phase&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;1&quot;</span><span class="p">:</span>
+                <span class="n">size</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">slicer</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">getNodes</span><span class="p">(</span><span class="s2">&quot;*cropped*&quot;</span><span class="p">,</span> <span class="n">useLists</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">size</span><span class="p">:</span>
+                    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Cannot find cropped volume&quot;</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">size</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">showPhaseDAS</span><span class="p">()</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Found multiple cropped volumes&quot;</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parameterNode</span><span class="o">.</span><span class="n">GetParameter</span><span class="p">(</span><span class="s2">&quot;phase&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;2&quot;</span><span class="p">:</span>
+                <span class="n">descAortaSeed</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parameterNode</span><span class="o">.</span><span class="n">GetParameter</span><span class="p">(</span>
+                    <span class="s2">&quot;descAortaSeed&quot;</span><span class="p">)</span>
+                <span class="n">qualified_coef</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parameterNode</span><span class="o">.</span><span class="n">GetParameter</span><span class="p">(</span>
+                    <span class="s2">&quot;qualified_coef&quot;</span><span class="p">)</span>
+                <span class="n">num_slice_skipping</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parameterNode</span><span class="o">.</span><span class="n">GetParameter</span><span class="p">(</span>
+                    <span class="s2">&quot;numOfSkippingSlice&quot;</span><span class="p">)</span>
+                <span class="n">volume</span> <span class="o">=</span> <span class="n">sceneObj</span><span class="o">.</span><span class="n">GetFirstNode</span><span class="p">(</span><span class="s2">&quot;cropped&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">logic</span><span class="o">.</span><span class="n">transform_image</span><span class="p">(</span><span class="n">volume</span><span class="p">)</span>
+
+                <span class="n">image</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">logic</span><span class="o">.</span><span class="n">processDescendingAorta</span><span class="p">(</span>
+                    <span class="n">descAortaSeed</span><span class="p">,</span>
+                    <span class="n">qualified_coef</span><span class="p">,</span>
+                    <span class="n">num_slice_skipping</span>
+                <span class="p">)</span>
+
+                <span class="n">sitkUtils</span><span class="o">.</span><span class="n">PushVolumeToSlicer</span><span class="p">(</span>
+                    <span class="n">image</span><span class="p">,</span>
+                    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Segmented Descending Aorta Volume&quot;</span><span class="p">,</span>
+                    <span class="n">className</span><span class="o">=</span><span class="s2">&quot;vtkMRMLScalarVolumeNode&quot;</span>
+                <span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">showPhaseAAS</span><span class="p">()</span>
+
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parameterNode</span><span class="o">.</span><span class="n">GetParameter</span><span class="p">(</span><span class="s2">&quot;phase&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;3&quot;</span><span class="p">:</span>
+                <span class="n">ascAortaSeed</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parameterNode</span><span class="o">.</span><span class="n">GetParameter</span><span class="p">(</span>
+                    <span class="s2">&quot;ascAortaSeed&quot;</span><span class="p">)</span>
+                <span class="n">qualified_coef</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parameterNode</span><span class="o">.</span><span class="n">GetParameter</span><span class="p">(</span>
+                    <span class="s2">&quot;qualified_coef&quot;</span><span class="p">)</span>
+                <span class="n">num_slice_skipping</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parameterNode</span><span class="o">.</span><span class="n">GetParameter</span><span class="p">(</span>
+                    <span class="s2">&quot;numOfSkippingSlice&quot;</span><span class="p">)</span>
+                <span class="n">volume</span> <span class="o">=</span> <span class="n">sceneObj</span><span class="o">.</span><span class="n">GetFirstNode</span><span class="p">(</span><span class="s2">&quot;cropped&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+
+                <span class="n">image</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">logic</span><span class="o">.</span><span class="n">processAscendingAorta</span><span class="p">(</span>
+                    <span class="n">ascAortaSeed</span><span class="p">,</span>
+                    <span class="n">qualified_coef</span><span class="p">,</span>
+                    <span class="n">num_slice_skipping</span>
+                <span class="p">)</span>
+
+                <span class="n">sitkUtils</span><span class="o">.</span><span class="n">PushVolumeToSlicer</span><span class="p">(</span>
+                    <span class="n">image</span><span class="p">,</span>
+                    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Segmented Ascending Aorta Volume&quot;</span><span class="p">,</span>
+                    <span class="n">className</span><span class="o">=</span><span class="s2">&quot;vtkMRMLScalarVolumeNode&quot;</span>
+                <span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">showPhaseSAS</span><span class="p">()</span>
+
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parameterNode</span><span class="o">.</span><span class="n">GetParameter</span><span class="p">(</span><span class="s2">&quot;phase&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;4&quot;</span><span class="p">:</span>
+                <span class="n">qualified_coef</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parameterNode</span><span class="o">.</span><span class="n">GetParameter</span><span class="p">(</span>
+                    <span class="s2">&quot;qualified_coef&quot;</span><span class="p">)</span>
+                <span class="n">num_slice_skipping</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parameterNode</span><span class="o">.</span><span class="n">GetParameter</span><span class="p">(</span>
+                    <span class="s2">&quot;numOfSkippingSlice&quot;</span><span class="p">)</span>
+
+                <span class="n">image</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">logic</span><span class="o">.</span><span class="n">processSagittaly</span><span class="p">(</span>
+                    <span class="n">qualified_coef</span><span class="p">,</span>
+                    <span class="n">num_slice_skipping</span>
+                <span class="p">)</span>
+
+                <span class="n">sitkUtils</span><span class="o">.</span><span class="n">PushVolumeToSlicer</span><span class="p">(</span>
+                    <span class="n">image</span><span class="p">,</span>
+                    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Final Aorta Volume&quot;</span><span class="p">,</span>
+                    <span class="n">className</span><span class="o">=</span><span class="s2">&quot;vtkMRMLScalarVolumeNode&quot;</span>
+                <span class="p">)</span></div>
+
+<div class="viewcode-block" id="AortaGeomReconDisplayModuleWidget.onMouseMoved"><a class="viewcode-back" href="../backup/AortaGeomReconDisplayModule.html#AortaGeomReconDisplayModule.AortaGeomReconDisplayModuleWidget.onMouseMoved">[docs]</a>    <span class="k">def</span> <span class="nf">onMouseMoved</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">observer</span><span class="p">,</span> <span class="n">eventid</span><span class="p">):</span>
+        <span class="c1"># ras = [0, 0, 0]</span>
+        <span class="n">errorMsg</span> <span class="o">=</span> <span class="s2">&quot;Failed to load intersection data&quot;</span>
+        <span class="n">volume</span> <span class="o">=</span> <span class="n">slicer</span><span class="o">.</span><span class="n">mrmlScene</span><span class="o">.</span><span class="n">GetFirstNode</span><span class="p">(</span><span class="s2">&quot;cropped&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">volume</span><span class="p">:</span>
+            <span class="n">axialNode</span> <span class="o">=</span> <span class="n">slicer</span><span class="o">.</span><span class="n">mrmlScene</span><span class="o">.</span><span class="n">GetNodeByID</span><span class="p">(</span><span class="s1">&#39;vtkMRMLSliceNodeRed&#39;</span><span class="p">)</span>
+            <span class="n">ortho1Node</span> <span class="o">=</span> <span class="n">slicer</span><span class="o">.</span><span class="n">mrmlScene</span><span class="o">.</span><span class="n">GetNodeByID</span><span class="p">(</span><span class="s1">&#39;vtkMRMLSliceNodeYellow&#39;</span><span class="p">)</span>
+            <span class="n">ortho2Node</span> <span class="o">=</span> <span class="n">slicer</span><span class="o">.</span><span class="n">mrmlScene</span><span class="o">.</span><span class="n">GetNodeByID</span><span class="p">(</span><span class="s1">&#39;vtkMRMLSliceNodeGreen&#39;</span><span class="p">)</span>
+            <span class="n">point_Ijk</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">logic</span><span class="o">.</span><span class="n">getPlaneIntersectionPoint</span><span class="p">(</span>
+                <span class="n">volume</span><span class="p">,</span> <span class="n">axialNode</span><span class="p">,</span> <span class="n">ortho1Node</span><span class="p">,</span> <span class="n">ortho2Node</span><span class="p">)</span>
+            <span class="c1"># infoWidget = slicer.modules.DataProbeInstance.infoWidget</span>
+            <span class="c1"># self.crosshairNode.GetCursorPositionRAS(ras)</span>
+            <span class="n">ijk</span> <span class="o">=</span> <span class="s2">&quot;,&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">i</span><span class="p">))</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">point_Ijk</span><span class="p">])</span>
+            <span class="k">with</span> <span class="n">slicer</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">tryWithErrorDisplay</span><span class="p">(</span><span class="n">errorMsg</span><span class="p">,</span> <span class="n">waitCursor</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parameterNode</span><span class="o">.</span><span class="n">GetParameter</span><span class="p">(</span><span class="s2">&quot;phase&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;2&quot;</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_parameterNode</span><span class="o">.</span><span class="n">SetParameter</span><span class="p">(</span>
+                        <span class="s2">&quot;descAortaSeed&quot;</span><span class="p">,</span> <span class="n">ijk</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parameterNode</span><span class="o">.</span><span class="n">GetParameter</span><span class="p">(</span><span class="s2">&quot;phase&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;3&quot;</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_parameterNode</span><span class="o">.</span><span class="n">SetParameter</span><span class="p">(</span>
+                        <span class="s2">&quot;ascAortaSeed&quot;</span><span class="p">,</span> <span class="n">ijk</span><span class="p">)</span></div></div>
+<span class="c1">#</span>
+<span class="c1"># AortaGeomReconDisplayModuleLogic</span>
+<span class="c1">#</span>
+
+
+<div class="viewcode-block" id="AortaGeomReconDisplayModuleLogic"><a class="viewcode-back" href="../backup/AortaGeomReconDisplayModule.html#AortaGeomReconDisplayModule.AortaGeomReconDisplayModuleLogic">[docs]</a><span class="k">class</span> <span class="nc">AortaGeomReconDisplayModuleLogic</span><span class="p">(</span><span class="n">ScriptedLoadableModuleLogic</span><span class="p">):</span>  <span class="c1"># noqa: F405,E501</span>
+    <span class="sd">&quot;&quot;&quot;This class should implement all the actual</span>
+<span class="sd">    computation done by your module.  The interface</span>
+<span class="sd">    should be such that other python code can import</span>
+<span class="sd">    this class and make use of the functionality without</span>
+<span class="sd">    requiring an instance of the Widget.</span>
+<span class="sd">    Uses ScriptedLoadableModuleLogic base class, available at:</span>
+<span class="sd">    https://github.com/Slicer/Slicer/blob/master/Base/Python/slicer/ScriptedLoadableModule.py</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Called when the logic class is instantiated.</span>
+<span class="sd">        Can be used for initializing member variables.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cropped_image</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_processing_image</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">ScriptedLoadableModuleLogic</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>  <span class="c1"># noqa: F405</span>
+
+<div class="viewcode-block" id="AortaGeomReconDisplayModuleLogic.getPlaneIntersectionPoint"><a class="viewcode-back" href="../backup/AortaGeomReconDisplayModule.html#AortaGeomReconDisplayModule.AortaGeomReconDisplayModuleLogic.getPlaneIntersectionPoint">[docs]</a>    <span class="k">def</span> <span class="nf">getPlaneIntersectionPoint</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">volumeNode</span><span class="p">,</span>
+        <span class="n">axialNode</span><span class="p">,</span>
+        <span class="n">ortho1Node</span><span class="p">,</span>
+        <span class="n">ortho2Node</span>
+    <span class="p">):</span>
+        <span class="c1"># Compute the center of rotation</span>
+        <span class="c1"># (common intersection point of the three planes)</span>
+        <span class="c1"># http://mathworld.wolfram.com/Plane-PlaneIntersection.html</span>
+
+        <span class="n">axialSliceToRas</span> <span class="o">=</span> <span class="n">axialNode</span><span class="o">.</span><span class="n">GetSliceToRAS</span><span class="p">()</span>
+        <span class="n">n1</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">axialSliceToRas</span><span class="o">.</span><span class="n">GetElement</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>
+            <span class="n">axialSliceToRas</span><span class="o">.</span><span class="n">GetElement</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>
+            <span class="n">axialSliceToRas</span><span class="o">.</span><span class="n">GetElement</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="p">]</span>
+        <span class="n">x1</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">axialSliceToRas</span><span class="o">.</span><span class="n">GetElement</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span>
+            <span class="n">axialSliceToRas</span><span class="o">.</span><span class="n">GetElement</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span>
+            <span class="n">axialSliceToRas</span><span class="o">.</span><span class="n">GetElement</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+        <span class="p">]</span>
+
+        <span class="n">ortho1SliceToRas</span> <span class="o">=</span> <span class="n">ortho1Node</span><span class="o">.</span><span class="n">GetSliceToRAS</span><span class="p">()</span>
+        <span class="n">n2</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">ortho1SliceToRas</span><span class="o">.</span><span class="n">GetElement</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>
+            <span class="n">ortho1SliceToRas</span><span class="o">.</span><span class="n">GetElement</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>
+            <span class="n">ortho1SliceToRas</span><span class="o">.</span><span class="n">GetElement</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="p">]</span>
+        <span class="n">x2</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">ortho1SliceToRas</span><span class="o">.</span><span class="n">GetElement</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span>
+            <span class="n">ortho1SliceToRas</span><span class="o">.</span><span class="n">GetElement</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span>
+            <span class="n">ortho1SliceToRas</span><span class="o">.</span><span class="n">GetElement</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+        <span class="p">]</span>
+
+        <span class="n">ortho2SliceToRas</span> <span class="o">=</span> <span class="n">ortho2Node</span><span class="o">.</span><span class="n">GetSliceToRAS</span><span class="p">()</span>
+        <span class="n">n3</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">ortho2SliceToRas</span><span class="o">.</span><span class="n">GetElement</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>
+            <span class="n">ortho2SliceToRas</span><span class="o">.</span><span class="n">GetElement</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>
+            <span class="n">ortho2SliceToRas</span><span class="o">.</span><span class="n">GetElement</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="p">]</span>
+        <span class="n">x3</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">ortho2SliceToRas</span><span class="o">.</span><span class="n">GetElement</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span>
+            <span class="n">ortho2SliceToRas</span><span class="o">.</span><span class="n">GetElement</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span>
+            <span class="n">ortho2SliceToRas</span><span class="o">.</span><span class="n">GetElement</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+        <span class="p">]</span>
+
+        <span class="c1"># Computed intersection point of all planes</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+
+        <span class="n">n2_xp_n3</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+        <span class="n">x1_dp_n1</span> <span class="o">=</span> <span class="n">vtk</span><span class="o">.</span><span class="n">vtkMath</span><span class="o">.</span><span class="n">Dot</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">n1</span><span class="p">)</span>
+        <span class="n">vtk</span><span class="o">.</span><span class="n">vtkMath</span><span class="o">.</span><span class="n">Cross</span><span class="p">(</span><span class="n">n2</span><span class="p">,</span> <span class="n">n3</span><span class="p">,</span> <span class="n">n2_xp_n3</span><span class="p">)</span>
+        <span class="n">vtk</span><span class="o">.</span><span class="n">vtkMath</span><span class="o">.</span><span class="n">MultiplyScalar</span><span class="p">(</span><span class="n">n2_xp_n3</span><span class="p">,</span> <span class="n">x1_dp_n1</span><span class="p">)</span>
+        <span class="n">vtk</span><span class="o">.</span><span class="n">vtkMath</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">n2_xp_n3</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+
+        <span class="n">n3_xp_n1</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+        <span class="n">x2_dp_n2</span> <span class="o">=</span> <span class="n">vtk</span><span class="o">.</span><span class="n">vtkMath</span><span class="o">.</span><span class="n">Dot</span><span class="p">(</span><span class="n">x2</span><span class="p">,</span> <span class="n">n2</span><span class="p">)</span>
+        <span class="n">vtk</span><span class="o">.</span><span class="n">vtkMath</span><span class="o">.</span><span class="n">Cross</span><span class="p">(</span><span class="n">n3</span><span class="p">,</span> <span class="n">n1</span><span class="p">,</span> <span class="n">n3_xp_n1</span><span class="p">)</span>
+        <span class="n">vtk</span><span class="o">.</span><span class="n">vtkMath</span><span class="o">.</span><span class="n">MultiplyScalar</span><span class="p">(</span><span class="n">n3_xp_n1</span><span class="p">,</span> <span class="n">x2_dp_n2</span><span class="p">)</span>
+        <span class="n">vtk</span><span class="o">.</span><span class="n">vtkMath</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">n3_xp_n1</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+
+        <span class="n">n1_xp_n2</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+        <span class="n">x3_dp_n3</span> <span class="o">=</span> <span class="n">vtk</span><span class="o">.</span><span class="n">vtkMath</span><span class="o">.</span><span class="n">Dot</span><span class="p">(</span><span class="n">x3</span><span class="p">,</span> <span class="n">n3</span><span class="p">)</span>
+        <span class="n">vtk</span><span class="o">.</span><span class="n">vtkMath</span><span class="o">.</span><span class="n">Cross</span><span class="p">(</span><span class="n">n1</span><span class="p">,</span> <span class="n">n2</span><span class="p">,</span> <span class="n">n1_xp_n2</span><span class="p">)</span>
+        <span class="n">vtk</span><span class="o">.</span><span class="n">vtkMath</span><span class="o">.</span><span class="n">MultiplyScalar</span><span class="p">(</span><span class="n">n1_xp_n2</span><span class="p">,</span> <span class="n">x3_dp_n3</span><span class="p">)</span>
+        <span class="n">vtk</span><span class="o">.</span><span class="n">vtkMath</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">n1_xp_n2</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+
+        <span class="n">normalMatrix</span> <span class="o">=</span> <span class="n">vtk</span><span class="o">.</span><span class="n">vtkMatrix3x3</span><span class="p">()</span>
+        <span class="n">normalMatrix</span><span class="o">.</span><span class="n">SetElement</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">n1</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">normalMatrix</span><span class="o">.</span><span class="n">SetElement</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">n1</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">normalMatrix</span><span class="o">.</span><span class="n">SetElement</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">n1</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+        <span class="n">normalMatrix</span><span class="o">.</span><span class="n">SetElement</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">n2</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">normalMatrix</span><span class="o">.</span><span class="n">SetElement</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">n2</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">normalMatrix</span><span class="o">.</span><span class="n">SetElement</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">n2</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+        <span class="n">normalMatrix</span><span class="o">.</span><span class="n">SetElement</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">n3</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">normalMatrix</span><span class="o">.</span><span class="n">SetElement</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">n3</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">normalMatrix</span><span class="o">.</span><span class="n">SetElement</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">n3</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+        <span class="n">normalMatrixDeterminant</span> <span class="o">=</span> <span class="n">normalMatrix</span><span class="o">.</span><span class="n">Determinant</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">normalMatrixDeterminant</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mf">0.01</span><span class="p">:</span>
+            <span class="c1"># there is an intersection point</span>
+            <span class="n">vtk</span><span class="o">.</span><span class="n">vtkMath</span><span class="o">.</span><span class="n">MultiplyScalar</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">normalMatrixDeterminant</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># no intersection point can be determined,</span>
+            <span class="c1"># use just the position of the axial slice</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">x1</span>
+
+        <span class="n">transformRasToVolumeRas</span> <span class="o">=</span> <span class="n">vtk</span><span class="o">.</span><span class="n">vtkGeneralTransform</span><span class="p">()</span>
+        <span class="n">volumeRasToIjk</span> <span class="o">=</span> <span class="n">vtk</span><span class="o">.</span><span class="n">vtkMatrix4x4</span><span class="p">()</span>
+        <span class="n">volumeNode</span><span class="o">.</span><span class="n">GetRASToIJKMatrix</span><span class="p">(</span><span class="n">volumeRasToIjk</span><span class="p">)</span>
+
+        <span class="n">point_Ijk</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="c1"># &gt;&gt;&gt; x</span>
+        <span class="c1"># [-30.069400063396387, -55.78618109487266, -44.595018435746994]</span>
+        <span class="n">point_VolumeRas</span> <span class="o">=</span> <span class="n">transformRasToVolumeRas</span><span class="o">.</span><span class="n">TransformPoint</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">volumeRasToIjk</span><span class="o">.</span><span class="n">MultiplyPoint</span><span class="p">(</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">point_VolumeRas</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">),</span> <span class="n">point_Ijk</span><span class="p">)</span>
+
+        <span class="n">point_Ijk</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">c</span><span class="p">))</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">point_Ijk</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">]]</span>
+
+        <span class="k">return</span> <span class="n">point_Ijk</span></div>
+
+<div class="viewcode-block" id="AortaGeomReconDisplayModuleLogic.anyEmptySeed"><a class="viewcode-back" href="../backup/AortaGeomReconDisplayModule.html#AortaGeomReconDisplayModule.AortaGeomReconDisplayModuleLogic.anyEmptySeed">[docs]</a>    <span class="k">def</span> <span class="nf">anyEmptySeed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ui</span><span class="p">,</span> <span class="n">phase</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">phase</span> <span class="o">==</span> <span class="s2">&quot;2&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">(</span><span class="n">ui</span><span class="o">.</span><span class="n">descAortaSeed</span><span class="o">.</span><span class="n">coordinates</span> <span class="o">==</span> <span class="s2">&quot;0,0,0&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">phase</span> <span class="o">==</span> <span class="s2">&quot;3&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">(</span><span class="n">ui</span><span class="o">.</span><span class="n">ascAortaSeed</span><span class="o">.</span><span class="n">coordinates</span> <span class="o">==</span> <span class="s2">&quot;0,0,0&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">False</span></div>
+
+<div class="viewcode-block" id="AortaGeomReconDisplayModuleLogic.transform_image"><a class="viewcode-back" href="../backup/AortaGeomReconDisplayModule.html#AortaGeomReconDisplayModule.AortaGeomReconDisplayModuleLogic.transform_image">[docs]</a>    <span class="k">def</span> <span class="nf">transform_image</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cropped_volume</span><span class="p">):</span>
+        <span class="n">cropped_image</span> <span class="o">=</span> <span class="n">sitkUtils</span><span class="o">.</span><span class="n">PullVolumeFromSlicer</span><span class="p">(</span><span class="n">cropped_volume</span><span class="p">)</span>
+        <span class="n">img_array</span> <span class="o">=</span> <span class="n">sitk</span><span class="o">.</span><span class="n">GetArrayFromImage</span><span class="p">(</span>
+            <span class="p">(</span><span class="n">sitk</span><span class="o">.</span><span class="n">Cast</span><span class="p">(</span><span class="n">sitk</span><span class="o">.</span><span class="n">RescaleIntensity</span><span class="p">(</span><span class="n">cropped_image</span><span class="p">),</span> <span class="n">sitk</span><span class="o">.</span><span class="n">sitkUInt8</span><span class="p">)))</span>
+        <span class="c1"># flatten image array and calculate histogram via binning</span>
+        <span class="n">histogram_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">bincount</span><span class="p">(</span><span class="n">img_array</span><span class="o">.</span><span class="n">flatten</span><span class="p">(),</span> <span class="n">minlength</span><span class="o">=</span><span class="mi">256</span><span class="p">)</span>
+        <span class="c1"># normalize image</span>
+        <span class="n">num_pixels</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">histogram_array</span><span class="p">)</span>
+        <span class="n">histogram_array</span> <span class="o">=</span> <span class="n">histogram_array</span><span class="o">/</span><span class="n">num_pixels</span>
+        <span class="c1"># normalized cumulative histogram</span>
+        <span class="n">chistogram_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">histogram_array</span><span class="p">)</span>
+        <span class="c1"># create pixel mapping lookup table</span>
+        <span class="n">transform_map</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="mi">255</span> <span class="o">*</span> <span class="n">chistogram_array</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">)</span>
+        <span class="c1"># flatten image array into 1D list</span>
+        <span class="c1"># so they can be used with the pixel mapping table</span>
+        <span class="n">img_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">img_array</span><span class="o">.</span><span class="n">flatten</span><span class="p">())</span>
+        <span class="c1"># transform pixel values to equalize</span>
+        <span class="n">eq_img_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">transform_map</span><span class="p">[</span><span class="n">p</span><span class="p">]</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">img_list</span><span class="p">]</span>
+        <span class="c1"># reshape and write back into img_array</span>
+        <span class="n">eq_img_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">eq_img_list</span><span class="p">),</span> <span class="n">img_array</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+        <span class="c1"># save image</span>
+        <span class="n">eq_img</span> <span class="o">=</span> <span class="n">sitk</span><span class="o">.</span><span class="n">GetImageFromArray</span><span class="p">(</span><span class="n">eq_img_array</span><span class="p">)</span>
+        <span class="n">eq_img</span><span class="o">.</span><span class="n">CopyInformation</span><span class="p">(</span><span class="n">cropped_image</span><span class="p">)</span>
+        <span class="c1"># Median Image Filter</span>
+        <span class="n">median</span> <span class="o">=</span> <span class="n">sitk</span><span class="o">.</span><span class="n">MedianImageFilter</span><span class="p">()</span>
+        <span class="n">median_img</span> <span class="o">=</span> <span class="n">sitk</span><span class="o">.</span><span class="n">Cast</span><span class="p">(</span><span class="n">median</span><span class="o">.</span><span class="n">Execute</span><span class="p">(</span><span class="n">eq_img</span><span class="p">),</span> <span class="n">sitk</span><span class="o">.</span><span class="n">sitkUInt8</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cropped_image</span> <span class="o">=</span> <span class="n">median_img</span></div>
+
+<div class="viewcode-block" id="AortaGeomReconDisplayModuleLogic.createDefaultParameters"><a class="viewcode-back" href="../backup/AortaGeomReconDisplayModule.html#AortaGeomReconDisplayModule.AortaGeomReconDisplayModuleLogic.createDefaultParameters">[docs]</a>    <span class="k">def</span> <span class="nf">createDefaultParameters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parameterNode</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initialize parameter node with default settings.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">parameterNode</span><span class="o">.</span><span class="n">GetParameter</span><span class="p">(</span><span class="s2">&quot;ascAortaSeed&quot;</span><span class="p">):</span>
+            <span class="n">parameterNode</span><span class="o">.</span><span class="n">SetParameter</span><span class="p">(</span><span class="s2">&quot;ascAortaSeed&quot;</span><span class="p">,</span> <span class="s2">&quot;0,0,0&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">parameterNode</span><span class="o">.</span><span class="n">GetParameter</span><span class="p">(</span><span class="s2">&quot;qualified_coef&quot;</span><span class="p">):</span>
+            <span class="n">parameterNode</span><span class="o">.</span><span class="n">SetParameter</span><span class="p">(</span><span class="s2">&quot;qualified_coef&quot;</span><span class="p">,</span> <span class="s2">&quot;0.0&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">parameterNode</span><span class="o">.</span><span class="n">GetParameter</span><span class="p">(</span><span class="s2">&quot;phase&quot;</span><span class="p">):</span>
+            <span class="n">parameterNode</span><span class="o">.</span><span class="n">SetParameter</span><span class="p">(</span><span class="s2">&quot;phase&quot;</span><span class="p">,</span> <span class="s2">&quot;1&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">parameterNode</span><span class="o">.</span><span class="n">GetParameter</span><span class="p">(</span><span class="s2">&quot;descAortaSeed&quot;</span><span class="p">):</span>
+            <span class="n">parameterNode</span><span class="o">.</span><span class="n">SetParameter</span><span class="p">(</span><span class="s2">&quot;descAortaSeed&quot;</span><span class="p">,</span> <span class="s2">&quot;0,0,0&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">parameterNode</span><span class="o">.</span><span class="n">GetParameter</span><span class="p">(</span><span class="s2">&quot;numOfSkippingSlice&quot;</span><span class="p">):</span>
+            <span class="n">parameterNode</span><span class="o">.</span><span class="n">SetParameter</span><span class="p">(</span><span class="s2">&quot;numOfSkippingSlice&quot;</span><span class="p">,</span> <span class="s2">&quot;0&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="AortaGeomReconDisplayModuleLogic.setDefaultParameters"><a class="viewcode-back" href="../backup/AortaGeomReconDisplayModule.html#AortaGeomReconDisplayModule.AortaGeomReconDisplayModuleLogic.setDefaultParameters">[docs]</a>    <span class="k">def</span> <span class="nf">setDefaultParameters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parameterNode</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">parameterNode</span><span class="o">.</span><span class="n">GetParameter</span><span class="p">(</span><span class="s2">&quot;cropIndex&quot;</span><span class="p">):</span>
+            <span class="n">parameterNode</span><span class="o">.</span><span class="n">SetParameter</span><span class="p">(</span><span class="s2">&quot;cropIndex&quot;</span><span class="p">,</span> <span class="s2">&quot;0,0,0&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">parameterNode</span><span class="o">.</span><span class="n">GetParameter</span><span class="p">(</span><span class="s2">&quot;cropSize&quot;</span><span class="p">):</span>
+            <span class="n">parameterNode</span><span class="o">.</span><span class="n">SetParameter</span><span class="p">(</span><span class="s2">&quot;cropSize&quot;</span><span class="p">,</span> <span class="s2">&quot;0,0,0&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">parameterNode</span><span class="o">.</span><span class="n">GetParameter</span><span class="p">(</span><span class="s2">&quot;ascAortaSeed&quot;</span><span class="p">):</span>
+            <span class="n">parameterNode</span><span class="o">.</span><span class="n">SetParameter</span><span class="p">(</span><span class="s2">&quot;ascAortaSeed&quot;</span><span class="p">,</span> <span class="s2">&quot;0,0,0&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">parameterNode</span><span class="o">.</span><span class="n">GetParameter</span><span class="p">(</span><span class="s2">&quot;qualified_coef&quot;</span><span class="p">):</span>
+            <span class="n">parameterNode</span><span class="o">.</span><span class="n">SetParameter</span><span class="p">(</span><span class="s2">&quot;qualified_coef&quot;</span><span class="p">,</span> <span class="s2">&quot;0.0&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">parameterNode</span><span class="o">.</span><span class="n">GetParameter</span><span class="p">(</span><span class="s2">&quot;descAortaSeed&quot;</span><span class="p">):</span>
+            <span class="n">parameterNode</span><span class="o">.</span><span class="n">SetParameter</span><span class="p">(</span><span class="s2">&quot;descAortaSeed&quot;</span><span class="p">,</span> <span class="s2">&quot;0,0,0&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">parameterNode</span><span class="o">.</span><span class="n">GetParameter</span><span class="p">(</span><span class="s2">&quot;numOfSkippingSlice&quot;</span><span class="p">):</span>
+            <span class="n">parameterNode</span><span class="o">.</span><span class="n">SetParameter</span><span class="p">(</span><span class="s2">&quot;numOfSkippingSlice&quot;</span><span class="p">,</span> <span class="s2">&quot;0&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="AortaGeomReconDisplayModuleLogic.resetDefaultParameters"><a class="viewcode-back" href="../backup/AortaGeomReconDisplayModule.html#AortaGeomReconDisplayModule.AortaGeomReconDisplayModuleLogic.resetDefaultParameters">[docs]</a>    <span class="k">def</span> <span class="nf">resetDefaultParameters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parameterNode</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setDefaultParameters</span><span class="p">(</span><span class="n">parameterNode</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">parameterNode</span><span class="o">.</span><span class="n">GetParameter</span><span class="p">(</span><span class="s2">&quot;phase&quot;</span><span class="p">):</span>
+            <span class="n">parameterNode</span><span class="o">.</span><span class="n">SetParameter</span><span class="p">(</span><span class="s2">&quot;phase&quot;</span><span class="p">,</span> <span class="s2">&quot;1&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="AortaGeomReconDisplayModuleLogic.processDescendingAorta"><a class="viewcode-back" href="../backup/AortaGeomReconDisplayModule.html#AortaGeomReconDisplayModule.AortaGeomReconDisplayModuleLogic.processDescendingAorta">[docs]</a>    <span class="k">def</span> <span class="nf">processDescendingAorta</span><span class="p">(</span>
+                <span class="bp">self</span><span class="p">,</span>
+                <span class="n">descAortaSeed</span><span class="p">,</span>
+                <span class="n">qualified_coef</span><span class="p">,</span>
+                <span class="n">num_slice_skipping</span><span class="p">,</span>
+            <span class="p">):</span>
+        <span class="n">descAortaSeedStr</span> <span class="o">=</span> <span class="n">descAortaSeed</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">)</span>
+        <span class="n">dASnumber</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">descAortaSeedStr</span><span class="p">]</span>
+        <span class="n">now</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">now</span><span class="si">}</span><span class="s2"> processing Descending Aorta Segmentation&quot;</span><span class="p">)</span>
+        <span class="n">desc_axial_segmenter</span> <span class="o">=</span> <span class="n">AortaDescendingAxialSegmenter</span><span class="p">(</span>
+            <span class="n">starting_slice</span><span class="o">=</span><span class="n">dASnumber</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span>
+            <span class="n">aorta_centre</span><span class="o">=</span><span class="n">dASnumber</span><span class="p">[:</span><span class="mi">2</span><span class="p">],</span>
+            <span class="n">num_slice_skipping</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">num_slice_skipping</span><span class="p">)),</span>
+            <span class="n">qualified_coef</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="n">qualified_coef</span><span class="p">),</span>
+            <span class="n">cropped_image</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_cropped_image</span>
+        <span class="p">)</span>
+
+        <span class="n">desc_axial_segmenter</span><span class="o">.</span><span class="n">begin_segmentation</span><span class="p">()</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">now</span><span class="si">}</span><span class="s2"> Finished processing Descending Aorta Segmentation&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_processing_image</span> <span class="o">=</span> <span class="n">desc_axial_segmenter</span><span class="o">.</span><span class="n">processing_image</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_processing_image</span></div>
+
+<div class="viewcode-block" id="AortaGeomReconDisplayModuleLogic.processAscendingAorta"><a class="viewcode-back" href="../backup/AortaGeomReconDisplayModule.html#AortaGeomReconDisplayModule.AortaGeomReconDisplayModuleLogic.processAscendingAorta">[docs]</a>    <span class="k">def</span> <span class="nf">processAscendingAorta</span><span class="p">(</span>
+                <span class="bp">self</span><span class="p">,</span>
+                <span class="n">ascAortaSeed</span><span class="p">,</span>
+                <span class="n">qualified_coef</span><span class="p">,</span>
+                <span class="n">num_slice_skipping</span><span class="p">,</span>
+            <span class="p">):</span>
+        <span class="n">ascAortaSeedStr</span> <span class="o">=</span> <span class="n">ascAortaSeed</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">)</span>
+        <span class="n">aASnumber</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">ascAortaSeedStr</span><span class="p">]</span>
+        <span class="n">now</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">now</span><span class="si">}</span><span class="s2"> processing Ascending Aorta Segmentation&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cropped_image</span><span class="p">:</span>
+            <span class="n">volume</span> <span class="o">=</span> <span class="n">slicer</span><span class="o">.</span><span class="n">mrmlScene</span><span class="o">.</span><span class="n">GetFirstNode</span><span class="p">(</span>
+                    <span class="s2">&quot;cropped&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">transform_image</span><span class="p">(</span><span class="n">volume</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_processing_image</span><span class="p">:</span>
+            <span class="n">volume</span> <span class="o">=</span> <span class="n">slicer</span><span class="o">.</span><span class="n">mrmlScene</span><span class="o">.</span><span class="n">GetFirstNode</span><span class="p">(</span>
+                    <span class="s2">&quot;Segmented Descending Aorta Volume&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_processing_image</span> <span class="o">=</span> <span class="n">sitkUtils</span><span class="o">.</span><span class="n">PullVolumeFromSlicer</span><span class="p">(</span><span class="n">volume</span><span class="p">)</span>
+
+        <span class="n">asc_axial_segmenter</span> <span class="o">=</span> <span class="n">AortaAscendingAxialSegmenter</span><span class="p">(</span>
+            <span class="n">starting_slice</span><span class="o">=</span><span class="n">aASnumber</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span>
+            <span class="n">aorta_centre</span><span class="o">=</span><span class="n">aASnumber</span><span class="p">[:</span><span class="mi">2</span><span class="p">],</span>
+            <span class="n">num_slice_skipping</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">num_slice_skipping</span><span class="p">)),</span>
+            <span class="n">segmentation_factor</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="n">qualified_coef</span><span class="p">),</span>
+            <span class="n">cropped_image</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_cropped_image</span><span class="p">,</span>
+            <span class="n">processing_image</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_processing_image</span>
+        <span class="p">)</span>
+
+        <span class="n">asc_axial_segmenter</span><span class="o">.</span><span class="n">begin_segmentation</span><span class="p">()</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">now</span><span class="si">}</span><span class="s2"> Finished processing Ascending Aorta Segmentation&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_processing_image</span> <span class="o">=</span> <span class="n">asc_axial_segmenter</span><span class="o">.</span><span class="n">processing_image</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_processing_image</span></div>
+
+<div class="viewcode-block" id="AortaGeomReconDisplayModuleLogic.processSagittaly"><a class="viewcode-back" href="../backup/AortaGeomReconDisplayModule.html#AortaGeomReconDisplayModule.AortaGeomReconDisplayModuleLogic.processSagittaly">[docs]</a>    <span class="k">def</span> <span class="nf">processSagittaly</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">qualified_coef</span><span class="p">,</span> <span class="n">num_slice_skipping</span><span class="p">,):</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cropped_image</span><span class="p">:</span>
+            <span class="n">volume</span> <span class="o">=</span> <span class="n">slicer</span><span class="o">.</span><span class="n">mrmlScene</span><span class="o">.</span><span class="n">GetFirstNode</span><span class="p">(</span>
+                    <span class="s2">&quot;cropped&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">transform_image</span><span class="p">(</span><span class="n">volume</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_processing_image</span><span class="p">:</span>
+            <span class="n">volume</span> <span class="o">=</span> <span class="n">slicer</span><span class="o">.</span><span class="n">mrmlScene</span><span class="o">.</span><span class="n">GetFirstNode</span><span class="p">(</span>
+                    <span class="s2">&quot;Segmented Ascending Aorta Volume&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_processing_image</span> <span class="o">=</span> <span class="n">sitkUtils</span><span class="o">.</span><span class="n">PullVolumeFromSlicer</span><span class="p">(</span><span class="n">volume</span><span class="p">)</span>
+        <span class="n">now</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">now</span><span class="si">}</span><span class="s2"> processing Sagittal Segmentation&quot;</span><span class="p">)</span>
+        <span class="n">sagittal_segmenter</span> <span class="o">=</span> <span class="n">AortaSagitalSegmenter</span><span class="p">(</span>
+            <span class="n">segmentationFactor</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="n">qualified_coef</span><span class="p">),</span>
+            <span class="n">segmentedImage</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_processing_image</span><span class="p">,</span>
+            <span class="n">original_cropped_image</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_cropped_image</span>
+        <span class="p">)</span>
+        <span class="n">sagittal_segmenter</span><span class="o">.</span><span class="n">begin_segmentation</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_processing_image</span> <span class="o">=</span> <span class="n">sagittal_segmenter</span><span class="o">.</span><span class="n">processing_image</span>
+        <span class="n">now</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">now</span><span class="si">}</span><span class="s2"> Finished processing Sagittal Segmentation&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_processing_image</span></div></div>
+
+<span class="c1">#</span>
+<span class="c1"># AortaGeomReconDisplayModuleTest</span>
+<span class="c1">#</span>
+
+
+<div class="viewcode-block" id="AortaGeomReconDisplayModuleTest"><a class="viewcode-back" href="../backup/AortaGeomReconDisplayModule.html#AortaGeomReconDisplayModule.AortaGeomReconDisplayModuleTest">[docs]</a><span class="k">class</span> <span class="nc">AortaGeomReconDisplayModuleTest</span><span class="p">(</span><span class="n">ScriptedLoadableModuleTest</span><span class="p">):</span>  <span class="c1"># noqa: F405,E501</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This is the test case for your scripted module.</span>
+<span class="sd">    Uses ScriptedLoadableModuleTest base class, available at:</span>
+<span class="sd">    https://github.com/Slicer/Slicer/blob/master/Base/Python/slicer/ScriptedLoadableModule.py</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="AortaGeomReconDisplayModuleTest.setUp"><a class="viewcode-back" href="../backup/AortaGeomReconDisplayModule.html#AortaGeomReconDisplayModule.AortaGeomReconDisplayModuleTest.setUp">[docs]</a>    <span class="k">def</span> <span class="nf">setUp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Do whatever is needed to reset the state</span>
+<span class="sd">        - typically a scene clear will be enough.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">slicer</span><span class="o">.</span><span class="n">mrmlScene</span><span class="o">.</span><span class="n">Clear</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="AortaGeomReconDisplayModuleTest.runTest"><a class="viewcode-back" href="../backup/AortaGeomReconDisplayModule.html#AortaGeomReconDisplayModule.AortaGeomReconDisplayModuleTest.runTest">[docs]</a>    <span class="k">def</span> <span class="nf">runTest</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Run as few or as many tests as needed here.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setUp</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">test_AortaGeomReconDisplayModule1</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="AortaGeomReconDisplayModuleTest.test_AortaGeomReconDisplayModule1"><a class="viewcode-back" href="../backup/AortaGeomReconDisplayModule.html#AortaGeomReconDisplayModule.AortaGeomReconDisplayModuleTest.test_AortaGeomReconDisplayModule1">[docs]</a>    <span class="k">def</span> <span class="nf">test_AortaGeomReconDisplayModule1</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Ideally you should have several levels of tests.</span>
+<span class="sd">        At the lowest level tests should exercise</span>
+<span class="sd">        the functionality of the logic</span>
+<span class="sd">        with different inputs (both valid and invalid).</span>
+<span class="sd">        At higher levels your tests should emulate the</span>
+<span class="sd">        way the user would interact with your code</span>
+<span class="sd">        and confirm that it still works the way you intended.</span>
+<span class="sd">        One of the most important features of the tests is that</span>
+<span class="sd">        it should alert other</span>
+<span class="sd">        developers when their changes will have an impact on</span>
+<span class="sd">        the behavior of your module.</span>
+<span class="sd">        For example, if a developer removes a feature that you depend on,</span>
+<span class="sd">        your test should break so they know that the feature is needed.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">delayDisplay</span><span class="p">(</span><span class="s2">&quot;Starting the test&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Get/create input data</span>
+
+        <span class="kn">import</span> <span class="nn">SampleData</span>
+        <span class="n">registerSampleData</span><span class="p">()</span>
+        <span class="n">inputVolume</span> <span class="o">=</span> <span class="n">SampleData</span><span class="o">.</span><span class="n">downloadSample</span><span class="p">(</span><span class="s1">&#39;AortaGeomReconDisplayModule1&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">delayDisplay</span><span class="p">(</span><span class="s1">&#39;Loaded test data set&#39;</span><span class="p">)</span>
+
+        <span class="n">inputScalarRange</span> <span class="o">=</span> <span class="n">inputVolume</span><span class="o">.</span><span class="n">GetImageData</span><span class="p">()</span><span class="o">.</span><span class="n">GetScalarRange</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">inputScalarRange</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">inputScalarRange</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="mi">695</span><span class="p">)</span>
+
+        <span class="n">outputVolume</span> <span class="o">=</span> <span class="n">slicer</span><span class="o">.</span><span class="n">mrmlScene</span><span class="o">.</span><span class="n">AddNewNodeByClass</span><span class="p">(</span>
+            <span class="s2">&quot;vtkMRMLScalarVolumeNode&quot;</span><span class="p">)</span>
+        <span class="n">threshold</span> <span class="o">=</span> <span class="mi">100</span>
+
+        <span class="c1"># Test the module logic</span>
+
+        <span class="n">logic</span> <span class="o">=</span> <span class="n">AortaGeomReconDisplayModuleLogic</span><span class="p">()</span>
+
+        <span class="c1"># Test algorithm with non-inverted threshold</span>
+        <span class="n">logic</span><span class="o">.</span><span class="n">process</span><span class="p">(</span><span class="n">inputVolume</span><span class="p">,</span> <span class="n">outputVolume</span><span class="p">,</span> <span class="n">threshold</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="n">outputScalarRange</span> <span class="o">=</span> <span class="n">outputVolume</span><span class="o">.</span><span class="n">GetImageData</span><span class="p">()</span><span class="o">.</span><span class="n">GetScalarRange</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">outputScalarRange</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">inputScalarRange</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">outputScalarRange</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">threshold</span><span class="p">)</span>
+
+        <span class="c1"># Test algorithm with inverted threshold</span>
+        <span class="n">logic</span><span class="o">.</span><span class="n">process</span><span class="p">(</span><span class="n">inputVolume</span><span class="p">,</span> <span class="n">outputVolume</span><span class="p">,</span> <span class="n">threshold</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="n">outputScalarRange</span> <span class="o">=</span> <span class="n">outputVolume</span><span class="o">.</span><span class="n">GetImageData</span><span class="p">()</span><span class="o">.</span><span class="n">GetScalarRange</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">outputScalarRange</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">inputScalarRange</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">outputScalarRange</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">inputScalarRange</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">delayDisplay</span><span class="p">(</span><span class="s1">&#39;Test passed&#39;</span><span class="p">)</span></div></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Jingyi Lin.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

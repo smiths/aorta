@@ -300,3 +300,4 @@ src/SlicerExtension/AortaGeometryReconstructor/AortaGeomReconDisplayModule/__pyc
 
 # Design doc files
 docs/Design/DesignDocument/test/sample/*.vtk
+

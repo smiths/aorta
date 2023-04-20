@@ -6,7 +6,10 @@
   <title>AortaGeomReconEnums &mdash; AortaGeomRecon  documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+<<<<<<< HEAD
+=======
       <link rel="stylesheet" href="../_static/_static/custom.css" type="text/css" />
+>>>>>>> main
   <!--[if lt IE 9]>
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
@@ -14,7 +17,10 @@
         <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
+<<<<<<< HEAD
+=======
         <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+>>>>>>> main
         <script src="../_static/doctools.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
@@ -26,6 +32,13 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
+<<<<<<< HEAD
+            <a href="../index.html" class="icon icon-home"> AortaGeomRecon
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+=======
 
           
           
@@ -35,17 +48,24 @@
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+>>>>>>> main
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+<<<<<<< HEAD
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../modules.html">AortaGeomRecon</a></li>
+=======
               <p class="caption" role="heading"><span class="caption-text">Modules documentation:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../modules.html">AortaGeomReconModule</a></li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../glossary.html">Glossary</a></li>
+>>>>>>> main
 </ul>
 
         </div>
@@ -61,7 +81,11 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
+<<<<<<< HEAD
+      <li><a href="../index.html" class="icon icon-home"></a></li>
+=======
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+>>>>>>> main
           <li class="breadcrumb-item"><a href="index.html">Module code</a></li>
       <li class="breadcrumb-item active">AortaGeomReconEnums</li>
       <li class="wy-breadcrumbs-aside">
@@ -86,6 +110,23 @@
 
 
 <div class="viewcode-block" id="SegmentType"><a class="viewcode-back" href="../AortaGeomReconDisplayModuleLib.html#AortaGeomReconEnums.SegmentType">[docs]</a><span class="k">class</span> <span class="nc">SegmentType</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+<<<<<<< HEAD
+    <span class="n">descending_aorta</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">ascending_aorta</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="n">sagittal_front</span> <span class="o">=</span> <span class="mi">3</span>
+    <span class="n">sagittal</span> <span class="o">=</span> <span class="mi">4</span>
+
+<div class="viewcode-block" id="SegmentType.is_axial_seg"><a class="viewcode-back" href="../AortaGeomReconDisplayModuleLib.html#AortaGeomReconEnums.SegmentType.is_axial_seg">[docs]</a>    <span class="k">def</span> <span class="nf">is_axial_seg</span><span class="p">(</span><span class="n">seg_type</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return True if the segmentation type is</span>
+<span class="sd">        descending or ascending aorta segmentation, False otherwise.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">seg_type</span> <span class="o">==</span> <span class="n">SegmentType</span><span class="o">.</span><span class="n">descending_aorta</span>
+                <span class="ow">or</span> <span class="n">seg_type</span> <span class="o">==</span> <span class="n">SegmentType</span><span class="o">.</span><span class="n">ascending_aorta</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="SegmentType.is_sagittal_seg"><a class="viewcode-back" href="../AortaGeomReconDisplayModuleLib.html#AortaGeomReconEnums.SegmentType.is_sagittal_seg">[docs]</a>    <span class="k">def</span> <span class="nf">is_sagittal_seg</span><span class="p">(</span><span class="n">seg_type</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">seg_type</span> <span class="o">==</span> <span class="n">SegmentType</span><span class="o">.</span><span class="n">sagittal_front</span>
+                <span class="ow">or</span> <span class="n">seg_type</span> <span class="o">==</span> <span class="n">SegmentType</span><span class="o">.</span><span class="n">sagittal</span><span class="p">)</span></div>
+=======
     <span class="sd">&quot;&quot;&quot;Enum type describing the segmentation phase,</span>
 <span class="sd">    this will be used in the algorithm to run different codes.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -95,14 +136,18 @@
     <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Overrides the default implementation&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">value</span>
+>>>>>>> main
 
     <span class="k">def</span> <span class="fm">__format__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
         <span class="k">return</span> <span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> segmentation&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_name_</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">,</span> <span class="s2">&quot; &quot;</span><span class="p">))</span></div>
 
 
 <div class="viewcode-block" id="PixelValue"><a class="viewcode-back" href="../AortaGeomReconDisplayModuleLib.html#AortaGeomReconEnums.PixelValue">[docs]</a><span class="k">class</span> <span class="nc">PixelValue</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+<<<<<<< HEAD
+=======
     <span class="sd">&quot;&quot;&quot;Enum type describing the values of the pixel in the image.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+>>>>>>> main
     <span class="n">white_pixel</span> <span class="o">=</span> <span class="mi">1</span>
     <span class="n">black_pixel</span> <span class="o">=</span> <span class="mi">0</span></div>
 </pre></div>

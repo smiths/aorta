@@ -36,8 +36,7 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../modules.html">AortaGeomReconDisplayModuleLib</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../test.html">test package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">test</a></li>
 </ul>
 
         </div>
@@ -70,16 +69,16 @@
 <span class="kn">import</span> <span class="nn">abc</span>
 
 
-<div class="viewcode-block" id="AortaAxialSegmenter"><a class="viewcode-back" href="../../AortaGeomReconDisplayModuleLib.html#AortaGeomReconDisplayModuleLib.AortaAxialSegmenter.AortaAxialSegmenter">[docs]</a><span class="k">class</span> <span class="nc">AortaAxialSegmenter</span><span class="p">(</span><span class="n">AortaSegmenterBase</span><span class="p">):</span>
+<div class="viewcode-block" id="AortaAxialSegmenter"><a class="viewcode-back" href="../../backup/AortaGeomReconDisplayModuleLib.html#AortaGeomReconDisplayModuleLib.AortaAxialSegmenter.AortaAxialSegmenter">[docs]</a><span class="k">class</span> <span class="nc">AortaAxialSegmenter</span><span class="p">(</span><span class="n">AortaSegmenterBase</span><span class="p">):</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">starting_slice</span><span class="p">,</span> <span class="n">aorta_centre</span><span class="p">,</span> <span class="n">num_slice_skipping</span><span class="p">,</span>
-                 <span class="n">qualified_slice_factor</span><span class="p">,</span> <span class="n">cropped_image</span><span class="p">):</span>
+                 <span class="n">qualified_coef</span><span class="p">,</span> <span class="n">cropped_image</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_starting_slice</span> <span class="o">=</span> <span class="n">starting_slice</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_aorta_centre</span> <span class="o">=</span> <span class="n">aorta_centre</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_num_slice_skipping</span> <span class="o">=</span> <span class="n">num_slice_skipping</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">cropped_image</span><span class="p">,</span> <span class="n">qualified_slice_factor</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">cropped_image</span><span class="p">,</span> <span class="n">qualified_coef</span><span class="p">)</span>
 
-<div class="viewcode-block" id="AortaAxialSegmenter.circle_filter"><a class="viewcode-back" href="../../AortaGeomReconDisplayModuleLib.html#AortaGeomReconDisplayModuleLib.AortaAxialSegmenter.AortaAxialSegmenter.circle_filter">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+<div class="viewcode-block" id="AortaAxialSegmenter.circle_filter"><a class="viewcode-back" href="../../backup/AortaGeomReconDisplayModuleLib.html#AortaGeomReconDisplayModuleLib.AortaAxialSegmenter.AortaAxialSegmenter.circle_filter">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">circle_filter</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">pass</span></div></div>
 </pre></div>
