@@ -759,7 +759,38 @@ models. The dimension of each quantity is also given.
 \begin{tabular}{| p{\colAwidth} | p{\colBwidth}|}
 \hline
 \rowcolor[gray]{0.9}
-Number& DD\refstepcounter{datadefnum}\thedatadefnum \label{slc}\\
+Number& DD\refstepcounter{datadefnum}\thedatadefnum \label{voxel}\\
+\hline
+Label& \bf Voxel \\
+\hline
+Symbol & $ \text{voxel} : \mathbb{R}^{m \times n}$\\
+\hline
+% Units& $Mt^{-3}$\\
+% \hline
+  SI Units & - \\
+  \hline
+  Equation& - \\
+  \hline
+  Description & 
+                A slice (\ddref{slice}) consists of n $\times$ n voxels. A real number is assigned to each voxel to reports the intensity on a grey-scale image.
+  \\
+  \hline
+  Sources & \\
+  \hline
+  Ref.\ By & \ddref{slice}\\
+  \hline
+\end{tabular}
+\end{minipage}\\ \\
+
+% -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+\noindent
+\begin{minipage}{\textwidth}
+\renewcommand*{\arraystretch}{1.5}
+\begin{tabular}{| p{\colAwidth} | p{\colBwidth}|}
+\hline
+\rowcolor[gray]{0.9}
+Number& DD\refstepcounter{datadefnum}\thedatadefnum \label{slice}\\
 \hline
 Label& \bf Image/Slice \\
 \hline
@@ -772,7 +803,7 @@ Symbol & $ \text{slc} : \mathbb{R}^{m \times n}$\\
   Equation& - \\
   \hline
   Description & 
-                A visual representation of something that is represented using only two spatial dimensions with a sequence of arrays where real values represents the color or intensity.
+                A visual representation of something that is represented using only two spatial dimensions with a sequence of arrays where a voxel (\ddref{voxel}) represents the color or intensity.
   \\
   \hline
   Sources & \\
@@ -782,6 +813,7 @@ Symbol & $ \text{slc} : \mathbb{R}^{m \times n}$\\
 \end{tabular}
 \end{minipage}\\ \\
 
+% -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 \noindent
 \begin{minipage}{\textwidth}
@@ -802,7 +834,7 @@ Symbol & $ \text{volume} : \mathbb{R}^{m \times n \times p}$\\
   Equation& - \\
   \hline
   Description & 
-                A three dimensional image is a sequence of some images/slices. \label{DD1}
+                A three dimensional image is a sequence of some images/slices (\ddref{slice}).
   \\
   \hline
   Sources & \\
@@ -862,11 +894,11 @@ The goals \gsref{Gsegment} are solved by finding \iref{roi} and perform \iref{se
   \hline
   Label& \bf Region of interest \\
   \hline
-  Input & $ \text{volume} : \mathbb{R}^{m \times n \times p}$ \\
+  Inputs & $ \text{V}_\text{in} : \mathbb{R}^{m_i \times n_i \times p_i}$ , $\text{Starting\_voxel (Sv)} : \mathbb{N}^{3}$, $\text{Size (S)} : \mathbb{N}^{3}$,  \\
   \hline
-  Output& $ \text{volume} : \mathbb{R}^{m \times n \times p}$\\
+  Output& $ \text{V}_\text{out} : \mathbb{R}^{m_o \times n_o \times p_o}$\\
   \hline
-  Description & The regions of interest is a subset of the 3D image. This subset has the majority of the values which the users wants to read, process or extract.
+  Description & The regions of interest is a subset (shaped like a box) of the 3D Vout. This subset contains the anatomical structure that the users wants to read, process or extract.  \newline For Starting\_voxel, $ 0 \leq  Sv_m  \leq m_i  \wedge  0 \leq  Sv_n \leq n_i   \wedge  0 \leq  Sv_p \leq p_i $.  \newline For Vout, $ m_o = Sv_m + S_m \leq m_i  \wedge  n_o = Sv_n+S_n \leq n_i  \wedge p_o = Sv_p+S_p \leq p_i $.
   \\
   \hline
   Sources&  \\
@@ -890,9 +922,9 @@ The goals \gsref{Gsegment} are solved by finding \iref{roi} and perform \iref{se
   \hline
   Label& \bf Segmentation \\
   \hline
-  Input & $ \text{volume} : \mathbb{R}^{m \times n \times p}$ \\
+  Input & $ \text{Vin} : \mathbb{R}^{m \times n \times p}$ \\
   \hline
-  Output& $ \text{volume} : \mathbb{R}^{m \times n \times p}$\\
+  Output& $ \text{Vout} : \mathbb{R}^{m \times n \times p}$\\
   \hline
   Description & The process of extract a region of interest from the original 3D image. The extracted region of interest can be represented with high intensity pixel value. The rest of the image should have a lower intensity pixe valuel.
   \\

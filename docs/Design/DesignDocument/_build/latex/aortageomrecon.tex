@@ -53,7 +53,7 @@
 % Set up styles of URL: it should be placed after hyperref.
 \urlstyle{same}
 
-\addto\captionsenglish{\renewcommand{\contentsname}{Contents:}}
+\addto\captionsenglish{\renewcommand{\contentsname}{Modules documentation:}}
 
 \usepackage{sphinxmessages}
 \setcounter{tocdepth}{1}
@@ -61,7 +61,7 @@
 
 
 \title{AortaGeomRecon}
-\date{Mar 06, 2023}
+\date{Mar 08, 2023}
 \release{}
 \author{Jingyi Lin}
 \newcommand{\sphinxlogo}{\vbox{}}
@@ -78,19 +78,126 @@
 
 
 \sphinxAtStartPar
-This is the design document for AortaGeomRecon module, a {\hyperref[\detokenize{glossary:term-3D-Slicer}]{\sphinxtermref{\DUrole{xref,std,std-term}{3D Slicer}}}} extension to perform {\hyperref[\detokenize{glossary:term-Aorta}]{\sphinxtermref{\DUrole{xref,std,std-term}{Aorta}}}} segmentation and Aorta geometry reconstruction.
+This is the design document for the AortaGeomRecon module, a {\hyperref[\detokenize{glossary:term-3D-Slicer}]{\sphinxtermref{\DUrole{xref,std,std-term}{3D Slicer}}}} extension to perform {\hyperref[\detokenize{glossary:term-Aorta}]{\sphinxtermref{\DUrole{xref,std,std-term}{Aorta}}}} segmentation and Aorta geometry reconstruction.
+
+\sphinxAtStartPar
+You can find the source code, the installation guide, and the user manual in this GitHub \sphinxhref{https://github.com/smiths/aorta}{repository}.
 
 
-\chapter{AortaGeomReconModule}
+\bigskip\hrule\bigskip
+
+
+
+\chapter{The steps before applying the main algorithm}
+\label{\detokenize{index:the-steps-before-applying-the-main-algorithm}}
+\sphinxAtStartPar
+The algorithm works better with the chest volume cropped to a rectangular prism that contains the aorta and parts of the other organs such as the backbone, some blood tissues, and the heart. This can be simply done with {\hyperref[\detokenize{glossary:term-3D-Slicer}]{\sphinxtermref{\DUrole{xref,std,std-term}{3D Slicer}}}} and its submodule \sphinxhref{https://slicer.readthedocs.io/en/latest/user\_guide/modules/volumerendering.html}{Volume rendering}. A more detailed guide can be found on this GitHub repository \sphinxhref{https://github.com/smiths/aorta\#to-use-volume-rendering-to-crop-a-voi}{section}.
+
+\sphinxAtStartPar
+After cropping the volume which only contains the region of interest, the algorithm needed a set of variables inputs from the user.
+
+\sphinxAtStartPar
+The variables inputs are:
+\begin{enumerate}
+\sphinxsetlistlabels{\arabic}{enumi}{enumii}{}{.}%
+\item {} 
+\sphinxAtStartPar
+{\hyperref[\detokenize{glossary:term-Descending-Aorta}]{\sphinxtermref{\DUrole{xref,std,std-term}{Descending Aorta}}}} or {\hyperref[\detokenize{glossary:term-Ascending-Aorta}]{\sphinxtermref{\DUrole{xref,std,std-term}{Ascending Aorta}}}} centre coordinate.
+
+\item {} 
+\sphinxAtStartPar
+{\hyperref[\detokenize{glossary:term-Qualified-coefficient}]{\sphinxtermref{\DUrole{xref,std,std-term}{Qualified coefficient}}}} larger values lose the condition to accept a {\hyperref[\detokenize{glossary:term-segmented}]{\sphinxtermref{\DUrole{xref,std,std-term}{segmented}}}} {\hyperref[\detokenize{glossary:term-slice}]{\sphinxtermref{\DUrole{xref,std,std-term}{slice}}}}, and vice\sphinxhyphen{}versa.
+
+\item {} 
+\sphinxAtStartPar
+An integer indicates the number of slices that the algorithm can skip.
+
+\end{enumerate}
+
+
+\chapter{The main ideas of the algorithm}
+\label{\detokenize{index:the-main-ideas-of-the-algorithm}}
+\sphinxAtStartPar
+At the beginning of the algorithm, the user’s input on the aorta centre is used to generate the seed slice, 2\sphinxhyphen{}dimensional circle image. This seed slice will be used as a reference throughout the workflow of the algorithm. Therefore, changing the input of the centre coordinate could generate a completely different segmentation result.
+
+\sphinxAtStartPar
+For each slice starting from the user’s selected slice going in the inferior or superior direction
+\begin{enumerate}
+\sphinxsetlistlabels{\arabic}{enumi}{enumii}{}{.}%
+\item {} 
+\sphinxAtStartPar
+The algorithm generates the seed image by using \sphinxhref{https://simpleitk.org/doxygen/latest/html/classitk\_1\_1simple\_1\_1LabelStatisticsImageFilter.html}{SITK::LabelStatisticsImageFilter}.
+\begin{quote}
+
+\begin{sphinxadmonition}{note}{Note:}
+\sphinxAtStartPar
+A {\hyperref[\detokenize{glossary:term-Label-Statistic-coefficient}]{\sphinxtermref{\DUrole{xref,std,std-term}{Label Statistic coefficient}}}} can be used to control the size of the circle seed image. However, this is a constant that is not linked to the UI for the user to select in the current version.
+\end{sphinxadmonition}
+\end{quote}
+
+\item {} 
+\sphinxAtStartPar
+The algorithm then creates another image, the Euclidean distance transform of a binary image as the image intensity map, and uses it with \sphinxhref{https://simpleitk.org/doxygen/latest/html/classitk\_1\_1simple\_1\_1ThresholdSegmentationLevelSetImageFilter.html}{SITK::ThresholdSegmentationLevelSetImageFilter} to create a segmented slice.
+
+\item {} 
+\sphinxAtStartPar
+The algorithm determines whether to accept the segmented slice or not, based on the number of white pixels on the segmented slice, and the qualified coefficient to control the limit.
+\begin{quote}
+
+\begin{sphinxadmonition}{note}{Note:}
+\sphinxAtStartPar
+To determine whether a segmented slice is acceptable, different conditions are verified for {\hyperref[\detokenize{glossary:term-Descending-Aorta}]{\sphinxtermref{\DUrole{xref,std,std-term}{Descending Aorta}}}} and {\hyperref[\detokenize{glossary:term-Ascending-Aorta}]{\sphinxtermref{\DUrole{xref,std,std-term}{Ascending Aorta}}}}. These conditions check are all involved with the {\hyperref[\detokenize{glossary:term-Qualified-coefficient}]{\sphinxtermref{\DUrole{xref,std,std-term}{Qualified coefficient}}}}, which is decided by the user. In simple terms, the larger the {\hyperref[\detokenize{glossary:term-Qualified-coefficient}]{\sphinxtermref{\DUrole{xref,std,std-term}{Qualified coefficient}}}}, the looser condition on accepting a segmented slice.
+\end{sphinxadmonition}
+\end{quote}
+
+\item {} 
+\sphinxAtStartPar
+If the algorithm accepted this segmented slice, a new centre coordinate is calculated and used as the seed coordinate for segmenting the next slice.
+
+\item {} 
+\sphinxAtStartPar
+When a segmented slice is not acceptable, the algorithm will skip this slice if the number of the skipped slice is less than the integer given by the user. The algorithm will try to replace these skipped slices by reading the overlapped area of the previous and the next slice.
+
+\end{enumerate}
+
+
+\chapter{The pseudocode of the algorithm}
+\label{\detokenize{index:the-pseudocode-of-the-algorithm}}
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{n}{segmented\PYGZus{}slice} \PYG{o}{=} \PYG{n}{get\PYGZus{}image\PYGZus{}segment}\PYG{p}{(}\PYG{p}{)}
+\PYG{c+c1}{\PYGZsh{} Any value (grey\PYGZhy{}scaled) above 0 will be set to a white pixel}
+\PYG{n}{new\PYGZus{}slice} \PYG{o}{=} \PYG{n}{segmented\PYGZus{}slice} \PYG{o}{\PYGZgt{}} \PYG{n}{PixelValue}\PYG{o}{.}\PYG{n}{black\PYGZus{}pixel}\PYG{o}{.}\PYG{n}{value}
+\PYG{n}{total\PYGZus{}coord}\PYG{p}{,} \PYG{n}{centre} \PYG{o}{=} \PYG{n}{count\PYGZus{}pixels}\PYG{p}{(}\PYG{n}{new\PYGZus{}slice}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} start is always the index of the original slice}
+\PYG{c+c1}{\PYGZsh{} end could be the index of the superior or the inferior of the aorta}
+\PYG{k}{for} \PYG{n}{slice\PYGZus{}i} \PYG{o+ow}{in} \PYG{n+nb}{range}\PYG{p}{(}\PYG{n}{start}\PYG{p}{,} \PYG{n}{end}\PYG{p}{,} \PYG{n}{step}\PYG{p}{)}\PYG{p}{:}
+    \PYG{n}{cur\PYGZus{}img\PYGZus{}slice} \PYG{o}{=} \PYG{n}{cropped\PYGZus{}image}\PYG{p}{[}\PYG{p}{:}\PYG{p}{,} \PYG{p}{:}\PYG{p}{,} \PYG{n}{slice\PYGZus{}i}\PYG{p}{]}
+    \PYG{n}{segmented\PYGZus{}slice} \PYG{o}{=} \PYG{n}{get\PYGZus{}image\PYGZus{}segment}\PYG{p}{(}\PYG{p}{)}
+    \PYG{n}{new\PYGZus{}slice} \PYG{o}{=} \PYG{n}{segmented\PYGZus{}slice} \PYG{o}{\PYGZgt{}} \PYG{n}{PixelValue}\PYG{o}{.}\PYG{n}{black\PYGZus{}pixel}\PYG{o}{.}\PYG{n}{value}
+    \PYG{n}{total\PYGZus{}coord}\PYG{p}{,} \PYG{n}{centre}\PYG{p}{,} \PYG{n}{seeds} \PYG{o}{=} \PYG{n}{count\PYGZus{}pixel}\PYG{p}{(}\PYG{n}{new\PYGZus{}slice}\PYG{p}{)}
+    \PYG{k}{if} \PYG{n}{is\PYGZus{}new\PYGZus{}centre\PYGZus{}qualified}\PYG{p}{(}\PYG{n}{total\PYGZus{}coord}\PYG{p}{)}\PYG{p}{:}
+         \PYG{n}{processing\PYGZus{}image}\PYG{p}{[}\PYG{p}{:}\PYG{p}{,} \PYG{p}{:}\PYG{p}{,} \PYG{n}{slice\PYGZus{}i}\PYG{p}{]} \PYG{o}{=} \PYG{n}{new\PYGZus{}slice}
+         \PYG{n}{prev\PYGZus{}centre} \PYG{o}{=} \PYG{n}{centre}
+         \PYG{n}{prev\PYGZus{}seeds} \PYG{o}{=} \PYG{n}{seeds}
+\end{sphinxVerbatim}
+
+\begin{sphinxadmonition}{note}{Note:}
+\sphinxAtStartPar
+You can find the definitions of each function within the module below
+\end{sphinxadmonition}
+
+
+\section{AortaGeomReconModule}
 \label{\detokenize{modules:aortageomreconmodule}}\label{\detokenize{modules::doc}}
 
-\section{test package}
+\subsection{test package}
 \label{\detokenize{test:test-package}}\label{\detokenize{test::doc}}
 
-\subsection{Submodules}
+\subsubsection{Submodules}
 \label{\detokenize{test:submodules}}
 
-\subsection{conftest module}
+\subsubsection{conftest module}
 \label{\detokenize{test:module-conftest}}\label{\detokenize{test:conftest-module}}\index{module@\spxentry{module}!conftest@\spxentry{conftest}}\index{conftest@\spxentry{conftest}!module@\spxentry{module}}\index{pytest\_addoption() (in module conftest)@\spxentry{pytest\_addoption()}\spxextra{in module conftest}}
 
 \begin{fulllineitems}
@@ -111,7 +218,7 @@ Convert parser arguments to parameters
 
 
 
-\subsection{test\_image\_preprocessing module}
+\subsubsection{test\_image\_preprocessing module}
 \label{\detokenize{test:module-test_image_preprocessing}}\label{\detokenize{test:test-image-preprocessing-module}}\index{module@\spxentry{module}!test\_image\_preprocessing@\spxentry{test\_image\_preprocessing}}\index{test\_image\_preprocessing@\spxentry{test\_image\_preprocessing}!module@\spxentry{module}}\index{DSC() (in module test\_image\_preprocessing)@\spxentry{DSC()}\spxextra{in module test\_image\_preprocessing}}
 
 \begin{fulllineitems}
@@ -245,13 +352,13 @@ SITK
 \index{test\_asc\_and\_final() (in module test\_image\_preprocessing)@\spxentry{test\_asc\_and\_final()}\spxextra{in module test\_image\_preprocessing}}
 
 \begin{fulllineitems}
-\phantomsection\label{\detokenize{test:test_image_preprocessing.test_asc_and_final}}\pysiglinewithargsret{\sphinxcode{\sphinxupquote{test\_image\_preprocessing.}}\sphinxbfcode{\sphinxupquote{test\_asc\_and\_final}}}{\emph{\DUrole{n}{limit}}, \emph{\DUrole{n}{qualifiedCoef}}, \emph{\DUrole{n}{ffactor}}, \emph{\DUrole{n}{testCase}}, \emph{\DUrole{n}{processing\_image}\DUrole{o}{=}\DUrole{default_value}{None}}}{}
+\phantomsection\label{\detokenize{test:test_image_preprocessing.test_asc_and_final}}\pysiglinewithargsret{\sphinxcode{\sphinxupquote{test\_image\_preprocessing.}}\sphinxbfcode{\sphinxupquote{test\_asc\_and\_final}}}{\emph{\DUrole{n}{limit}}, \emph{\DUrole{n}{qualifiedCoef}}, \emph{\DUrole{n}{lsCoef}}, \emph{\DUrole{n}{testCase}}, \emph{\DUrole{n}{processing\_image}\DUrole{o}{=}\DUrole{default_value}{None}}}{}
 \end{fulllineitems}
 
 \index{test\_compare\_asc() (in module test\_image\_preprocessing)@\spxentry{test\_compare\_asc()}\spxextra{in module test\_image\_preprocessing}}
 
 \begin{fulllineitems}
-\phantomsection\label{\detokenize{test:test_image_preprocessing.test_compare_asc}}\pysiglinewithargsret{\sphinxcode{\sphinxupquote{test\_image\_preprocessing.}}\sphinxbfcode{\sphinxupquote{test\_compare\_asc}}}{\emph{\DUrole{n}{limit}}, \emph{\DUrole{n}{qualifiedCoef}}, \emph{\DUrole{n}{ffactor}}, \emph{\DUrole{n}{testCase}}, \emph{\DUrole{n}{processing\_image}\DUrole{o}{=}\DUrole{default_value}{None}}}{}
+\phantomsection\label{\detokenize{test:test_image_preprocessing.test_compare_asc}}\pysiglinewithargsret{\sphinxcode{\sphinxupquote{test\_image\_preprocessing.}}\sphinxbfcode{\sphinxupquote{test\_compare\_asc}}}{\emph{\DUrole{n}{limit}}, \emph{\DUrole{n}{qualifiedCoef}}, \emph{\DUrole{n}{lsCoef}}, \emph{\DUrole{n}{testCase}}, \emph{\DUrole{n}{processing\_image}\DUrole{o}{=}\DUrole{default_value}{None}}}{}
 \sphinxAtStartPar
 Read a test cases’ partially segmented volume (descending aorta),
 perform ascending aorta segmentation,
@@ -268,7 +375,7 @@ and compare the result with the existing ascending aorta volume
 
 \item {} 
 \sphinxAtStartPar
-\sphinxstyleliteralstrong{\sphinxupquote{ffactor}} (\sphinxstyleliteralemphasis{\sphinxupquote{float}}) \textendash{} the factor used to determine the lower and upper threshold for label statistics image filter.
+\sphinxstyleliteralstrong{\sphinxupquote{lsCoef}} (\sphinxstyleliteralemphasis{\sphinxupquote{float}}) \textendash{} the factor used to determine the lower and upper threshold for label statistics image filter.
 
 \item {} 
 \sphinxAtStartPar
@@ -291,7 +398,7 @@ float
 \index{test\_compare\_des() (in module test\_image\_preprocessing)@\spxentry{test\_compare\_des()}\spxextra{in module test\_image\_preprocessing}}
 
 \begin{fulllineitems}
-\phantomsection\label{\detokenize{test:test_image_preprocessing.test_compare_des}}\pysiglinewithargsret{\sphinxcode{\sphinxupquote{test\_image\_preprocessing.}}\sphinxbfcode{\sphinxupquote{test\_compare\_des}}}{\emph{\DUrole{n}{limit}}, \emph{\DUrole{n}{qualifiedCoef}}, \emph{\DUrole{n}{ffactor}}, \emph{\DUrole{n}{testCase}}}{}
+\phantomsection\label{\detokenize{test:test_image_preprocessing.test_compare_des}}\pysiglinewithargsret{\sphinxcode{\sphinxupquote{test\_image\_preprocessing.}}\sphinxbfcode{\sphinxupquote{test\_compare\_des}}}{\emph{\DUrole{n}{limit}}, \emph{\DUrole{n}{qualifiedCoef}}, \emph{\DUrole{n}{lsCoef}}, \emph{\DUrole{n}{testCase}}}{}
 \sphinxAtStartPar
 Read a test cases’ cropped volume,
 perform descending aorta segmentation,
@@ -308,7 +415,7 @@ and compare the result with the existing volume
 
 \item {} 
 \sphinxAtStartPar
-\sphinxstyleliteralstrong{\sphinxupquote{ffactor}} (\sphinxstyleliteralemphasis{\sphinxupquote{float}}) \textendash{} the factor used to determine the lower and upper threshold for label statistics image filter.
+\sphinxstyleliteralstrong{\sphinxupquote{lsCoef}} (\sphinxstyleliteralemphasis{\sphinxupquote{float}}) \textendash{} the factor used to determine the lower and upper threshold for label statistics image filter.
 
 \item {} 
 \sphinxAtStartPar
@@ -331,13 +438,13 @@ float
 \index{test\_compare\_final\_volume() (in module test\_image\_preprocessing)@\spxentry{test\_compare\_final\_volume()}\spxextra{in module test\_image\_preprocessing}}
 
 \begin{fulllineitems}
-\phantomsection\label{\detokenize{test:test_image_preprocessing.test_compare_final_volume}}\pysiglinewithargsret{\sphinxcode{\sphinxupquote{test\_image\_preprocessing.}}\sphinxbfcode{\sphinxupquote{test\_compare\_final\_volume}}}{\emph{\DUrole{n}{limit}}, \emph{\DUrole{n}{qualifiedCoef}}, \emph{\DUrole{n}{ffactor}}, \emph{\DUrole{n}{testCase}}, \emph{\DUrole{n}{processing\_image}\DUrole{o}{=}\DUrole{default_value}{None}}}{}
+\phantomsection\label{\detokenize{test:test_image_preprocessing.test_compare_final_volume}}\pysiglinewithargsret{\sphinxcode{\sphinxupquote{test\_image\_preprocessing.}}\sphinxbfcode{\sphinxupquote{test\_compare\_final\_volume}}}{\emph{\DUrole{n}{limit}}, \emph{\DUrole{n}{qualifiedCoef}}, \emph{\DUrole{n}{lsCoef}}, \emph{\DUrole{n}{testCase}}, \emph{\DUrole{n}{processing\_image}\DUrole{o}{=}\DUrole{default_value}{None}}}{}
 \end{fulllineitems}
 
 \index{test\_prepared\_segmenting\_image() (in module test\_image\_preprocessing)@\spxentry{test\_prepared\_segmenting\_image()}\spxextra{in module test\_image\_preprocessing}}
 
 \begin{fulllineitems}
-\phantomsection\label{\detokenize{test:test_image_preprocessing.test_prepared_segmenting_image}}\pysiglinewithargsret{\sphinxcode{\sphinxupquote{test\_image\_preprocessing.}}\sphinxbfcode{\sphinxupquote{test\_prepared\_segmenting\_image}}}{\emph{\DUrole{n}{limit}}, \emph{\DUrole{n}{qualifiedCoef}}, \emph{\DUrole{n}{ffactor}}, \emph{\DUrole{n}{testCase}}}{}
+\phantomsection\label{\detokenize{test:test_image_preprocessing.test_prepared_segmenting_image}}\pysiglinewithargsret{\sphinxcode{\sphinxupquote{test\_image\_preprocessing.}}\sphinxbfcode{\sphinxupquote{test\_prepared\_segmenting\_image}}}{\emph{\DUrole{n}{limit}}, \emph{\DUrole{n}{qualifiedCoef}}, \emph{\DUrole{n}{lsCoef}}, \emph{\DUrole{n}{testCase}}}{}
 \end{fulllineitems}
 
 \index{transform\_image() (in module test\_image\_preprocessing)@\spxentry{transform\_image()}\spxextra{in module test\_image\_preprocessing}}
@@ -348,17 +455,17 @@ float
 
 
 
-\subsection{Module contents}
+\subsubsection{Module contents}
 \label{\detokenize{test:module-test}}\label{\detokenize{test:module-contents}}\index{module@\spxentry{module}!test@\spxentry{test}}\index{test@\spxentry{test}!module@\spxentry{module}}
 
-\section{AortaGeomReconDisplayModuleLib package}
+\subsection{AortaGeomReconDisplayModuleLib package}
 \label{\detokenize{AortaGeomReconDisplayModuleLib:aortageomrecondisplaymodulelib-package}}\label{\detokenize{AortaGeomReconDisplayModuleLib::doc}}
 
-\subsection{Submodules}
+\subsubsection{Submodules}
 \label{\detokenize{AortaGeomReconDisplayModuleLib:submodules}}
 
-\subsection{AortaGeomReconDisplayModuleLib.AortaGeomReconEnums module}
-\label{\detokenize{AortaGeomReconDisplayModuleLib:module-AortaGeomReconEnums}}\label{\detokenize{AortaGeomReconDisplayModuleLib:aortageomrecondisplaymodulelib-aortageomreconenums-module}}\index{module@\spxentry{module}!AortaGeomReconEnums@\spxentry{AortaGeomReconEnums}}\index{AortaGeomReconEnums@\spxentry{AortaGeomReconEnums}!module@\spxentry{module}}\index{PixelValue (class in AortaGeomReconEnums)@\spxentry{PixelValue}\spxextra{class in AortaGeomReconEnums}}
+\subsubsection{AortaGeomReconEnums module}
+\label{\detokenize{AortaGeomReconDisplayModuleLib:module-AortaGeomReconEnums}}\label{\detokenize{AortaGeomReconDisplayModuleLib:aortageomreconenums-module}}\index{module@\spxentry{module}!AortaGeomReconEnums@\spxentry{AortaGeomReconEnums}}\index{AortaGeomReconEnums@\spxentry{AortaGeomReconEnums}!module@\spxentry{module}}\index{PixelValue (class in AortaGeomReconEnums)@\spxentry{PixelValue}\spxextra{class in AortaGeomReconEnums}}
 
 \begin{fulllineitems}
 \phantomsection\label{\detokenize{AortaGeomReconDisplayModuleLib:AortaGeomReconEnums.PixelValue}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{class\DUrole{w}{  }}}\sphinxcode{\sphinxupquote{AortaGeomReconEnums.}}\sphinxbfcode{\sphinxupquote{PixelValue}}}{\emph{\DUrole{n}{value}}}{}
@@ -462,8 +569,8 @@ descending or ascending aorta segmentation, False otherwise.
 
 
 
-\subsection{AortaGeomReconDisplayModuleLib.AortaSagitalSegmenter module}
-\label{\detokenize{AortaGeomReconDisplayModuleLib:module-AortaSagitalSegmenter}}\label{\detokenize{AortaGeomReconDisplayModuleLib:aortageomrecondisplaymodulelib-aortasagitalsegmenter-module}}\index{module@\spxentry{module}!AortaSagitalSegmenter@\spxentry{AortaSagitalSegmenter}}\index{AortaSagitalSegmenter@\spxentry{AortaSagitalSegmenter}!module@\spxentry{module}}\index{AortaSagitalSegmenter (class in AortaSagitalSegmenter)@\spxentry{AortaSagitalSegmenter}\spxextra{class in AortaSagitalSegmenter}}
+\subsubsection{AortaSagitalSegmenter module}
+\label{\detokenize{AortaGeomReconDisplayModuleLib:module-AortaSagitalSegmenter}}\label{\detokenize{AortaGeomReconDisplayModuleLib:aortasagitalsegmenter-module}}\index{module@\spxentry{module}!AortaSagitalSegmenter@\spxentry{AortaSagitalSegmenter}}\index{AortaSagitalSegmenter@\spxentry{AortaSagitalSegmenter}!module@\spxentry{module}}\index{AortaSagitalSegmenter (class in AortaSagitalSegmenter)@\spxentry{AortaSagitalSegmenter}\spxextra{class in AortaSagitalSegmenter}}
 
 \begin{fulllineitems}
 \phantomsection\label{\detokenize{AortaGeomReconDisplayModuleLib:AortaSagitalSegmenter.AortaSagitalSegmenter}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{class\DUrole{w}{  }}}\sphinxcode{\sphinxupquote{AortaSagitalSegmenter.}}\sphinxbfcode{\sphinxupquote{AortaSagitalSegmenter}}}{\emph{\DUrole{n}{qualified\_coef}}, \emph{\DUrole{n}{processing\_image}}, \emph{\DUrole{n}{cropped\_image}}}{}
@@ -471,7 +578,7 @@ descending or ascending aorta segmentation, False otherwise.
 Bases: \sphinxcode{\sphinxupquote{object}}
 
 \sphinxAtStartPar
-This class performs Aorta Sagital segmentation
+This class performs Aorta Sagittal segmentation
 \index{\_\_segment\_sag() (AortaSagitalSegmenter.AortaSagitalSegmenter method)@\spxentry{\_\_segment\_sag()}\spxextra{AortaSagitalSegmenter.AortaSagitalSegmenter method}}
 
 \begin{fulllineitems}
@@ -489,19 +596,24 @@ This class performs Aorta Sagital segmentation
 
 
 
-\subsection{AortaGeomReconDisplayModuleLib.AortaSegmenter module}
-\label{\detokenize{AortaGeomReconDisplayModuleLib:module-AortaSegmenter}}\label{\detokenize{AortaGeomReconDisplayModuleLib:aortageomrecondisplaymodulelib-aortasegmenter-module}}\index{module@\spxentry{module}!AortaSegmenter@\spxentry{AortaSegmenter}}\index{AortaSegmenter@\spxentry{AortaSegmenter}!module@\spxentry{module}}\index{AortaSegmenter (class in AortaSegmenter)@\spxentry{AortaSegmenter}\spxextra{class in AortaSegmenter}}
+\subsubsection{AortaSegmenter module}
+\label{\detokenize{AortaGeomReconDisplayModuleLib:module-AortaSegmenter}}\label{\detokenize{AortaGeomReconDisplayModuleLib:aortasegmenter-module}}\index{module@\spxentry{module}!AortaSegmenter@\spxentry{AortaSegmenter}}\index{AortaSegmenter@\spxentry{AortaSegmenter}!module@\spxentry{module}}\index{AortaSegmenter (class in AortaSegmenter)@\spxentry{AortaSegmenter}\spxextra{class in AortaSegmenter}}
 
 \begin{fulllineitems}
-\phantomsection\label{\detokenize{AortaGeomReconDisplayModuleLib:AortaSegmenter.AortaSegmenter}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{class\DUrole{w}{  }}}\sphinxcode{\sphinxupquote{AortaSegmenter.}}\sphinxbfcode{\sphinxupquote{AortaSegmenter}}}{\emph{\DUrole{n}{cropped\_image}}, \emph{\DUrole{n}{starting\_slice}}, \emph{\DUrole{n}{aorta\_centre}}, \emph{\DUrole{n}{num\_slice\_skipping}}, \emph{\DUrole{n}{processing\_image}}, \emph{\DUrole{n}{seg\_type}}, \emph{\DUrole{n}{qualified\_coef}\DUrole{o}{=}\DUrole{default_value}{2.2}}, \emph{\DUrole{n}{filter\_factor}\DUrole{o}{=}\DUrole{default_value}{3.5}}}{}
+\phantomsection\label{\detokenize{AortaGeomReconDisplayModuleLib:AortaSegmenter.AortaSegmenter}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{class\DUrole{w}{  }}}\sphinxcode{\sphinxupquote{AortaSegmenter.}}\sphinxbfcode{\sphinxupquote{AortaSegmenter}}}{\emph{\DUrole{n}{cropped\_image}}, \emph{\DUrole{n}{starting\_slice}}, \emph{\DUrole{n}{aorta\_centre}}, \emph{\DUrole{n}{num\_slice\_skipping}}, \emph{\DUrole{n}{processing\_image}}, \emph{\DUrole{n}{seg\_type}}, \emph{\DUrole{n}{qualified\_coef}\DUrole{o}{=}\DUrole{default_value}{2.2}}, \emph{\DUrole{n}{label\_stats\_coef}\DUrole{o}{=}\DUrole{default_value}{3.5}}}{}
 \sphinxAtStartPar
 Bases: \sphinxcode{\sphinxupquote{object}}
+
+\sphinxAtStartPar
+This class is used to perform
+Descending or Ascending aorta segmentation
 \index{\_\_count\_pixel\_asc() (AortaSegmenter.AortaSegmenter method)@\spxentry{\_\_count\_pixel\_asc()}\spxextra{AortaSegmenter.AortaSegmenter method}}
 
 \begin{fulllineitems}
 \phantomsection\label{\detokenize{AortaGeomReconDisplayModuleLib:AortaSegmenter.AortaSegmenter.__count_pixel_asc}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{\_\_count\_pixel\_asc}}}{\emph{\DUrole{n}{new\_slice}}}{}
 \sphinxAtStartPar
-Use label statistics to calculate the number of counted pixels for ascending aorta segmentation.
+Use segmented slice to calculate the number of white pixels,
+and the new centre based on the segmented result.
 \begin{quote}\begin{description}
 \item[{Returns}] \leavevmode
 \sphinxAtStartPar
@@ -509,8 +621,8 @@ Use label statistics to calculate the number of counted pixels for ascending aor
 \item[{tuple containing:}] \leavevmode
 \sphinxAtStartPar
 int: The total number of the X coordinates where it is white pixel
-tupple: The new derived centre calculated by the mean of X coordinates and Y coordinates where it is white pixel
-list: The new seeds coordinates based on the new derived centre
+tupple: The new derived centre calculated by the mean of X coordinates and Y coordinates of white pixels
+list: More possible coordinates based on the new derived centre
 
 \end{description}
 
@@ -528,7 +640,9 @@ list: The new seeds coordinates based on the new derived centre
 \begin{fulllineitems}
 \phantomsection\label{\detokenize{AortaGeomReconDisplayModuleLib:AortaSegmenter.AortaSegmenter.__count_pixel_des}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{\_\_count\_pixel\_des}}}{\emph{\DUrole{n}{new\_slice}}}{}
 \sphinxAtStartPar
-Use label statistics to calculate the number of counted pixels for descending aorta segmentation.
+Use segmented slice to calculate the number of white pixels,
+and the new derived centre
+for descending aorta segmentation.
 \begin{quote}\begin{description}
 \item[{Returns}] \leavevmode
 \sphinxAtStartPar
@@ -560,17 +674,18 @@ fill the slice with the overlapping area of both slices.
 
 \end{fulllineitems}
 
-\index{\_\_get\_label\_statistics() (AortaSegmenter.AortaSegmenter method)@\spxentry{\_\_get\_label\_statistics()}\spxextra{AortaSegmenter.AortaSegmenter method}}
+\index{\_\_get\_image\_segment() (AortaSegmenter.AortaSegmenter method)@\spxentry{\_\_get\_image\_segment()}\spxextra{AortaSegmenter.AortaSegmenter method}}
 
 \begin{fulllineitems}
-\phantomsection\label{\detokenize{AortaGeomReconDisplayModuleLib:AortaSegmenter.AortaSegmenter.__get_label_statistics}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{\_\_get\_label\_statistics}}}{}{}
+\phantomsection\label{\detokenize{AortaGeomReconDisplayModuleLib:AortaSegmenter.AortaSegmenter.__get_image_segment}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{\_\_get\_image\_segment}}}{}{}
 \sphinxAtStartPar
-Use SITK::SignedMaurerDistanceMap to calculate the Euclidean distance transform
-and use SITK::LabelStatisticsImageFilter to derive descriptive intensity.
+Use SITK::LabelStatisticsImageFilter to derive a 2d circle image (seed).
+Use SITK::SignedMaurerDistanceMap to calculate the signed squared Euclidean distance transform of the circle.
+Get segmented image slice based on the seed image.
 \begin{quote}\begin{description}
 \item[{Returns}] \leavevmode
 \sphinxAtStartPar
-labeled statistics of the original image.
+Segmented image slice based on intensity values.
 
 \item[{Return type}] \leavevmode
 \sphinxAtStartPar
@@ -600,7 +715,7 @@ Boolean
 \begin{fulllineitems}
 \phantomsection\label{\detokenize{AortaGeomReconDisplayModuleLib:AortaSegmenter.AortaSegmenter.__is_overlapping}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{\_\_is\_overlapping}}}{\emph{\DUrole{n}{img1}}, \emph{\DUrole{n}{i}}}{}
 \sphinxAtStartPar
-Compare the current segmented slice with the next two slices,
+Compare the current segmented slice with the previous two slices,
 return True if any overlaps otherwise False
 \begin{quote}\begin{description}
 \item[{Returns}] \leavevmode
@@ -671,7 +786,7 @@ The public method to process segmentation.
 
 
 
-\subsection{Module contents}
+\subsubsection{Module contents}
 \label{\detokenize{AortaGeomReconDisplayModuleLib:module-AortaGeomReconDisplayModuleLib}}\label{\detokenize{AortaGeomReconDisplayModuleLib:module-contents}}\index{module@\spxentry{module}!AortaGeomReconDisplayModuleLib@\spxentry{AortaGeomReconDisplayModuleLib}}\index{AortaGeomReconDisplayModuleLib@\spxentry{AortaGeomReconDisplayModuleLib}!module@\spxentry{module}}
 
 \chapter{Indices and tables}
@@ -688,25 +803,46 @@ The public method to process segmentation.
 \sphinxAtStartPar
 The aorta is the largest artery of the body and carries blood from the heart to the circulatory system. It has several sections: The Aortic Root, the transition point where blood first exits the heart, functions as the water main of the body.
 
-\item[{Organ Segmentation\index{Organ Segmentation@\spxentry{Organ Segmentation}|spxpagem}\phantomsection\label{\detokenize{glossary:term-Organ-Segmentation}}}] \leavevmode
+\item[{Ascending Aorta\index{Ascending Aorta@\spxentry{Ascending Aorta}|spxpagem}\phantomsection\label{\detokenize{glossary:term-Ascending-Aorta}}}] \leavevmode
 \sphinxAtStartPar
-The definition of the organ boundary or the organ segmentation is helpful for orientation and identification of the regions of interests inside the organ during the diagnostic or treatment procedure. Further, it allows the volume estimation of the organ.
-
-\item[{3D Slicer\index{3D Slicer@\spxentry{3D Slicer}|spxpagem}\phantomsection\label{\detokenize{glossary:term-3D-Slicer}}}] \leavevmode
-\sphinxAtStartPar
-3D \sphinxhref{https://www.slicer.org/}{Slicer} (Slicer) is a free and open source software package for image analysis and scientific visualization. Slicer is used in a variety of medical applications, including autism, multiple sclerosis, systemic lupus erythematosus, prostate cancer, lung cancer, breast cancer, schizophrenia, orthopedic biomechanics, COPD, cardiovascular disease and neurosurgery.
+The ascending aorta is the first part of the aorta, which is the largest blood vessel in your body. It comes out of your heart and pumps blood through the aortic arch and into the descending aorta.
 
 \item[{Descending Aorta\index{Descending Aorta@\spxentry{Descending Aorta}|spxpagem}\phantomsection\label{\detokenize{glossary:term-Descending-Aorta}}}] \leavevmode
 \sphinxAtStartPar
 The descending aorta is the longest part of your aorta (the largest artery in your body). It begins after your left subclavian artery branches from your aortic arch, and it extends downward into your belly.
 
-\item[{Ascending Aorta\index{Ascending Aorta@\spxentry{Ascending Aorta}|spxpagem}\phantomsection\label{\detokenize{glossary:term-Ascending-Aorta}}}] \leavevmode
+\item[{DICOM\index{DICOM@\spxentry{DICOM}|spxpagem}\phantomsection\label{\detokenize{glossary:term-DICOM}}}] \leavevmode
 \sphinxAtStartPar
-The ascending aorta is the first part of the aorta, which is the largest blood vessel in your body. It comes out of your heart and pumps blood through the aortic arch and into the descending aorta.
+Digital Imaging and Communications in Medicine (DICOM) is the standard for the communication and management of medical imaging information and related data.
+
+\item[{Label Statistic coefficient\index{Label Statistic coefficient@\spxentry{Label Statistic coefficient}|spxpagem}\phantomsection\label{\detokenize{glossary:term-Label-Statistic-coefficient}}}] \leavevmode
+\sphinxAtStartPar
+The coefficient used to get a 2d circle image with \sphinxhref{https://simpleitk.org/doxygen/latest/html/classitk\_1\_1simple\_1\_1LabelStatisticsImageFilter.html}{SITK::LabelStatisticsImageFilter}. Larger values with this coefficient implies a larger range of pixels included from the slice. This could be adjusted based on the area of the aorta center.
+
+\begin{sphinxadmonition}{note}{Note:}
+\sphinxAtStartPar
+Label Statistic coefficient is fixed at 3.5 for now. To let the user choses the values, we need to implement an UI parameter in AortaGeomReconDisplay module (our 3D Slicer extension module), and mapped the value from UI to the logic module.
+\end{sphinxadmonition}
+
+\item[{Organ Segmentation\index{Organ Segmentation@\spxentry{Organ Segmentation}|spxpagem}\phantomsection\label{\detokenize{glossary:term-Organ-Segmentation}}}] \leavevmode
+\sphinxAtStartPar
+The definition of the organ boundary or the organ segmentation is helpful for orientation and identification of the regions of interests inside the organ during the diagnostic or treatment procedure. Further, it allows the volume estimation of the organ.
 
 \item[{Qualified coefficient\index{Qualified coefficient@\spxentry{Qualified coefficient}|spxpagem}\phantomsection\label{\detokenize{glossary:term-Qualified-coefficient}}}] \leavevmode
 \sphinxAtStartPar
-The coefficient used in deteriming the threshold for labelstatisticsimagefilter
+The coefficient used in deteriming the threshold for \sphinxhref{https://simpleitk.org/doxygen/latest/html/classitk\_1\_1simple\_1\_1LabelStatisticsImageFilter.html}{LabelStatisticsImageFilter}.
+
+\item[{slice\index{slice@\spxentry{slice}|spxpagem}\phantomsection\label{\detokenize{glossary:term-slice}}}] \leavevmode
+\sphinxAtStartPar
+A 2 dimensional image retrived from a 3 dimensional volume.
+
+\item[{segmented\index{segmented@\spxentry{segmented}|spxpagem}\phantomsection\label{\detokenize{glossary:term-segmented}}}] \leavevmode
+\sphinxAtStartPar
+A image is processed with only some of the image regions or image objects shown.
+
+\item[{3D Slicer\index{3D Slicer@\spxentry{3D Slicer}|spxpagem}\phantomsection\label{\detokenize{glossary:term-3D-Slicer}}}] \leavevmode
+\sphinxAtStartPar
+\sphinxhref{https://www.slicer.org/}{3D Slicer} (Slicer) is a free and open source software package for image analysis and scientific visualization. Slicer is used in a variety of medical applications, including autism, multiple sclerosis, systemic lupus erythematosus, prostate cancer, lung cancer, breast cancer, schizophrenia, orthopedic biomechanics, COPD, cardiovascular disease and neurosurgery.
 
 \end{description}
 

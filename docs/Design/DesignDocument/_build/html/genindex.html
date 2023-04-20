@@ -14,6 +14,7 @@
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="#" />
@@ -25,11 +26,15 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="index.html" class="icon icon-home"> AortaGeomRecon
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            AortaGeomRecon
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -56,7 +61,7 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="index.html" class="icon icon-home"></a></li>
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
       <li class="breadcrumb-item active">Index</li>
       <li class="wy-breadcrumbs-aside">
       </li>
@@ -76,10 +81,12 @@
  | <a href="#B"><strong>B</strong></a>
  | <a href="#C"><strong>C</strong></a>
  | <a href="#D"><strong>D</strong></a>
+ | <a href="#E"><strong>E</strong></a>
  | <a href="#G"><strong>G</strong></a>
  | <a href="#I"><strong>I</strong></a>
  | <a href="#L"><strong>L</strong></a>
  | <a href="#M"><strong>M</strong></a>
+ | <a href="#N"><strong>N</strong></a>
  | <a href="#O"><strong>O</strong></a>
  | <a href="#P"><strong>P</strong></a>
  | <a href="#Q"><strong>Q</strong></a>
@@ -104,17 +111,19 @@
 </li>
       <li><a href="AortaGeomReconDisplayModuleLib.html#AortaSegmenter.AortaSegmenter.__count_pixel_des">__count_pixel_des() (AortaSegmenter.AortaSegmenter method)</a>
 </li>
+      <li><a href="AortaGeomReconDisplayModuleLib.html#AortaSegmenter.AortaSegmenter.__debug">__debug() (AortaSegmenter.AortaSegmenter method)</a>
+</li>
       <li><a href="AortaGeomReconDisplayModuleLib.html#AortaSegmenter.AortaSegmenter.__filling_missing_slices">__filling_missing_slices() (AortaSegmenter.AortaSegmenter method)</a>
 </li>
       <li><a href="AortaGeomReconDisplayModuleLib.html#AortaSegmenter.AortaSegmenter.__get_image_segment">__get_image_segment() (AortaSegmenter.AortaSegmenter method)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="AortaGeomReconDisplayModuleLib.html#AortaSegmenter.AortaSegmenter.__is_new_centre_qualified">__is_new_centre_qualified() (AortaSegmenter.AortaSegmenter method)</a>
+      <li><a href="AortaGeomReconDisplayModuleLib.html#AortaSegmenter.AortaSegmenter.__is_new_slice_qualified">__is_new_slice_qualified() (AortaSegmenter.AortaSegmenter method)</a>
 </li>
       <li><a href="AortaGeomReconDisplayModuleLib.html#AortaSegmenter.AortaSegmenter.__is_overlapping">__is_overlapping() (AortaSegmenter.AortaSegmenter method)</a>
 </li>
-      <li><a href="AortaGeomReconDisplayModuleLib.html#AortaSegmenter.AortaSegmenter.__prepare_seed">__prepare_seed() (AortaSegmenter.AortaSegmenter method)</a>
+      <li><a href="AortaGeomReconDisplayModuleLib.html#AortaSegmenter.AortaSegmenter.__prepare_label_map">__prepare_label_map() (AortaSegmenter.AortaSegmenter method)</a>
 </li>
       <li><a href="AortaGeomReconDisplayModuleLib.html#AortaSagitalSegmenter.AortaSagitalSegmenter.__segment_sag">__segment_sag() (AortaSagitalSegmenter.AortaSagitalSegmenter method)</a>
 </li>
@@ -127,6 +136,8 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="glossary.html#term-Aorta"><strong>Aorta</strong></a>
+</li>
+      <li><a href="AortaGeomReconDisplayModuleLib.html#AortaSegmenter.AortaSegmenter.aorta_centre">aorta_centre (AortaSegmenter.AortaSegmenter attribute)</a>
 </li>
       <li>
     AortaGeomReconDisplayModuleLib
@@ -166,6 +177,8 @@
 </li>
       <li><a href="AortaGeomReconDisplayModuleLib.html#AortaGeomReconEnums.SegmentType.ascending_aorta">ascending_aorta (AortaGeomReconEnums.SegmentType attribute)</a>
 </li>
+      <li><a href="AortaGeomReconDisplayModuleLib.html#AortaSagitalSegmenter.AortaSagitalSegmenter.axial_seg">axial_seg (AortaSagitalSegmenter.AortaSagitalSegmenter attribute)</a>
+</li>
   </ul></td>
 </tr></table>
 
@@ -180,6 +193,8 @@
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="glossary.html#term-binary-dilation"><strong>binary dilation</strong></a>
+</li>
       <li><a href="AortaGeomReconDisplayModuleLib.html#AortaGeomReconEnums.PixelValue.black_pixel">black_pixel (AortaGeomReconEnums.PixelValue attribute)</a>
 </li>
   </ul></td>
@@ -195,10 +210,18 @@
         <li><a href="test.html#module-conftest">module</a>
 </li>
       </ul></li>
+      <li><a href="glossary.html#term-contour-line"><strong>contour line</strong></a>
+</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="AortaGeomReconDisplayModuleLib.html#AortaSegmenter.AortaSegmenter.cropped_image">cropped_image (AortaSegmenter.AortaSegmenter property)</a>
+      <li><a href="AortaGeomReconDisplayModuleLib.html#AortaSagitalSegmenter.AortaSagitalSegmenter.cropped_image">cropped_image (AortaSagitalSegmenter.AortaSagitalSegmenter attribute)</a>
+
+      <ul>
+        <li><a href="AortaGeomReconDisplayModuleLib.html#AortaSegmenter.AortaSegmenter.cropped_image">(AortaSegmenter.AortaSegmenter attribute)</a>
 </li>
+        <li><a href="AortaGeomReconDisplayModuleLib.html#id0">(AortaSegmenter.AortaSegmenter property)</a>
+</li>
+      </ul></li>
   </ul></td>
 </tr></table>
 
@@ -218,6 +241,14 @@
   </ul></td>
 </tr></table>
 
+<h2 id="E">E</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="glossary.html#term-Euclidean-distance-transform"><strong>Euclidean distance transform</strong></a>
+</li>
+  </ul></td>
+</tr></table>
+
 <h2 id="G">G</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
@@ -229,13 +260,13 @@
 <h2 id="I">I</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="AortaGeomReconDisplayModuleLib.html#AortaGeomReconEnums.SegmentDirection.Inferior_to_Superior">Inferior_to_Superior (AortaGeomReconEnums.SegmentDirection attribute)</a>
+      <li><a href="AortaGeomReconDisplayModuleLib.html#AortaSagitalSegmenter.AortaSagitalSegmenter.imgSlice">imgSlice (AortaSagitalSegmenter.AortaSagitalSegmenter attribute)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="AortaGeomReconDisplayModuleLib.html#AortaGeomReconEnums.SegmentType.is_axial_seg">is_axial_seg() (AortaGeomReconEnums.SegmentType method)</a>
+      <li><a href="glossary.html#term-inferior"><strong>inferior</strong></a>
 </li>
-      <li><a href="AortaGeomReconDisplayModuleLib.html#AortaGeomReconEnums.SegmentType.is_sagittal_seg">is_sagittal_seg() (AortaGeomReconEnums.SegmentType method)</a>
+      <li><a href="AortaGeomReconDisplayModuleLib.html#AortaGeomReconEnums.SegmentDirection.Inferior_to_Superior">Inferior_to_Superior (AortaGeomReconEnums.SegmentDirection attribute)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -243,7 +274,11 @@
 <h2 id="L">L</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="glossary.html#term-Label-Statistic-coefficient"><strong>Label Statistic coefficient</strong></a>
+      <li><a href="glossary.html#term-label-map"><strong>label map</strong></a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="glossary.html#term-Level-sets"><strong>Level sets</strong></a>
 </li>
   </ul></td>
 </tr></table>
@@ -277,6 +312,14 @@
   </ul></td>
 </tr></table>
 
+<h2 id="N">N</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="AortaGeomReconDisplayModuleLib.html#AortaSegmenter.AortaSegmenter.num_slice_skipping">num_slice_skipping (AortaSegmenter.AortaSegmenter attribute)</a>
+</li>
+  </ul></td>
+</tr></table>
+
 <h2 id="O">O</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
@@ -292,10 +335,16 @@
 </li>
       <li><a href="test.html#test_image_preprocessing.print_result">print_result() (in module test_image_preprocessing)</a>
 </li>
+      <li><a href="AortaGeomReconDisplayModuleLib.html#AortaSagitalSegmenter.AortaSagitalSegmenter.processing_image">processing_image (AortaSagitalSegmenter.AortaSagitalSegmenter attribute)</a>
+
+      <ul>
+        <li><a href="AortaGeomReconDisplayModuleLib.html#AortaSegmenter.AortaSegmenter.processing_image">(AortaSegmenter.AortaSegmenter attribute)</a>
+</li>
+        <li><a href="AortaGeomReconDisplayModuleLib.html#id1">(AortaSegmenter.AortaSegmenter property)</a>
+</li>
+      </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="AortaGeomReconDisplayModuleLib.html#AortaSegmenter.AortaSegmenter.processing_image">processing_image (AortaSegmenter.AortaSegmenter property)</a>
-</li>
       <li><a href="test.html#conftest.pytest_addoption">pytest_addoption() (in module conftest)</a>
 </li>
       <li><a href="test.html#conftest.pytest_generate_tests">pytest_generate_tests() (in module conftest)</a>
@@ -308,6 +357,14 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="glossary.html#term-Qualified-coefficient"><strong>Qualified coefficient</strong></a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="AortaGeomReconDisplayModuleLib.html#AortaSagitalSegmenter.AortaSagitalSegmenter.qualified_coef">qualified_coef (AortaSagitalSegmenter.AortaSagitalSegmenter attribute)</a>
+
+      <ul>
+        <li><a href="AortaGeomReconDisplayModuleLib.html#AortaSegmenter.AortaSegmenter.qualified_coef">(AortaSegmenter.AortaSegmenter attribute)</a>
+</li>
+      </ul></li>
   </ul></td>
 </tr></table>
 
@@ -330,19 +387,25 @@
 <h2 id="S">S</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="AortaGeomReconDisplayModuleLib.html#AortaGeomReconEnums.SegmentType.sagittal">sagittal (AortaGeomReconEnums.SegmentType attribute)</a>
+      <li><a href="AortaGeomReconDisplayModuleLib.html#AortaSagitalSegmenter.AortaSagitalSegmenter.seg_type">seg_type (AortaSagitalSegmenter.AortaSagitalSegmenter attribute)</a>
+
+      <ul>
+        <li><a href="AortaGeomReconDisplayModuleLib.html#AortaSegmenter.AortaSegmenter.seg_type">(AortaSegmenter.AortaSegmenter attribute)</a>
 </li>
-      <li><a href="AortaGeomReconDisplayModuleLib.html#AortaGeomReconEnums.SegmentType.sagittal_front">sagittal_front (AortaGeomReconEnums.SegmentType attribute)</a>
-</li>
+      </ul></li>
       <li><a href="AortaGeomReconDisplayModuleLib.html#AortaGeomReconEnums.SegmentDirection">SegmentDirection (class in AortaGeomReconEnums)</a>
+</li>
+      <li><a href="glossary.html#term-segmented-slice"><strong>segmented slice</strong></a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="glossary.html#term-segmented"><strong>segmented</strong></a>
-</li>
       <li><a href="AortaGeomReconDisplayModuleLib.html#AortaGeomReconEnums.SegmentType">SegmentType (class in AortaGeomReconEnums)</a>
 </li>
       <li><a href="glossary.html#term-slice"><strong>slice</strong></a>
+</li>
+      <li><a href="AortaGeomReconDisplayModuleLib.html#AortaSegmenter.AortaSegmenter.starting_slice">starting_slice (AortaSegmenter.AortaSegmenter attribute)</a>
+</li>
+      <li><a href="glossary.html#term-superior"><strong>superior</strong></a>
 </li>
       <li><a href="AortaGeomReconDisplayModuleLib.html#AortaGeomReconEnums.SegmentDirection.Superior_to_Inferior">Superior_to_Inferior (AortaGeomReconEnums.SegmentDirection attribute)</a>
 </li>
@@ -365,9 +428,11 @@
 </li>
       <li><a href="test.html#test_image_preprocessing.test_compare_des">test_compare_des() (in module test_image_preprocessing)</a>
 </li>
+      <li><a href="test.html#test_image_preprocessing.test_compare_final_volume">test_compare_final_volume() (in module test_image_preprocessing)</a>
+</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="test.html#test_image_preprocessing.test_compare_final_volume">test_compare_final_volume() (in module test_image_preprocessing)</a>
+      <li><a href="test.html#test_image_preprocessing.test_debug">test_debug() (in module test_image_preprocessing)</a>
 </li>
       <li>
     test_image_preprocessing
@@ -376,7 +441,11 @@
         <li><a href="test.html#module-test_image_preprocessing">module</a>
 </li>
       </ul></li>
-      <li><a href="test.html#test_image_preprocessing.test_prepared_segmenting_image">test_prepared_segmenting_image() (in module test_image_preprocessing)</a>
+      <li><a href="glossary.html#term-threshold"><strong>threshold</strong></a>
+</li>
+      <li><a href="glossary.html#term-threshold-coefficient"><strong>threshold coefficient</strong></a>
+</li>
+      <li><a href="AortaGeomReconDisplayModuleLib.html#AortaSagitalSegmenter.AortaSagitalSegmenter.threshold_coef">threshold_coef (AortaSagitalSegmenter.AortaSagitalSegmenter attribute)</a>
 </li>
       <li><a href="test.html#test_image_preprocessing.transform_image">transform_image() (in module test_image_preprocessing)</a>
 </li>
