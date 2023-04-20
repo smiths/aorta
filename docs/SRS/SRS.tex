@@ -194,16 +194,21 @@ The symbols are listed in alphabetical order.
   \textbf{symbol} & \textbf{type} & \textbf{description}\\
   \midrule
 \\
-\textit{v} &  $\mathbb{R}$ &  A voxel reports the intensity of a single point on a grey-scale 3 dimensional image.
-\\
+\textit{LOW} &  $\mathbb{N}$ &   A low intensity values means 0 on a scale of 0 and 1, or 0 on a scale of 0 to 255.
+\\ 
+\textit{HIGH} &  $\mathbb{N}$ &  A high intensity values means 1 on a scale of 0 and 1, or 255 on a scale of 0 to 255.
+\\ 
 \textit{slice} &  $\mathbb{R}^{m \times n}$ &  A slice is a 2 dimensional image view from the superior to inferior direction.
 \\ 
-\textit{volume} & $\mathbb{R}^{m \times n \times p}$ &  Volume formed by a sequence of slice
-\\
 \textit{Sv} & $\mathbb{N}^{3}$ &  A coordinate indicates the indexes of a starting voxel.
 \\
 \textit{S} & $\mathbb{N}^{3}$ &  The size to crop a rectangular shaped subset of a volume.
 \\
+\textit{v} &  $\mathbb{R}$ &  A voxel reports the intensity of a single point on a grey-scale 3 dimensional image.
+\\
+\textit{volume} & $\mathbb{R}^{m \times n \times p}$ &  Volume formed by a sequence of slice
+\\
+
 \bottomrule
 \caption{Table of Symbols}
 \label{Table of Symbols}
@@ -912,7 +917,7 @@ $ m_o = Sv_m + S_m \leq m_i  \; \wedge \;  n_o = Sv_n+S_n \leq n_i  \; \wedge \;
   \hline
   Output& $ \text{V}_\text{out} : \mathbb{R}^{m \times n \times p}$\\
   \hline
-  Description & The process of extract an anotomical structure from the original 3D volume. The extracted anotomical structure is represented with high intensity pixel value. The rest of the image should have a lower intensity pixe value.
+  Description & The process of extract an anotomical structure from the original 3D volume. The extracted anotomical structure is represented with high intensity pixel value. The rest of the image should have a lower intensity pixel value.
 \newline For Vout:
 \begin{center}
 $ \forall i,j,k : \mathbb{N} \{i \in [0, m-1]  \; \wedge \; j \in [0,n-1] \; \wedge \; k \in [0, p-1	] \} $.
