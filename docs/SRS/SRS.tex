@@ -627,14 +627,8 @@ The 3D image provided by the user must contains a visually distingushable aorta 
 
 \subsubsection{Theoretical Models}\label{sec_theoretical}
 
-\plt{Theoretical models are sets of abstract mathematical equations or axioms
-  for solving the problem described in Section ``Physical System Description''
-  (Section~\ref{sec_phySystDescrip}). Examples of theoretical models are
-  physical laws, constitutive equations, relevant conversion factors, etc.}
-
 This section focuses on the general equations and laws that \progname{} is based
-on.  \plt{Modify the examples below for your problem, and add additional models
-  as appropriate.}
+on. 
 
 ~\newline
 
@@ -679,31 +673,13 @@ None
 % #1 derivation - not applicable by default
 {}
 
-\plt{``Ref.\ By'' is used repeatedly with the different types of information.
-  This stands for Referenced By.  It means that the models, definitions and
-  assumptions listed reference the current model, definition or assumption.
-  This information is given for traceability.  Ref. By provides a pointer in the
-  opposite direction to what we commonly do.  You still need to have a reference
-  in the other direction pointing to the current model, definition or
-  assumption.  As an example, if T1 is referenced by G2, that means that G2 will
-  explicitly include a reference to T1.}
-
 ~\newline
 
 \subsubsection{General Definitions}\label{sec_gendef}
 
-\plt{General Definitions (GDs) are a refinement of one or more TMs, and/or of
-  other GDs.  The GDs are less abstract than the TMs.  Generally the reduction
-  in abstraction is possible through invoking (using/referencing) Assumptions.
-  For instance, the TM could be Newton's Law of Cooling stated abstracting.  The
-  GD could take the general law and apply it to get a 1D equation.}
-
 This section collects the laws and equations that will be used in building the
 instance models.
 
-\plt{Some projects may not have any content for this section, but the section
-  heading should be kept.}  \plt{Modify the examples below for your problem, and
-  add additional definitions as appropriate.}
 
 ~\newline
 
@@ -743,11 +719,6 @@ between the environment and the object (\si{\celsius}).
 \end{minipage}\\
 
 \subsubsection*{Detailed derivation of simplified rate of change of temperature}
-
-\plt{This may be necessary when the necessary information does not fit in the
-  description field.}
-\plt{Derivations are important for justifying a given GD.  You want it to be
-  clear where the equation came from.}
 
 \subsubsection{Data Definitions}\label{sec_datadef}
 
@@ -873,20 +844,16 @@ The goals \gsref{Gsegment} are solved by finding \iref{roi} and perform \iref{se
   \hline
   Label& \bf Region of interest \\
   \hline
-  Inputs & $ \text{V}_\text{in} : \mathbb{R}^{m_i \times n_i \times p_i}$ , $\text{Starting\_voxel (Sv)} : \mathbb{N}^{3}$, $\text{Size (S)} : \mathbb{N}^{3}$,  \\
+  Inputs & $ \text{V}_\text{in}:\mathbb{R}^{m_i \times n_i \times p_i}$ , $\text{Starting\_voxel (Sv)} : \it{sequence}[0..2] $, $\text{Size (S)} : \it{sequence}[0..2]$,  \\
   \hline
   Output& $ \text{V}_\text{out} : \mathbb{R}^{m_o \times n_o \times p_o}$\\
   \hline
   Description & The regions of interest is a subset (shaped like a box) of the 3D Vout. This subset contains the anatomical structure that the users wants to read, process or extract. 
 ~\newline For Starting\_voxel $[Sv_1, Sv_2, Sv_3]$ and for Size $[S_1, S_2, S_3]$:
 \begin{center}
-$ 0\leq Sv_1\leq m_i  \; \wedge \;  0 \leq  Sv_2 \leq n_i   \; \wedge \;  0 \leq  Sv_3 \leq p_i $. 
-$ 0 \leq  S_1  \leq m_i  \; \wedge \;  0 \leq  S_2 \leq n_i   \; \wedge \;  0 \leq  S_3 \leq p_i $.
-$ 0 \leq  Sv_1 + S_1  \leq m_i  \; \wedge \;  0 \leq  Sv_2 +S_2 \leq n_i   \; \wedge \;  0 \leq  Sv_3+S_3 \leq p_i $
-\end{center}
-For $ \text{V}_\text{out}$:
-\begin{center}
-$ m_o = S_1  \; \wedge \;  n_o = S_2  \; \wedge \; p_o = S_3  $. 
+$  m_o=S_1  \; \wedge \;  n_o=S_2   \; \wedge \;  p_o=S_3 $
+$ \forall i,j,k:\mathbb{N} \; \{i \in [0, m_o-1]  \; \wedge \; j \in [0,n_o-1] \; \wedge \; k \in [0, p_o-1] \} $. 
+$ \text{V}_\text{out}[i,j,k] =  \text{V}_\text{in}[Sv_1+i, Sv_2+j, Sv_3+k] $. 
 \end{center}
   \\
   \hline
@@ -911,11 +878,11 @@ $ m_o = S_1  \; \wedge \;  n_o = S_2  \; \wedge \; p_o = S_3  $.
   \hline
   Label& \bf Segmentation \\
   \hline
-  Input & $ \text{V}_\text{in} : \mathbb{R}^{m \times n \times p}$, $ \text{Seed} : \mathbb{N}^{3}$ \\
+  Input & $ \text{V}_\text{in} : \mathbb{R}^{m \times n \times p}$, $ \text{Seed}$ \\
   \hline
   Output& $ \text{V}_\text{out} : \mathbb{R}^{m \times n \times p}$\\
   \hline
-  Description & The process of extract an anotomical structure from the original 3D volume. The extracted anotomical structure is represented with high intensity pixel value. The rest of the image should have a lower intensity pixel value.
+  Description & The process of extract an anotomical structure from the original 3D volume. The extracted anotomical structure is represented with high intensity pixel value. The rest of the image should have a lower intensity pixel value. A seed is what the algorithm needed as the inputs to perform segmentation, the type of a seed is different among different algorithm.
 \newline For Vout:
 \begin{center}
 $ \forall i,j,k : \mathbb{N} \{i \in [0, m-1]  \; \wedge \; j \in [0,n-1] \; \wedge \; k \in [0, p-1] \} $.
@@ -942,40 +909,47 @@ $ \forall i,j,k : \mathbb{N} \{i \in [0, m-1]  \; \wedge \; j \in [0,n-1] \; \we
 
 
 \subsubsection{Input Data Constraints} \label{sec_DataConstraints}    
+Data constraints on the input are as follows:
+\newline
+\begin{itemize}
+\item{ For Starting\_voxel $[Sv_1, Sv_2, Sv_3]$, $ \text{V}_\text{in}:\mathbb{R}^{m_i \times n_i \times p_i}$ , and Size $[S_1, S_2, S_3]$:}\\
+$ 0\leq Sv_1\leq m_i  \; \wedge \;  0 \leq  Sv_2 \leq n_i   \; \wedge \;  0 \leq  Sv_3 \leq p_i $. \\
+$ 0 < S_1  \le m_i  \; \wedge \;  0 <  S_2 \le n_i   \; \wedge \;  0 <  S_3 \le p_i $.\\
+$ 0 \leq  Sv_1 + S_1  \leq m_i  \; \wedge \;  0 \leq  Sv_2 +S_2 \leq n_i   \; \wedge \;  0 \leq  Sv_3+S_3 \leq p_i $\\
+\end{itemize}
 
-Table~\ref{TblInputVar} shows the data constraints on the input output
-variables.  The column for physical constraints gives the physical limitations
-on the range of values that can be taken by the variable.  The column for
-software constraints restricts the range of inputs to reasonable values.  The
-software constraints will be helpful in the design stage for picking suitable
-algorithms.  The constraints are conservative, to give the user of the model the
-flexibility to experiment with unusual situations.  The column of typical values
-is intended to provide a feel for a common scenario.  The uncertainty column
-provides an estimate of the confidence with which the physical quantities can be
-measured.  This information would be part of the input if one were performing an
-uncertainty quantification exercise.
+%Table~\ref{TblInputVar} shows the data constraints on the input output
+%variables.  The column for physical constraints gives the physical limitations
+%on the range of values that can be taken by the variable.  The column for
+%software constraints restricts the range of inputs to reasonable values.  The%
+%software constraints will be helpful in the design stage for picking suitable
+%algorithms.  The constraints are conservative, to give the user of the model the
+%flexibility to experiment with unusual situations.  The column of typical values
+%is intended to provide a feel for a common scenario.  The uncertainty column
+%provides an estimate of the confidence with which the physical quantities can be
+%measured.  This information would be part of the input if one were performing an
+% uncertainty quantification exercise.
 
-The specification parameters in Table~\ref{TblInputVar} are listed in
-Table~\ref{TblSpecParams}.
+% The specification parameters in Table~\ref{TblInputVar} are listed in
+% Table~\ref{TblSpecParams}.
 
-\begin{table}[!h]
-  \caption{Input Variables} \label{TblInputVar}
-  \renewcommand{\arraystretch}{1.2}
-\noindent \begin{longtable*}{l l l l c} 
-  \toprule
-  \textbf{Var} & \textbf{Physical Constraints} & \textbf{Software Constraints} &
-                             \textbf{Typical Value} & \textbf{Uncertainty}\\
-  \midrule 
-  $L$ & $L > 0$ & $L_{\text{min}} \leq L \leq L_{\text{max}}$ & 1.5 \si[per-mode=symbol] {\metre} & 10\%
-  \\
-  \bottomrule
-\end{longtable*}
-\end{table}
+%\begin{table}[!h]
+%  \caption{Input Variables} \label{TblInputVar}
+%  \renewcommand{\arraystretch}{1.2}
+%\noindent \begin{longtable*}{l l l l c} 
+%  \toprule
+%  \textbf{Var} & \textbf{Physical Constraints} & \textbf{Software Constraints} &
+%                             \textbf{Typical Value} & \textbf{Uncertainty}\\
+%  \midrule 
+%$ 0\leq Sv_1\leq m_i  \; \wedge \;  0 \leq  Sv_2 \leq n_i   \; \wedge \;  0 \leq  Sv_3 \leq p_i $. 
+%$ 0 < S_1  \le m_i  \; \wedge \;  0 <  S_2 \le n_i   \; \wedge \;  0 <  S_3 \le p_i $.
+%$ 0 \leq  Sv_1 + S_1  \leq m_i  \; \wedge \;  0 \leq  Sv_2 +S_2 \leq n_i   \; \wedge \;  0 \leq  Sv_3+S_3 \leq p_i $
 
-\noindent 
-\begin{description}
-\item[(*)] \plt{you might need to add some notes or clarifications}
-\end{description}
+  % Size $\it{sequence}[0..2]$ & $x>0 \forall x \in Size$ & $L_{\text{min}} \leq L \leq L_{\text{max}}$ & 1.5 \si[per-mode=symbol] {\metre} & 10\%
+%  \\
+%  \bottomrule
+%\end{longtable*}
+%\end{table}
 
 \begin{table}[!h]
 \caption{Specification Parameter Values} \label{TblSpecParams}
@@ -1033,23 +1007,19 @@ qualities that the software is expected to exhibit.
          \textbf{symbol}  & \textbf{description}\\
          \midrule 
 $X$ & CT Scans volume
-(\ddref{volume}))\\ %comparing value used for excluding correlation coefficients
+(\ddref{volume})\\ %comparing value used for excluding correlation coefficients
+$Seed$ & Any inputs neede by the segmentation algorithm (\iref{segmentation})\\
          \bottomrule
 \end{longtable*}
 
-\item[R\refstepcounter{reqnum}\thereqnum \label{R_Outputs}:] Output a region of interest that only contains aorta.
+\item[R\refstepcounter{reqnum}\thereqnum \label{R_roi}:] Allow user to create or select a region of interest (\iref{roi}) that contains all of the aorta.
 
-\item[R\refstepcounter{reqnum}\thereqnum \label{R_Visualize}:] Visualize the inputs or outputs data.
-\item[R\refstepcounter{reqnum}\thereqnum \label{R_VerifyOutput}:]
-  \plt{Verification related requirements.}
+\item[R\refstepcounter{reqnum}\thereqnum \label{R_Visualize}:] Visualize any volume (\ddref{volume}).
 
-\item[R\refstepcounter{reqnum}\thereqnum \label{R_Output}:] \plt{Output related
-    requirements.}
+\item[R\refstepcounter{reqnum}\thereqnum \label{R_seed}:] Allow user to input various data type of data for seed.
 
+\item[R\refstepcounter{reqnum}\thereqnum \label{R_output}:] Allow user to link to segmentation library, and perform segmentation (\iref{segmentation}) on the input data.
 \end{itemize}
-
-\plt{Every IM should map to at least one requirement, but not every requirement
-  has to map to a corresponding IM.}
 
 \subsection{Nonfunctional Requirements}
 
