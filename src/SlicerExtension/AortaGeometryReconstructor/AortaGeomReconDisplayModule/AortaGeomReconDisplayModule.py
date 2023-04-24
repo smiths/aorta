@@ -903,8 +903,7 @@ class AortaGeomReconDisplayModuleLogic(ScriptedLoadableModuleLogic):  # noqa: F4
 
     def process(self, seed, seg_type, qualified_coef, threshold_coef,
                 num_slice_skipping, rms_error, no_ite, curvature_scaling,
-                propagation_scaling, debug
-            ):
+                propagation_scaling, debug):
         seed = seed.split(",")
         seed = [int(i) for i in seed]
         now = datetime.now()
