@@ -937,69 +937,6 @@ class AortaGeomReconDisplayModuleLogic(ScriptedLoadableModuleLogic):  # noqa: F4
         self._processing_image = segmenter.processing_image
         return self._processing_image
 
-    def processDescendingAorta(
-                self,
-                descAortaSeed,
-                qualified_coef,
-                num_slice_skipping,
-            ):
-        descAortaSeedStr = descAortaSeed.split(",")
-        dASnumber = [int(i) for i in descAortaSeedStr]
-        now = datetime.now()
-
-        logging.info(f"{now} processing Descending Aorta Segmentation")
-
-        desc_axial_segmenter = AortaSegmenter(
-            cropped_image=self._cropped_image,
-            starting_slice=dASnumber[2], aorta_centre=dASnumber[:2],
-            num_slice_skipping=int(float(num_slice_skipping)),
-            qualified_coef=float(qualified_coef),
-            processing_image=None,
-            seg_type=SegType.descending_aorta
-        )
-        desc_axial_segmenter.begin_segmentation()
-        logging.info(
-            f"{now} Finished processing Descending Aorta Segmentation")
-        self._processing_image = desc_axial_segmenter.processing_image
-        return self._processing_image
-
-    def processAscendingAorta(
-                self,
-                ascAortaSeed,
-                qualified_coef,
-                num_slice_skipping,
-            ):
-        ascAortaSeedStr = ascAortaSeed.split(",")
-        aASnumber = [int(i) for i in ascAortaSeedStr]
-        now = datetime.now()
-        logging.info(f"{now} processing Ascending Aorta Segmentation")
-
-        if not self._cropped_image:
-            volume = slicer.mrmlScene.GetFirstNode(
-                    "cropped", None, None, False)
-            self.transform_image(volume)
-
-        if not self._processing_image:
-            volume = slicer.mrmlScene.GetFirstNode(
-                    "Segmented Descending Aorta Volume", None, None, False)
-            print(volume)
-            self._processing_image = sitkUtils.PullVolumeFromSlicer(volume)
-
-        asc_axial_segmenter = AortaSegmenter(
-            cropped_image=self._cropped_image,
-            starting_slice=aASnumber[2], aorta_centre=aASnumber[:2],
-            num_slice_skipping=int(float(num_slice_skipping)),
-            qualified_coef=float(qualified_coef),
-            processing_image=self._processing_image,
-            seg_type=SegType.ascending_aorta
-        )
-
-        asc_axial_segmenter.begin_segmentation()
-        logging.info(
-            f"{now} Finished processing Ascending Aorta Segmentation")
-        self._processing_image = asc_axial_segmenter.processing_image
-        return self._processing_image
-
     def processSagittaly(self, qualified_coef, num_slice_skipping,):
 
         if not self._cropped_image:
