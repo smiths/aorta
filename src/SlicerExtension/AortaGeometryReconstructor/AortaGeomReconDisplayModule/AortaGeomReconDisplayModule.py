@@ -222,6 +222,9 @@ class AortaGeomReconDisplayModuleWidget(ScriptedLoadableModuleWidget, VTKObserva
         self.ui.numOfSkippingSlice.connect(
             "valueChanged(double)", self.updateParameterNodeFromGUI)
 
+        self.ui.kernelSize.connect(
+            "valueChanged(double)", self.updateParameterNodeFromGUI)
+
         self.ui.thresholdCoefficient.connect(
             "valueChanged(double)", self.updateParameterNodeFromGUI)
         self.ui.rmsError.connect(
@@ -401,7 +404,8 @@ class AortaGeomReconDisplayModuleWidget(ScriptedLoadableModuleWidget, VTKObserva
             "qualified_coef", str(self.ui.qualifiedCoefficient.value))
         self._parameterNode.SetParameter(
             "numOfSkippingSlice", str(self.ui.numOfSkippingSlice.value))
-
+        self._parameterNode.SetParameter(
+            "kernel_size", str(self.ui.kernelSize.value))
         self._parameterNode.SetParameter(
             "threshold_coef", str(self.ui.thresholdCoefficient.value))
         self._parameterNode.SetParameter(
@@ -446,14 +450,18 @@ class AortaGeomReconDisplayModuleWidget(ScriptedLoadableModuleWidget, VTKObserva
         self.ui.propagationScaling.hide()
         self.ui.thresholdCoefLabel.hide()
         self.ui.debugBox.hide()
+        self.ui.seedLocker.hide()
         self.ui.segmentationCollapsibleBox.hide()
         self.ui.inputsCollapsibleButton.hide()
+        self.ui.kernelSizeLabel.hide()
+        self.ui.kernelSize.hide()
 
     def showPhaseDAS(self):
         self._parameterNode.SetParameter("phase", "2")
         self.ui.phaseLabel.text = AGR_phase.segment_desc_aorta.value
         self.ui.revertButton.enabled = True
         self.ui.ascAortaSeed.hide()
+        self.ui.seedLocker.show()
         self.ui.ascAortaSeedLabel.hide()
         self.ui.descAortaSeed.show()
         self.ui.descAortaSeedLabel.show()
@@ -474,6 +482,8 @@ class AortaGeomReconDisplayModuleWidget(ScriptedLoadableModuleWidget, VTKObserva
         self.ui.debugBox.show()
         self.ui.segmentationCollapsibleBox.show()
         self.ui.inputsCollapsibleButton.show()
+        self.ui.kernelSizeLabel.show()
+        self.ui.kernelSize.show()
 
     def showPhaseAAS(self):
         self._parameterNode.SetParameter("phase", "3")
@@ -483,10 +493,26 @@ class AortaGeomReconDisplayModuleWidget(ScriptedLoadableModuleWidget, VTKObserva
         self.ui.descAortaSeedLabel.hide()
         self.ui.ascAortaSeed.show()
         self.ui.ascAortaSeedLabel.show()
+        self.ui.seedLocker.show()
         self.ui.qualifiedCoefficient.show()
         self.ui.numOfSkippingSlice.show()
         self.ui.qualifiedCoefficientLabel.show()
         self.ui.numOfSkippingSliceLabel.show()
+        self.ui.rmsLabel.show()
+        self.ui.noIteLabel.show()
+        self.ui.curScalingLabel.show()
+        self.ui.propScalingLabel.show()
+        self.ui.rmsError.show()
+        self.ui.noIteration.show()
+        self.ui.curvatureScaling.show()
+        self.ui.propagationScaling.show()
+        self.ui.thresholdCoefficient.show()
+        self.ui.thresholdCoefLabel.show()
+        self.ui.debugBox.show()
+        self.ui.segmentationCollapsibleBox.show()
+        self.ui.inputsCollapsibleButton.show()
+        self.ui.kernelSizeLabel.show()
+        self.ui.kernelSize.show()
 
     def showPhaseSAS(self):
         self._parameterNode.SetParameter("phase", "4")
@@ -605,12 +631,14 @@ class AortaGeomReconDisplayModuleWidget(ScriptedLoadableModuleWidget, VTKObserva
                     "curv_scaling")
                 prop_scaling = self._parameterNode.GetParameter(
                     "prop_scaling")
+                kernel_size = self._parameterNode.GetParameter(
+                    "kernel_size")
                 volume = sceneObj.GetFirstNode("cropped", None, None, False)
                 self.logic.transform_image(volume)
                 image = self.logic.process(
                     descAortaSeed, SegType.descending_aorta, qualified_coef,
-                    threshold_coef, num_slice_skipping, rms_error,
-                    no_ite, curv_scaling, prop_scaling,
+                    threshold_coef, num_slice_skipping, kernel_size,
+                    rms_error, no_ite, curv_scaling, prop_scaling,
                     self.ui.debugBox.checked
                 )
 
@@ -676,12 +704,13 @@ class AortaGeomReconDisplayModuleWidget(ScriptedLoadableModuleWidget, VTKObserva
             # self.crosshairNode.GetCursorPositionRAS(ras)
             ijk = ",".join([str(int(i)) for i in point_Ijk])
             with slicer.util.tryWithErrorDisplay(errorMsg, waitCursor=True):
-                if self._parameterNode.GetParameter("phase") == "2":
-                    self._parameterNode.SetParameter(
-                        "descAortaSeed", ijk)
-                elif self._parameterNode.GetParameter("phase") == "3":
-                    self._parameterNode.SetParameter(
-                        "ascAortaSeed", ijk)
+                if not self.ui.seedLocker.checked:
+                    if (self._parameterNode.GetParameter("phase") == "2"):
+                        self._parameterNode.SetParameter(
+                            "descAortaSeed", ijk)
+                    elif (self._parameterNode.GetParameter("phase") == "3"):
+                        self._parameterNode.SetParameter(
+                            "ascAortaSeed", ijk)
 #
 # AortaGeomReconDisplayModuleLogic
 #
@@ -873,6 +902,8 @@ class AortaGeomReconDisplayModuleLogic(ScriptedLoadableModuleLogic):  # noqa: F4
             parameterNode.SetParameter("curv_scaling", "0.5")
         if not parameterNode.GetParameter("prop_scaling"):
             parameterNode.SetParameter("prop_scaling", "1.0")
+        if not parameterNode.GetParameter("kernel_size"):
+            parameterNode.SetParameter("kernel_size", "3.0")
 
     def setDefaultParameters(self, parameterNode):
         if parameterNode.GetParameter("cropIndex"):
@@ -895,6 +926,8 @@ class AortaGeomReconDisplayModuleLogic(ScriptedLoadableModuleLogic):  # noqa: F4
             parameterNode.SetParameter("curv_scaling", "0.5")
         if parameterNode.GetParameter("prop_scaling"):
             parameterNode.SetParameter("prop_scaling", "1.0")
+        if parameterNode.GetParameter("kernel_size"):
+            parameterNode.SetParameter("kernel_size", "3.0")
 
     def resetDefaultParameters(self, parameterNode):
         self.setDefaultParameters(parameterNode)
@@ -902,8 +935,8 @@ class AortaGeomReconDisplayModuleLogic(ScriptedLoadableModuleLogic):  # noqa: F4
             parameterNode.SetParameter("phase", "1")
 
     def process(self, seed, seg_type, qualified_coef, threshold_coef,
-                num_slice_skipping, rms_error, no_ite, curvature_scaling,
-                propagation_scaling, debug):
+                num_slice_skipping, kernel_size, rms_error, no_ite,
+                curvature_scaling, propagation_scaling, debug):
         seed = seed.split(",")
         seed = [int(i) for i in seed]
         now = datetime.now()
@@ -927,6 +960,7 @@ class AortaGeomReconDisplayModuleLogic(ScriptedLoadableModuleLogic):  # noqa: F4
             seg_type=seg_type, qualified_coef=float(qualified_coef),
             threshold_coef=float(threshold_coef),
             num_slice_skipping=int(float(num_slice_skipping)),
+            kernel_size=int(float(kernel_size)),
             rms_error=float(rms_error), no_ite=int(no_ite.split(".")[0]),
             curvature_scaling=float(curvature_scaling),
             propagation_scaling=float(propagation_scaling), debug=debug

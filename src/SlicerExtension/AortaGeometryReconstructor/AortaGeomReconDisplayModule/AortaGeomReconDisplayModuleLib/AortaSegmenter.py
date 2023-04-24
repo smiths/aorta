@@ -44,8 +44,8 @@ class AortaSegmenter():
             self, cropped_image, starting_slice, aorta_centre,
             processing_image, seg_type, qualified_coef=2.2,
             threshold_coef=3.5, num_slice_skipping=3,
-            rms_error=0.02, no_ite=600, curvature_scaling=0.5,
-            propagation_scaling=1, debug=False
+            kernel_size=3, rms_error=0.02, no_ite=600,
+            curvature_scaling=0.5, propagation_scaling=1, debug=False
     ):
         self._starting_slice = starting_slice
         self._aorta_centre = aorta_centre
@@ -55,6 +55,7 @@ class AortaSegmenter():
         self._qualified_coef = qualified_coef
         self._threshold_coef = threshold_coef
         self._cropped_image = cropped_image
+        self._kernel_size = kernel_size
         self._rms_error = rms_error
         self._no_iteration = no_ite
         self._curvature_scaling = curvature_scaling
@@ -249,7 +250,7 @@ class AortaSegmenter():
             ] = PixelValue.white_pixel.value
         for s in self._prev_seeds:
             label_map[s] = PixelValue.white_pixel.value
-        label_map = sitk.BinaryDilate(label_map, [3] * 2)
+        label_map = sitk.BinaryDilate(label_map, [self._kernel_size] * 2)
         return label_map
 
     def __get_image_segment(self):
