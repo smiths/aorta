@@ -70,13 +70,11 @@ This section records information for easy reference.
   MG & Module Guide \\
   OS & Operating System \\
   R & Requirement\\
+  NFR & Non-functional requirements\\
   SC & Scientific Computing \\
   SRS & Software Requirements Specification\\
   \progname & Aorta geometry reconstruction\\
   UC & Unlikely Change \\
-  DAS & Descending Aorta Segmenter\\
-  AAS & Ascending Aorta Segmenter\\
-  ASS &  Sagittal Aorta Segmenter\\
   \bottomrule
 \end{tabular}\\
 
@@ -161,10 +159,11 @@ change.
 \begin{description}
 \item[\refstepcounter{acnum} \actheacnum \label{acHardware}:] The specific hardware on which the software is running.
 \item[\refstepcounter{acnum} \actheacnum \label{acInput}:] The format of the initial input data.
-\item[\refstepcounter{acnum} \actheacnum \label{acAlgo}:] The algorithm to segment the aorta out of other organs from ct scans.
+\item[\refstepcounter{acnum} \actheacnum \label{acAlgo}:] The algorithm to segment the aorta.
 \item[\refstepcounter{acnum} \actheacnum \label{acInputParams}:] The input parameters required to execute the algorithm.
-\item[\refstepcounter{acnum} \actheacnum \label{acGetInput}:] The methods to get input from the user.
-\item[\refstepcounter{acnum} \actheacnum \label{acVisualize}:] The methods to visualize the processing data (volume).
+\item[\refstepcounter{acnum} \actheacnum \label{acGetInput}:] The methods to get the inputs from the user.
+\item[\refstepcounter{acnum} \actheacnum \label{acGetROI}:] The methods to retrieve a region of interest.
+\item[\refstepcounter{acnum} \actheacnum \label{acVisualize}:] The methods to visualize a volume.
 \item[\refstepcounter{acnum} \actheacnum \label{acControl}:] The program state is likely changing during the processing.
 \item[\refstepcounter{acnum} \actheacnum \label{acOutput}:] The output data varies in data type.
 
@@ -201,6 +200,7 @@ actually be implemented.
 \item [\refstepcounter{mnum} \mthemnum \label{mControl}:] Control Module
 \item [\refstepcounter{mnum} \mthemnum \label{mGUI}:] GUI Module
 \item [\refstepcounter{mnum} \mthemnum \label{mDisplay}:] Display Module
+\item [\refstepcounter{mnum} \mthemnum \label{mROI}:] Crop Volume Module
 \item [\refstepcounter{mnum} \mthemnum \label{mAortaSeg}:] Aorta Segmentation Module
 \item [\refstepcounter{mnum} \mthemnum \label{mAS}:] Axial Segmentation Module
 \item [\refstepcounter{mnum} \mthemnum \label{mSS}:] Sagittal Segmentation Module
@@ -290,9 +290,9 @@ to be implemented.
 \begin{description}
 \item[Secrets:]The format and structure of the input data.
 \item[Services:]Converts the input data into the data structure used by the input parameters module.
-\item[Implemented By:] \progname{}
-\item[Type of Module:] [Abstract Data Type]
-  [Information to include for leaf modules in the decomposition by secrets tree.]
+\item[Implemented By:] 3D Slicer
+%\item[Type of Module:] [Abstract Data Type]
+%  [Information to include for leaf modules in the decomposition by secrets tree.]
 \end{description}
 
 \subsubsection{Input Parameter Module (\mref{mParams})}
@@ -301,8 +301,7 @@ to be implemented.
 \item[Secrets:] The data structure for input parameters, how the
 values are input and how the values are verified.  The load and verify secrets
 are isolated to their own access programs.
-\item[Services:] Gets input from user (including the starting slice of the segmentation, the center of the circle,
- segmentation factor that is used to determined a good segmentation slice), stores input and verifies that the
+\item[Services:] Gets input from user, stores input and verifies that the
   input parameters comply with physical and software constraints. Throws an
   error if a parameter violates a physical constraint. Throws a warning if a
   parameter violates a software constraint.  Stored parameters can be read
@@ -322,7 +321,7 @@ are isolated to their own access programs.
 \subsubsection{GUI Module (\mref{mGUI})}
 \begin{description}
 \item[Secrets:]The necessary library/framework to build a GUI software.
-\item[Services:]Povide GUI software for user to write inputs, and send commands to the program. It could include the rendering a windows, inputs, keyboard and mouse interaction with the GUI elements.
+\item[Services:]Povide GUI software for user to write/read inputs, and send commands to the program. It could include the rendering a windows, inputs, keyboard and mouse interaction with the GUI elements.
 \item[Implemented By:] 3D Slicer
 \end{description}
 
@@ -332,6 +331,14 @@ are isolated to their own access programs.
 with any other info to the screen.
 \item[Services:]Display the aorta images and vtk 3D geometry.
 \item[Implemented By:] \progname
+\end{description}
+
+\subsubsection{Crop Module (\mref{mROI})}
+\begin{description}
+\item[Secrets:] The parameters, libraries to retrieve a region of interest from a volume.
+\item[Services:] Import the necessary libraries, store the input parameter, and coordinate the uses of these data and libraries to retrieve a region of interest.
+\item[Implemented By:] 3D Slicer
+% \item[Use case:] This module should always have a \emph{begin\_segmentation} API available for the developer to begin the aorta segmentation.
 \end{description}
 
 \subsubsection{Aorta Segmentation Module (\mref{mAortaSeg})}
@@ -410,16 +417,13 @@ requirements and between the modules and the anticipated changes.
 \textbf{Req.} & \textbf{Modules}\\
 \midrule
 R1 & \mref{mHH}, \mref{mInput}, \mref{mParams}, \mref{mControl}\\
-R2 & \mref{mInput}, \mref{mParams}\\
-R3 & \mref{mVerify}\\
-R4 & \mref{mOutput}, \mref{mControl}\\
-R5 & \mref{mOutput}, \mref{mODEs}, \mref{mControl}, \mref{mSeqDS}, \mref{mSolver}, \mref{mPlot}\\
-R6 & \mref{mOutput}, \mref{mODEs}, \mref{mControl}, \mref{mSeqDS}, \mref{mSolver}, \mref{mPlot}\\
-R7 & \mref{mOutput}, \mref{mEnergy}, \mref{mControl}, \mref{mSeqDS}, \mref{mPlot}\\
-R8 & \mref{mOutput}, \mref{mEnergy}, \mref{mControl}, \mref{mSeqDS}, \mref{mPlot}\\
-R9 & \mref{mVerifyOut}\\
-R10 & \mref{mOutput}, \mref{mODEs}, \mref{mControl}\\
-R11 & \mref{mOutput}, \mref{mODEs}, \mref{mEnergy}, \mref{mControl}\\
+R2 & \mref{mParams}, \mref{mROI}\\
+R3 & \mref{mROI}, \mref{mAortaSeg}, \mref{mAS}, \mref{mSS}, \mref{mSITK}, \mref{mNP}\\
+R4 & \mref{{mDisplay}}\\
+NFR1 & \mref{mHH}, \mref{mInput}, \mref{mParams}, \mref{mControl}\\
+NFR2 & \mref{mInput}, \mref{mParams}\\
+NFR3 & \mref{mVerify}\\
+NFR4 & \mref{mOutput}, \mref{mControl}\\
 \bottomrule
 \end{tabular}
 \caption{Trace Between Requirements and Modules}
