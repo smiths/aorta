@@ -43,7 +43,9 @@ class AortaSegmenter():
     def __init__(
             self, cropped_image, starting_slice, aorta_centre,
             processing_image, seg_type, qualified_coef=2.2,
-            threshold_coef=3.5, num_slice_skipping=3, debug=False
+            threshold_coef=3.5, num_slice_skipping=3,
+            kernel_size=3, rms_error=0.02, no_ite=600,
+            curvature_scaling=0.5, propagation_scaling=1, debug=False
     ):
         self._starting_slice = starting_slice
         self._aorta_centre = aorta_centre
@@ -53,6 +55,11 @@ class AortaSegmenter():
         self._qualified_coef = qualified_coef
         self._threshold_coef = threshold_coef
         self._cropped_image = cropped_image
+        self._kernel_size = kernel_size
+        self._rms_error = rms_error
+        self._no_iteration = no_ite
+        self._curvature_scaling = curvature_scaling
+        self._propagation = propagation_scaling
         self._debug_mod = debug
 
     def begin_segmentation(self):
@@ -63,16 +70,12 @@ class AortaSegmenter():
         (superior to inferior, then inferior to superior starting from the seed slice).
     
         """ # noqa
-        rms_error = 0.02
-        no_iteration = 600
-        curvature_scaling = 0.5
-        propagation_scaling = 1
         self._stats_filter = sitk.LabelStatisticsImageFilter()
         self._segment_filter = sitk.ThresholdSegmentationLevelSetImageFilter()
-        self._segment_filter.SetMaximumRMSError(rms_error)
-        self._segment_filter.SetNumberOfIterations(no_iteration)
-        self._segment_filter.SetCurvatureScaling(curvature_scaling)
-        self._segment_filter.SetPropagationScaling(propagation_scaling)
+        self._segment_filter.SetMaximumRMSError(self._rms_error)
+        self._segment_filter.SetNumberOfIterations(self._no_iteration)
+        self._segment_filter.SetCurvatureScaling(self._curvature_scaling)
+        self._segment_filter.SetPropagationScaling(self._propagation)
         self._segment_filter.ReverseExpansionDirectionOn()
         self._skipped_slices = []
 
@@ -147,7 +150,7 @@ class AortaSegmenter():
         counter = 0
         is_overlapping = False
         for slice_i in range(self._start, self._end, self._step):
-            if self._debug_mod and abs(slice_i-self._start) == 10:
+            if self._debug_mod and abs(slice_i-self._start) > 10:
                 return
             self._cur_img_slice = self._cropped_image[:, :, slice_i]
             segmented_slice = self.__get_image_segment()
@@ -247,7 +250,7 @@ class AortaSegmenter():
             ] = PixelValue.white_pixel.value
         for s in self._prev_seeds:
             label_map[s] = PixelValue.white_pixel.value
-        label_map = sitk.BinaryDilate(label_map, [3] * 2)
+        label_map = sitk.BinaryDilate(label_map, [self._kernel_size] * 2)
         return label_map
 
     def __get_image_segment(self):
@@ -280,15 +283,6 @@ class AortaSegmenter():
         segmented_slice = self._segment_filter.Execute(
             dis_map, sitk.Cast(self._cur_img_slice, sitk.sitkFloat32))
 
-        if self._debug_mod:
-            self.__debug(
-                label_map,
-                dis_map,
-                lower_threshold,
-                upper_threshold,
-                segmented_slice
-            )
-
         return segmented_slice
 
     def __count_pixel_des(self, new_slice):
@@ -305,9 +299,6 @@ class AortaSegmenter():
         list_x, list_y = np.where(nda == PixelValue.white_pixel.value)
         new_centre = (int(np.average(list_y)), int(np.average(list_x)))
         total_coord = len(list_x)
-        if self._debug_mod:
-            print(total_coord)
-            print(self._aorta_centre, new_centre)
         return total_coord, new_centre
 
     def __count_pixel_asc(self, new_slice):
@@ -427,21 +418,3 @@ class AortaSegmenter():
 
         """ # noqa
         return self._processing_image
-
-    def __debug(self, label_map, dis_map, lt, ut, ss):
-        nda_label = sitk.GetArrayFromImage(label_map)
-        print(nda_label)
-        nda = sitk.GetArrayFromImage(dis_map)
-        print("lower:", lt, "upper:", ut)
-        list_x, list_y = np.where(nda_label == PixelValue.white_pixel.value)
-        print(len(list_x))
-        print("\ndistance_map")
-        print(nda)
-        print()
-        for i in range(len(list_x)):
-            print(list_x[i], list_y[i], end=" ")
-            print(nda[(list_x[i], list_y[i])])
-        nda_ss = sitk.GetArrayFromImage(ss)
-        list_x, list_y = np.where(nda_ss > PixelValue.black_pixel.value)
-        for i in range(len(list_x)):
-            print(list_x[i], list_y[i])

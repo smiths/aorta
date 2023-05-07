@@ -222,7 +222,19 @@ class AortaGeomReconDisplayModuleWidget(ScriptedLoadableModuleWidget, VTKObserva
         self.ui.numOfSkippingSlice.connect(
             "valueChanged(double)", self.updateParameterNodeFromGUI)
 
-        self.showPhaseCropAorta()
+        self.ui.kernelSize.connect(
+            "valueChanged(double)", self.updateParameterNodeFromGUI)
+
+        self.ui.thresholdCoefficient.connect(
+            "valueChanged(double)", self.updateParameterNodeFromGUI)
+        self.ui.rmsError.connect(
+            "valueChanged(double)", self.updateParameterNodeFromGUI)
+        self.ui.noIteration.connect(
+            "valueChanged(double)", self.updateParameterNodeFromGUI)
+        self.ui.curvatureScaling.connect(
+            "valueChanged(double)", self.updateParameterNodeFromGUI)
+        self.ui.propagationScaling.connect(
+            "valueChanged(double)", self.updateParameterNodeFromGUI)
 
         # Buttons
         self.ui.applyButton.connect('clicked(bool)', self.onApplyButton)
@@ -392,6 +404,19 @@ class AortaGeomReconDisplayModuleWidget(ScriptedLoadableModuleWidget, VTKObserva
             "qualified_coef", str(self.ui.qualifiedCoefficient.value))
         self._parameterNode.SetParameter(
             "numOfSkippingSlice", str(self.ui.numOfSkippingSlice.value))
+        self._parameterNode.SetParameter(
+            "kernel_size", str(self.ui.kernelSize.value))
+        self._parameterNode.SetParameter(
+            "threshold_coef", str(self.ui.thresholdCoefficient.value))
+        self._parameterNode.SetParameter(
+            "rms_error", str(self.ui.rmsError.value))
+        self._parameterNode.SetParameter(
+            "no_ite", str(self.ui.noIteration.value))
+        self._parameterNode.SetParameter(
+            "curv_scaling", str(self.ui.curvatureScaling.value))
+        self._parameterNode.SetParameter(
+            "prop_scaling", str(self.ui.propagationScaling.value))
+
         self.ui.applyButton.enabled = not self.logic.anyEmptySeed(
             self.ui,
             self._parameterNode.GetParameter("phase")
@@ -408,18 +433,35 @@ class AortaGeomReconDisplayModuleWidget(ScriptedLoadableModuleWidget, VTKObserva
         self.ui.phaseLabel.text = AGR_phase.crop_aorta.value
         self.ui.ascAortaSeed.hide()
         self.ui.descAortaSeed.hide()
+        self.ui.thresholdCoefficient.hide()
         self.ui.qualifiedCoefficient.hide()
         self.ui.numOfSkippingSlice.hide()
         self.ui.ascAortaSeedLabel.hide()
         self.ui.descAortaSeedLabel.hide()
         self.ui.qualifiedCoefficientLabel.hide()
         self.ui.numOfSkippingSliceLabel.hide()
+        self.ui.rmsLabel.hide()
+        self.ui.noIteLabel.hide()
+        self.ui.curScalingLabel.hide()
+        self.ui.propScalingLabel.hide()
+        self.ui.rmsError.hide()
+        self.ui.noIteration.hide()
+        self.ui.curvatureScaling.hide()
+        self.ui.propagationScaling.hide()
+        self.ui.thresholdCoefLabel.hide()
+        self.ui.debugBox.hide()
+        self.ui.seedLocker.hide()
+        self.ui.segmentationCollapsibleBox.hide()
+        self.ui.inputsCollapsibleButton.hide()
+        self.ui.kernelSizeLabel.hide()
+        self.ui.kernelSize.hide()
 
     def showPhaseDAS(self):
         self._parameterNode.SetParameter("phase", "2")
         self.ui.phaseLabel.text = AGR_phase.segment_desc_aorta.value
         self.ui.revertButton.enabled = True
         self.ui.ascAortaSeed.hide()
+        self.ui.seedLocker.show()
         self.ui.ascAortaSeedLabel.hide()
         self.ui.descAortaSeed.show()
         self.ui.descAortaSeedLabel.show()
@@ -427,6 +469,21 @@ class AortaGeomReconDisplayModuleWidget(ScriptedLoadableModuleWidget, VTKObserva
         self.ui.numOfSkippingSlice.show()
         self.ui.qualifiedCoefficientLabel.show()
         self.ui.numOfSkippingSliceLabel.show()
+        self.ui.rmsLabel.show()
+        self.ui.noIteLabel.show()
+        self.ui.curScalingLabel.show()
+        self.ui.propScalingLabel.show()
+        self.ui.rmsError.show()
+        self.ui.noIteration.show()
+        self.ui.curvatureScaling.show()
+        self.ui.propagationScaling.show()
+        self.ui.thresholdCoefficient.show()
+        self.ui.thresholdCoefLabel.show()
+        self.ui.debugBox.show()
+        self.ui.segmentationCollapsibleBox.show()
+        self.ui.inputsCollapsibleButton.show()
+        self.ui.kernelSizeLabel.show()
+        self.ui.kernelSize.show()
 
     def showPhaseAAS(self):
         self._parameterNode.SetParameter("phase", "3")
@@ -436,10 +493,26 @@ class AortaGeomReconDisplayModuleWidget(ScriptedLoadableModuleWidget, VTKObserva
         self.ui.descAortaSeedLabel.hide()
         self.ui.ascAortaSeed.show()
         self.ui.ascAortaSeedLabel.show()
+        self.ui.seedLocker.show()
         self.ui.qualifiedCoefficient.show()
         self.ui.numOfSkippingSlice.show()
         self.ui.qualifiedCoefficientLabel.show()
         self.ui.numOfSkippingSliceLabel.show()
+        self.ui.rmsLabel.show()
+        self.ui.noIteLabel.show()
+        self.ui.curScalingLabel.show()
+        self.ui.propScalingLabel.show()
+        self.ui.rmsError.show()
+        self.ui.noIteration.show()
+        self.ui.curvatureScaling.show()
+        self.ui.propagationScaling.show()
+        self.ui.thresholdCoefficient.show()
+        self.ui.thresholdCoefLabel.show()
+        self.ui.debugBox.show()
+        self.ui.segmentationCollapsibleBox.show()
+        self.ui.inputsCollapsibleButton.show()
+        self.ui.kernelSizeLabel.show()
+        self.ui.kernelSize.show()
 
     def showPhaseSAS(self):
         self._parameterNode.SetParameter("phase", "4")
@@ -548,15 +621,25 @@ class AortaGeomReconDisplayModuleWidget(ScriptedLoadableModuleWidget, VTKObserva
                     "descAortaSeed")
                 qualified_coef = self._parameterNode.GetParameter(
                     "qualified_coef")
+                threshold_coef = self._parameterNode.GetParameter(
+                    "threshold_coef")
                 num_slice_skipping = self._parameterNode.GetParameter(
                     "numOfSkippingSlice")
+                rms_error = self._parameterNode.GetParameter("rms_error")
+                no_ite = self._parameterNode.GetParameter("no_ite")
+                curv_scaling = self._parameterNode.GetParameter(
+                    "curv_scaling")
+                prop_scaling = self._parameterNode.GetParameter(
+                    "prop_scaling")
+                kernel_size = self._parameterNode.GetParameter(
+                    "kernel_size")
                 volume = sceneObj.GetFirstNode("cropped", None, None, False)
                 self.logic.transform_image(volume)
-
-                image = self.logic.processDescendingAorta(
-                    descAortaSeed,
-                    qualified_coef,
-                    num_slice_skipping
+                image = self.logic.process(
+                    descAortaSeed, SegType.descending_aorta, qualified_coef,
+                    threshold_coef, num_slice_skipping, kernel_size,
+                    rms_error, no_ite, curv_scaling, prop_scaling,
+                    self.ui.debugBox.checked
                 )
 
                 sitkUtils.PushVolumeToSlicer(
@@ -564,30 +647,32 @@ class AortaGeomReconDisplayModuleWidget(ScriptedLoadableModuleWidget, VTKObserva
                     name="Segmented Descending Aorta Volume",
                     className="vtkMRMLScalarVolumeNode"
                 )
-                # self.showPhaseAAS()
-
             elif self._parameterNode.GetParameter("phase") == "3":
                 ascAortaSeed = self._parameterNode.GetParameter(
                     "ascAortaSeed")
                 qualified_coef = self._parameterNode.GetParameter(
                     "qualified_coef")
+                threshold_coef = self._parameterNode.GetParameter(
+                    "threshold_coef")
                 num_slice_skipping = self._parameterNode.GetParameter(
                     "numOfSkippingSlice")
-                volume = sceneObj.GetFirstNode("cropped", None, None, False)
-
-                image = self.logic.processAscendingAorta(
-                    ascAortaSeed,
-                    qualified_coef,
-                    num_slice_skipping
+                rms_error = self._parameterNode.GetParameter("rms_error")
+                no_ite = self._parameterNode.GetParameter("no_ite")
+                curv_scaling = self._parameterNode.GetParameter(
+                    "curv_scaling")
+                prop_scaling = self._parameterNode.GetParameter(
+                    "prop_scaling")
+                image = self.logic.process(
+                    ascAortaSeed, SegType.descending_aorta, qualified_coef,
+                    threshold_coef, num_slice_skipping, rms_error,
+                    no_ite, curv_scaling, prop_scaling,
+                    self.ui.debugBox.checked
                 )
-
                 sitkUtils.PushVolumeToSlicer(
                     image,
                     name="Segmented Ascending Aorta Volume",
                     className="vtkMRMLScalarVolumeNode"
                 )
-                # self.showPhaseSAS()
-
             elif self._parameterNode.GetParameter("phase") == "4":
                 qualified_coef = self._parameterNode.GetParameter(
                     "qualified_coef")
@@ -619,12 +704,13 @@ class AortaGeomReconDisplayModuleWidget(ScriptedLoadableModuleWidget, VTKObserva
             # self.crosshairNode.GetCursorPositionRAS(ras)
             ijk = ",".join([str(int(i)) for i in point_Ijk])
             with slicer.util.tryWithErrorDisplay(errorMsg, waitCursor=True):
-                if self._parameterNode.GetParameter("phase") == "2":
-                    self._parameterNode.SetParameter(
-                        "descAortaSeed", ijk)
-                elif self._parameterNode.GetParameter("phase") == "3":
-                    self._parameterNode.SetParameter(
-                        "ascAortaSeed", ijk)
+                if not self.ui.seedLocker.checked:
+                    if (self._parameterNode.GetParameter("phase") == "2"):
+                        self._parameterNode.SetParameter(
+                            "descAortaSeed", ijk)
+                    elif (self._parameterNode.GetParameter("phase") == "3"):
+                        self._parameterNode.SetParameter(
+                            "ascAortaSeed", ijk)
 #
 # AortaGeomReconDisplayModuleLogic
 #
@@ -799,13 +885,25 @@ class AortaGeomReconDisplayModuleLogic(ScriptedLoadableModuleLogic):  # noqa: F4
         if not parameterNode.GetParameter("ascAortaSeed"):
             parameterNode.SetParameter("ascAortaSeed", "0,0,0")
         if not parameterNode.GetParameter("qualified_coef"):
-            parameterNode.SetParameter("qualified_coef", "0.0")
+            parameterNode.SetParameter("qualified_coef", "2.2")
+        if not parameterNode.GetParameter("threshold_coef"):
+            parameterNode.SetParameter("threshold_coef", "3.5")
         if not parameterNode.GetParameter("phase"):
             parameterNode.SetParameter("phase", "1")
         if not parameterNode.GetParameter("descAortaSeed"):
             parameterNode.SetParameter("descAortaSeed", "0,0,0")
         if not parameterNode.GetParameter("numOfSkippingSlice"):
-            parameterNode.SetParameter("numOfSkippingSlice", "0")
+            parameterNode.SetParameter("numOfSkippingSlice", "3")
+        if not parameterNode.GetParameter("rms_error"):
+            parameterNode.SetParameter("rms_error", "0.02")
+        if not parameterNode.GetParameter("no_ite"):
+            parameterNode.SetParameter("no_ite", "600")
+        if not parameterNode.GetParameter("curv_scaling"):
+            parameterNode.SetParameter("curv_scaling", "0.5")
+        if not parameterNode.GetParameter("prop_scaling"):
+            parameterNode.SetParameter("prop_scaling", "1.0")
+        if not parameterNode.GetParameter("kernel_size"):
+            parameterNode.SetParameter("kernel_size", "3.0")
 
     def setDefaultParameters(self, parameterNode):
         if parameterNode.GetParameter("cropIndex"):
@@ -815,75 +913,62 @@ class AortaGeomReconDisplayModuleLogic(ScriptedLoadableModuleLogic):  # noqa: F4
         if parameterNode.GetParameter("ascAortaSeed"):
             parameterNode.SetParameter("ascAortaSeed", "0,0,0")
         if parameterNode.GetParameter("qualified_coef"):
-            parameterNode.SetParameter("qualified_coef", "0.0")
+            parameterNode.SetParameter("qualified_coef", "2.2")
         if parameterNode.GetParameter("descAortaSeed"):
             parameterNode.SetParameter("descAortaSeed", "0,0,0")
         if parameterNode.GetParameter("numOfSkippingSlice"):
-            parameterNode.SetParameter("numOfSkippingSlice", "0")
+            parameterNode.SetParameter("numOfSkippingSlice", "3")
+        if parameterNode.GetParameter("rms_error"):
+            parameterNode.SetParameter("rms_error", "0.02")
+        if parameterNode.GetParameter("no_ite"):
+            parameterNode.SetParameter("no_ite", "600")
+        if parameterNode.GetParameter("curv_scaling"):
+            parameterNode.SetParameter("curv_scaling", "0.5")
+        if parameterNode.GetParameter("prop_scaling"):
+            parameterNode.SetParameter("prop_scaling", "1.0")
+        if parameterNode.GetParameter("kernel_size"):
+            parameterNode.SetParameter("kernel_size", "3.0")
 
     def resetDefaultParameters(self, parameterNode):
         self.setDefaultParameters(parameterNode)
         if parameterNode.GetParameter("phase"):
             parameterNode.SetParameter("phase", "1")
 
-    def processDescendingAorta(
-                self,
-                descAortaSeed,
-                qualified_coef,
-                num_slice_skipping,
-            ):
-        descAortaSeedStr = descAortaSeed.split(",")
-        dASnumber = [int(i) for i in descAortaSeedStr]
+    def process(self, seed, seg_type, qualified_coef, threshold_coef,
+                num_slice_skipping, kernel_size, rms_error, no_ite,
+                curvature_scaling, propagation_scaling, debug):
+        seed = seed.split(",")
+        seed = [int(i) for i in seed]
         now = datetime.now()
-        logging.info(f"{now} processing Descending Aorta Segmentation")
-        desc_axial_segmenter = AortaSegmenter(
-            cropped_image=self._cropped_image,
-            starting_slice=dASnumber[2], aorta_centre=dASnumber[:2],
-            num_slice_skipping=int(float(num_slice_skipping)),
-            qualified_coef=float(qualified_coef),
-            processing_image=None,
-            seg_type=SegType.descending_aorta
-        )
-        desc_axial_segmenter.begin_segmentation()
-        logging.info(
-            f"{now} Finished processing Descending Aorta Segmentation")
-        self._processing_image = desc_axial_segmenter.processing_image
-        return self._processing_image
-
-    def processAscendingAorta(
-                self,
-                ascAortaSeed,
-                qualified_coef,
-                num_slice_skipping,
-            ):
-        ascAortaSeedStr = ascAortaSeed.split(",")
-        aASnumber = [int(i) for i in ascAortaSeedStr]
-        now = datetime.now()
-        logging.info(f"{now} processing Ascending Aorta Segmentation")
-
         if not self._cropped_image:
             volume = slicer.mrmlScene.GetFirstNode(
                     "cropped", None, None, False)
             self.transform_image(volume)
-
-        if not self._processing_image:
-            volume = slicer.mrmlScene.GetFirstNode(
-                    "Segmented Descending Aorta Volume", None, None, False)
-            self._processing_image = sitkUtils.PullVolumeFromSlicer(volume)
-
-        asc_axial_segmenter = AortaSegmenter(
-            cropped_image=self._cropped_image,
-            starting_slice=aASnumber[2], aorta_centre=aASnumber[:2],
+        if seg_type == SegType.ascending_aorta:
+            if not self._processing_image:
+                volume = slicer.mrmlScene.GetFirstNode(
+                         "Segmented Descending Aorta Volume",
+                         None, None, False)
+                self._processing_image = sitkUtils.PullVolumeFromSlicer(
+                                         volume)
+        elif seg_type == SegType.descending_aorta:
+            self._processing_image = None
+        logging.info(f"{now} processing {seg_type}")
+        segmenter = AortaSegmenter(
+            cropped_image=self._cropped_image, starting_slice=seed[2],
+            aorta_centre=seed[:2], processing_image=self._processing_image,
+            seg_type=seg_type, qualified_coef=float(qualified_coef),
+            threshold_coef=float(threshold_coef),
             num_slice_skipping=int(float(num_slice_skipping)),
-            qualified_coef=float(qualified_coef),
-            processing_image=self._processing_image,
-            seg_type=SegType.ascending_aorta
+            kernel_size=int(float(kernel_size)),
+            rms_error=float(rms_error), no_ite=int(no_ite.split(".")[0]),
+            curvature_scaling=float(curvature_scaling),
+            propagation_scaling=float(propagation_scaling), debug=debug
         )
-
-        asc_axial_segmenter.begin_segmentation()
-        logging.info(
-            f"{now} Finished processing Ascending Aorta Segmentation")
-        self._processing_image = asc_axial_segmenter.processing_image
+        segmenter.begin_segmentation()
+        now = datetime.now()
+        logging.info(f"{now} Finished processing {seg_type}")
+        self._processing_image = segmenter.processing_image
         return self._processing_image
 
     def processSagittaly(self, qualified_coef, num_slice_skipping,):
