@@ -77,26 +77,38 @@ the document Software Requirements Specification for Program \progname.
 \section{General Information}
 
 \subsection{Summary}
+\progname{} is tested for its segmentation module. The segmentation algorithm can be split into 3 parts, the descending aorta segmentation, the ascending aorta segmentation and the sagittal segmentation. \\
 
-\wss{Say what software is being tested.  Give its name and a brief overview of
-  its general functions.}
+\noindent The descending aorta segmentation takes an original volume and a descending aorta centre coordinate as the inputs, and perform the segmentation on the volume, finally returns the result label volume indicate which voxel belongs to the descending aorta. \\
+
+\noindent Smilarly, the ascending aorta segmentation takes an original volume, an ascending aorta centre coordinate, and the descending aorta segmentation result label volume as the inputs, and perform the segmentation on the original volume, finally returns the result label volume indicate which voxel belongs to the descending or ascending aorta. \\
+
+\noindent Finally, the sagittal segmentation is used to fill in any missing voxel that is potentially belong to the aorta in the label volume.
+
+%\wss{Say what software is being tested.  Give its name and a brief overview of
+%  its general functions.}
 
 \subsection{Objectives}
 
-\wss{State what is intended to be accomplished.  The objective will be around
-  the qualities that are most important for your project.  You might have
-  something like: ``build confidence in the software correctness,''
-  ``demonstrate adequate usability.'' etc.  You won't list all of the qualities,
-  just those that are most important.}
+The main objective of the verification and validation is to ensure the segmentation algorithm correctness, while optimizing the algorithm for the readability and the efficiency.
+The segmentation algorithm has been tested with 6 samples and the results are verified by the domain experts. Continuous integration testing can ensure the software correctness for each modification.
+
+%\wss{State what is intended to be accomplished.  The objective will be around
+%  the qualities that are most important for your project.  You might have
+%  something like: ``build confidence in the software correctness,''
+%  ``demonstrate adequate usability.'' etc.  You won't list all of the qualities,
+%  just those that are most important.}
 
 \subsection{Relevant Documentation}
 
-\wss{Reference relevant documentation.  This will definitely include your SRS
-  and your other project documents (MG, MIS, etc).  You can include these even
-  before they are written, since by the time the project is done, they will be
-  written.}
+%\wss{Reference relevant documentation.  This will definitely include your SRS
+%  and your other project documents (MG, MIS, etc).  You can include these even
+%  before they are written, since by the time the project is done, they will be
+%  written.}
 
+\citet{MG}
 \citet{SRS}
+
 
 \section{Plan}
 
