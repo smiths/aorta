@@ -91,7 +91,7 @@ the document Software Requirements Specification for Program \progname.
 \subsection{Objectives}
 
 The main objective of the verification and validation is to ensure the segmentation algorithm correctness, while optimizing the algorithm for the readability and the efficiency.
-The segmentation algorithm has been tested with 6 samples and the results are verified by the domain experts. Continuous integration testing can ensure the software correctness for each modification.
+The segmentation algorithm has been tested with 6 samples and the results are verified by the domain experts. Continuous integration testing can ensure the software correctness for each modification of the existing code.
 
 %\wss{State what is intended to be accomplished.  The objective will be around
 %  the qualities that are most important for your project.  You might have
@@ -111,23 +111,57 @@ The segmentation algorithm has been tested with 6 samples and the results are ve
 
 
 \section{Plan}
-
-\wss{Introduce this section.   You can provide a roadmap of the sections to
-  come.}
+This section provides a description of the software that is being tested, the team that will
+perform the testing, and the milestones for the testing phase/
+%\wss{Introduce this section.   You can provide a roadmap of the sections to
+%  come.}
 
 \subsection{Verification and Validation Team}
 
-\wss{You, your classmates and the course instructor.  Maybe your supervisor.
-  You shoud do more than list names.  You should say what each person's role is
-  for the project.  A table is a good way to summarize this information.}
+\renewcommand{\arraystretch}{1.2}
+\begin{tabular}{l l} 
+  \toprule		
+  \textbf{Name} & \textbf{Role description}\\
+  \midrule 
+  \authname{} & Design and implement testing modules.\\
+  Dr. Spencer Smith & Code review and provide test cases.\\
+  \bottomrule
+\end{tabular}\\ \\
+
+%\wss{You, your classmates and the course instructor.  Maybe your supervisor.
+%  You shoud do more than list names.  You should say what each person's role is
+%  for the project.  A table is a good way to summarize this information.}
 
 \subsection{SRS Verification Plan}
 
-\wss{List any approaches you intend to use for SRS verification.  This may just
-  be ad hoc feedback from reviewers, like your classmates, or you may have
-  something more rigorous/systematic in mind..}
+This section provides the functional requirements, the business tasks that the software is
+expected to complete, and the nonfunctional requirements, the qualities that the software is
+expected to exhibit.
 
-\wss{Remember you have an SRS checklist}
+\subsubsection{Functional Requirements}
+The functional requirements have been already explained in the Software Requirements Specifications for Program \progname{}. As a reference, the names of the requirements are as follows:
+\begin{itemize}
+\item {Input}
+\item {Region of Interest}
+\item {Output}
+\item {Visualization}
+\end{itemize} 
+
+
+\subsubsection{Nonfunctional Requirements}
+Considering the use of this program in the research and academia nowadays, as well as keeping an eye on its future use in the medicine and clinical practice, the priority nonfunctional
+requirements are correctness, understandability, reliability, and usability. The usability Nonfunctional requirements are as follow:
+\begin{itemize}
+\item {Interface}
+\item {3D Rendering}
+\end{itemize} 
+
+
+%\wss{List any approaches you intend to use for SRS verification.  This may just
+%  be ad hoc feedback from reviewers, like your classmates, or you may have
+%  something more rigorous/systematic in mind..}
+
+% \wss{Remember you have an SRS checklist}
 
 \subsection{Design Verification Plan}
 
@@ -148,14 +182,14 @@ The segmentation algorithm has been tested with 6 samples and the results are ve
 
 \subsection{Automated Testing and Verification Tools}
 
-\wss{What tools are you using for automated testing.  Likely a unit testing
-  framework and maybe a profiling tool, like ValGrind.  Other possible tools
-  include a static analyzer, make, continuous integration tools, test coverage
-  tools, etc.  Explain your plans for summarizing code coverage metrics.
-  Linters are another important class of tools.  For the programming language
-  you select, you should look at the available linters.  There may also be tools
-  that verify that coding standards have been respected, like flake9 for
-  Python.}
+%\wss{What tools are you using for automated testing.  Likely a unit testing
+%  framework and maybe a profiling tool, like ValGrind.  Other possible tools
+%  include a static analyzer, make, continuous integration tools, test coverage
+%  tools, etc.  Explain your plans for summarizing code coverage metrics.
+%  Linters are x`another important class of tools.  For the programming language
+%  you select, you should look at the available linters.  There may also be tools
+%  that verify that coding standards have been respected, like flake9 for
+%  Python.}
 
 \wss{The details of this section will likely evolve as you get closer to the
   implementation.}
