@@ -1,3 +1,4 @@
+# flake8: noqa
 import os
 import sys
 
@@ -19,9 +20,8 @@ from AortaGeomReconDisplayModuleLib.AortaGeomReconEnums import SegmentType # noq
 from AortaGeomReconDisplayModuleLib.AortaGeomReconEnums import PixelValue # noqa
 
 
-class AortaSegmenter():
+class AortaSegmenterNew():
     """This class is used to perform Descending or Ascending aorta segmentation.
-
     Attributes:
 
         starting_slice (int): The seed slice's index (the index along the Z axis)
@@ -41,15 +41,17 @@ class AortaSegmenter():
     """ # noqa
 
     def __init__(
-            self, cropped_image, starting_slice, aorta_centre,
-            aortic_curv_centre, processing_image, seg_type,
-            qualified_coef=2.2, threshold_coef=3.5, num_slice_skipping=3,
-            kernel_size=3, rms_error=0.02, no_ite=600,
-            curvature_scaling=0.5, propagation_scaling=1, debug=False
+            self, cropped_image, des_seed, asc_seed, aortic_seed,
+            processing_image, seg_type, qualified_coef=2.2,
+            threshold_coef=3.5, num_slice_skipping=3, kernel_size=3,
+            rms_error=0.02, no_ite=600, curvature_scaling=0.5,
+            propagation_scaling=1, debug=False
     ):
-        self._starting_slice = starting_slice
-        self._aorta_centre = aorta_centre
-        self._aortic_curv_centre = aortic_curv_centre
+        self._des_seed = des_seed
+        self._des_prev_centre = des_seed[:2]
+        self._asc_seed = asc_seed
+        self._des_prev_centre = asc_seed[:2]
+        self._aortic_seed = aortic_seed
         self._num_slice_skipping = num_slice_skipping
         self._seg_type = seg_type
         self._processing_image = processing_image
@@ -91,28 +93,9 @@ class AortaSegmenter():
         self._original_size = None
         self._is_size_decreasing = False
 
-        # Get more values from the seed slice
-        self._start = self._starting_slice - 1
-        self._prev_centre = self._aorta_centre
-        self._prev_seeds = []
-        # Initialize parameters for superior to inferior segmentation
-        slice_num = self._starting_slice
-        self._cur_img_slice = self._cropped_image[:, :, slice_num]
-        segmented_slice = self.__get_image_segment()
-        new_slice = segmented_slice > PixelValue.black_pixel.value
-        seeds = []
-        if self._seg_type == SegmentType.descending_aorta:
-            total_coord, centre = self.__count_pixel_des(new_slice)
-            self._processing_image[:, :, slice_num] = new_slice
-        else:
-            total_coord, centre, seeds = self.__count_pixel_asc(new_slice)
-            self._processing_image[:, :, slice_num] = (
-                new_slice | self._processing_image[:, :, slice_num])
-
-        self._prev_seeds = seeds
-        self._original_size = total_coord
-        self._previous_size = total_coord
-        self._prev_centre = centre
+        # from superior to inferior, the segmentation starts with the highest slice # noqa
+        starting_slice = max(self._des_seed[2], self._asc_seed[2])
+        self._start = starting_slice
         self._skipped_slice_counter = 0
         self._end = -1
         self._step = -1
@@ -125,9 +108,9 @@ class AortaSegmenter():
 
         self._seg_dir = SegDir.Inferior_to_Superior
         self._start = self._starting_slice + 1
-        self._prev_centre = self._aorta_centre
+        self._des_prev_centre = self._des_seed[:2]
+        self._des_prev_centre = self._asc_seed[:2]
         self._previous_size = self._original_size
-        self._prev_seeds = seeds
         self._end = self._cropped_image.GetDepth()
         self._step = 1
         self._skipped_slice_counter = len(self._skipped_slices)
@@ -159,13 +142,22 @@ class AortaSegmenter():
                     self._prev_seeds = [self._aortic_curv_centre[:2]]
             segmented_slice = self.__get_image_segment()
             new_slice_i = segmented_slice > PixelValue.black_pixel.value
-            if self._seg_type == SegmentType.descending_aorta:
-                total_coord, centre = self.__count_pixel_des(new_slice_i)
-                seeds = []
-            else:
-                total_coord, centre, seeds = self.__count_pixel_asc(
-                    new_slice_i)
-                is_overlapping = self.__is_overlapping(new_slice_i, slice_i)
+
+            # if self._seg_type == SegmentType.descending_aorta:
+            #     total_coord, centre = self.__count_pixel_des(new_slice_i)
+            #     seeds = []
+            # else:
+            #     total_coord, centre, seeds = self.__count_pixel_asc(
+            #         new_slice_i)
+            #     is_overlapping = self.__is_overlapping(new_slice_i, slice_i)
+
+            if not self._original_des_size and slice_i == self._des_seed[2]:
+                # get initial seed value
+                pass
+            if not self._original_asc_size and slice_i == self._asc_seed[2]:
+                # get initial seed value
+                pass
+
             if self.__is_new_slice_qualified(total_coord, is_overlapping):
                 counter = 0
                 if self._seg_type == SegmentType.descending_aorta:
@@ -246,12 +238,6 @@ class AortaSegmenter():
         label_map.CopyInformation(self._cur_img_slice)
         label_map[self._prev_centre] = PixelValue.white_pixel.value
         # add original seed and additional seeds three pixels apart
-        spacing = 3
-        for j in range(-1, 2):
-            seed_with_space = self._prev_centre[0] + spacing * j
-            label_map[
-                (seed_with_space, self._prev_centre[1])
-            ] = PixelValue.white_pixel.value
         for s in self._prev_seeds:
             label_map[s] = PixelValue.white_pixel.value
         label_map = sitk.BinaryDilate(label_map, [self._kernel_size] * 2)
@@ -288,6 +274,24 @@ class AortaSegmenter():
             dis_map, sitk.Cast(self._cur_img_slice, sitk.sitkFloat32))
 
         return segmented_slice
+
+    def __get_dist(p1, p2):
+        return np.sqrt((p1[0]-p2[0])**2 + (p1[1]-p2[1])**2)
+
+    def __count_pixel_des(self, new_slice):
+        """Get the number of white pixels, and calculate a new centre based on the segmentation result.
+
+        Returns:
+            (tuple): tuple containing:
+                int: The total number of the white pixels.
+                int: The total number of the white pixels.
+                tuple: The new derived centre calculated by the mean of white pixe's X coordinates and Y coordinates.
+                tuple: The new derived centre calculated by the mean of white pixe's X coordinates and Y coordinates.
+        """ # noqa
+        nda = sitk.GetArrayFromImage(new_slice)
+        list_y_ind, list_x_ind = np.where(nda==PixelValue.white_pixel.value)
+        des_centre = (int(np.average(list_x)), int(np.average(list_y)))
+        asc_centre = (int(np.average(list_x)), int(np.average(list_y)))
 
     def __count_pixel_des(self, new_slice):
         """Get the number of white pixels, and calculate a new centre based on the segmentation result.
