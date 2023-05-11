@@ -47,7 +47,7 @@
       <property name="bottomMargin">
        <number>0</number>
       </property>
-      <item row="0" column="0">
+      <item row="2" column="0">
        <widget class="QLabel" name="descAortaSeedLabel">
         <property name="toolTip">
          <string>The descending aorta centre seed coordinate</string>
@@ -57,30 +57,10 @@
         </property>
        </widget>
       </item>
-      <item row="0" column="1">
+      <item row="2" column="1">
        <widget class="qMRMLCoordinatesWidget" name="descAortaSeed">
         <property name="decimals">
          <number>0</number>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="0">
-       <widget class="QLabel" name="ascAortaSeedLabel">
-        <property name="toolTip">
-         <string>The ascending aorta centre seed coordinate</string>
-        </property>
-        <property name="text">
-         <string>AscAortaSeed:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1">
-       <widget class="qMRMLCoordinatesWidget" name="ascAortaSeed">
-        <property name="decimals">
-         <number>0</number>
-        </property>
-        <property name="unitAwareProperties">
-         <set>qMRMLCoordinatesWidget::MaximumValue|qMRMLCoordinatesWidget::MinimumValue|qMRMLCoordinatesWidget::Precision|qMRMLCoordinatesWidget::Prefix|qMRMLCoordinatesWidget::Suffix</set>
         </property>
        </widget>
       </item>
@@ -91,36 +71,63 @@
         </property>
        </widget>
       </item>
-      <item row="6" column="0">
-       <widget class="QLabel" name="qualifiedCoefficientLabel">
+      <item row="4" column="0">
+       <widget class="QLabel" name="ascAortaSeedLabel">
+        <property name="toolTip">
+         <string>The ascending aorta centre seed coordinate</string>
+        </property>
+        <property name="text">
+         <string>AscAortaSeed:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="1">
+       <widget class="qMRMLCoordinatesWidget" name="ascAortaSeed">
+        <property name="decimals">
+         <number>0</number>
+        </property>
+        <property name="unitAwareProperties">
+         <set>qMRMLCoordinatesWidget::MaximumValue|qMRMLCoordinatesWidget::MinimumValue|qMRMLCoordinatesWidget::Precision|qMRMLCoordinatesWidget::Prefix|qMRMLCoordinatesWidget::Suffix</set>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="1">
+       <widget class="QCheckBox" name="ascSeedLocker">
+        <property name="text">
+         <string>Locking ascending aorta centre seed</string>
+        </property>
+       </widget>
+      </item>
+      <item row="8" column="0">
+       <widget class="QLabel" name="stopLimitLabel">
         <property name="toolTip">
          <string>The coefficient which is used to dertermine acceptable segmented slice</string>
         </property>
         <property name="text">
-         <string>Qualified Coefficient:</string>
+         <string>Stop limit:</string>
         </property>
        </widget>
       </item>
-      <item row="6" column="1">
-       <widget class="qMRMLSliderWidget" name="qualifiedCoefficient">
+      <item row="8" column="1">
+       <widget class="qMRMLSliderWidget" name="stopLimit">
         <property name="decimals">
-         <number>1</number>
+         <number>0</number>
         </property>
         <property name="singleStep">
-         <double>0.100000000000000</double>
+         <double>1.000000000000000</double>
         </property>
         <property name="minimum">
          <double>1.000000000000000</double>
         </property>
         <property name="maximum">
-         <double>3.000000000000000</double>
+         <double>15.000000000000000</double>
         </property>
         <property name="value">
-         <double>2.200000000000000</double>
+         <double>10.000000000000000</double>
         </property>
        </widget>
       </item>
-      <item row="7" column="0">
+      <item row="9" column="0">
        <widget class="QLabel" name="thresholdCoefLabel">
         <property name="toolTip">
          <string>The coefficient used to calculate the lower and upper threshold for performing segmentation</string>
@@ -130,7 +137,7 @@
         </property>
        </widget>
       </item>
-      <item row="7" column="1">
+      <item row="9" column="1">
        <widget class="qMRMLSliderWidget" name="thresholdCoefficient">
         <property name="singleStep">
          <double>0.100000000000000</double>
@@ -139,17 +146,17 @@
          <double>2.000000000000000</double>
         </property>
         <property name="minimum">
-         <double>3.000000000000000</double>
+         <double>0.000000000000000</double>
         </property>
         <property name="maximum">
          <double>15.000000000000000</double>
         </property>
         <property name="value">
-         <double>3.500000000000000</double>
+         <double>3.000000000000000</double>
         </property>
        </widget>
       </item>
-      <item row="8" column="0">
+      <item row="10" column="0">
        <widget class="QLabel" name="kernelSizeLabel">
         <property name="toolTip">
          <string>The size of the binary dilation used to create label map</string>
@@ -159,7 +166,7 @@
         </property>
        </widget>
       </item>
-      <item row="8" column="1">
+      <item row="10" column="1">
        <widget class="qMRMLSliderWidget" name="kernelSize">
         <property name="toolTip">
          <string>The size of the binary dilation used to create label map</string>
@@ -177,11 +184,11 @@
          <double>15.000000000000000</double>
         </property>
         <property name="value">
-         <double>3.000000000000000</double>
+         <double>12.000000000000000</double>
         </property>
        </widget>
       </item>
-      <item row="11" column="0">
+      <item row="13" column="0">
        <widget class="QLabel" name="numOfSkippingSliceLabel">
         <property name="toolTip">
          <string>The number of consecutive skipped slice allowed</string>
@@ -191,7 +198,7 @@
         </property>
        </widget>
       </item>
-      <item row="11" column="1">
+      <item row="13" column="1">
        <widget class="qMRMLSpinBox" name="numOfSkippingSlice">
         <property name="decimals">
          <number>0</number>
@@ -204,7 +211,7 @@
         </property>
        </widget>
       </item>
-      <item row="13" column="0">
+      <item row="15" column="0">
        <widget class="QCheckBox" name="debugBox">
         <property name="toolTip">
          <string>If selected, the segmentation algorithm would only segments the first and the last 10 slices.</string>
@@ -214,7 +221,7 @@
         </property>
        </widget>
       </item>
-      <item row="14" column="0" colspan="2">
+      <item row="16" column="0" colspan="2">
        <widget class="ctkCollapsibleButton" name="segmentationCollapsibleBox">
         <property name="text">
          <string>ThresholdSegmentationLevelSetsFilter parameters</string>
@@ -297,16 +304,16 @@
             <string>Weight of the curvature contribution to the speed term</string>
            </property>
            <property name="singleStep">
-            <double>0.100000000000000</double>
+            <double>0.010000000000000</double>
            </property>
            <property name="pageStep">
-            <double>0.100000000000000</double>
+            <double>0.010000000000000</double>
            </property>
            <property name="maximum">
-            <double>2.000000000000000</double>
+            <double>100.000000000000000</double>
            </property>
            <property name="value">
-            <double>0.500000000000000</double>
+            <double>2.000000000000000</double>
            </property>
           </widget>
          </item>
@@ -335,48 +342,20 @@
             <double>10.000000000000000</double>
            </property>
            <property name="value">
-            <double>1.000000000000000</double>
+            <double>0.500000000000000</double>
            </property>
           </widget>
          </item>
         </layout>
        </widget>
       </item>
-      <item row="20" column="1">
+      <item row="22" column="1">
        <widget class="qSlicerVolumeDisplayWidget" name="VolumeDisplayWidget"/>
       </item>
-      <item row="21" column="0">
+      <item row="23" column="0">
        <widget class="Line" name="line">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="1">
-       <widget class="qMRMLCoordinatesWidget" name="aorticCurvSeed">
-        <property name="decimals">
-         <number>0</number>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="0">
-       <widget class="QLabel" name="aorticCurvSeedLabel">
-        <property name="text">
-         <string>AorticCurvSeed:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="5" column="1">
-       <widget class="QCheckBox" name="aorticCurvSeedLocker">
-        <property name="text">
-         <string>Locking aortic curvature seed</string>
-        </property>
-       </widget>
-      </item>
-      <item row="4" column="1">
-       <widget class="QCheckBox" name="ascSeedLocker">
-        <property name="text">
-         <string>Locking ascending aorta centre seed</string>
         </property>
        </widget>
       </item>
@@ -583,7 +562,7 @@
   <connection>
    <sender>AortaGeomReconDisplayModule</sender>
    <signal>mrmlSceneChanged(vtkMRMLScene*)</signal>
-   <receiver>qualifiedCoefficient</receiver>
+   <receiver>stopLimit</receiver>
    <slot>setMRMLScene(vtkMRMLScene*)</slot>
    <hints>
     <hint type="sourcelabel">
@@ -689,22 +668,6 @@
     <hint type="destinationlabel">
      <x>355</x>
      <y>169</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>AortaGeomReconDisplayModule</sender>
-   <signal>mrmlSceneChanged(vtkMRMLScene*)</signal>
-   <receiver>aorticCurvSeed</receiver>
-   <slot>setMRMLScene(vtkMRMLScene*)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>328</x>
-     <y>375</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>392</x>
-     <y>125</y>
     </hint>
    </hints>
   </connection>
