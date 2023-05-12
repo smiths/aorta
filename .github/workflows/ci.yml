@@ -29,7 +29,7 @@ jobs:
         run: pip3 install scikit-learn
       - name: Test file path
         run: python3 -c "import os; print(os.path.exists(os.path.abspath('test/sample/032-22429388-crop.vtk')))"
-      - name: Test descending aorta segmentation
+      - name: Test aorta segmentation case 32
         run: pytest -s -k 'test_compare_segmentation' --testCase "032" --limit 0.05 -p no:faulthandler
-      - name: Test ascending aorta segmentation
+      - name: Test aorta segmentation case 31
         run: pytest -s -k 'test_compare_segmentation' --testCase "031" --limit 0.05 -p no:faulthandler
