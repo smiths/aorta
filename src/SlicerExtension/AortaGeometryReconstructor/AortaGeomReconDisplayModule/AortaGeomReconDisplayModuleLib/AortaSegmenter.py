@@ -15,7 +15,7 @@ sys.path.insert(0, AGR_module_path)
 # for debugging and numpy print operation
 np.set_printoptions(threshold=sys.maxsize)
 
-from sklearn.cluster import KMeans
+from sklearn.cluster import KMeans # noqa
 
 # import helpers enumeration classes
 from AortaGeomReconDisplayModuleLib.AortaGeomReconEnums import SegmentDirection as SegDir # noqa
@@ -66,7 +66,6 @@ class AortaSegmenter():
         self._cropped_image = cropped_image
         self._kernel_size = kernel_size
         self._debug_mod = debug
-        nda = sitk.GetArrayFromImage(self._cropped_image[:,:,869])
         self._stats_filter = sitk.LabelStatisticsImageFilter()
         self._segment_filter = sitk.ThresholdSegmentationLevelSetImageFilter()
         self._segment_filter.SetMaximumRMSError(rms_error)

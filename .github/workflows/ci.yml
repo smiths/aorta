@@ -25,8 +25,8 @@ jobs:
         run: pip3 install SimpleITK
       - name: Install numpy
         run: pip3 install numpy
-      - name: Install sklearn
-        run: pip3 install sklearn
+      - name: Install scikit-learn
+        run: pip3 install scikit-learn
       - name: Test file path
         run: python3 -c "import os; print(os.path.exists(os.path.abspath('test/sample/032-22429388-crop.vtk')))"
       - name: Test descending aorta segmentation

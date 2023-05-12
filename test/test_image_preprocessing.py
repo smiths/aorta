@@ -1,11 +1,11 @@
 import SimpleITK as sitk
 import numpy as np
 import os
-os.environ["OMP_NUM_THREADS"] = '1'
 import glob
 import json
 
 from src.SlicerExtension.AortaGeometryReconstructor.AortaGeomReconDisplayModule.AortaGeomReconDisplayModuleLib.AortaSegmenter import AortaSegmenter # noqa
+
 
 def print_result(ref_image, test_image):
     """Print mean square error, mean absolute error, root mean square error 
