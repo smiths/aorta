@@ -487,7 +487,7 @@ class AortaGeomReconDisplayModuleWidget(ScriptedLoadableModuleWidget, VTKObserva
             if size == 1:
                 volume = sceneObj.GetFirstNode("cropped", None, None, False)
                 self.logic.transform_image(volume)
-                self.logic.saveVtk("crop_volume.vtk", volume)
+                self.logic.saveVtk("crop_volume.vtk")
         elif self._parameterNode.GetParameter("phase") == "2":
             size = len(slicer.util.getNodes("*Seg*", useLists=True))
             if size == 1:
@@ -583,8 +583,6 @@ class AortaGeomReconDisplayModuleWidget(ScriptedLoadableModuleWidget, VTKObserva
             ortho2Node = slicer.mrmlScene.GetNodeByID('vtkMRMLSliceNodeGreen')
             point_Ijk = self.logic.getPlaneIntersectionPoint(
                 volume, axialNode, ortho1Node, ortho2Node)
-            # infoWidget = slicer.modules.DataProbeInstance.infoWidget
-            # self.crosshairNode.GetCursorPositionRAS(ras)
             ijk = ",".join([str(int(i)) for i in point_Ijk])
             with slicer.util.tryWithErrorDisplay(errorMsg, waitCursor=True):
                 if not self.ui.desSeedLocker.checked:
@@ -614,11 +612,11 @@ class AortaGeomReconDisplayModuleLogic(ScriptedLoadableModuleLogic):  # noqa: F4
         self._cropped_image = None
         ScriptedLoadableModuleLogic.__init__(self)  # noqa: F405
 
-    def saveVtk(self, name, volume):
+    def saveVtk(self, name):
         writer = sitk.ImageFileWriter()
         writer.SetImageIO("VTKImageIO")
         writer.SetFileName(name)
-        image = sitkUtils.PullVolumeFromSlicer(volume)
+        image = sitkUtils.PullVolumeFromSlicer(self._cropped_image)
         writer.Execute(image)
 
     def getPlaneIntersectionPoint(self, vN, aN, oN1, oN2):

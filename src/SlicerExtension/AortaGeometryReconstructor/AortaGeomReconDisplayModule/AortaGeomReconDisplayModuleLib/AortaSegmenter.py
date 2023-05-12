@@ -3,8 +3,9 @@ import sys
 
 import SimpleITK as sitk
 import numpy as np
-from sklearn.cluster import KMeans
+
 # for design document
+os.environ["OMP_NUM_THREADS"] = '1'
 project_path = os.path.abspath('.')
 AGR_module_path = os.path.join(project_path, "src/SlicerExtension/")
 AGR_module_path = os.path.join(AGR_module_path, "AortaGeometryReconstructor/")
@@ -14,33 +15,44 @@ sys.path.insert(0, AGR_module_path)
 # for debugging and numpy print operation
 np.set_printoptions(threshold=sys.maxsize)
 
+from sklearn.cluster import KMeans
+
 # import helpers enumeration classes
 from AortaGeomReconDisplayModuleLib.AortaGeomReconEnums import SegmentDirection as SegDir # noqa
-from AortaGeomReconDisplayModuleLib.AortaGeomReconEnums import SegmentType # noqa
 from AortaGeomReconDisplayModuleLib.AortaGeomReconEnums import PixelValue # noqa
 
 
 class AortaSegmenter():
     """This class is used to perform Descending or Ascending aorta segmentation.
     Attributes:
+        
+        cropped_image (SITK::image): The original image that the user has only perform cropping.
 
-        starting_slice (int): The seed slice's index (the index along the Z axis)
+        des_seed (tuple): A tuple of 3 integers indicates the centre of Descending aorta on an axial slice.
 
-        aorta_centre (tuple): A tuple of two integers indicates the centre of Descending or Ascending aorta on the axial plane.
+        asc_seed (tuple): A tuple of 3 integers indicates the centre of Ascending aorta on an axial slice.
 
         num_slice_skipping (int): The number of slice allowed to consecutively skip by the algorithm.
 
-        qualified_coef (float): This coefficient controls the lower and upper threshold of the number of white pixels to determine whether to accept each segmented slice or not.
+        stop_limit (float): The number to signal the stopping point in the segmentation loop.
 
-        cropped_image (SITK::image): The original image that the user has only perform cropping.
+        threshold_coef (float): This coefficient controls the lower and upper pixel intensity threshold.
 
-        processing_image (SITK::image): The processing image, this image could be none when performing Descending aorta segmentation. When performing Ascending aorta segmentation, it should have the Descending aorta segmentation result.
+        kernel_size (int): The size used to generate circle like shape for the label map. Large kernel size implies larger initial circle size.
+
+        rms_error (float): The rms error for ThresholdSegmentationLevelSetImageFilter.
+        
+        no_ite (int): The maximum iterations for ThresholdSegmentationLevelSetImageFilter.
+
+        curvature_scaling (float): The weight of curvature on calculating the speed term for ThresholdSegmentationLevelSetImageFilter.
+
+        propagation_scaling (float): The weight of propagation on calculating the speed term for ThresholdSegmentationLevelSetImageFilter.
 
     """ # noqa
 
     def __init__(
             self, cropped_image, des_seed, asc_seed, stop_limit=10,
-            threshold_coef=3, kernel_size=3, rms_error=0.02, no_ite=600,
+            threshold_coef=3, kernel_size=6, rms_error=0.02, no_ite=600,
             curvature_scaling=2, propagation_scaling=0.5, debug=False
     ):
         self._des_seed = des_seed
@@ -54,7 +66,7 @@ class AortaSegmenter():
         self._cropped_image = cropped_image
         self._kernel_size = kernel_size
         self._debug_mod = debug
-
+        nda = sitk.GetArrayFromImage(self._cropped_image[:,:,869])
         self._stats_filter = sitk.LabelStatisticsImageFilter()
         self._segment_filter = sitk.ThresholdSegmentationLevelSetImageFilter()
         self._segment_filter.SetMaximumRMSError(rms_error)
@@ -74,9 +86,7 @@ class AortaSegmenter():
 
     def begin_segmentation(self):
         """This is the main entry point of the axial segmentation.
-        This api should be called to perform Descending aorta segmentation first
-        (superior to inferior, then inferior to superior starting from the seed slice).
-        After getting the result of Descending aorta segmentation, this api should perform Ascending aorta segmentation
+        This api should be called to perform aorta segmentation first
         (superior to inferior, then inferior to superior starting from the seed slice).
     
         """ # noqa
@@ -84,7 +94,6 @@ class AortaSegmenter():
         # from superior to inferior, the segmentation starts with the highest slice # noqa
         starting_slice = max(self._des_seed[2], self._asc_seed[2])
         self._start = starting_slice
-        self._skipped_slice_counter = 0
         self._end = -1
         self._step = -1
         self._seg_dir = SegDir.Superior_to_Inferior
@@ -101,18 +110,17 @@ class AortaSegmenter():
         self._asc_prev_centre = self._asc_seed[:2]
         self._end = self._cropped_image.GetDepth()
         self._step = 1
-        self._skipped_slice_counter = len(self._skipped_slices)
 
         print("bottom to top started")
         self.__segmentation()
         print("bottom to top finished")
 
     def __prepare_label_map(self):
-        """Create a label map image that has a circle-like shape.
+        """Create a label map image that has a circle-like shape around the previous descending aorta centre and ascending aorta centre (if any).
         The pixels within the circle are labeled as white pixels (value of 1), the other are labeled as black pixels (value of 0).
 
         Returns:
-            SITK::IMAGE: A label map image that has a circle like shape.
+            SITK::IMAGE: A label map image that has a circle like shape around the previous descending aorta centre and ascending aorta centre.
         """ # noqa
         label_map = sitk.Image(self._cur_img_slice.GetSize(), sitk.sitkUInt8)
         label_map.CopyInformation(self._cur_img_slice)
@@ -150,9 +158,10 @@ class AortaSegmenter():
     def __segmentation(self):
         """The main loop of the segmentation algorithm.
         For each axial slice, the algorithm performs segmetation with get_image_segment function.
-        Next, the algorithm counts the number of white pixels of the segmentation result, and calculates a new centre based on the result.
-        Finally, the algorithm decides whether to accept the new slice or not. If accepted, the new centre will be used as seed for next slice's segmentation.
-        If not, and it reached the point where maximum consecutive skips is allowed, the algorithm hault and return the segmentation result.
+        Next, the algorithm calculates new centroids based on the segmented slice.
+        Repeat this process until the stop condition has reached. The stop conditions are:
+            1. The new centroid located too far from the previous centroid
+            2. The difference of the std of the initial label image and of the final segmented image reaches the stop limit.
 
         """ # noqa
         for slice_i in range(self._start, self._end, self._step):
@@ -167,60 +176,51 @@ class AortaSegmenter():
             else:
                 des_c = candidates[0]
                 asc_c = des_c
-
+            if des_c[0] == float("inf"):
+                break
             if self._seg_dir == SegDir.Inferior_to_Superior:
-                # if not (self.__is_ascending_found(asc_c) and
-                #         self.__is_descending_found(des_c)):
-                self._stats_filter.Execute(
-                    self._cur_img_slice, new_slice)
+                self._stats_filter.Execute(self._cur_img_slice, new_slice)
                 new_std = self._stats_filter.GetSigma(
                     PixelValue.white_pixel.value)
                 if abs(new_std - std) > self._stop_limit:
                     break
-            elif self._k == 2 and not self.__is_ascending_found(asc_c):
+            elif self._k == 2 and self.__is_asc_reaching_heart(asc_c):
                 self._asc_prev_centre = self._des_prev_centre
                 self._k = 1
                 segmented_slice, _ = self.__get_image_segment()
                 new_slice = segmented_slice > PixelValue.black_pixel.value
                 des_c = self.__get_new_centroids(new_slice)[0]
                 asc_c = des_c
-
             self._des_prev_centre = des_c
             self._asc_prev_centre = asc_c
             self._processing_image[:, :, slice_i] = new_slice
 
-    def __is_descending_found(self, des_c):
-        """Return True if it satisfies the following conditions:
-
-        1. The number of pixels are within the acceptable range
-
-        2. The new centre does not distance from the prev centre
+    def __is_asc_reaching_heart(self, asc_c):
+        """The stop condition of ascending aorta segmentation from Superior to Inferior direction. Once the segmentation result reaches the heart, the new centroid will locate far from the previous ascending aorta centre.
 
         Returns:
-            Boolean
+            Boolean: The distance between new centroid and the previous ascending aorta centroid reaches the stop limit.
         """ # noqa
-        dist = self.__get_dist(des_c, self._des_prev_centre)
-        if dist > self._stop_limit:
-            return False
-        return True
-
-    def __is_ascending_found(self, asc_c):
         dist = self.__get_dist(asc_c, self._asc_prev_centre)
         if dist > self._stop_limit:
-            return False
-        return True
+            return True
+        return False
 
     def __get_dist(self, p1, p2):
+        """Calculate the Euclidean distance between any two points.
+
+        Returns:
+            float: The Euclidean distance between p1 and p2.
+        """ # noqa
         return np.sqrt((p1[0]-p2[0])**2 + (p1[1]-p2[1])**2)
 
     def __get_new_centroids(self, new_slice):
-        """Get the number of white pixels, and calculate a new centre based on the segmentation result.
+        """Calculate new centroids on the segmented slice.
 
         Returns:
             (tuple): tuple containing:
-                int: The total number of the white pixels.
-                tuple: The new derived centre calculated by the mean of white pixe's X coordinates and Y coordinates.
-                tuple: The new derived centre calculated by the mean of white pixe's X coordinates and Y coordinates.
+                tuple: The new derived centres closest to the previous descending aorta centre
+                tuple: The new derived centres closest to the previous ascending aorta centre
         """ # noqa
         nda = sitk.GetArrayFromImage(new_slice)
         list_y_ind, list_x_ind = np.where(nda == PixelValue.white_pixel.value)
@@ -238,7 +238,6 @@ class AortaSegmenter():
             init=init,
             n_init=1
         ).fit(points)
-
         if self._k == 2:
             centroid1, centroid2 = np.round(km.cluster_centers_).astype(int)
             centroid1 = [int(p) for p in centroid1]
@@ -255,7 +254,7 @@ class AortaSegmenter():
 
     @property
     def cropped_image(self):
-        """cropped image getter. The cropped image is the untouched cropped image that user has input.
+        """cropped image getter. The cropped image is the untouched cropped image provided by the user.
 
         """ # noqa
         return self._cropped_image
@@ -269,4 +268,7 @@ class AortaSegmenter():
 
     @property
     def stopping_slice(self):
+        """stopping slice getter. Return the last processing slice for parameters tuning.
+
+        """ # noqa
         return self._stopping_slice
