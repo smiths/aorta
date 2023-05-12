@@ -5,6 +5,7 @@ import os
 import sys
 sys.path.append("../src/SlicerExtension/AortaGeometryReconstructor/AortaGeomReconDisplayModule/AortaGeomReconDisplayModuleLib")
 from AortaSegmenter import AortaSegmenter
+from AortaSegmenterNew import AortaSegmenterNew
 from AortaGeomReconEnums import SegmentType as SegType
 
 def print_result(ref_image, test_image, seg_type):
@@ -141,24 +142,20 @@ def mean_square_error(ref_image, test_image):
 
 
 if __name__ == '__main__':
-    starting_slice = 829
-    aorta_centre = [23, 28]
+    des_seed = [18, 26, 830]
+    asc_seed = [65, 116, 830]
     cropped_image = get_cropped_volume_image()
 
-    desc_axial_segmenter = AortaSegmenter(
-        cropped_image=cropped_image,
-        starting_slice=starting_slice, aorta_centre=aorta_centre,
-        num_slice_skipping=3,
-        qualified_coef=2.2,
-        threshold_coef=3.5,
+    segmenter = AortaSegmenterNew(
+        cropped_image=cropped_image, des_seed=des_seed,
+        asc_seed=asc_seed, aortic_seed=None,
         processing_image=None,
-        seg_type=SegType.descending_aorta
+        seg_type=None, qualified_coef=2.2,
+        threshold_coef=3.5,
+        num_slice_skipping=3,
+        kernel_size=8,
+        rms_error=2.2, no_ite=600,
+        curvature_scaling=0.5,
+        propagation_scaling=1, debug=False
     )
-
-    desc_axial_segmenter.begin_segmentation()
-    test_image = desc_axial_segmenter.processing_image
-    ref_image = read_desc_volume_image()
-    nda_ref = sitk.GetArrayFromImage(ref_image)
-    nda_test = sitk.GetArrayFromImage(test_image)
-    DSC_error = 1-DSC(nda_ref, nda_test)
-    print_result(nda_ref, nda_test, SegType.descending_aorta)
+    segmenter.begin_segmentation()
