@@ -159,8 +159,8 @@ class AortaSegmenter():
         For each axial slice, the algorithm performs segmetation with get_image_segment function.
         Next, the algorithm calculates new centroids based on the segmented slice.
         Repeat this process until the stop condition has reached. The stop conditions are:
-            1. The new centroid located too far from the previous centroid
-            2. The difference of the std of the initial label image and of the final segmented image reaches the stop limit.
+        1. The new centroid located too far from the previous centroid
+        2. The difference of the std of the initial label image and of the final segmented image reaches the stop limit.
 
         """ # noqa
         for slice_i in range(self._start, self._end, self._step):
