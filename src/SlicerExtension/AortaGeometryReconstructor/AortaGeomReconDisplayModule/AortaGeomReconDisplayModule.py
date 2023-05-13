@@ -19,7 +19,7 @@ import SimpleITK as sitk
 
 class AGR_phase(Enum):
     crop_aorta = "Phase 1 Crop Aorta"
-    segment_desc_aorta = "Phase 2 Descending Aorta Segmentation"
+    segment_desc_aorta = "Phase 2 Aorta Segmentation"
 
     def __repr__(self):
         return f'{self.value}'

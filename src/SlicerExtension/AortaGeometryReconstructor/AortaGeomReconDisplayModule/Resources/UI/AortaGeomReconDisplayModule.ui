@@ -111,10 +111,10 @@
       <item row="8" column="1">
        <widget class="qMRMLSliderWidget" name="stopLimit">
         <property name="decimals">
-         <number>0</number>
+         <number>2</number>
         </property>
         <property name="singleStep">
-         <double>1.000000000000000</double>
+         <double>0.100000000000000</double>
         </property>
         <property name="minimum">
          <double>1.000000000000000</double>
@@ -146,10 +146,10 @@
          <double>2.000000000000000</double>
         </property>
         <property name="minimum">
-         <double>0.000000000000000</double>
+         <double>1.000000000000000</double>
         </property>
         <property name="maximum">
-         <double>15.000000000000000</double>
+         <double>5.000000000000000</double>
         </property>
         <property name="value">
          <double>3.000000000000000</double>
@@ -217,7 +217,7 @@
          <string>If selected, the segmentation algorithm would only segments the first and the last 10 slices.</string>
         </property>
         <property name="text">
-         <string>Debug mod</string>
+         <string>Debug mode</string>
         </property>
        </widget>
       </item>
