@@ -744,7 +744,7 @@ class AortaGeomReconDisplayModuleLogic(ScriptedLoadableModuleLogic):  # noqa: F4
         if not parameterNode.GetParameter("stop_limit"):
             parameterNode.SetParameter("stop_limit", "10")
         if not parameterNode.GetParameter("threshold_coef"):
-            parameterNode.SetParameter("threshold_coef", "3.5")
+            parameterNode.SetParameter("threshold_coef", "3.0")
         if not parameterNode.GetParameter("phase"):
             parameterNode.SetParameter("phase", "1")
         if not parameterNode.GetParameter("descAortaSeed"):
@@ -756,11 +756,11 @@ class AortaGeomReconDisplayModuleLogic(ScriptedLoadableModuleLogic):  # noqa: F4
         if not parameterNode.GetParameter("no_ite"):
             parameterNode.SetParameter("no_ite", "600")
         if not parameterNode.GetParameter("curv_scaling"):
-            parameterNode.SetParameter("curv_scaling", "0.5")
+            parameterNode.SetParameter("curv_scaling", "2.0")
         if not parameterNode.GetParameter("prop_scaling"):
-            parameterNode.SetParameter("prop_scaling", "1.0")
+            parameterNode.SetParameter("prop_scaling", "0.5")
         if not parameterNode.GetParameter("kernel_size"):
-            parameterNode.SetParameter("kernel_size", "3.0")
+            parameterNode.SetParameter("kernel_size", "7")
         if not parameterNode.GetParameter("desSeedLocker"):
             parameterNode.SetParameter("desSeedLocker", "False")
         if not parameterNode.GetParameter("ascSeedLocker"):
@@ -771,6 +771,8 @@ class AortaGeomReconDisplayModuleLogic(ScriptedLoadableModuleLogic):  # noqa: F4
             parameterNode.SetParameter("ascAortaSeed", "0,0,0")
         if parameterNode.GetParameter("stop_limit"):
             parameterNode.SetParameter("stop_limit", "10")
+        if parameterNode.GetParameter("threshold_coef"):
+            parameterNode.SetParameter("threshold_coef", "3.0")
         if parameterNode.GetParameter("descAortaSeed"):
             parameterNode.SetParameter("descAortaSeed", "0,0,0")
         if parameterNode.GetParameter("numOfSkippingSlice"):
@@ -780,11 +782,11 @@ class AortaGeomReconDisplayModuleLogic(ScriptedLoadableModuleLogic):  # noqa: F4
         if parameterNode.GetParameter("no_ite"):
             parameterNode.SetParameter("no_ite", "600")
         if parameterNode.GetParameter("curv_scaling"):
-            parameterNode.SetParameter("curv_scaling", "0.5")
+            parameterNode.SetParameter("curv_scaling", "2.0")
         if parameterNode.GetParameter("prop_scaling"):
-            parameterNode.SetParameter("prop_scaling", "1.0")
+            parameterNode.SetParameter("prop_scaling", "0.5")
         if parameterNode.GetParameter("kernel_size"):
-            parameterNode.SetParameter("kernel_size", "3.0")
+            parameterNode.SetParameter("kernel_size", "7.0")
         if parameterNode.GetParameter("desSeedLocker"):
             parameterNode.SetParameter("desSeedLocker", "False")
         if parameterNode.GetParameter("ascSeedLocker"):
