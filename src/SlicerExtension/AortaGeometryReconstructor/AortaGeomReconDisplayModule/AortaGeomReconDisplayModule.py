@@ -761,10 +761,6 @@ class AortaGeomReconDisplayModuleLogic(ScriptedLoadableModuleLogic):  # noqa: F4
             parameterNode.SetParameter("prop_scaling", "0.5")
         if not parameterNode.GetParameter("kernel_size"):
             parameterNode.SetParameter("kernel_size", "7")
-        if not parameterNode.GetParameter("desSeedLocker"):
-            parameterNode.SetParameter("desSeedLocker", "False")
-        if not parameterNode.GetParameter("ascSeedLocker"):
-            parameterNode.SetParameter("ascSeedLocker", "False")
 
     def setDefaultParameters(self, parameterNode):
         if parameterNode.GetParameter("ascAortaSeed"):
@@ -787,10 +783,6 @@ class AortaGeomReconDisplayModuleLogic(ScriptedLoadableModuleLogic):  # noqa: F4
             parameterNode.SetParameter("prop_scaling", "0.5")
         if parameterNode.GetParameter("kernel_size"):
             parameterNode.SetParameter("kernel_size", "7.0")
-        if parameterNode.GetParameter("desSeedLocker"):
-            parameterNode.SetParameter("desSeedLocker", "False")
-        if parameterNode.GetParameter("ascSeedLocker"):
-            parameterNode.SetParameter("ascSeedLocker", "False")
 
     def resetDefaultParameters(self, parameterNode):
         self.setDefaultParameters(parameterNode)
