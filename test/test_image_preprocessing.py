@@ -12,9 +12,9 @@ def print_result(ref_image, test_image):
     and Sørensen–Dice coefficient between the reference image and the test image
 
     Args:
-        ref_image (numpy.ndarrays): reference image's numpy ndarrays representation
+        ref_image (numpy.ndarrays): The reference image's numpy ndarrays representation
 
-        test_image (numpy.ndarrays): test image's numpy ndarrays representation
+        test_image (numpy.ndarrays): The test image's numpy ndarrays representation
     """ # noqa
     print(
         "mean_square_error", mean_square_error(ref_image, test_image)
@@ -34,7 +34,7 @@ def get_cropped_volume_image(sample):
     """Read the cropped volume from /project-repo/test/sample
 
     Returns:
-        SITK: The cropped volume sitk image
+        SITK::image: The cropped volume sitk image
     """
     abspath = glob.glob("test/sample/{}-crop.vtk".format(sample))[0]
     abspath = os.path.abspath(abspath)
@@ -45,7 +45,7 @@ def read_volume_image(sample):
     """Read the segmented descending aorta volume from /project-repo/test/sample
 
     Returns:
-        SITK: The segmented descending aorta sitk image
+        SITK::image: The segmented descending aorta sitk image
     """ # noqa
     abspath = glob.glob("test/sample/{}_Seg*.vtk".format(sample))[0]
     abspath = os.path.abspath(abspath)
@@ -56,9 +56,9 @@ def DSC(ref_image, test_image):
     """Calculate the Dice similarity coefficient.
 
     Args:
-        ref_image (numpy.ndarrays): reference image's numpy ndarrays representation
+        ref_image (numpy.ndarrays): The reference image's numpy ndarrays representation
 
-        test_image (numpy.ndarrays): test image's numpy ndarrays representation
+        test_image (numpy.ndarrays): The test image's numpy ndarrays representation
 
     Returns:
         float: The Dice similarity coefficient of the reference and test image
@@ -72,9 +72,9 @@ def root_mse(ref_image, test_image):
     """Calculate the root mean square error between reference image and test image.
 
     Args:
-        ref_image (numpy.ndarrays): reference image's numpy ndarrays representation
+        ref_image (numpy.ndarrays): The reference image's numpy ndarrays representation
 
-        test_image (numpy.ndarrays): test image's numpy ndarrays representation
+        test_image (numpy.ndarrays): The test image's numpy ndarrays representation
 
     Returns:
         float: The Dice similarity coefficient of the reference and test image
@@ -86,9 +86,9 @@ def mean_absolute_error(ref_image, test_image):
     """Calculate the mean absolute error between reference image and test image.
 
     Args:
-        ref_image (numpy.ndarrays): reference image's numpy ndarrays representation
+        ref_image (numpy.ndarrays): The reference image's numpy ndarrays representation
 
-        test_image (numpy.ndarrays): test image's numpy ndarrays representation
+        test_image (numpy.ndarrays): The test image's numpy ndarrays representation
 
     Returns:
         float: The Dice similarity coefficient of the reference and test image
@@ -102,9 +102,9 @@ def mean_square_error(ref_image, test_image):
     This function only counts if there is a white_pixel on either reference image or test image, ignoring the black pixels
 
     Args:
-        ref_image (numpy.ndarrays): reference image's numpy ndarrays representation
+        ref_image (numpy.ndarrays): The reference image's numpy ndarrays representation
 
-        test_image (numpy.ndarrays): test image's numpy ndarrays representation
+        test_image (numpy.ndarrays): The test image's numpy ndarrays representation
 
     Returns:
         float: The Dice similarity coefficient of the reference and test image
@@ -119,13 +119,20 @@ def test_compare_segmentation(testCase, limit):
     and compare the result with the existing volume from /project-repo/test/sample.
 
     Args:
+        limit (float): The limit of the test result based on the Sørensen–Dice coefficient.
 
-        testCase (int): the test case to run the test. The test cases are:
+        testCase (str): The test case to run the test. The test cases are:
+
             001-43681283
+
             028-07323651
+
             029-05937785
+
             030-75962810
+
             031-62023082
+
             032-22429388
 
     Returns:
