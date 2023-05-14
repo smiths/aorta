@@ -7,7 +7,7 @@ import vtk
 
 import slicer
 from slicer.ScriptedLoadableModule import *  # noqa: F403
-from slicer.util import VTKObservationMixin, pip_install
+from slicer.util import VTKObservationMixin
 
 from AortaGeomReconDisplayModuleLib.AortaSegmenter \
     import AortaSegmenter
@@ -65,11 +65,11 @@ and Steve Pieper, Isomics, Inc. and was partially funded by NIH grant 3P41RR0132
 
         # Additional initialization step after application startup is complete
         slicer.app.connect("startupCompleted()", registerSampleData)
-        
 
 #
 # Register sample data sets in Sample Data module
 #
+
 
 def registerSampleData():
     """

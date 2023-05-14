@@ -256,14 +256,14 @@ class AortaSegmenter():
             else:
                 asc_points.append(point)
         des_p_arr = np.array(des_points)
-        des_centroid_x = int(np.round(np.average(des_p_arr[:,0])))
-        des_centroid_y = int(np.round(np.average(des_p_arr[:,1])))
+        des_centroid_x = int(np.round(np.average(des_p_arr[:, 0])))
+        des_centroid_y = int(np.round(np.average(des_p_arr[:, 1])))
         des_centroid = (des_centroid_x, des_centroid_y)
         asc_centroid = None
         if asc_c:
             asc_p_arr = np.array(asc_points)
-            asc_centroid_x = int(np.round(np.average(asc_p_arr[:,0])))
-            asc_centroid_y = int(np.round(np.average(asc_p_arr[:,1])))
+            asc_centroid_x = int(np.round(np.average(asc_p_arr[:, 0])))
+            asc_centroid_y = int(np.round(np.average(asc_p_arr[:, 1])))
             asc_centroid = (asc_centroid_x, asc_centroid_y)
         return [des_centroid, asc_centroid]
 
