@@ -15,15 +15,14 @@ sys.path.insert(0, AGR_module_path)
 # for debugging and numpy print operation
 np.set_printoptions(threshold=sys.maxsize)
 
-from sklearn.cluster import KMeans # noqa
-
 # import helpers enumeration classes
 from AortaGeomReconDisplayModuleLib.AortaGeomReconEnums import SegmentDirection as SegDir # noqa
 from AortaGeomReconDisplayModuleLib.AortaGeomReconEnums import PixelValue # noqa
 
 
 class AortaSegmenter():
-    """This class is used to perform Descending or Ascending aorta segmentation.
+    """This class contains the data structure and the algorithm to perfrom aorta segmentation.
+
     Attributes:
         
         cropped_image (SITK::image): The original image that the user has only perform cropping.
@@ -59,8 +58,6 @@ class AortaSegmenter():
         self._des_prev_centre = des_seed[:2]
         self._asc_seed = asc_seed
         self._asc_prev_centre = asc_seed[:2]
-        self._des_max_diff = 0
-        self._asc_max_diff = 0
         self._stop_limit = stop_limit
         self._threshold_coef = threshold_coef
         self._cropped_image = cropped_image
@@ -85,7 +82,7 @@ class AortaSegmenter():
 
     def begin_segmentation(self):
         """This is the main entry point of the axial segmentation.
-        This api should be called to perform aorta segmentation first
+        This api should be called to perform aorta segmentation.
         (superior to inferior, then inferior to superior starting from the seed slice).
     
         """ # noqa
@@ -129,13 +126,21 @@ class AortaSegmenter():
         return label_map
 
     def __get_image_segment(self):
-        """Use SITK::LabelStatisticsImageFilter to get the mean of the intensity values of white pixel (label of 1).
-        Use the mean to calculate the threshold for segmentation image filter.
-        Use SITK::SignedMaurerDistanceMap to calculate the signed squared Euclidean distance transform of the circle.
-        Finally, get the segmentation value with the Euclidean distance transform.
+        """
+        1. Use SITK::BinaryDilate to create a label image of the processing slice.
+        Use the previous centroid(s) coordinate and dilate with the given kernel_size in a ball shape.
+
+        2. Use SITK::LabelStatisticsImageFilter to get the mean and the standard deviation
+        of the intensity values of white pixel (label of 1). Use the mean and the std to calculate
+        the threshold for segmentation image filter.
+        
+        4. Use SITK::SignedMaurerDistanceMap to calculate the signed squared Euclidean distance transform of the label image.
+        
+        5. Finally, use the Euclidean distance transform from the previous step as seed image 
+        to perform segmentation with SITK::ThresholdSegmentationLevelSetImageFilter and
 
         Returns:
-            numpy.ndarray: Segmented image slice based on intensity values.
+            SITK::image: Segmented image
 
         """ # noqa
         label_map = self.__prepare_label_map()
@@ -159,7 +164,9 @@ class AortaSegmenter():
         For each axial slice, the algorithm performs segmetation with get_image_segment function.
         Next, the algorithm calculates new centroids based on the segmented slice.
         Repeat this process until the stop condition has reached. The stop conditions are:
+
         1. The new centroid located too far from the previous centroid
+
         2. The difference of the std of the initial label image and of the final segmented image reaches the stop limit.
 
         """ # noqa
@@ -195,7 +202,11 @@ class AortaSegmenter():
             self._processing_image[:, :, slice_i] = new_slice
 
     def __is_asc_reaching_heart(self, asc_c):
-        """The stop condition of ascending aorta segmentation from Superior to Inferior direction. Once the segmentation result reaches the heart, the new centroid will locate far from the previous ascending aorta centre.
+        """The stop condition of ascending aorta segmentation from Superior to Inferior direction.
+        Once the segmentation result reaches the heart, the new centroid will locate far from the previous ascending aorta centroid.
+
+        Args:
+            asc_c (tuple): The new centroid closer to the ascending aorta.
 
         Returns:
             Boolean: The distance between new centroid and the previous ascending aorta centroid reaches the stop limit.
@@ -208,18 +219,65 @@ class AortaSegmenter():
     def __get_dist(self, p1, p2):
         """Calculate the Euclidean distance between any two points.
 
+        Args:
+            p1 (tuple): a point's coordinate
+
+            p2 (tuple): a point's coordinate
+
         Returns:
             float: The Euclidean distance between p1 and p2.
         """ # noqa
         return np.sqrt((p1[0]-p2[0])**2 + (p1[1]-p2[1])**2)
 
+    def __calculate_centroids(self, points, asc_c, des_c):
+        """Calculate new descending aorta and ascending aorta centroid.
+
+        Args:
+            points (list): A list of points coordinate
+
+            asc_c (tuple): The previous ascending aorta centroid coordinate
+
+            des_c (tuple): The previous descending aorta centroid coordinate
+
+        Returns:
+            (list): list containing:
+
+                (tuple): The new descending aorta centroid coordinate
+
+                (tuple): The new ascending aorta centroid coordinate
+        """ # noqa
+        des_points = []
+        asc_points = []
+        for point in points:
+            dist_des = self.__get_dist(point, des_c)
+            dist_asc = self.__get_dist(point, asc_c) if asc_c else float("inf")
+            if not asc_c or min(dist_des, dist_asc) == dist_des:
+                des_points.append(point)
+            else:
+                asc_points.append(point)
+        des_p_arr = np.array(des_points)
+        des_centroid_x = int(np.round(np.average(des_p_arr[:,0])))
+        des_centroid_y = int(np.round(np.average(des_p_arr[:,1])))
+        des_centroid = (des_centroid_x, des_centroid_y)
+        asc_centroid = None
+        if asc_c:
+            asc_p_arr = np.array(asc_points)
+            asc_centroid_x = int(np.round(np.average(asc_p_arr[:,0])))
+            asc_centroid_y = int(np.round(np.average(asc_p_arr[:,1])))
+            asc_centroid = (asc_centroid_x, asc_centroid_y)
+        return [des_centroid, asc_centroid]
+
     def __get_new_centroids(self, new_slice):
         """Calculate new centroids on the segmented slice.
 
+        Args:
+            new_slice (SITK::image): A label image of the segmentation result.
+
         Returns:
             (tuple): tuple containing:
-                tuple: The new derived centres closest to the previous descending aorta centre
-                tuple: The new derived centres closest to the previous ascending aorta centre
+                tuple: The new derived centroid coordinate closest to the previous descending aorta centroid.
+
+                tuple: The new derived centroid coordinate closest to the previous ascending aorta centroid.
         """ # noqa
         nda = sitk.GetArrayFromImage(new_slice)
         list_y_ind, list_x_ind = np.where(nda == PixelValue.white_pixel.value)
@@ -228,46 +286,25 @@ class AortaSegmenter():
         )
         if len(points) <= 1:
             return (float("inf"), float("inf")), (float("inf"), float("inf"))
-
-        init = np.array([self._des_prev_centre, self._asc_prev_centre])
         if self._k == 1:
-            init = np.array([self._des_prev_centre])
-        km = KMeans(
-            n_clusters=self._k,
-            init=init,
-            n_init=1
-        ).fit(points)
-        if self._k == 2:
-            centroid1, centroid2 = np.round(km.cluster_centers_).astype(int)
-            centroid1 = [int(p) for p in centroid1]
-            centroid2 = [int(p) for p in centroid2]
-            c1_to_des = self.__get_dist(centroid1, self._des_prev_centre)
-            c1_to_asc = self.__get_dist(centroid1, self._asc_prev_centre)
-            des_centre = centroid1
-            asc_centre = centroid2
-            if c1_to_des > c1_to_asc:
-                asc_centre, des_centre = des_centre, asc_centre
-            return [des_centre, asc_centre]
-        centroid1 = np.round(km.cluster_centers_).astype(int)
-        return [[int(p) for p in centroid1[0]]]
-
-    @property
-    def cropped_image(self):
-        """cropped image getter. The cropped image is the untouched cropped image provided by the user.
-
-        """ # noqa
-        return self._cropped_image
+            des_centroid = self.__calculate_centroids(
+                points, None, self._des_prev_centre)[0]
+            return [des_centroid]
+        else:
+            des_centroid, asc_centroid = self.__calculate_centroids(
+                points, self._asc_prev_centre, self._des_prev_centre)
+            return [des_centroid, asc_centroid]
 
     @property
     def processing_image(self):
-        """processing image getter. The prcoessing image is the segmentation result.
+        """processing image getter. The prcoessing image is the segmentation result, in form of a 3D label image.
 
         """ # noqa
         return self._processing_image
 
     @property
     def stopping_slice(self):
-        """stopping slice getter. Return the last processing slice for parameters tuning.
+        """stopping slice getter. Return the last processing slice for debug purpose.
 
         """ # noqa
         return self._stopping_slice
