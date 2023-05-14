@@ -46,7 +46,6 @@
 <li class="toctree-l3"><a class="reference internal" href="#submodules">Submodules</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#module-conftest">conftest module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#module-test_image_preprocessing">test_image_preprocessing module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#module-test">Module contents</a></li>
 </ul>
 </li>
 </ul>
@@ -113,8 +112,8 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>ref_image</strong> (<em>numpy.ndarrays</em>) – reference image’s numpy ndarrays representation</p></li>
-<li><p><strong>test_image</strong> (<em>numpy.ndarrays</em>) – test image’s numpy ndarrays representation</p></li>
+<li><p><strong>ref_image</strong> (<em>numpy.ndarrays</em>) – The reference image’s numpy ndarrays representation</p></li>
+<li><p><strong>test_image</strong> (<em>numpy.ndarrays</em>) – The test image’s numpy ndarrays representation</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -135,7 +134,7 @@
 <dd class="field-odd"><p>The cropped volume sitk image</p>
 </dd>
 <dt class="field-even">Return type</dt>
-<dd class="field-even"><p>SITK</p>
+<dd class="field-even"><p>SITK::image</p>
 </dd>
 </dl>
 </dd></dl>
@@ -147,8 +146,8 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>ref_image</strong> (<em>numpy.ndarrays</em>) – reference image’s numpy ndarrays representation</p></li>
-<li><p><strong>test_image</strong> (<em>numpy.ndarrays</em>) – test image’s numpy ndarrays representation</p></li>
+<li><p><strong>ref_image</strong> (<em>numpy.ndarrays</em>) – The reference image’s numpy ndarrays representation</p></li>
+<li><p><strong>test_image</strong> (<em>numpy.ndarrays</em>) – The test image’s numpy ndarrays representation</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -168,8 +167,8 @@ This function only counts if there is a white_pixel on either reference image or
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>ref_image</strong> (<em>numpy.ndarrays</em>) – reference image’s numpy ndarrays representation</p></li>
-<li><p><strong>test_image</strong> (<em>numpy.ndarrays</em>) – test image’s numpy ndarrays representation</p></li>
+<li><p><strong>ref_image</strong> (<em>numpy.ndarrays</em>) – The reference image’s numpy ndarrays representation</p></li>
+<li><p><strong>test_image</strong> (<em>numpy.ndarrays</em>) – The test image’s numpy ndarrays representation</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -189,8 +188,8 @@ and Sørensen–Dice coefficient between the reference image and the test image<
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>ref_image</strong> (<em>numpy.ndarrays</em>) – reference image’s numpy ndarrays representation</p></li>
-<li><p><strong>test_image</strong> (<em>numpy.ndarrays</em>) – test image’s numpy ndarrays representation</p></li>
+<li><p><strong>ref_image</strong> (<em>numpy.ndarrays</em>) – The reference image’s numpy ndarrays representation</p></li>
+<li><p><strong>test_image</strong> (<em>numpy.ndarrays</em>) – The test image’s numpy ndarrays representation</p></li>
 </ul>
 </dd>
 </dl>
@@ -205,7 +204,7 @@ and Sørensen–Dice coefficient between the reference image and the test image<
 <dd class="field-odd"><p>The segmented descending aorta sitk image</p>
 </dd>
 <dt class="field-even">Return type</dt>
-<dd class="field-even"><p>SITK</p>
+<dd class="field-even"><p>SITK::image</p>
 </dd>
 </dl>
 </dd></dl>
@@ -217,8 +216,8 @@ and Sørensen–Dice coefficient between the reference image and the test image<
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>ref_image</strong> (<em>numpy.ndarrays</em>) – reference image’s numpy ndarrays representation</p></li>
-<li><p><strong>test_image</strong> (<em>numpy.ndarrays</em>) – test image’s numpy ndarrays representation</p></li>
+<li><p><strong>ref_image</strong> (<em>numpy.ndarrays</em>) – The reference image’s numpy ndarrays representation</p></li>
+<li><p><strong>test_image</strong> (<em>numpy.ndarrays</em>) – The test image’s numpy ndarrays representation</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -238,13 +237,17 @@ perform descending aorta segmentation,
 and compare the result with the existing volume from /project-repo/test/sample.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>testCase</strong> (<em>int</em>) – the test case to run the test. The test cases are:
-001-43681283
-028-07323651
-029-05937785
-030-75962810
-031-62023082
-032-22429388</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>limit</strong> (<em>float</em>) – The limit of the test result based on the Sørensen–Dice coefficient.</p></li>
+<li><p><strong>testCase</strong> (<em>str</em>) – <p>The test case to run the test. The test cases are:</p>
+<p>001-43681283</p>
+<p>028-07323651</p>
+<p>029-05937785</p>
+<p>030-75962810</p>
+<p>031-62023082</p>
+<p>032-22429388</p>
+</p></li>
+</ul>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>Pass the test if the Sørensen–Dice coefficient between test image and reference image is within the limit set by user.</p>
@@ -255,9 +258,6 @@ and compare the result with the existing volume from /project-repo/test/sample.<
 </dl>
 </dd></dl>
 
-</section>
-<section id="module-test">
-<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-test" title="Permalink to this headline"></a></h2>
 </section>
 </section>
 
