@@ -44,6 +44,8 @@ author = 'Jingyi Lin'
 extensions = ["sphinx.ext.todo", "sphinx.ext.napoleon"]
 # autodoc_mock_imports = ["vtk", "sitkUtils", "PythonQt", "slicer", "ScriptedLoadableModule"]
 
+autodoc_mock_imports = [ "ctk", "qt", "vtk", "slicer", "sitkUtils", "slicer.ScriptedLoadableModule"]
+
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
 

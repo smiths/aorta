@@ -6,7 +6,11 @@ from datetime import datetime
 import vtk
 
 import slicer
-from slicer.ScriptedLoadableModule import *  # noqa: F403
+from slicer import ScriptedLoadableModule
+from slicer.ScriptedLoadableModule import ScriptedLoadableModuleWidget
+from slicer.ScriptedLoadableModule import ScriptedLoadableModuleLogic
+from slicer.ScriptedLoadableModule import ScriptedLoadableModuleTest
+from slicer.ScriptedLoadableModule import *  # noqa
 from slicer.util import VTKObservationMixin
 
 from AortaGeomReconDisplayModuleLib.AortaSegmenter \
@@ -343,7 +347,7 @@ class AortaGeomReconDisplayModuleWidget(ScriptedLoadableModuleWidget, VTKObserva
         if not phase or phase == '1':
             self.showPhaseCropAorta()
         elif phase == '2':
-            self.showPhaseDAS()
+            self.showPhaseAS()
         self.ui.ascAortaSeed.coordinates = self._parameterNode.GetParameter(
             "ascAortaSeed")
         self.ui.descAortaSeed.coordinates = self._parameterNode.GetParameter(
@@ -413,6 +417,10 @@ class AortaGeomReconDisplayModuleWidget(ScriptedLoadableModuleWidget, VTKObserva
         self._parameterNode.EndModify(wasModified)
 
     def showPhaseCropAorta(self):
+        """
+        This method is called when the user makes change the current phase to phase 1 crop aorta.
+        This method includes all the ui elements that need to hide or to show.
+        """ # noqa
         self.ui.revertButton.enabled = False
         self.ui.phaseLabel.text = AGR_phase.crop_aorta.value
         self.ui.ascAortaSeed.hide()
@@ -439,7 +447,11 @@ class AortaGeomReconDisplayModuleWidget(ScriptedLoadableModuleWidget, VTKObserva
         self.ui.kernelSizeLabel.hide()
         self.ui.kernelSize.hide()
 
-    def showPhaseDAS(self):
+    def showPhaseAS(self):
+        """
+        This method is called when the user makes change the current phase to phase 2 aorta segmentation.
+        This method includes calling of all UI elements that need to show or to hide.
+        """ # noqa
         self._parameterNode.SetParameter("phase", "2")
         self.ui.phaseLabel.text = AGR_phase.segment_desc_aorta.value
         self.ui.revertButton.enabled = True
@@ -468,22 +480,32 @@ class AortaGeomReconDisplayModuleWidget(ScriptedLoadableModuleWidget, VTKObserva
         self.ui.kernelSize.show()
 
     def onGetVTKButton(self):
+        """
+        This method is called when the user click on Get VTK button.
+        Depends on what state the module is in, the module output a vtk file under the root folder of Slicer application.
+
+        # TODO Add a pop-up window to select output path.
+        """ # noqa
         sceneObj = slicer.mrmlScene
         if self._parameterNode.GetParameter("phase") == "1":
             size = len(slicer.util.getNodes("*cropped*", useLists=True))
             if size == 1:
                 volume = sceneObj.GetFirstNode("cropped", None, None, False)
                 self.logic.transform_image(volume)
-                self.logic.saveVtk("crop_volume.vtk")
+                self.logic.saveVtk("crop_volume.vtk", None, 1)
         elif self._parameterNode.GetParameter("phase") == "2":
             size = len(slicer.util.getNodes("*Seg*", useLists=True))
             if size == 1:
                 volume = sceneObj.GetFirstNode("Seg", None, None, False)
-                self.logic.saveVtk("{}.vtk".format(volume.GetName()), volume)
+                self.logic.saveVtk(
+                    "{}.vtk".format(volume.GetName()),
+                    volume,
+                    2
+                )
 
     def onRevertButton(self):
         """
-        Run processing when user clicks "Revert" button.
+        Revert to the previous phase, stay unchanged if first state is reached.
         """
         errorMessage = "Failed to clear inputs"
         with slicer.util.tryWithErrorDisplay(errorMessage, waitCursor=True):
@@ -494,7 +516,7 @@ class AortaGeomReconDisplayModuleWidget(ScriptedLoadableModuleWidget, VTKObserva
 
     def onResetButton(self):
         """
-        Run processing when user clicks "Reset" button.
+        Reset all stored variables.
         """
         errorMessage = "Failed to clear inputs"
         with slicer.util.tryWithErrorDisplay(errorMessage, waitCursor=True):
@@ -503,7 +525,7 @@ class AortaGeomReconDisplayModuleWidget(ScriptedLoadableModuleWidget, VTKObserva
 
     def onSkipButton(self):
         """
-        Run processing when user clicks "Skip" button.
+        Go to next phase.
         """
         errorMessage = "Failed to skip this phase"
         with slicer.util.tryWithErrorDisplay(errorMessage, waitCursor=True):
@@ -514,8 +536,8 @@ class AortaGeomReconDisplayModuleWidget(ScriptedLoadableModuleWidget, VTKObserva
 
     def onApplyButton(self):
         """
-        Run processing when user clicks "Apply" button.
-        """
+        Go to next phase if on phase 1 crop aorta or perform segmentation if on phase 2 aorta segmentation.
+        """ # noqa
         errorMessage = "Failed to compute results."
         sceneObj = slicer.mrmlScene
         stop_limit = self._parameterNode.GetParameter(
@@ -537,7 +559,7 @@ class AortaGeomReconDisplayModuleWidget(ScriptedLoadableModuleWidget, VTKObserva
                 if not size:
                     logging.info("Cannot find cropped volume")
                 else:
-                    self.showPhaseDAS()
+                    self.showPhaseAS()
             elif self._parameterNode.GetParameter("phase") == "2":
                 descAortaSeed = self._parameterNode.GetParameter(
                     "descAortaSeed")
@@ -561,7 +583,11 @@ class AortaGeomReconDisplayModuleWidget(ScriptedLoadableModuleWidget, VTKObserva
                 )
 
     def onMouseMoved(self, observer, eventid):
-        # ras = [0, 0, 0]
+        """
+        This method automatically updates the descending aorta seed
+        or the ascending aorta seed when the cursor is moving,
+        if the seeds are in unlocked state.
+        """
         errorMsg = "Failed to load intersection data"
         volume = slicer.mrmlScene.GetFirstNode("cropped", None, None, False)
         if volume:
@@ -599,17 +625,25 @@ class AortaGeomReconDisplayModuleLogic(ScriptedLoadableModuleLogic):  # noqa: F4
         self._cropped_image = None
         ScriptedLoadableModuleLogic.__init__(self)  # noqa: F405
 
-    def saveVtk(self, name):
+    def saveVtk(self, name, volume, phase):
+        """
+        Save vtk file of a volume.
+        """
         writer = sitk.ImageFileWriter()
         writer.SetImageIO("VTKImageIO")
         writer.SetFileName(name)
-        image = sitkUtils.PullVolumeFromSlicer(self._cropped_image)
+        if phase == 1:
+            image = sitkUtils.PullVolumeFromSlicer(self._cropped_image)
+        else:
+            image = sitkUtils.PullVolumeFromSlicer(volume)
         writer.Execute(image)
 
     def getPlaneIntersectionPoint(self, vN, aN, oN1, oN2):
-        # Compute the center of rotation
-        # (common intersection point of the three planes)
-        # http://mathworld.wolfram.com/Plane-PlaneIntersection.html
+        """
+        Compute the center of rotation
+        (common intersection point of the three planes)
+        http://mathworld.wolfram.com/Plane-PlaneIntersection.html
+        """
         axialSliceToRas = aN.GetSliceToRAS()
         n1 = [
             axialSliceToRas.GetElement(0, 2),
@@ -691,11 +725,22 @@ class AortaGeomReconDisplayModuleLogic(ScriptedLoadableModuleLogic):  # noqa: F4
         return point_Ijk
 
     def anyEmptySeed(self, ui, phase):
-        cond1 = (ui.descAortaSeed.coordinates == "0,0,0")
-        cond2 = (ui.ascAortaSeed.coordinates == "0,0,0")
+        """Verify if the coordinates are not default value
+
+        Returns:
+            Boolean: Return True if desc aorta seed and asc aorta seed
+            are not empty.
+        """ # noqa
+        if phase == '2':
+            cond1 = (ui.descAortaSeed.coordinates == "0,0,0")
+            cond2 = (ui.ascAortaSeed.coordinates == "0,0,0")
         return cond1 or cond2
 
     def transform_image(self, cropped_volume):
+        """
+        Histogram Equalization for Digital Image Enhancement.
+        https://levelup.gitconnected.com/introduction-to-histogram-equalization-for-digital-image-enhancement-420696db9e43
+        """ # noqa
         cropped_image = sitkUtils.PullVolumeFromSlicer(cropped_volume)
         img_array = sitk.GetArrayFromImage(
             (sitk.Cast(sitk.RescaleIntensity(cropped_image), sitk.sitkUInt8)))
@@ -748,6 +793,8 @@ class AortaGeomReconDisplayModuleLogic(ScriptedLoadableModuleLogic):  # noqa: F4
             parameterNode.SetParameter("kernel_size", "7")
 
     def setDefaultParameters(self, parameterNode):
+        """Set parameter node with default settings.
+        """
         if parameterNode.GetParameter("ascAortaSeed"):
             parameterNode.SetParameter("ascAortaSeed", "0,0,0")
         if parameterNode.GetParameter("stop_limit"):
@@ -768,6 +815,8 @@ class AortaGeomReconDisplayModuleLogic(ScriptedLoadableModuleLogic):  # noqa: F4
             parameterNode.SetParameter("kernel_size", "7.0")
 
     def resetDefaultParameters(self, parameterNode):
+        """Reset parameter node with default settings.
+        """
         self.setDefaultParameters(parameterNode)
         if parameterNode.GetParameter("phase"):
             parameterNode.SetParameter("phase", "1")
@@ -775,6 +824,12 @@ class AortaGeomReconDisplayModuleLogic(ScriptedLoadableModuleLogic):  # noqa: F4
     def process(self, des_seed, asc_seed, stop_limit, threshold_coef,
                 kernel_size, rms_error, no_ite, curvature_scaling,
                 propagation_scaling, debug):
+        """Convert the parameters to the correct format and
+        call begin_segmentation from AortaSegmenter.
+
+        Returns:
+            SITK::image: The processing image, or the segmentation label image
+        """
         des_seed = des_seed.split(",")
         asc_seed = asc_seed.split(",")
         asc_seed = [int(i) for i in asc_seed]
