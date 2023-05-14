@@ -7,7 +7,7 @@ import vtk
 
 import slicer
 from slicer.ScriptedLoadableModule import *  # noqa: F403
-from slicer.util import VTKObservationMixin
+from slicer.util import VTKObservationMixin, pip_install
 
 from AortaGeomReconDisplayModuleLib.AortaSegmenter \
     import AortaSegmenter
@@ -65,7 +65,7 @@ and Steve Pieper, Isomics, Inc. and was partially funded by NIH grant 3P41RR0132
 
         # Additional initialization step after application startup is complete
         slicer.app.connect("startupCompleted()", registerSampleData)
-
+        
 
 #
 # Register sample data sets in Sample Data module
@@ -207,8 +207,6 @@ class AortaGeomReconDisplayModuleWidget(ScriptedLoadableModuleWidget, VTKObserva
         self.ui.descAortaSeed.connect(
             "coordinatesChanged(double*)", self.updateParameterNodeFromGUI)
         self.ui.stopLimit.connect(
-            "valueChanged(double)", self.updateParameterNodeFromGUI)
-        self.ui.numOfSkippingSlice.connect(
             "valueChanged(double)", self.updateParameterNodeFromGUI)
         self.ui.kernelSize.connect(
             "valueChanged(double)", self.updateParameterNodeFromGUI)
@@ -368,11 +366,6 @@ class AortaGeomReconDisplayModuleWidget(ScriptedLoadableModuleWidget, VTKObserva
             temp = 1
         self.ui.stopLimit.value = float(temp)
 
-        temp = float(self._parameterNode.GetParameter("numOfSkippingSlice"))
-        if not temp:
-            temp = 1
-        self.ui.numOfSkippingSlice.value = int(temp)
-
         self.ui.applyButton.enabled = not self.logic.anyEmptySeed(
             self.ui,
             self._parameterNode.GetParameter("phase")
@@ -398,8 +391,6 @@ class AortaGeomReconDisplayModuleWidget(ScriptedLoadableModuleWidget, VTKObserva
             "descAortaSeed", self.ui.descAortaSeed.coordinates)
         self._parameterNode.SetParameter(
             "stop_limit", str(self.ui.stopLimit.value))
-        self._parameterNode.SetParameter(
-            "numOfSkippingSlice", str(self.ui.numOfSkippingSlice.value))
         self._parameterNode.SetParameter(
             "kernel_size", str(self.ui.kernelSize.value))
         self._parameterNode.SetParameter(
@@ -428,11 +419,9 @@ class AortaGeomReconDisplayModuleWidget(ScriptedLoadableModuleWidget, VTKObserva
         self.ui.descAortaSeed.hide()
         self.ui.thresholdCoefficient.hide()
         self.ui.stopLimit.hide()
-        self.ui.numOfSkippingSlice.hide()
         self.ui.ascAortaSeedLabel.hide()
         self.ui.descAortaSeedLabel.hide()
         self.ui.stopLimitLabel.hide()
-        self.ui.numOfSkippingSliceLabel.hide()
         self.ui.rmsLabel.hide()
         self.ui.noIteLabel.hide()
         self.ui.curScalingLabel.hide()
@@ -461,9 +450,7 @@ class AortaGeomReconDisplayModuleWidget(ScriptedLoadableModuleWidget, VTKObserva
         self.ui.descAortaSeed.show()
         self.ui.descAortaSeedLabel.show()
         self.ui.stopLimit.show()
-        self.ui.numOfSkippingSlice.show()
         self.ui.stopLimitLabel.show()
-        self.ui.numOfSkippingSliceLabel.show()
         self.ui.rmsLabel.show()
         self.ui.noIteLabel.show()
         self.ui.curScalingLabel.show()
@@ -749,8 +736,6 @@ class AortaGeomReconDisplayModuleLogic(ScriptedLoadableModuleLogic):  # noqa: F4
             parameterNode.SetParameter("phase", "1")
         if not parameterNode.GetParameter("descAortaSeed"):
             parameterNode.SetParameter("descAortaSeed", "0,0,0")
-        if not parameterNode.GetParameter("numOfSkippingSlice"):
-            parameterNode.SetParameter("numOfSkippingSlice", "3")
         if not parameterNode.GetParameter("rms_error"):
             parameterNode.SetParameter("rms_error", "0.02")
         if not parameterNode.GetParameter("no_ite"):
@@ -771,8 +756,6 @@ class AortaGeomReconDisplayModuleLogic(ScriptedLoadableModuleLogic):  # noqa: F4
             parameterNode.SetParameter("threshold_coef", "3.0")
         if parameterNode.GetParameter("descAortaSeed"):
             parameterNode.SetParameter("descAortaSeed", "0,0,0")
-        if parameterNode.GetParameter("numOfSkippingSlice"):
-            parameterNode.SetParameter("numOfSkippingSlice", "3")
         if parameterNode.GetParameter("rms_error"):
             parameterNode.SetParameter("rms_error", "0.02")
         if parameterNode.GetParameter("no_ite"):
