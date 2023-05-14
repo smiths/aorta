@@ -42,29 +42,22 @@ class AortaGeomReconDisplayModule(ScriptedLoadableModule):  # noqa: F405
         ScriptedLoadableModule.__init__(self, parent)  # noqa: F405
 
         self.crosshairNode = None
-        # TODO: make this more human readable by adding spaces
+
         self.parent.title = "AortaGeomReconDisplayModule"
 
-        # TODO: set categories
-        # (folders where the module shows up in the module selector)
         self.parent.categories = ["Segmentation"]
 
-        # TODO: add here list of module names that this module requires
-        self.parent.dependencies = ["Markups"]
+        self.parent.dependencies = ["Volume Rendering", "Crop Volume"]
 
         self.parent.contributors = ["Jingyi Lin (McMaster University)"]
 
-        # TODO: update with short description of the module
-        # and a link to online module documentation
         self.parent.helpText = """
 This is an example of scripted loadable module bundled in an extension.
 See more information in <a href="https://github.com/organization/projectname#AortaGeomReconDisplayModule">module documentation</a>.
 """  # noqa: E501
 
-        # TODO: replace with organization, grant and thanks
         self.parent.acknowledgementText = """
-This file was originally developed by Jean-Christophe Fillion-Robin, Kitware Inc., Andras Lasso, PerkLab,
-and Steve Pieper, Isomics, Inc. and was partially funded by NIH grant 3P41RR013218-12S1.
+This file was originally developed by Jingyi Lin.
 """  # noqa: E501
 
         # Additional initialization step after application startup is complete
@@ -411,9 +404,6 @@ class AortaGeomReconDisplayModuleWidget(ScriptedLoadableModuleWidget, VTKObserva
             self.ui,
             self._parameterNode.GetParameter("phase")
         )
-        crop = len(slicer.util.getNodes("*cropped*", useLists=True)) == 1
-        des = len(slicer.util.getNodes("*Seg*", useLists=True)) > 0
-        self.ui.getVTKButton.enabled = crop or des
         self._parameterNode.EndModify(wasModified)
 
     def showPhaseCropAorta(self):
@@ -483,25 +473,30 @@ class AortaGeomReconDisplayModuleWidget(ScriptedLoadableModuleWidget, VTKObserva
         """
         This method is called when the user click on Get VTK button.
         Depends on what state the module is in, the module output a vtk file under the root folder of Slicer application.
-
-        # TODO Add a pop-up window to select output path.
         """ # noqa
         sceneObj = slicer.mrmlScene
+        path = os.path.abspath(self.ui.outputPath.currentPath)
         if self._parameterNode.GetParameter("phase") == "1":
             size = len(slicer.util.getNodes("*cropped*", useLists=True))
             if size == 1:
                 volume = sceneObj.GetFirstNode("cropped", None, None, False)
                 self.logic.transform_image(volume)
-                self.logic.saveVtk("crop_volume.vtk", None, 1)
+                path = os.path.join(path, "crop_volume.vtk")
+                self.logic.saveVtk(path, None, 1)
+            else:
+                logging.warning("Cannot find cropped volume")
         elif self._parameterNode.GetParameter("phase") == "2":
             size = len(slicer.util.getNodes("*Seg*", useLists=True))
             if size == 1:
                 volume = sceneObj.GetFirstNode("Seg", None, None, False)
+                path = os.path.join(path, volume.GetName())
                 self.logic.saveVtk(
-                    "{}.vtk".format(volume.GetName()),
+                    "{}.vtk".format(path),
                     volume,
                     2
                 )
+            else:
+                logging.warning("Cannot find Segmentation label volume")
 
     def onRevertButton(self):
         """
@@ -557,7 +552,7 @@ class AortaGeomReconDisplayModuleWidget(ScriptedLoadableModuleWidget, VTKObserva
             if self._parameterNode.GetParameter("phase") == "1":
                 size = len(slicer.util.getNodes("*cropped*", useLists=True))
                 if not size:
-                    logging.info("Cannot find cropped volume")
+                    logging.warning("Cannot find cropped volume")
                 else:
                     self.showPhaseAS()
             elif self._parameterNode.GetParameter("phase") == "2":
@@ -566,6 +561,10 @@ class AortaGeomReconDisplayModuleWidget(ScriptedLoadableModuleWidget, VTKObserva
                 ascAortaSeed = self._parameterNode.GetParameter(
                     "ascAortaSeed")
                 volume = sceneObj.GetFirstNode("cropped", None, None, False)
+                if not volume:
+                    logging.warning("Cannot find cropped volume")
+                    logging.warning(errorMessage)
+                    return
                 self.logic.transform_image(volume)
                 image = self.logic.process(
                     descAortaSeed, ascAortaSeed, stop_limit,
@@ -633,7 +632,7 @@ class AortaGeomReconDisplayModuleLogic(ScriptedLoadableModuleLogic):  # noqa: F4
         writer.SetImageIO("VTKImageIO")
         writer.SetFileName(name)
         if phase == 1:
-            image = sitkUtils.PullVolumeFromSlicer(self._cropped_image)
+            image = self._cropped_image
         else:
             image = sitkUtils.PullVolumeFromSlicer(volume)
         writer.Execute(image)
@@ -731,6 +730,7 @@ class AortaGeomReconDisplayModuleLogic(ScriptedLoadableModuleLogic):  # noqa: F4
             Boolean: Return True if desc aorta seed and asc aorta seed
             are not empty.
         """ # noqa
+        cond1 = cond2 = False
         if phase == '2':
             cond1 = (ui.descAortaSeed.coordinates == "0,0,0")
             cond2 = (ui.ascAortaSeed.coordinates == "0,0,0")
