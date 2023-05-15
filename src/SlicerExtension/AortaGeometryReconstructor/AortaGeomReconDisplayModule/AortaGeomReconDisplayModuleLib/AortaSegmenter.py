@@ -1,5 +1,6 @@
 import os
 import sys
+import math
 
 import SimpleITK as sitk
 import numpy as np
@@ -251,7 +252,11 @@ class AortaSegmenter():
         for point in points:
             dist_des = self.__get_dist(point, des_c)
             dist_asc = self.__get_dist(point, asc_c) if asc_c else float("inf")
-            if not asc_c or min(dist_des, dist_asc) == dist_des:
+            if (not asc_c or
+                math.isclose(
+                    min(dist_des, dist_asc),
+                    dist_des,
+                    rel_tol=1e-05)):
                 des_points.append(point)
             else:
                 asc_points.append(point)
@@ -271,7 +276,7 @@ class AortaSegmenter():
         """Calculate new centroids on the segmented slice.
 
         Args:
-            new_slice (SITK::image): A label image of the segmentation result.
+            new_slice (SITK::image): Segmentation result label image.
 
         Returns:
             (tuple): tuple containing:
@@ -286,6 +291,18 @@ class AortaSegmenter():
         )
         if len(points) <= 1:
             return (float("inf"), float("inf")), (float("inf"), float("inf"))
+
+        # __calculate_centroids function can be replaced by sklearn.KMeans
+        # This function is inspired by the K Means clustering algorithm
+
+        # init = np.array([self._des_prev_centre, self._asc_prev_centre])
+        # km = KMeans(
+        #  n_clusters=self._k,
+        #  init=init,
+        #  n_init=1
+        # ).fit(points)
+        # des_centroid, asc_centroid = km.cluster_centers_
+
         if self._k == 1:
             des_centroid = self.__calculate_centroids(
                 points, None, self._des_prev_centre)[0]
