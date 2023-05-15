@@ -82,7 +82,7 @@ class AortaSegmenter():
         self._is_size_decreasing = False
 
     def begin_segmentation(self):
-        """This is the main entry point of the axial segmentation.
+        """This is the main entry point of the segmentation algorithm.
         This api should be called to perform aorta segmentation.
         (superior to inferior, then inferior to superior starting from the seed slice).
     
@@ -113,11 +113,11 @@ class AortaSegmenter():
         print("bottom to top finished")
 
     def __prepare_label_map(self):
-        """Create a label map image that has a circle-like shape around the previous descending aorta centre and ascending aorta centre (if any).
+        """Create a label map image that has a circle-like shape around the previous descending aorta centroid and ascending aorta centroid (if any).
         The pixels within the circle are labeled as white pixels (value of 1), the other are labeled as black pixels (value of 0).
 
         Returns:
-            SITK::IMAGE: A label map image that has a circle like shape around the previous descending aorta centre and ascending aorta centre.
+            SITK::IMAGE: A label map image that has a circle like shape around the previous descending aorta centroid and ascending aorta centroid.
         """ # noqa
         label_map = sitk.Image(self._cur_img_slice.GetSize(), sitk.sitkUInt8)
         label_map.CopyInformation(self._cur_img_slice)
@@ -141,7 +141,7 @@ class AortaSegmenter():
         to perform segmentation with SITK::ThresholdSegmentationLevelSetImageFilter and
 
         Returns:
-            SITK::image: Segmented image
+            SITK::image: Segmented slice label image
 
         """ # noqa
         label_map = self.__prepare_label_map()
@@ -166,9 +166,11 @@ class AortaSegmenter():
         Next, the algorithm calculates new centroids based on the segmented slice.
         Repeat this process until the stop condition has reached. The stop conditions are:
 
-        1. The new centroid located too far from the previous centroid
+        1. The distance from the new ascending centroid to the previous ascending centroid reaches the stop limit.
 
-        2. The difference of the std of the initial label image and of the final segmented image reaches the stop limit.
+        2. The difference of the std of the initial label image and of the final segmented label image reaches the stop limit.
+
+        The first stop condition only removes the ascending aorta centroid from the segmentation process, the segmentation of descending aorta is unaffected.
 
         """ # noqa
         for slice_i in range(self._start, self._end, self._step):
