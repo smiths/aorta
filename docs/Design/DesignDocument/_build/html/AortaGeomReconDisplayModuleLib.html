@@ -314,7 +314,7 @@ the threshold for segmentation image filter.</p>
 to perform segmentation with SITK::ThresholdSegmentationLevelSetImageFilter and</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>Segmented image</p>
+<dd class="field-odd"><p>Segmented slice label image</p>
 </dd>
 <dt class="field-even">Return type</dt>
 <dd class="field-even"><p>SITK::image</p>
@@ -328,7 +328,7 @@ to perform segmentation with SITK::ThresholdSegmentationLevelSetImageFilter and<
 <dd><p>Calculate new centroids on the segmented slice.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>new_slice</strong> (<em>SITK::image</em>) – A label image of the segmentation result.</p>
+<dd class="field-odd"><p><strong>new_slice</strong> (<em>SITK::image</em>) – Segmentation result label image.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><dl>
@@ -365,11 +365,11 @@ Once the segmentation result reaches the heart, the new centroid will locate far
 <dl class="py method">
 <dt class="sig sig-object py" id="AortaSegmenter.AortaSegmenter.__prepare_label_map">
 <span class="sig-name descname"><span class="pre">__prepare_label_map</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#AortaSegmenter.AortaSegmenter.__prepare_label_map" title="Permalink to this definition"></a></dt>
-<dd><p>Create a label map image that has a circle-like shape around the previous descending aorta centre and ascending aorta centre (if any).
+<dd><p>Create a label map image that has a circle-like shape around the previous descending aorta centroid and ascending aorta centroid (if any).
 The pixels within the circle are labeled as white pixels (value of 1), the other are labeled as black pixels (value of 0).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>A label map image that has a circle like shape around the previous descending aorta centre and ascending aorta centre.</p>
+<dd class="field-odd"><p>A label map image that has a circle like shape around the previous descending aorta centroid and ascending aorta centroid.</p>
 </dd>
 <dt class="field-even">Return type</dt>
 <dd class="field-even"><p>SITK::IMAGE</p>
@@ -385,15 +385,16 @@ For each axial slice, the algorithm performs segmetation with get_image_segment 
 Next, the algorithm calculates new centroids based on the segmented slice.
 Repeat this process until the stop condition has reached. The stop conditions are:</p>
 <ol class="arabic simple">
-<li><p>The new centroid located too far from the previous centroid</p></li>
-<li><p>The difference of the std of the initial label image and of the final segmented image reaches the stop limit.</p></li>
+<li><p>The distance from the new ascending centroid to the previous ascending centroid reaches the stop limit.</p></li>
+<li><p>The difference of the std of the initial label image and of the final segmented label image reaches the stop limit.</p></li>
 </ol>
+<p>The first stop condition only removes the ascending aorta centroid from the segmentation process, the segmentation of descending aorta is unaffected.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="AortaSegmenter.AortaSegmenter.begin_segmentation">
 <span class="sig-name descname"><span class="pre">begin_segmentation</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#AortaSegmenter.AortaSegmenter.begin_segmentation" title="Permalink to this definition"></a></dt>
-<dd><p>This is the main entry point of the axial segmentation.
+<dd><p>This is the main entry point of the segmentation algorithm.
 This api should be called to perform aorta segmentation.
 (superior to inferior, then inferior to superior starting from the seed slice).</p>
 </dd></dl>
