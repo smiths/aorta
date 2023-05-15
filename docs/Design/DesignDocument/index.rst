@@ -25,14 +25,19 @@ The algorithm works best with the chest volume cropped to a rectangular prism th
 After cropping the volume, which only contains the region of interest, the algorithm needs a set of variables inputs from the user. These variables are:
 
 1. The centre coordinates of :term:`Descending Aorta` and :term:`Ascending Aorta` located on the same :term:`slice` (a voxel).
-2. :term:`Stop limit`.
-3. :term:`threshold coefficient`.
+
+.. figure:: Aorta_seeds.png
+   :align: center
+   :alt: Aorta seeds
+
+2. The :term:`Stop limit`.
+3. The :term:`threshold coefficient`.
 4. An integer for :term:`kernel size`.
-5. ThresholdSegmentationLevelSetsImageFilter parameters, including:
-    a. :term:`rms_error` (float)
-    b. :term:`Maximum iteration` (int)
-    c. :term:`Curvature scaling` (float)
-    d. :term:`Propagation scaling` (float)
+5. The ThresholdSegmentationLevelSetsImageFilter parameters, including:
+    a. The :term:`rms_error` (float)
+    b. The :term:`Maximum iteration` (int)
+    c. The :term:`Curvature scaling` (float)
+    d. The :term:`Propagation scaling` (float)
 
 
 The main ideas of the algorithm
@@ -45,6 +50,11 @@ For each slice starting from the user's selected slice, going in the :term:`infe
 1. **[Create a label map]**
 The algorithm uses `SITK\:\:BinaryDilateImageFilter <https://simpleitk.org/doxygen/latest/html/classitk_1_1simple_1_1BinaryDilateImageFilter.html>`_ to perform :term:`binary dilation` to generate a circle-like shape around the centre coordinates (user input's or calculated by the algorithm). Each pixel within this shape will be labeled as a white pixel (value of 1), and the rest of the pixels are labeled as black pixels (value of 0). The generated result is the :term:`label map` image, and we will use it in the next few steps. The size of the circle-like shape is determined by the :term:`kernel size`.
 
+.. figure:: label_image.png
+   :align: center
+   :alt: label image
+
+   The green circles shows the binary dilation of the two centroids.
 
 2. **[Create a distance map]**
 With `SITK\:\:SignedMaurerDistanceMapImageFilter <https://simpleitk.org/doxygen/latest/html/classitk_1_1simple_1_1SignedMaurerDistanceMapImageFilter.html>`_, the algorithm creates another image, the :term:`Euclidean distance transform` of the label image. This is used as a :term:`contour line` that helps build the gradient mentioned in :term:`Level sets`.
@@ -57,6 +67,11 @@ By using `SITK\:\:LabelStatisticsImageFilter <https://simpleitk.org/doxygen/late
 4. **[Segment a single slice]**
 With `SITK\:\:ThresholdSegmentationLevelSetImageFilter <https://simpleitk.org/doxygen/latest/html/classitk_1_1simple_1_1ThresholdSegmentationLevelSetImageFilter.html>`_,  the seed image calculated in step 2, and the lower and upper threshold value calculated in step 3, the algorithm performs segmentation and generated a :term:`segmented slice`.
 
+.. figure:: segment_label_image.png
+   :align: center
+   :alt: segment label image
+
+   The green pixels are labeled as part of the aorta.
 
 5. **[Calculate new centroids]**
 By comparing each pixel segmented as aorta to the previous descending centroid and the previous ascending centroid, the algorithm use the positions of the points closer to the previous descending centroid to calculate new descending aorta centroid, and vice-versa for the ascending aorta centroid. However, at certain point during the segmentation in inferior direciton, the slice might reaches the end of the ascending aorta, where the voxels belong to the part of the heart. The algorithm will stop using ascending aorta centroid and only computes descending aorta centroid for the slices afterward.

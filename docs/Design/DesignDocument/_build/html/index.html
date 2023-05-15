@@ -84,15 +84,20 @@
 <p>After cropping the volume, which only contains the region of interest, the algorithm needs a set of variables inputs from the user. These variables are:</p>
 <ol class="arabic simple">
 <li><p>The centre coordinates of <a class="reference internal" href="glossary.html#term-Descending-Aorta"><span class="xref std std-term">Descending Aorta</span></a> and <a class="reference internal" href="glossary.html#term-Ascending-Aorta"><span class="xref std std-term">Ascending Aorta</span></a> located on the same <a class="reference internal" href="glossary.html#term-slice"><span class="xref std std-term">slice</span></a> (a voxel).</p></li>
-<li><p><a class="reference internal" href="glossary.html#term-Stop-limit"><span class="xref std std-term">Stop limit</span></a>.</p></li>
-<li><p><a class="reference internal" href="glossary.html#term-threshold-coefficient"><span class="xref std std-term">threshold coefficient</span></a>.</p></li>
+</ol>
+<figure class="align-center">
+<img alt="Aorta seeds" src="_images/Aorta_seeds.png" />
+</figure>
+<ol class="arabic simple" start="2">
+<li><p>The <a class="reference internal" href="glossary.html#term-Stop-limit"><span class="xref std std-term">Stop limit</span></a>.</p></li>
+<li><p>The <a class="reference internal" href="glossary.html#term-threshold-coefficient"><span class="xref std std-term">threshold coefficient</span></a>.</p></li>
 <li><p>An integer for <a class="reference internal" href="glossary.html#term-kernel-size"><span class="xref std std-term">kernel size</span></a>.</p></li>
 <li><dl class="simple">
-<dt>ThresholdSegmentationLevelSetsImageFilter parameters, including:</dt><dd><ol class="loweralpha simple">
-<li><p><a class="reference internal" href="glossary.html#term-rms_error"><span class="xref std std-term">rms_error</span></a> (float)</p></li>
-<li><p><a class="reference internal" href="glossary.html#term-Maximum-iteration"><span class="xref std std-term">Maximum iteration</span></a> (int)</p></li>
-<li><p><a class="reference internal" href="glossary.html#term-Curvature-scaling"><span class="xref std std-term">Curvature scaling</span></a> (float)</p></li>
-<li><p><a class="reference internal" href="glossary.html#term-Propagation-scaling"><span class="xref std std-term">Propagation scaling</span></a> (float)</p></li>
+<dt>The ThresholdSegmentationLevelSetsImageFilter parameters, including:</dt><dd><ol class="loweralpha simple">
+<li><p>The <a class="reference internal" href="glossary.html#term-rms_error"><span class="xref std std-term">rms_error</span></a> (float)</p></li>
+<li><p>The <a class="reference internal" href="glossary.html#term-Maximum-iteration"><span class="xref std std-term">Maximum iteration</span></a> (int)</p></li>
+<li><p>The <a class="reference internal" href="glossary.html#term-Curvature-scaling"><span class="xref std std-term">Curvature scaling</span></a> (float)</p></li>
+<li><p>The <a class="reference internal" href="glossary.html#term-Propagation-scaling"><span class="xref std std-term">Propagation scaling</span></a> (float)</p></li>
 </ol>
 </dd>
 </dl>
@@ -105,12 +110,24 @@
 <p>For each slice starting from the user’s selected slice, going in the <a class="reference internal" href="glossary.html#term-inferior"><span class="xref std std-term">inferior</span></a> first, then <a class="reference internal" href="glossary.html#term-superior"><span class="xref std std-term">superior</span></a> direction:</p>
 <p>1. <strong>[Create a label map]</strong>
 The algorithm uses <a class="reference external" href="https://simpleitk.org/doxygen/latest/html/classitk_1_1simple_1_1BinaryDilateImageFilter.html">SITK::BinaryDilateImageFilter</a> to perform <a class="reference internal" href="glossary.html#term-binary-dilation"><span class="xref std std-term">binary dilation</span></a> to generate a circle-like shape around the centre coordinates (user input’s or calculated by the algorithm). Each pixel within this shape will be labeled as a white pixel (value of 1), and the rest of the pixels are labeled as black pixels (value of 0). The generated result is the <a class="reference internal" href="glossary.html#term-label-map"><span class="xref std std-term">label map</span></a> image, and we will use it in the next few steps. The size of the circle-like shape is determined by the <a class="reference internal" href="glossary.html#term-kernel-size"><span class="xref std std-term">kernel size</span></a>.</p>
+<figure class="align-center" id="id2">
+<img alt="label image" src="_images/label_image.png" />
+<figcaption>
+<p><span class="caption-text">The green circles shows the binary dilation of the two centroids.</span><a class="headerlink" href="#id2" title="Permalink to this image"></a></p>
+</figcaption>
+</figure>
 <p>2. <strong>[Create a distance map]</strong>
 With <a class="reference external" href="https://simpleitk.org/doxygen/latest/html/classitk_1_1simple_1_1SignedMaurerDistanceMapImageFilter.html">SITK::SignedMaurerDistanceMapImageFilter</a>, the algorithm creates another image, the <a class="reference internal" href="glossary.html#term-Euclidean-distance-transform"><span class="xref std std-term">Euclidean distance transform</span></a> of the label image. This is used as a <a class="reference internal" href="glossary.html#term-contour-line"><span class="xref std std-term">contour line</span></a> that helps build the gradient mentioned in <a class="reference internal" href="glossary.html#term-Level-sets"><span class="xref std std-term">Level sets</span></a>.</p>
 <p>3. <strong>[Calculate a threshold range]</strong>
 By using <a class="reference external" href="https://simpleitk.org/doxygen/latest/html/classitk_1_1simple_1_1LabelStatisticsImageFilter.html">SITK::LabelStatisticsImageFilter</a>, the algorithm gets the mean and the standard deviation of the intensity values of the pixels that were labeled as the white pixel in the previous step. The algorithm uses <a class="reference internal" href="glossary.html#term-threshold-coefficient"><span class="xref std std-term">threshold coefficient</span></a> to calculate the lower and upper <a class="reference internal" href="glossary.html#term-threshold"><span class="xref std std-term">threshold</span></a> to be used in the next step.</p>
 <p>4. <strong>[Segment a single slice]</strong>
 With <a class="reference external" href="https://simpleitk.org/doxygen/latest/html/classitk_1_1simple_1_1ThresholdSegmentationLevelSetImageFilter.html">SITK::ThresholdSegmentationLevelSetImageFilter</a>,  the seed image calculated in step 2, and the lower and upper threshold value calculated in step 3, the algorithm performs segmentation and generated a <a class="reference internal" href="glossary.html#term-segmented-slice"><span class="xref std std-term">segmented slice</span></a>.</p>
+<figure class="align-center" id="id3">
+<img alt="segment label image" src="_images/segment_label_image.png" />
+<figcaption>
+<p><span class="caption-text">The green pixels are labeled as part of the aorta.</span><a class="headerlink" href="#id3" title="Permalink to this image"></a></p>
+</figcaption>
+</figure>
 <p>5. <strong>[Calculate new centroids]</strong>
 By comparing each pixel segmented as aorta to the previous descending centroid and the previous ascending centroid, the algorithm use the positions of the points closer to the previous descending centroid to calculate new descending aorta centroid, and vice-versa for the ascending aorta centroid. However, at certain point during the segmentation in inferior direciton, the slice might reaches the end of the ascending aorta, where the voxels belong to the part of the heart. The algorithm will stop using ascending aorta centroid and only computes descending aorta centroid for the slices afterward.</p>
 <p>6. <strong>[Verify segmentation result]</strong>
