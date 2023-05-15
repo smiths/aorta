@@ -42,22 +42,22 @@ src/SlicerExtension/AortaGeometryReconstructor - 3D Slicer extension folder to b
 ## To apply the segmentation algorithm
 1. Make sure that you have done the cropping and have a cropped volume in phase 1 Crop Aorta, then click on Apply to move to next phase.
 2. Once you are in phase 2 Aorta Segmentation, right click on one of the red, green or yellow window image area, you should see a list of options as shown below.
-3. "Slice intersection" option is selected once you have loaded AGR module. Right click and check "Interaction" option. Alternatively, you can hold "shift" and move around mouse cursor to move around the intersection point.
+3. Select the "Slice intersection" option once you have loaded AGR module. Right click and check "Interaction" option. Alternatively, you can hold "shift" and move around mouse cursor to move around the intersection point.
 <p align="center">
     <img src="https://github.com/smiths/aorta/blob/main/src/screenshots/Interaction.png" />
 </p>
 
 4. Hold on Mouse left button to drag and place the intersection point on the point of interest, as described in the image from Overview section. 
-5. In phase 2 Aorta Segmentation, you should see that the values of DesAortaSeeds and AscAortaSeeds coordinate are changing when moving the intersection point. Simply lock one of the two seeds with the coresponding checkbox and use intersection to input the other one. Make sure that the two seeds are selected from the same slice. Once you have entered all hyperparameters, click on Apply. After a few minutes, you should see a new volume named "Seg_th{a number}\_k{a number}\_c{a number}\_p{a number}", the name simply takes some of the important hyperparameters as the name, where "th" stands for threshold coefficient, k stands for kernel size, c for curvature scaling, and p for propagation scaling.
+5. In phase 2 Aorta Segmentation, you should see that the values of DesAortaSeeds and AscAortaSeeds coordinate are changing when moving the intersection point. Simply lock one of the two seeds with the corresponding checkbox and use intersection to input the other one. Make sure you select the two seeds from the same slice. Once you have entered all hyperparameters, click on Apply. After a few minutes, you should see a new volume named "Seg_th{a number}\_k{a number}\_c{a number}\_p{a number}", the name simply takes some of the important hyperparameters as the name, where "th" stands for threshold coefficient, k stands for kernel size, c for curvature scaling, and p for propagation scaling.
 
 ### Additional tips for hyperparmeters optimization (based on the 6 samples).
 1. As tested with the current 6 samples, I would always start with a threshold coefficient range of 2-3, a stop limit of 5-6, and kernel size of 7-10. This would ensure that the noises (blood vessels, backbones) are excluded as much as possible. Then start increasing the stop limit, threshold coefficient.
-2. Curvature scaling adds weight to the segmentation speed term at the curvature. This implies the segmentation result would have high probability to include the curvature. However, this might not be the best hyperparameter to tune up, because usually the aorta is not an isolated island and it connect to the backbone or other noises. Tune this hyperparameter up will segments out any connected island (noises). 
+2. Curvature scaling adds weight to the segmentation speed term at the curvature. This implies the segmentation result would have high probability to include the curvature. However, this might not be the best hyperparameter to tune up, because usually the aorta is not an isolated island, and it connects to the backbone or other noises. Tune this hyperparameter up will segment out any connected island (noises). 
 3. Propagation scaling adds weight to the segmentation speed term in general, this means that if not reaching the boarder, the segmentation filter will include the next layer of pixels. 
 
 ## To display the segmentation label image
 1. Use Volume Rendering Module and follow the [step 2](https://github.com/smiths/aorta/tree/main#to-use-volume-rendering-to-crop-a-voi) to display the segmented volume. For example, to show the segmented result from phase 2 Descending Aorta Segmentation, you should select the volume with the name "Segmented Descending Aorta Volume" by default.
-2. You can see both the original volume and the segmented volume to see the overlaps between the two volumes. Make sure that the eye icon are selected for both volumes, and make sure that the original volume use preset of CT-Bones to have the different coloring.
+2. You can see both the original volume and the segmented volume to see the overlaps between the two volumes. Make sure you select the eye icon for both volumes, and make sure that the original volume use preset of CT-Bones to have the different coloring.
 
 ### Get the vtk output of the cropped volume or segmentation label image
 1. Use file dialog to select a path.
