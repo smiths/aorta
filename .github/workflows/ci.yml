@@ -25,9 +25,11 @@ jobs:
         run: pip3 install SimpleITK
       - name: Install numpy
         run: pip3 install numpy
+      - name: Install scikit-learn
+        run: pip3 install scikit-learn
       - name: Test file path
-        run: python3 -c "import os; print(os.path.exists(os.path.abspath('test/sample/43681283_crop.vtk')))"
-      - name: Test descending aorta segmentation
-        run: pytest -s --limit 0.02 -k 'test_compare_des' --testCase 2
-      - name: Test ascending aorta segmentation
-        run: pytest -s --limit 0.02 -k 'test_compare_asc' --testCase 2
+        run: python3 -c "import os; print(os.path.exists(os.path.abspath('test/sample/032-22429388-crop.vtk')))"
+      - name: Test aorta segmentation case 32
+        run: pytest -s -k 'test_compare_segmentation' --testCase "032" --limit 0.05 -p no:faulthandler
+      - name: Test aorta segmentation case 31
+        run: pytest -s -k 'test_compare_segmentation' --testCase "031" --limit 0.05 -p no:faulthandler

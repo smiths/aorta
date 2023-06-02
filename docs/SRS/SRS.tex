@@ -149,6 +149,8 @@
 2023-02-12 & 1.0 & Notes\\
 \midrule
 2023-03-01 & 1.01 & Modified system context image, coordinate systems, and goal statements.\\
+\midrule
+2023-04-29 & 1.02 & Added requirements, instance models, data definitions\\
 \bottomrule
 \end{tabularx}
 
@@ -625,132 +627,8 @@ The 3D image provided by the user must contains a visually distingushable aorta 
 
 \end{itemize}
 
-\subsubsection{Theoretical Models}\label{sec_theoretical}
-
-\plt{Theoretical models are sets of abstract mathematical equations or axioms
-  for solving the problem described in Section ``Physical System Description''
-  (Section~\ref{sec_phySystDescrip}). Examples of theoretical models are
-  physical laws, constitutive equations, relevant conversion factors, etc.}
-
-This section focuses on the general equations and laws that \progname{} is based
-on.  \plt{Modify the examples below for your problem, and add additional models
-  as appropriate.}
-
-~\newline
-
-\noindent
-\deftheory
-% #2 refname of theory
-{T:COE}
-% #3 label
-{Conservation of thermal energy}
-% #4 equation
-{
-  $-{\bf \nabla \cdot q} + g$ = $\rho C \frac{\partial T}{\partial t}$
-}
-% #5 description
-{
-  The above equation gives the conservation of energy for transient heat transfer in a material
-  of specific heat capacity $C$ (\si{\joule\per\kilogram\per\celsius}) and density $\rho$ 
-  (\si{\kilogram\per\cubic\metre}), where $\bf q$ is the thermal flux vector (\si{\watt\per\square\metre}),
-  $g$ is the volumetric heat generation
-  (\si{\watt\per\cubic\metre}), $T$ is the temperature
-  (\si{\celsius}),  $t$ is time (\si{\second}), and $\nabla$ is
-  the gradient operator.  For this equation to apply, other forms
-  of energy, such as mechanical energy, are assumed to be negligible in the
-  system (\aref{A_OnlyThermalEnergy}).  In general, the material properties ($\rho$ and $C$) depend on temperature.
-}
-% #6 Notes
-{
-None.
-}
-% #7 Source
-{
-  \url{http://www.efunda.com/formulae/heat_transfer/conduction/overview_cond.cfm}
-}
-% #8 Referenced by
-{
-  \dref{ROCT}
-}
-% #9 Preconditions
-{
-None
-}
-% #1 derivation - not applicable by default
-{}
-
-\plt{``Ref.\ By'' is used repeatedly with the different types of information.
-  This stands for Referenced By.  It means that the models, definitions and
-  assumptions listed reference the current model, definition or assumption.
-  This information is given for traceability.  Ref. By provides a pointer in the
-  opposite direction to what we commonly do.  You still need to have a reference
-  in the other direction pointing to the current model, definition or
-  assumption.  As an example, if T1 is referenced by G2, that means that G2 will
-  explicitly include a reference to T1.}
-
-~\newline
-
-\subsubsection{General Definitions}\label{sec_gendef}
-
-\plt{General Definitions (GDs) are a refinement of one or more TMs, and/or of
-  other GDs.  The GDs are less abstract than the TMs.  Generally the reduction
-  in abstraction is possible through invoking (using/referencing) Assumptions.
-  For instance, the TM could be Newton's Law of Cooling stated abstracting.  The
-  GD could take the general law and apply it to get a 1D equation.}
-
-This section collects the laws and equations that will be used in building the
-instance models.
-
-\plt{Some projects may not have any content for this section, but the section
-  heading should be kept.}  \plt{Modify the examples below for your problem, and
-  add additional definitions as appropriate.}
-
-~\newline
-
-\noindent
-\begin{minipage}{\textwidth}
-\renewcommand*{\arraystretch}{1.5}
-\begin{tabular}{| p{\colAwidth} | p{\colBwidth}|}
-\hline
-\rowcolor[gray]{0.9}
-Number& GD\refstepcounter{defnum}\thedefnum \label{NL}\\
-\hline
-Label &\bf Newton's law of cooling \\
-\hline
-% Units&$MLt^{-3}T^0$\\
-% \hline
-SI Units&\si{\watt\per\square\metre}\\
-\hline
-Equation&$ q(t) = h \Delta T(t)$  \\
-\hline
-Description &
-Newton's law of cooling describes convective cooling from a surface.  The law is
-stated as: the rate of heat loss from a body is proportional to the difference
-in temperatures between the body and its surroundings.
-\\
-& $q(t)$ is the thermal flux (\si{\watt\per\square\metre}).\\
-& $h$ is the heat transfer coefficient, assumed independent of $T$ (\aref{A_hcoeff})
-	(\si{\watt\per\square\metre\per\celsius}).\\
-&$\Delta T(t)$= $T(t) - T_{\text{env}}(t)$ is the time-dependent thermal gradient
-between the environment and the object (\si{\celsius}).
-\\
-\hline
-  Source & Citation here \\
-  \hline
-  Ref.\ By & \ddref{FluxCoil}, \ddref{FluxPCM}\\
-  \hline
-\end{tabular}
-\end{minipage}\\
-
-\subsubsection*{Detailed derivation of simplified rate of change of temperature}
-
-\plt{This may be necessary when the necessary information does not fit in the
-  description field.}
-\plt{Derivations are important for justifying a given GD.  You want it to be
-  clear where the equation came from.}
 
 \subsubsection{Data Definitions}\label{sec_datadef}
-
 
 This section collects and defines all the data needed to build the instance
 models. The dimension of each quantity is also given. 
@@ -873,23 +751,32 @@ The goals \gsref{Gsegment} are solved by finding \iref{roi} and perform \iref{se
   \hline
   Label& \bf Region of interest \\
   \hline
-  Inputs & $ \text{V}_\text{in} : \mathbb{R}^{m_i \times n_i \times p_i}$ , $\text{Starting\_voxel (Sv)} : \mathbb{N}^{3}$, $\text{Size (S)} : \mathbb{N}^{3}$,  \\
+  Inputs & $ \text{V}_\text{in}:\mathbb{R}^{m_i \times n_i \times p_i}$ , $\text{Start} : \mathbb{N}^3 $, $m_o, n_o, p_o : \mathbb{N}$,  with the following constraints:
+\begin{center}
+$ 0 \leq start[0] \leq (m_i-1) $ \\
+$ 0 \leq start[1] \leq (n_i-1) $ \\
+$ 0 \leq start[2] \leq (p_i-1) $ \\
+$ 0 < m_o < (m_i-start[0]) $ \\
+$ 0 < n_o < (n_i-start[1]) $ \\
+$ 0 < p_o < (p_i-start[2]) $ \\
+\end{center}\\
   \hline
-  Output& $ \text{V}_\text{out} : \mathbb{R}^{m_o \times n_o \times p_o}$\\
+  Output& $ \text{V}_\text{out} : \mathbb{R}^{m_o \times n_o \times p_o}$ such that
+\begin{center}
+$ \forall (i,j,k : \mathbb{N} | $ \\
+$ i \in [start[0]..start[0]+m_o] \wedge $ \\
+$ j \in [start[1]..start[1]+n_o] \wedge $ \\
+$ k \in [start[2]..start[2]+p_o] :$\\
+$ V_{out}[i][j][k]=V_{in}[i][j][k])$
+\end{center}\\
   \hline
   Description & The regions of interest is a subset (shaped like a box) of the 3D Vout. This subset contains the anatomical structure that the users wants to read, process or extract. 
-~\newline For Starting\_voxel:
-\begin{center}
-$ 0\leq Sv_m\leq m_i  \; \wedge \;  0 \leq  Sv_n \leq n_i   \; \wedge \;  0 \leq  Sv_p \leq p_i $. 
-\end{center}
- For Size:
-\begin{center}
-$ 0 \leq  S_m  \leq m_i  \; \wedge \;  0 \leq  S_n \leq n_i   \; \wedge \;  0 \leq  S_p \leq p_i $.
-\end{center}
-For $ \text{V}_\text{out}$:
-\begin{center}
-$ m_o = Sv_m + S_m \leq m_i  \; \wedge \;  n_o = Sv_n+S_n \leq n_i  \; \wedge \; p_o = Sv_p+S_p \leq p_i $. 
-\end{center}
+%~\newline For Starting\_voxel $[Sv_1, Sv_2, Sv_3]$ and for Size $[S_1, S_2, S_3]$:
+%\begin{center}
+%$  m_o=S_1  \; \wedge \;  n_o=S_2   \; \wedge \;  p_o=S_3 $
+%$ \forall i,j,k:\mathbb{N} \; \{i \in [0, m_o-1]  \; \wedge \; j \in [0,n_o-1] \; \wedge \; k \in [0, p_o-1] \} $. 
+%$ \text{V}_\text{out}[i,j,k] =  \text{V}_\text{in}[Sv_1+i, Sv_2+j, Sv_3+k] $. 
+%\end{center}
   \\
   \hline
   Sources&  \\
@@ -913,110 +800,126 @@ $ m_o = Sv_m + S_m \leq m_i  \; \wedge \;  n_o = Sv_n+S_n \leq n_i  \; \wedge \;
   \hline
   Label& \bf Segmentation \\
   \hline
-  Input & $ \text{V}_\text{in} : \mathbb{R}^{m \times n \times p}$, $ \text{Seed} : \mathbb{N}^{3}$ \\
+  Input & $ \text{V}_\text{in} : \mathbb{R}^{m \times n \times p}$ \\
   \hline
-  Output& $ \text{V}_\text{out} : \mathbb{R}^{m \times n \times p}$\\
-  \hline
-  Description & The process of extract an anotomical structure from the original 3D volume. The extracted anotomical structure is represented with high intensity pixel value. The rest of the image should have a lower intensity pixel value.
-\newline For Vout:
+  Output& $ \text{V}_\text{out} : \mathbb{R}^{m \times n \times p}$ such that
 \begin{center}
-$ \forall i,j,k : \mathbb{N} \{i \in [0, m-1]  \; \wedge \; j \in [0,n-1] \; \wedge \; k \in [0, p-1	] \} $.
-\[
-  \text{V}_\text{out}[i,j,k] = 
-  \begin{cases} 
-   HIGH & \text{if } \text{V}_\text{in}[i,j,k] = \text{part of the anotomical structure} \\
-   LOW  & \text{otherwise}
-  \end{cases}
-\]
-\end{center}
+$ \forall (i,j,k : \mathbb{N} $         $|$ \\
+$ i \in [0..m-1] \wedge $ \\
+$ j \in [1..n-1] \wedge $ \\
+$ k \in[2..p-1] :$\\
+$ (V_{in}[i,j,k] \in \text{structure} \implies V_{out}[i,j,k]=HIGH /)$\\
+$ V_{in}[i,j,k] \notin \text{structure} \implies V_{out}[i,j,k]=LOW)) $
+\end{center}\\
+
+  \hline
+  Description & The process of extract an anotomical structure from the original 3D volume. The extracted anotomical structure is represented with high intensity pixel value. The rest of the image should have a lower intensity pixel value. A seed is what the algorithm needed as the inputs to perform segmentation, the type of a seed is different among different algorithm.
+%\newline For Vout:
+%\begin{center}
+%$ \forall i,j,k : \mathbb{N} \{i \in [0, m-1]  \; \wedge \; j \in [0,n-1] \; \wedge \; k \in [0, p-1] \} $.
+%\[
+%  \text{V}_\text{out}[i,j,k] = 
+%  \begin{cases} 
+%   HIGH & \text{if } \text{V}_\text{in}[i,j,k] \in \text{part of the anotomical structure} \\
+%   LOW  & \text{otherwise}
+%  \end{cases}
+%\]
+%\end{center}
   \\
   \hline
   Sources& \\
   \hline
-  Ref.\ By & \rref{R_Outputs}, \lcref{LC_seg_algorithm} \\
+  Ref.\ By & \rref{R_output}, \lcref{LC_seg_algorithm} \\
   \hline
 \end{tabular}
 \end{minipage}\\
 
 %~\newline
 
-\subsubsection*{Derivation of ...}
+%\subsubsection*{Derivation of ...}
 
 
-\subsubsection{Input Data Constraints} \label{sec_DataConstraints}    
+%\subsubsection{Input Data Constraints} \label{sec_DataConstraints}    
+%Data constraints on the input are as follows:
+%\newline
+%\begin{itemize}
+%\item{ For Starting\_voxel $[Sv_1, Sv_2, Sv_3]$, $ \text{V}_\text{in}:\mathbb{R}^{m_i \times n_i \times p_i}$ , and Size $[S_1, S_2, S_3]$:}\\
+%$ 0\leq Sv_1\leq m_i  \; \wedge \;  0 \leq  Sv_2 \leq n_i   \; \wedge \;  0 \leq  Sv_3 \leq p_i $. \\
+%$ 0 < S_1  \le m_i  \; \wedge \;  0 <  S_2 \le n_i   \; \wedge \;  0 <  S_3 \le p_i $.\\
+%$ 0 \leq  Sv_1 + S_1  \leq m_i  \; \wedge \;  0 \leq  Sv_2 +S_2 \leq n_i   \; \wedge \;  0 \leq  Sv_3+S_3 \leq p_i $\\
+%\end{itemize}
 
-Table~\ref{TblInputVar} shows the data constraints on the input output
-variables.  The column for physical constraints gives the physical limitations
-on the range of values that can be taken by the variable.  The column for
-software constraints restricts the range of inputs to reasonable values.  The
-software constraints will be helpful in the design stage for picking suitable
-algorithms.  The constraints are conservative, to give the user of the model the
-flexibility to experiment with unusual situations.  The column of typical values
-is intended to provide a feel for a common scenario.  The uncertainty column
-provides an estimate of the confidence with which the physical quantities can be
-measured.  This information would be part of the input if one were performing an
-uncertainty quantification exercise.
+%Table~\ref{TblInputVar} shows the data constraints on the input output
+%variables.  The column for physical constraints gives the physical limitations
+%on the range of values that can be taken by the variable.  The column for
+%software constraints restricts the range of inputs to reasonable values.  The%
+%software constraints will be helpful in the design stage for picking suitable
+%algorithms.  The constraints are conservative, to give the user of the model the
+%flexibility to experiment with unusual situations.  The column of typical values
+%is intended to provide a feel for a common scenario.  The uncertainty column
+%provides an estimate of the confidence with which the physical quantities can be
+%measured.  This information would be part of the input if one were performing an
+% uncertainty quantification exercise.
 
-The specification parameters in Table~\ref{TblInputVar} are listed in
-Table~\ref{TblSpecParams}.
+% The specification parameters in Table~\ref{TblInputVar} are listed in
+% Table~\ref{TblSpecParams}.
 
-\begin{table}[!h]
-  \caption{Input Variables} \label{TblInputVar}
-  \renewcommand{\arraystretch}{1.2}
-\noindent \begin{longtable*}{l l l l c} 
-  \toprule
-  \textbf{Var} & \textbf{Physical Constraints} & \textbf{Software Constraints} &
-                             \textbf{Typical Value} & \textbf{Uncertainty}\\
-  \midrule 
-  $L$ & $L > 0$ & $L_{\text{min}} \leq L \leq L_{\text{max}}$ & 1.5 \si[per-mode=symbol] {\metre} & 10\%
-  \\
-  \bottomrule
-\end{longtable*}
-\end{table}
+%\begin{table}[!h]
+%  \caption{Input Variables} \label{TblInputVar}
+%  \renewcommand{\arraystretch}{1.2}
+%\noindent \begin{longtable*}{l l l l c} 
+%  \toprule
+%  \textbf{Var} & \textbf{Physical Constraints} & \textbf{Software Constraints} &
+%                             \textbf{Typical Value} & \textbf{Uncertainty}\\
+%  \midrule 
+%$ 0\leq Sv_1\leq m_i  \; \wedge \;  0 \leq  Sv_2 \leq n_i   \; \wedge \;  0 \leq  Sv_3 \leq p_i $. 
+%$ 0 < S_1  \le m_i  \; \wedge \;  0 <  S_2 \le n_i   \; \wedge \;  0 <  S_3 \le p_i $.
+%$ 0 \leq  Sv_1 + S_1  \leq m_i  \; \wedge \;  0 \leq  Sv_2 +S_2 \leq n_i   \; \wedge \;  0 \leq  Sv_3+S_3 \leq p_i $
 
-\noindent 
-\begin{description}
-\item[(*)] \plt{you might need to add some notes or clarifications}
-\end{description}
+  % Size $\it{sequence}[0..2]$ & $x>0 \forall x \in Size$ & $L_{\text{min}} \leq L \leq L_{\text{max}}$ & 1.5 \si[per-mode=symbol] {\metre} & 10\%
+%  \\
+%  \bottomrule
+%\end{longtable*}
+%\end{table}
 
-\begin{table}[!h]
-\caption{Specification Parameter Values} \label{TblSpecParams}
-\renewcommand{\arraystretch}{1.2}
-\noindent \begin{longtable*}{l l} 
-  \toprule
-  \textbf{Var} & \textbf{Value} \\
-  \midrule 
-  $L_\text{min}$ & 0.1 \si{\metre}\\
-  \bottomrule
-\end{longtable*}
-\end{table}
+%\begin{table}[!h]
+%\caption{Specification Parameter Values} \label{TblSpecParams}
+%\renewcommand{\arraystretch}{1.2}
+%\noindent \begin{longtable*}{l l} 
+%  \toprule
+%  \textbf{Var} & \textbf{Value} \\
+%  \midrule 
+%  $L_\text{min}$ & 0.1 \si{\metre}\\
+%  \bottomrule
+%\end{longtable*}
+%\end{table}
+%
+%\subsubsection{Properties of a Correct Solution} \label{sec_CorrectSolution}
+%
+%\noindent
+%A correct solution must exhibit \plt{fill in the details}.  \plt{These
+%  properties are in addition to the stated requirements.  There is no need to
+%  repeat the requirements here.  These additional properties may not exist for
+%  every problem.  Examples include conservation laws (like conservation of
+%  energy or mass) and known constraints on outputs, which are usually summarized
+%  in tabular form.  A sample table is shown in Table~\ref{TblOutputVar}}
 
-\subsubsection{Properties of a Correct Solution} \label{sec_CorrectSolution}
-
-\noindent
-A correct solution must exhibit \plt{fill in the details}.  \plt{These
-  properties are in addition to the stated requirements.  There is no need to
-  repeat the requirements here.  These additional properties may not exist for
-  every problem.  Examples include conservation laws (like conservation of
-  energy or mass) and known constraints on outputs, which are usually summarized
-  in tabular form.  A sample table is shown in Table~\ref{TblOutputVar}}
-
-\begin{table}[!h]
-\caption{Output Variables} \label{TblOutputVar}
-\renewcommand{\arraystretch}{1.2}
-\noindent \begin{longtable*}{l l} 
-  \toprule
-  \textbf{Var} & \textbf{Physical Constraints} \\
-  \midrule 
-  $T_W$ & $T_\text{init} \leq T_W \leq T_C$ (by~\aref{A_charge})
-  \\
-  \bottomrule
-\end{longtable*}
-\end{table}
-
-\plt{This section is not for test cases or techniques for verification and
-  validation.  Those topics will be addressed in the Verification and Validation
-  plan.}
+%\begin{table}[!h]
+%\caption{Output Variables} \label{TblOutputVar}
+%\renewcommand{\arraystretch}{1.2}
+%\noindent \begin{longtable*}{l l} 
+%  \toprule
+%  \textbf{Var} & \textbf{Physical Constraints} \\
+%  \midrule 
+%  $T_W$ & $T_\text{init} \leq T_W \leq T_C$ (by~\aref{A_charge})
+%  \\
+%  \bottomrule
+%\end{longtable*}
+%\end{table}
+%
+%\plt{This section is not for test cases or techniques for verification and
+%  validation.  Those topics will be addressed in the Verification and Validation
+%  plan.}
 
 \section{Requirements}
 
@@ -1034,53 +937,54 @@ qualities that the software is expected to exhibit.
   \noindent \begin{longtable*}{l l p{12cm}} \toprule
          \textbf{symbol}  & \textbf{description}\\
          \midrule 
-$X$ & CT Scans volume
-(\ddref{volume}))\\ %comparing value used for excluding correlation coefficients
+$volume$ & CT Scans volume
+(\ddref{volume})\\ %comparing value used for excluding correlation coefficients
+$Seed$ & Any inputs neede by the segmentation algorithm (\iref{segmentation})\\
          \bottomrule
 \end{longtable*}
 
-\item[R\refstepcounter{reqnum}\thereqnum \label{R_Outputs}:] Output a region of interest that only contains aorta.
+\item[R\refstepcounter{reqnum}\thereqnum \label{R_roi}:] Use the volume in \rref{R_Inputs} to create a second volume, the region of interest (\iref{roi}) that contains all of the aorta.
 
-\item[R\refstepcounter{reqnum}\thereqnum \label{R_Visualize}:] Visualize the inputs or outputs data.
-\item[R\refstepcounter{reqnum}\thereqnum \label{R_VerifyOutput}:]
-  \plt{Verification related requirements.}
+\item[R\refstepcounter{reqnum}\thereqnum \label{R_output}:] Perform segmentation (\iref{segmentation}) on the volume created in \rref{R_roi}.
 
-\item[R\refstepcounter{reqnum}\thereqnum \label{R_Output}:] \plt{Output related
-    requirements.}
+\item[R\refstepcounter{reqnum}\thereqnum \label{R_visualize}:] Visualize a volume (\ddref{volume}).
 
+ %non functional \item[R\refstepcounter{reqnum}\thereqnum \label{R_seed}:] Allow user to input various data type of data for seed.
+
+% \item[R\refstepcounter{reqnum}\thereqnum \label{R_output}:] Allow user to link to segmentation library, and perform segmentation (\iref{segmentation}) on the input data.
 \end{itemize}
-
-\plt{Every IM should map to at least one requirement, but not every requirement
-  has to map to a corresponding IM.}
 
 \subsection{Nonfunctional Requirements}
 
 \noindent \begin{itemize}
 
-\item[NFR\refstepcounter{nfrnum}\thenfrnum \label{NFR_Accuracy}:]
-  \textbf{Accuracy} \plt{Characterize the accuracy by giving the context/use for
-    the software.  Maybe something like, ``The accuracy of the computed
-    solutions should meet the level needed for $<$engineering or scientific
-    application$>$.  The level of accuracy achieved by \progname{} shall be
-    described following the procedure given in Section~X of the Verification and
-    Validation Plan.''  A link to the VnV plan would be a nice extra.}
+%\item[NFR\refstepcounter{nfrnum}\thenfrnum \label{NFR_Accuracy}:]
+%  \textbf{Accuracy} \plt{Characterize the accuracy by giving the context/use for
+%    the software.  Maybe something like, ``The accuracy of the computed
+%    solutions should meet the level needed for $<$engineering or scientific
+%    application$>$.  The level of accuracy achieved by \progname{} shall be
+%    described following the procedure given in Section~X of the Verification and
+%    Validation Plan.''  A link to the VnV plan would be a nice extra.}
 
-\item[NFR\refstepcounter{nfrnum}\thenfrnum \label{NFR_Usability}:] \textbf{Usability}
-\progname{} should provide a graphical user interface to import any DICOM file folder, and to input the required parameters.
+\item[NFR\refstepcounter{nfrnum}\thenfrnum \label{NFR_GUI}:] \textbf{Usability}
+\progname{} provides a user-friendly interface to import any DICOM files, and input the required parameters.
 
-\item[NFR\refstepcounter{nfrnum}\thenfrnum \label{NFR_Maintainability}:]
-  \textbf{Maintainability} \plt{The effort required to make any of the likely
-    changes listed for \progname{} should be less than FRACTION of the original
-    development time.  FRACTION is then a symbolic constant that can be defined
-    at the end of the report.}
+\item[NFR\refstepcounter{nfrnum}\thenfrnum \label{NFR_visualize}:] \textbf{Usability}
+\progname{} can visualize the volume with 3D rendering.
 
-\item[NFR\refstepcounter{nfrnum}\thenfrnum \label{NFR_Portability}:]
-  \textbf{Portability} \plt{This NFR is easier to write than the others.  The
-    systems that \progname{} should run on should be listed here.  When possible
-    the specific versions of the potential operating environments should be
-    given.  To make the NFR verifiable a statement could be made that the tests
-    from a given section of the VnV plan can be successfully run on all of the
-    possible operating environments.}
+%\item[NFR\refstepcounter{nfrnum}\thenfrnum \label{NFR_Maintainability}:]
+%  \textbf{Maintainability} \plt{The effort required to make any of the likely
+%    changes listed for \progname{} should be less than FRACTION of the original
+%    development time.  FRACTION is then a symbolic constant that can be defined
+%    at the end of the report.}
+%
+%\item[NFR\refstepcounter{nfrnum}\thenfrnum \label{NFR_Portability}:]
+%  \textbf{Portability} \plt{This NFR is easier to write than the others.  The
+%    systems that \progname{} should run on should be listed here.  When possible
+%    the specific versions of the potential operating environments should be
+%    given.  To make the NFR verifiable a statement could be made that the tests
+%    from a given section of the VnV plan can be successfully run on all of the
+%    possible operating environments.}
 
 \item Other NFRs that might be discussed include verifiability,
   understandability and reusability.

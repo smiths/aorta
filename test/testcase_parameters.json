@@ -1,0 +1,49 @@
+{
+    "001-43681283":{
+        "des_seed": [18, 28, 828],
+        "asc_seed": [62, 116, 828],
+        "stop_limit": 10,
+        "threshold_coef": 3,
+        "kernel_size": 7
+    },
+
+    "028-07323651":{
+        "des_seed": [29, 24, 869],
+        "asc_seed": [85, 90, 869],
+        "stop_limit": 10,
+        "threshold_coef": 3,
+        "kernel_size": 10
+    },
+
+    "029-05937785":{
+        "des_seed": [32, 20, 957],
+        "asc_seed": [68, 106, 957],
+        "stop_limit": 10,
+        "threshold_coef": 3,
+        "kernel_size": 7
+    },
+
+    "030-75962810":{
+        "des_seed": [38, 35, 1045],
+        "asc_seed": [77, 154, 1045],
+        "stop_limit": 10,
+        "threshold_coef": 3,
+        "kernel_size": 12
+    },
+
+    "031-62023082":{
+        "des_seed": [32, 13, 1237],
+        "asc_seed": [42, 89, 1237],
+        "stop_limit": 6,
+        "threshold_coef": 3.2,
+        "kernel_size": 6
+    },
+
+    "032-22429388":{
+        "des_seed": [98, 45, 932],
+        "asc_seed": [151, 160, 932],
+        "stop_limit": 10,
+        "threshold_coef": 3,
+        "kernel_size": 12
+    }
+}
