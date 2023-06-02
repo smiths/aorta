@@ -1,17 +1,18 @@
 # Aorta Geometry Reconstruction
 
-Developer Names: Jingyi Lin,   
-> *Segmentation algorithm implemented based on the work from Kailin Chu
+Developer Names: Jingyi Lin   
+> *Segmentation algorithm implemented partly based the [work](https://github.com/smiths/GeomRecon/tree/master/People/Kailin) from Kailin Chu
 
-Date of project update: 2023/01/30
+Date of project update: 2023/05/15
+
+The AortaGeomRecon [design document](https://joviel25.github.io/AortaGR-design-document/index.html) explains in detail of the algorithm workflow; It includes a detailed glossary of the terms used throughout the other documentation. 
 
 This project provides a software tool to semi-automatically segment a 3D aorta geometry from a chest CT scan. It uses a [3D Slicer](https://www.slicer.org/) extension in the source folder ([SlicerExtension/AortaGeometryReconstructor](https://github.com/smiths/aorta/tree/main/src/SlicerExtension/AortaGeometryReconstructor)) to accomplish the goal.
 
 Users must first install the 3D Slicer software, import the extension in the source folder, and load the CT scans in DICOM file format to 3D Slicer. Valuable resources for using 3D Slicer includes a [Welcome tutorial](https://www.dropbox.com/s/vn8sqlof2kag2kk/SlicerWelcome-tutorial_Slicer4.8_SoniaPujol.pdf), a description of [3D Slicer user-interface](https://slicer.readthedocs.io/en/latest/user_guide/user_interface.html#application-overview), information on the [Volume rendering module](https://slicer.readthedocs.io/en/latest/user_guide/modules/volumerendering.html), and the 3D Slicer's [developer guide](https://slicer.readthedocs.io/en/latest/developer_guide/index.html).
 
-### Overview
+## Overview
 Automatic aorta segmentation in thoracic computed tomography (CT) scans is important for aortic calcification quantification and to guide the segmentation of other central vessels. The work to manually segment regions of interest can be time-consuming and repetitive, and there are some automatic aorta segmentation algorithms posted.
-
 
 This project implemented one of the aorta segmentation algorithms as 3D Slicer extension module. The algorithm first needs the user to crop the volume of interest (VOI) by using the 3D Slicer's volume rendering module. Next, the user needs to provide two important seeds, the center point of the descending Aorta and the center point of the ascending Aorta, as shown by the yellow dots in the image below.
 
@@ -19,12 +20,8 @@ This project implemented one of the aorta segmentation algorithms as 3D Slicer e
     <img src="https://github.com/smiths/aorta/blob/main/src/screenshots/Aorta_seeds.png" height=300 width=400 />
 </p>
 
-A simple diagram of the workflow:
-<p align="center">
-    <img src="https://github.com/smiths/aorta/blob/main/src/screenshots/Workflow.png" />
-</p>
 
-#### About 3D Slicer
+### About 3D Slicer
 3D Slicer is an open-sourced desktop software that solves advanced image computing challenges with a focus on clinical and biomedical applications. 3D Slicer software provides a clean user interface and a clear guide to developing highly customizable extensions and modules.  
 
 The folders and files for this project are as follows:
@@ -35,22 +32,52 @@ src - Source code
 test - Test cases  
 src/SlicerExtension/AortaGeometryReconstructor - 3D Slicer extension folder to be loaded to 3D Slicer
 
-### Instructions for installing and using Aorta Geometry Reconstruction (AGR) are provided below.
+## To install 3D Slicer and import an extension:
 
-Click on the image below for a video demonstrating the import of AortaGeomRecon module, and the complete workflow to perform aorta segmentation.
-[![AortaGeomRecon Video instruction](https://github.com/smiths/aorta/blob/main/src/screenshots/Thumbnail.jpg)](https://youtu.be/ckUad6hZqb0)
-
-
-### To install 3D Slicer and import an extension:
 1. Download 3D Slicer from [here](https://download.slicer.org/). This project has been tested with the stable release, version 5.0.3.
-2. Open Slicer application, select "Edit" from the bar menu, then "Application Settings" from the drop-down menu.
+
+2. Click on the image below for a video demonstrating the import of AortaGeomRecon module, and the complete workflow to perform aorta segmentation.
+[![AortaGeomRecon Video instruction](https://github.com/smiths/aorta/blob/main/src/screenshots/Thumbnail.jpg)](https://youtu.be/1eK5k6bazNs)
+
+## To apply the segmentation algorithm
+1. Make sure that you have done the cropping and have a cropped volume in phase 1 Crop Aorta, then click on Apply to move to next phase.
+2. Once you are in phase 2 Aorta Segmentation, right click on one of the red, green or yellow window image area, you should see a list of options as shown below.
+3. Select the "Slice intersection" option once you have loaded AGR module. Right click and check "Interaction" option. Alternatively, you can hold "shift" and move around mouse cursor to move around the intersection point.
+<p align="center">
+    <img src="https://github.com/smiths/aorta/blob/main/src/screenshots/Interaction.png" />
+</p>
+
+4. Hold on Mouse left button to drag and place the intersection point on the point of interest, as described in the image from Overview section. 
+5. In phase 2 Aorta Segmentation, you should see that the values of DesAortaSeeds and AscAortaSeeds coordinate are changing when moving the intersection point. Simply lock one of the two seeds with the corresponding checkbox and use intersection to input the other one. Make sure you select the two seeds from the same slice. Once you have entered all hyperparameters, click on Apply. After a few minutes, you should see a new volume named "Seg_th{a number}\_k{a number}\_c{a number}\_p{a number}", the name simply takes some of the important hyperparameters as the name, where "th" stands for threshold coefficient, k stands for kernel size, c for curvature scaling, and p for propagation scaling.
+
+### Additional tips for hyperparmeters optimization (based on the 6 samples).
+1. As tested with the current 6 samples, I would always start with a threshold coefficient range of 2-3, a stop limit of 5-6, and kernel size of 7-10. This would ensure that the noises (blood vessels, backbones) are excluded as much as possible. Then start increasing the stop limit, threshold coefficient.
+2. Curvature scaling adds weight to the segmentation speed term at the curvature. This implies the segmentation result would have high probability to include the curvature. However, this might not be the best hyperparameter to tune up, because usually the aorta is not an isolated island, and it connects to the backbone or other noises. Tune this hyperparameter up will segment out any connected island (noises). 
+3. Propagation scaling adds weight to the segmentation speed term in general, this means that if not reaching the boarder, the segmentation filter will include the next layer of pixels. 
+
+## To display the segmentation label image
+1. Use Volume Rendering Module and follow the [step 2](https://github.com/smiths/aorta/tree/main#to-use-volume-rendering-to-crop-a-voi) to display the segmented volume. For example, to show the segmented result from phase 2 Descending Aorta Segmentation, you should select the volume with the name "Segmented Descending Aorta Volume" by default.
+2. You can see both the original volume and the segmented volume to see the overlaps between the two volumes. Make sure you select the eye icon for both volumes, and make sure that the original volume use preset of CT-Bones to have the different coloring.
+
+### Get the vtk output of the cropped volume or segmentation label image
+1. Use file dialog to select a path.
+2. If on phase 1, the program outputs the cropped volume. Otherwise, the program outputs the segmentation label image.
+
+## Additional tips to use this application:
+1. The user can save and load an MRML scene object, which is used to store all types of data, including the loaded Dicom data, any inputs by the user on the UI, markups, etc.
+2. In "Application Settings", and "Modules", drag "AortaGeomReconDisplayModule", "Volume Rendering", and "Crop Volume" modules to your favorite modules to access these modules quickly from UI. Restart the application for the changes to the UI to appear.
+
+
+## The text description version of how to import an extension, load DICOM data, use volume rendering and crop volume:
+
+### To import AortaGeomReconDisplay module
+1. Open Slicer application, select "Edit" from the bar menu, then "Application Settings" from the drop-down menu.
     - Select "Modules", and add the "AortaGeomReconDisplayModule" folder in the additional module paths. This folder is located in src\SlicerExtension\AortaGeometryReconstructor\\[AortaGeomReconDisplayModule](https://github.com/smiths/aorta/tree/main/src/SlicerExtension/AortaGeometryReconstructor).
     - Restart the application to take into account the new module paths.
     - Find the "AortaGeomReconDisplayModule" module as shown below:
-<p align="center">
-    <img src="https://github.com/smiths/aorta/blob/main/src/screenshots/ARG_module.png" />
-</p>
-3. (Optional) In "Application Settings", and "Modules", drag "AortaGeomReconDisplayModule" to your favorite modules to access this module quickly from UI. Restart the application for the changes to the UI to appear.
+    <p align="center">
+        <img src="https://github.com/smiths/aorta/blob/main/src/screenshots/ARG_module.png" />
+    </p>
 
 ### To load DICOM data:
 1. Select "File" from the bar menu, then "Add DICOM Data".
@@ -94,23 +121,3 @@ For this step we use the [Volume Rendering module](https://slicer.readthedocs.io
     <img src="https://github.com/smiths/aorta/blob/main/src/screenshots/Crop_volume_parameters.png" />
 </p>
 7. Clicks on "Apply", and change back to AortaGeomReconDisplayModule, you should be able to find a new volume or the cropped volume.
-
-### To apply the segmentation algorithm for phase 2 Descending Aorta Segmentation and phase 3 Ascending Aorta Segmentation
-1. Make sure that you have done the cropping and have a cropped volume in phase 1 Crop Aorta, then click on Apply to move to next phase.
-2. Once you are in phase 2 Descending Aorta Segmentation, right click on one of the red, green or yellow window image area, you should see a list of options as shown below.
-3. "Slice intersection" option is selected once you have loaded AGR module. Right click and check "Interaction" option. Alternatively, you can hold "shift" and move around mouse cursor to move around the intersection point.
-<p align="center">
-    <img src="https://github.com/smiths/aorta/blob/main/src/screenshots/Interaction.png" />
-</p>
-4. Hold on Mouse left button to drag and place the intersection point on the point of interest, as described in the image from Overview section. 
-5. In phase 2 Descending Aorta Segmentation, you should see that the value of DesAortaSeeds coordinates is changing when moving the intersection point. Once you have entered all values, click on Apply. After a few minutes, you should see a new volume named "Segmented Descending Aorta Volume".
-6. If you are not satisfied with the result volume, you can click on "Revert to previous phase" button. The old volume should be deleted before you process another time.
-7. Phase 3 Ascending Aorta Segmentation has similar steps as phase 2.
-
-### To display the segmentation result
-1. Use Volume Rendering Module and follow the [step 2](https://github.com/smiths/aorta/tree/update-README#to-use-volume-rendering-to-crop-a-voi) to display the segmented volume. For example, to show the segmented result from phase 2 Descending Aorta Segmentation, you should select the volume with the name "Segmented Descending Aorta Volume" by default.
-2. You can see both the original volume and the segmented volume to see the overlaps between the two volumes. Make sure that the eye icon are selected for both volumes, and make sure that the original volume use preset of CT-Bones to have the different coloring.
-
-### Additional tips to use this application:
-1. The user can save and load an MRML scene object, which is used to store all types of data, including the loaded Dicom data, any inputs by the user on the UI, markups, etc.
-2. In "Application Settings", and "Modules", drag "AortaGeomReconDisplayModule", "Volume Rendering", and "Crop Volume" modules to your favorite modules to access these modules quickly from UI. Restart the application for the changes to the UI to appear.
