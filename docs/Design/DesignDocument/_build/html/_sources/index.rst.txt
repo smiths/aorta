@@ -24,27 +24,37 @@ The algorithm works best with the chest volume cropped to a rectangular prism th
 
 After cropping the volume, which only contains the region of interest, the algorithm needs a set of variables inputs from the user. These variables are:
 
-1. A centre coordinate of :term:`Descending Aorta` and :term:`Ascending Aorta` located on a :term:`slice` (a voxel).
-2. :term:`Qualified coefficient`
-3. An integer to indicate the number of slices that the algorithm is allowed to skip consecutively.
+1. The centre coordinates of :term:`Descending Aorta` and :term:`Ascending Aorta` located on the same :term:`slice` (a voxel).
+
+.. figure:: Aorta_seeds.png
+   :align: center
+   :alt: Aorta seeds
+
+2. The :term:`Stop limit`.
+3. The :term:`threshold coefficient`.
+4. An integer for :term:`kernel size`.
+5. The ThresholdSegmentationLevelSetsImageFilter parameters, including:
+    a. The :term:`rms_error` (float)
+    b. The :term:`Maximum iteration` (int)
+    c. The :term:`Curvature scaling` (float)
+    d. The :term:`Propagation scaling` (float)
 
 
 The main ideas of the algorithm
 *******************************
 
-At the beginning of the algorithm, the user inputs the integer coordinates indicating the position of the descending aorta or ascending aorta centre on a single :term:`slice`. The algorithm works separately on the descending aorta segmentation and the ascending aorta segmentation. Thus, it will ask users to input the coordinate of the descending aorta centre. After completing this segmentation, it will prompt the user for the input variable of the ascending aorta.
-
-.. note::
-   The user's chosen slice will be used as a reference throughout the workflow of the algorithm. Therefore, changing the input of the centre coordinates on a different slice could generate a slightly different segmentation result.
-   
-
-This algorithm segments each :term:`slice` with `SITK\:\:ThresholdSegmentationLevelSetImageFilter <https://simpleitk.org/doxygen/latest/html/classitk_1_1simple_1_1ThresholdSegmentationLevelSetImageFilter.html>`_. The principles of this image filter can be explained with two terms: :term:`Level sets` segmentation method, and a :term:`threshold` range that defines the intensity of the acceptable pixel. The following steps elaborate on how the algorithm calculated the necessary values to perform segmentation.
+At the beginning of the algorithm, the user inputs two integer coordinates indicating the position of the descending aorta and ascending aorta centre on a single :term:`slice`. This algorithm segments each :term:`slice` with `SITK\:\:ThresholdSegmentationLevelSetImageFilter <https://simpleitk.org/doxygen/latest/html/classitk_1_1simple_1_1ThresholdSegmentationLevelSetImageFilter.html>`_. The principles of this image filter can be explained with two terms: :term:`Level sets` segmentation method, and a :term:`threshold` range that defines the intensity of the acceptable pixel. The following steps elaborate on how the algorithm calculated the necessary values to perform segmentation.
 
 For each slice starting from the user's selected slice, going in the :term:`inferior` first, then :term:`superior` direction:
 
 1. **[Create a label map]**
-The algorithm uses `SITK\:\:BinaryDilateImageFilter <https://simpleitk.org/doxygen/latest/html/classitk_1_1simple_1_1BinaryDilateImageFilter.html>`_ to perform :term:`binary dilation` to generate a circle-like shape around the centre coordinate (user input's or calculated by the algorithm). Each pixel within this shape will be labeled as a white pixel (value of 1), and the rest of the pixels are labeled as black pixels (value of 0). The generated result is the :term:`label map` image, and we will use it in the next few steps.
+The algorithm uses `SITK\:\:BinaryDilateImageFilter <https://simpleitk.org/doxygen/latest/html/classitk_1_1simple_1_1BinaryDilateImageFilter.html>`_ to perform :term:`binary dilation` to generate a circle-like shape around the centre coordinates (user input's or calculated by the algorithm). Each pixel within this shape will be labeled as a white pixel (value of 1), and the rest of the pixels are labeled as black pixels (value of 0). The generated result is the :term:`label map` image, and we will use it in the next few steps. The size of the circle-like shape is determined by the :term:`kernel size`.
 
+.. figure:: label_image.png
+   :align: center
+   :alt: label image
+
+   The green circles shows the binary dilation of the two centroids.
 
 2. **[Create a distance map]**
 With `SITK\:\:SignedMaurerDistanceMapImageFilter <https://simpleitk.org/doxygen/latest/html/classitk_1_1simple_1_1SignedMaurerDistanceMapImageFilter.html>`_, the algorithm creates another image, the :term:`Euclidean distance transform` of the label image. This is used as a :term:`contour line` that helps build the gradient mentioned in :term:`Level sets`.
@@ -57,159 +67,30 @@ By using `SITK\:\:LabelStatisticsImageFilter <https://simpleitk.org/doxygen/late
 4. **[Segment a single slice]**
 With `SITK\:\:ThresholdSegmentationLevelSetImageFilter <https://simpleitk.org/doxygen/latest/html/classitk_1_1simple_1_1ThresholdSegmentationLevelSetImageFilter.html>`_,  the seed image calculated in step 2, and the lower and upper threshold value calculated in step 3, the algorithm performs segmentation and generated a :term:`segmented slice`.
 
+.. figure:: segment_label_image.png
+   :align: center
+   :alt: segment label image
 
-5. **[Determine an acceptable segmented slice]**
-The algorithm determines whether to accept the :term:`segmented slice` or not, based on the number of white pixels on the segmented slice, and the :term:`Qualified coefficient` to control the limit.
+   The green pixels are labeled as part of the aorta.
 
-    .. note::
-
-       To determine whether a segmented slice is acceptable, different conditions are verified for :term:`Descending Aorta` and :term:`Ascending Aorta`. These conditions check are all involved with the :term:`Qualified coefficient`, which is decided by the user. In simple terms, the larger the :term:`Qualified coefficient`, the looser the condition on accepting a segmented slice.
-
-
-6. **[Calculate new centre]**
-If the algorithm accepted this segmented slice, a new centre coordinate is calculated and used as the seed coordinate for segmenting the next slice.
+5. **[Calculate new centroids]**
+By comparing each pixel segmented as aorta to the previous descending centroid and the previous ascending centroid, the algorithm use the positions of the points closer to the previous descending centroid to calculate new descending aorta centroid, and vice-versa for the ascending aorta centroid. However, at certain point during the segmentation in inferior direciton, the slice might reaches the end of the ascending aorta, where the voxels belong to the part of the heart. The algorithm will stop using ascending aorta centroid and only computes descending aorta centroid for the slices afterward.
 
 
-When a segmented slice is not acceptable, the algorithm will skip this slice if the number of consecutive skipped slices is less than the user's limit. Otherwise, the algorithm will stop the segmentation loop. 
+6. **[Verify segmentation result]**
+There are two main stop conditions for verifying segmentation result, one condition for the segmentation in inferior direction and the other one for the segmentation in superior direction. :term:`Stop limit` is an user defined parameter to control the algorithm.
 
     .. note::
-       
-       The algorithm will replace these skipped slices with the calculated intersection of the previous and the next slice.
+       For the segmentaion in inferior direction, the segmented slice is determined as not acceptable if part of the heart is segmented as the ascending aorta. Thus, the stop condition for the segmentation in inferior direction is to verify if the new ascending aorta centroid position is located far from the previous ascending aorta centroid. :term:`Stop limit` is used to define the distance limit.
+
+       For the segmentation in superior direction, the algorithm mainly works on the aortic curvature, where the area of the aorta becomes smaller as the algorithm executes on further slices. The standard deviation of the label image and of the segmented slice will be used to compare. The algorithm stop processing next slice if the difference between these two standard deviation reaches the :term:`Stop limit`.
 
 The simplified version of the algorithm
 ***************************************
-
-.. code-block:: python
-   :linenos:
-
-   """
-   inputs to the program
-      cropped_image: n-dimensional array with a shape of (x, y, z)
-      seed_aorta_centre: tuple (int, int)
-      seed_slice_index: int
-      qualified_coefficient: float
-      num_skipped_slice: int
-
-   outputs:
-      processing_image: n-dimensional array with a shape of (x, y, z) with segmented volume
-
-   """
-   processing_image = cropped_image.copy()
-   white_pixel = 1
-   black_pixel = 0
-   skip_counter = 0
-   segment_filter = sitk.ThresholdSegmentationLevelSetImageFilter()
-   skipped_slice = []
-
-   # The statistics of the user's chosen slice will be used as reference
-   # to determine whether a new segmented slice is acceptable
-   segmented_slice = segment_single_slice(seed_slice_index, seed_aorta_centre)
+.. figure:: program_flowchart.png
+   :align: center
+   :alt: Program flowchart
    
-   # Any pixel with positive intensity value will be set to white_pixel
-   new_slice = Array[segmented_slice[0].length][segmented_slice.length]
-   for x from 0 to segmented_slice[0].length:
-      for y from 0 to segmented_slice.length:
-         if segmented_slice[x][y] > black_pixel:
-            new_slice[x][y] = white_pixel
-         else:
-            new_slice[x][y] = black_pixel
-
-   # orginal_size will be used to compare new slice's size
-   # to determine if the new slice is acceptable
-   original_size, prev_centre = count_pixels(new_slice)
-   prev_size = original_size
-
-   # Repeat the above process for each slice
-   for slice_i in range(start, end, step):
-       # prev_centre is the new derived centre from last segmented slice
-       segmented_slice = segment_single_slice(slice_i, prev_centre)
-
-       # element-wise operation
-       # exactly what we doing with the double for-loop
-       # to assign white pixel and black pixel
-       new_slice = segmented_slice > black_pixel
-
-       total_coord, centre = count_pixels(new_slice)
-       if is_new_slice_qualified(total_coord):
-          skip_counter = 0
-          # processing_image is the segmented volume returned
-          processing_image[:, :, slice_i] = new_slice
-          prev_centre = centre
-          prev_size = total_coord
-          # for ascending aorta, we will generate more possible coordinates
-          # and use it in segmentation algorithm
-          # prev_seeds = seeds
-       else:
-          skipped_slice.append(slice_i)
-          skip_counter += 1
-          if skip_counter == num_skipped_slice:
-              break
-
-   for slice_i in skipped_slice:
-       # replace processing_image[slice_i] with the intersection of its previous and next slice
-
-   return processing_image
-
-   def generate_label_map(curr_slice, prev_centre):
-      # Create a label map based on the centre coordinate
-      # sitk.BinaryDilate populate a circle-liked shape where pixel in the circle is marked as 1
-      label_map = curr_slice.copy_size()
-      spacing = 3
-      for i = -1 to 1 do:
-         circle_x = prev_centre[0] + spacing*i
-         label_map[(circle_x, prev_centre[1])] = white_pixel
-      label_map = sitk.BinaryDilate(label_map, [3] * 2) 
-      return label_map
-
-   def segment_single_slice(current_index, prev_centre):
-      # retrieve the 2d slice to be processed
-      curr_slice = cropped_image[:,:, current_index]
-      # create a label map
-      label_map = generate_label_map(curr_slice, prev_centre)
-
-      # calculate the Euclidean distance transform and use it to perform segmentation
-      dis_map = sitk.SignedMaurerDistanceMap(label_map)
-
-      # Calculate statistics associated with white_pixel label
-      stats = sitk.LabelStatisticsImageFilter()
-      stats.Execute(curr_slice, label_map)
-      # Threshold for SITK::ThresholdSegmentationLevelSetImageFilter
-      # stats.GetMean(white_pixel) returns the mean intensity values of the pixels labeled white pixels.
-      intensity_mean = stats.GetMean(white_pixel) 
-      intensity_std = stats.GetSigma(white_pixel)
-      lower_threshold = (intensity_mean- threshold_coef*intensity_std)
-      upper_threshold = (intensity_mean + threshold_coef*intensity_std)
-      segment_filter.SetLowerThreshold(lower_threshold)
-      segment_filter.SetUpperThreshold(upper_threshold)
-      
-      # Segmentated slice, a ndarrays of shape (x, y)
-      return segment_filter.Execute(dis_map, curr_slice)
-
-   def count_pixels(segmented_slice):
-      # This function will count the number of white pixels in this segmented slice
-      # and calculate a new centre based on the result
-      num_of_white_pixel = 0
-      x_coord = 0
-      y_coord = 0
-      for x from 0 to segmented_slice[0].length:
-         for y from 0 to segmented_slice.length:
-            if segmented_slice[x][y] == white_pixel:
-               x_coord += x
-               y_coord += y
-               num_of_white_pixel += 1
-      new_centre = (x_coord/num_of_white_pixel, y_coord/num_of_white_pixel)
-      return num_of_white_pixel, new_centre
-
-   def is_new_slice_qualified(new_size):
-      # compare new slice's number of white pixel to
-      # the original slice and the previous size
-
-      condition_1 = new_size < original_size*qualified_coefficient
-      condition_2 = new_size > original_size/qualified_coefficient
-      condition_3 = new_size < prev_size*qualified_coefficient
-
-      return condition_1 and condition_2 and condition_3
-
 .. note::
 
    You can find the definitions of each function within the module below

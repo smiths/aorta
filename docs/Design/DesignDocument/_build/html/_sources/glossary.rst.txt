@@ -26,6 +26,9 @@ Glossary of Terms Used in AortaGeomRecon Documentation
     slice
         A 2-dimensional image is retrieved from a 3-dimensional volume.
 
+    kernel size
+        The size of the kernel for binary dilation. The :term:`binary dilation` section shows an example of binary dilation with a kernel size of 3.
+
     label map
          A labeled map or a label image is an image that labels each pixel of a source image. For example, the time zone map shown below has 4 labels to label the time zone for each state in the U.S.
 
@@ -54,6 +57,18 @@ Glossary of Terms Used in AortaGeomRecon Documentation
                    [ 0.,  1.,  1.,  1.,  0.],
                    [ 0.,  0.,  1.,  0.,  0.],
                    [ 0.,  0.,  0.,  0.,  0.]])
+
+    rms_error
+        Value of RMS change below which the filter should stop. This is a convergence criterion.
+
+    Maximum iteration
+        Number of iterations to run
+
+    Curvature scaling
+        Weight of the curvature contribution to the speed term.
+
+    Propagation scaling
+        Weight of the propagation contribution to the speed term. 
 
     segmented slice
         A 2-dimensional image retrieved by applying `SITK\:\:ThresholdSegmentationLevelSetImageFilter <https://simpleitk.org/doxygen/latest/html/classitk_1_1simple_1_1ThresholdSegmentationLevelSetImageFilter.html>`_ with the euclidean distance transform image, the original image, and the threshold value calculated with the mean and the standard deviation of the intensity values that were labeled as the white pixel.
@@ -95,12 +110,12 @@ Glossary of Terms Used in AortaGeomRecon Documentation
         .. note::
             The lower threshold is calculated as the mean of the intensity values subtract from the threshold coefficient multiplied by the standard deviation. The upper threshold is calculated by adding the threshold multiplied by the standard deviation.
 
-        .. note::
+    Stop limit
+        This limit is used to stop the segmentation algorithm. It is used differently in segmentation in inferior direction and segmentation in superior direction.
 
-           The threshold coefficient is fixed at 3.5 for now. To let the user chooses the values, we need to implement a UI parameter in the AortaGeomReconDisplay module (our 3D Slicer extension module) and mapped the value from UI to the logic module.
+        In inferior direction, if the new centroid that is closest to the previous ascending aorta centre is still reaching the distance limit, then the algorithm will stop consider taking the new centroid closer to the ascending aorta. In other words, only 1 centroid will be used for descending aorta segmentation.
 
-    Qualified coefficient
-        This coefficient is used when the algorithm is determining whether a new segmented slice is acceptable in terms of the size of the segmented regions. The larger the coefficient, the looser the condition to accept the new segmented slice.
+        In supeiror direction, if the standard deviation of the inital label map and the segmentation result label map has larger difference than the limit, the algorithm will stop processing segmentation for the rest of the slices. For example, assume that the standard deviation of the initial label image is 20, and the standard deviation of the segmentation label image is 40, with stop limit of 10, the program hault immediately.
 
     Euclidean distance transform
         The euclidean distance transform is the map labeling each pixel of the image with the distance to the nearest obstacle pixel (black pixel for this project). `SITK\:\:SignedMaurerDistanceMapImageFilter <https://simpleitk.org/doxygen/latest/html/classitk_1_1simple_1_1SignedMaurerDistanceMapImageFilter.html>`_ will also reverse propagate the obstacle pixel by setting them to a lower values (the outmost obstacle pixel will have the lowest value.)

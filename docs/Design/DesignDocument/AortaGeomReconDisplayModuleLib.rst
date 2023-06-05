@@ -13,27 +13,10 @@ AortaGeomReconEnums module
    :show-inheritance:
 
 
-AortaSagitalSegmenter module
------------------------------------------------------------
-
-.. automodule:: AortaSagitalSegmenter
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
 AortaSegmenter module
 ----------------------------------------------------
 
 .. automodule:: AortaSegmenter
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-Module contents
----------------
-
-.. automodule:: AortaGeomReconDisplayModuleLib
    :members:
    :undoc-members:
    :show-inheritance:

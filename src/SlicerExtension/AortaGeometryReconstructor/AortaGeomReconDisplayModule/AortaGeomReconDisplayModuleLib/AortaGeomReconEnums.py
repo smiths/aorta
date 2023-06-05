@@ -10,21 +10,6 @@ class SegmentDirection(Enum):
     Inferior_to_Superior = 2
 
 
-class SegmentType(Enum):
-    """Enum type describing the segmentation phase,
-    this will be used in the algorithm to run different codes.
-    """
-    descending_aorta = 1
-    ascending_aorta = 2
-
-    def __eq__(self, other):
-        """Overrides the default implementation"""
-        return self.value == other.value
-
-    def __format__(self, obj):
-        return "%s segmentation" % (self._name_.replace("_", " "))
-
-
 class PixelValue(Enum):
     """Enum type describing the values of the pixel in the image.
     """
