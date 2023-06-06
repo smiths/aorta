@@ -18,7 +18,7 @@
 \begin{document}
 
 \title{Project Title: System Verification and Validation Plan for \progname{}} 
-\author{Author Name}
+\author{\authname}
 \date{\today}
 	
 \maketitle
@@ -30,7 +30,7 @@
 \begin{tabularx}{\textwidth}{p{3cm}p{2cm}X}
 \toprule {\bf Date} & {\bf Version} & {\bf Notes}\\
 \midrule
-Date 1 & 1.0 & Notes\\
+2023-04-30 & 1.0 & First draft of VnV plan\\
 Date 2 & 1.1 & Notes\\
 \bottomrule
 \end{tabularx}
@@ -39,14 +39,13 @@ Date 2 & 1.1 & Notes\\
 
 \tableofcontents
 
-\listoftables
-\wss{Remove this section if it isn't needed}
-
-\listoffigures
-\wss{Remove this section if it isn't needed}
+%\listoftables
+%\wss{Remove this section if it isn't needed}
+%
+%\listoffigures
+%\wss{Remove this section if it isn't needed}
 
 \newpage
-
 \section{Symbols, Abbreviations and Acronyms}
 
 \renewcommand{\arraystretch}{1.2}
@@ -56,60 +55,113 @@ Date 2 & 1.1 & Notes\\
   \midrule 
   T & Test\\
   \bottomrule
-\end{tabular}\\
+\end{tabular}\\ \\
 
-\wss{symbols, abbreviations or acronyms -- you can simply reference the SRS
-  \citep{SRS} tables, if appropriate}
+\noindent \citep{SRS}
+%\wss{symbols, abbreviations or acronyms -- you can simply reference the SRS
+%  \citep{SRS} tables, if appropriate}
 
 \newpage
 
 \pagenumbering{arabic}
 
-This document ... \wss{provide an introductory blurb and roadmap of the
-  Verification and Validation plan}
+%This document ... \wss{provide an introductory blurb and roadmap of the
+%  Verification and Validation plan}
+
+
+\noindent The following section provides an overview of the Verification and Validation (V\&V) Plan
+for program \progname. This section explains the purpose of this document, the scope of the
+system, common definitions that are used in the document. Throughout this document, we refer to the terms that have been already explained in
+the document Software Requirements Specification for Program \progname.
 
 \section{General Information}
 
 \subsection{Summary}
+\progname{} is tested for its segmentation module. The segmentation algorithm can be split into 3 parts, the descending aorta segmentation, the ascending aorta segmentation and the sagittal segmentation. \\
 
-\wss{Say what software is being tested.  Give its name and a brief overview of
-  its general functions.}
+\noindent The descending aorta segmentation takes an original volume and a descending aorta centre coordinate as the inputs, and perform the segmentation on the volume, finally returns the result label volume indicate which voxel belongs to the descending aorta. \\
+
+\noindent Smilarly, the ascending aorta segmentation takes an original volume, an ascending aorta centre coordinate, and the descending aorta segmentation result label volume as the inputs, and perform the segmentation on the original volume, finally returns the result label volume indicate which voxel belongs to the descending or ascending aorta. \\
+
+\noindent Finally, the sagittal segmentation is used to fill in any missing voxel that is potentially belong to the aorta in the label volume.
+
+%\wss{Say what software is being tested.  Give its name and a brief overview of
+%  its general functions.}
 
 \subsection{Objectives}
 
-\wss{State what is intended to be accomplished.  The objective will be around
-  the qualities that are most important for your project.  You might have
-  something like: ``build confidence in the software correctness,''
-  ``demonstrate adequate usability.'' etc.  You won't list all of the qualities,
-  just those that are most important.}
+The main objective of the verification and validation is to ensure the segmentation algorithm correctness, while optimizing the algorithm for the readability and the efficiency.
+The segmentation algorithm has been tested with 6 samples and the results are verified by the domain experts. Continuous integration testing can ensure the software correctness for each modification of the existing code.
+
+%\wss{State what is intended to be accomplished.  The objective will be around
+%  the qualities that are most important for your project.  You might have
+%  something like: ``build confidence in the software correctness,''
+%  ``demonstrate adequate usability.'' etc.  You won't list all of the qualities,
+%  just those that are most important.}
 
 \subsection{Relevant Documentation}
 
-\wss{Reference relevant documentation.  This will definitely include your SRS
-  and your other project documents (MG, MIS, etc).  You can include these even
-  before they are written, since by the time the project is done, they will be
-  written.}
+%\wss{Reference relevant documentation.  This will definitely include your SRS
+%  and your other project documents (MG, MIS, etc).  You can include these even
+%  before they are written, since by the time the project is done, they will be
+%  written.}
 
+\citet{MG}
 \citet{SRS}
 
-\section{Plan}
 
-\wss{Introduce this section.   You can provide a roadmap of the sections to
-  come.}
+\section{Plan}
+This section provides a description of the software that is being tested, the team that will
+perform the testing, and the milestones for the testing phase/
+%\wss{Introduce this section.   You can provide a roadmap of the sections to
+%  come.}
 
 \subsection{Verification and Validation Team}
 
-\wss{You, your classmates and the course instructor.  Maybe your supervisor.
-  You shoud do more than list names.  You should say what each person's role is
-  for the project.  A table is a good way to summarize this information.}
+\renewcommand{\arraystretch}{1.2}
+\begin{tabular}{l l} 
+  \toprule		
+  \textbf{Name} & \textbf{Role description}\\
+  \midrule 
+  \authname{} & Design and implement testing modules.\\
+  Dr. Spencer Smith & Code review and provide test cases.\\
+  \bottomrule
+\end{tabular}\\ \\
+
+%\wss{You, your classmates and the course instructor.  Maybe your supervisor.
+%  You shoud do more than list names.  You should say what each person's role is
+%  for the project.  A table is a good way to summarize this information.}
 
 \subsection{SRS Verification Plan}
 
-\wss{List any approaches you intend to use for SRS verification.  This may just
-  be ad hoc feedback from reviewers, like your classmates, or you may have
-  something more rigorous/systematic in mind..}
+This section provides the functional requirements, the business tasks that the software is
+expected to complete, and the nonfunctional requirements, the qualities that the software is
+expected to exhibit.
 
-\wss{Remember you have an SRS checklist}
+\subsubsection{Functional Requirements}
+The functional requirements have been already explained in the Software Requirements Specifications for Program \progname{}. As a reference, the names of the requirements are as follows:
+\begin{itemize}
+\item {Input}
+\item {Region of Interest}
+\item {Output}
+\item {Visualization}
+\end{itemize} 
+
+
+\subsubsection{Nonfunctional Requirements}
+Considering the use of this program in the research and academia nowadays, as well as keeping an eye on its future use in the medicine and clinical practice, the priority nonfunctional
+requirements are correctness, understandability, reliability, and usability. The usability Nonfunctional requirements are as follow:
+\begin{itemize}
+\item {Interface}
+\item {3D Rendering}
+\end{itemize} 
+
+
+%\wss{List any approaches you intend to use for SRS verification.  This may just
+%  be ad hoc feedback from reviewers, like your classmates, or you may have
+%  something more rigorous/systematic in mind..}
+
+% \wss{Remember you have an SRS checklist}
 
 \subsection{Design Verification Plan}
 
@@ -130,14 +182,14 @@ This document ... \wss{provide an introductory blurb and roadmap of the
 
 \subsection{Automated Testing and Verification Tools}
 
-\wss{What tools are you using for automated testing.  Likely a unit testing
-  framework and maybe a profiling tool, like ValGrind.  Other possible tools
-  include a static analyzer, make, continuous integration tools, test coverage
-  tools, etc.  Explain your plans for summarizing code coverage metrics.
-  Linters are another important class of tools.  For the programming language
-  you select, you should look at the available linters.  There may also be tools
-  that verify that coding standards have been respected, like flake9 for
-  Python.}
+%\wss{What tools are you using for automated testing.  Likely a unit testing
+%  framework and maybe a profiling tool, like ValGrind.  Other possible tools
+%  include a static analyzer, make, continuous integration tools, test coverage
+%  tools, etc.  Explain your plans for summarizing code coverage metrics.
+%  Linters are x`another important class of tools.  For the programming language
+%  you select, you should look at the available linters.  There may also be tools
+%  that verify that coding standards have been respected, like flake9 for
+%  Python.}
 
 \wss{The details of this section will likely evolve as you get closer to the
   implementation.}

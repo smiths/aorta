@@ -25,11 +25,3 @@ test\_image\_preprocessing module
    :members:
    :undoc-members:
    :show-inheritance:
-
-Module contents
----------------
-
-.. automodule:: test
-   :members:
-   :undoc-members:
-   :show-inheritance:
