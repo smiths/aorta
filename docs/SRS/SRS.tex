@@ -151,6 +151,8 @@
 2023-03-01 & 1.01 & Modified system context image, coordinate systems, and goal statements.\\
 \midrule
 2023-04-29 & 1.02 & Added requirements, instance models, data definitions\\
+\midrule
+2023-06-05 & 1.03 & Added Traceability Matrices and Graphs\\
 \bottomrule
 \end{tabularx}
 
@@ -167,23 +169,6 @@ as the unit system.  In addition to the basic units, several derived units are
 used as described below.  For each unit, the symbol is given followed by a
 description of the unit and the SI name.
 ~\newline
-
-%\renewcommand{\arraystretch}{1.2}
-%\begin{table}[ht]
-  % \noindent \begin{tabular}{l l l} 
-  %   \toprule		
-  %   \textbf{symbol} & \textbf{unit} & \textbf{SI}\\
-  %   \midrule 
-  %   \si{\metre} & length & metre\\
-  %   \si{\kilogram} & mass	& kilogram\\
-  %   \si{\second} & time & second\\
-  %   \si{\celsius} & temperature & centigrade\\
-  %   \si{\joule} & energy & joule\\
-  %   \si{\watt} & power & watt (W = \si{\joule\per\second})\\
-  %   \bottomrule
-  % \end{tabular}
-  %	\caption{Provide a caption}
-%\end{table}
 
 \subsection{Table of Symbols}
 
@@ -202,34 +187,17 @@ The symbols are listed in alphabetical order.
 \\ 
 \textit{slice} &  $\mathbb{R}^{m \times n}$ &  A slice is a 2 dimensional image view from the superior to inferior direction.
 \\ 
-\textit{Sv} & $\mathbb{N}^{3}$ &  A coordinate indicates the indexes of a starting voxel.
-\\
-\textit{S} & $\mathbb{N}^{3}$ &  The size to crop a rectangular shaped subset of a volume.
+\textit{Start} & $\mathbb{N}^{3}$ &  A coordinate indicates the indexes of a starting voxel.
 \\
 \textit{v} &  $\mathbb{R}$ &  A voxel reports the intensity of a single point on a grey-scale 3 dimensional image.
 \\
-\textit{volume} & $\mathbb{R}^{m \times n \times p}$ &  Volume formed by a sequence of slice
+\textit{volume/V} & $\mathbb{R}^{m \times n \times p}$ &  Volume formed by a sequence of slice
 \\
 
 \bottomrule
 \caption{Table of Symbols}
 \label{Table of Symbols}
 \end{longtable}
-
-% \renewcommand{\arraystretch}{1.2}
-% %\noindent \begin{tabularx}{1.0\textwidth}{l l X}
-% \noindent \begin{longtable*}{l l p{12cm}} \toprule
-% \textbf{symbol} & \textbf{unit} & \textbf{description}\\
-% \midrule 
-% $A_C$ & \si[per-mode=symbol] {\square\metre} & coil surface area
-% \\
-% $A_\text{in}$ & \si[per-mode=symbol] {\square\metre} & surface area over 
-% which heat is transferred in
-% \\ 
-% \bottomrule
-% \end{longtable*}
-% \plt{Use your problems actual symbols.  The si package is a good idea to use for
-%   units.}
 
 \subsection{Abbreviations and Acronyms}
 
@@ -253,86 +221,6 @@ The symbols are listed in alphabetical order.
   \bottomrule
 \end{tabular}\\
 
-% \subsection{Mathematical Notation}
-
-% \plt{This section is optional, but should be included for projects that make use
-%   of notation to convey mathematical information.  For instance, if typographic
-%   conventions (like bold face font) are used to distinguish matrices, this
-%   should be stated here.  If symbols are used to show mathematical operations,
-%   these should be summarized here.  In some cases the easiest way to summarize
-%   the notation is to point to a text or other source that explains the
-%   notation.}
-
-% \plt{This section was added to the template because some students use very
-%   domain specific notation.  This notation will not be readily understandable to
-%   people outside of your domain.  It should be explained.}
-
-\newpage
-
-\pagenumbering{arabic}
-
-% \plt{This SRS template is based on \citet{SmithAndLai2005, SmithEtAl2007}.  It
-%   will get you started.  You should not modify the section headings, without
-%   first discussing the change with the course instructor.  Modification means
-%   you are not following the template, which loses some of the advantage of a
-%   template, especially standardization.  Although the bits shown below do not
-%   include type information, you may need to add this information for your
-%   problem.  If you are unsure, please can ask the instructor.}
-
-% \plt{Feel free to change the appearance of the report by modifying the LaTeX
-%   commands.}
-
-% \plt{This template document assumes that a single program is being documented.
-%   If you are documenting a family of models, you should start with a commonality
-%   analysis.  A separate template is provided for this.  For program
-%   families you should look at \cite{Smith2006, SmithMcCutchanAndCarette2017}.
-%   Single family member programs are often programs based on a single physical
-%   model.  General purpose tools are usually documented as a family.  Families of
-%   physical models also come up.}
-
-% \plt{The SRS is not generally written, or read, sequentially.  The SRS is a
-%   reference document.  It is generally read in an ad hoc order, as the need
-%   arises.  For writing an SRS, and for reading one for the first time, the
-%   suggested order of sections is:
-% \begin{itemize}
-% \item Goal Statement
-% \item Instance Models
-% \item Requirements
-% \item Introduction
-% \item Specific System Description
-% \end{itemize}
-% }
-
-% \plt{Guiding principles for the SRS document:
-% \begin{itemize}
-% \item Do not repeat the same information at the same abstraction level.  If
-%   information is repeated, the repetition should be at a different abstraction
-%   level.  For instance, there will be overlap between the scope section and the
-%   assumptions, but the scope section will not go into as much detail as the
-%   assumptions section.
-% \end{itemize}
-% }
-
-% \plt{The template description comments should be disabled before submitting this
-%   document for grading.}
-
-% \plt{You can borrow any wording from the text given in the template.  It is part
-%   of the template, and not considered an instance of academic integrity.  Of
-%   course, you need to cite the source of the template.}
-
-% \plt{When the documentation is done, it should be possible to trace back to the
-%   source of every piece of information.  Some information will come from
-%   external sources, like terminology.  Other information will be derived, like
-%   General Definitions.}
-
-% \plt{An SRS document should have the following qualities: unambiguous,
-%   consistent, complete, validatable, abstract and traceable.}
-
-% \plt{The overall goal of the SRS is that someone that meets the Characteristics
-%   of the Intended Reader (Section~\ref{sec_IntendedReader}) can learn,
-%   understand and verify the captured domain knowledge.  They should not have to
-%   trust the authors of the SRS on any statements.  They should be able to
-%   independently verify/derive every statement made.}
 
 \section{Introduction}
 
@@ -341,12 +229,6 @@ This document provides an overview of the Software Requirements Specification
 provides a highly customizable aorta segmentation module, 
 and an interactive user interface to apply the segmentation workflow.
 
-% \plt{The introduction section is written to introduce the problem.  It starts
-%   general and focuses on the problem domain. The general advice is to start with
-% a paragraph or two that describes the problem, followed by a ``roadmap''
-% paragraph.  A roadmap orients the reader by telling them what sub-sections to
-% expect in the Introduction section.}
-
 \subsection{Purpose of Document}
 The main purpose of this document is to provide sufficient information to
 understand what \progname{} module does. The goals and theoretical models used in the
@@ -354,56 +236,11 @@ understand what \progname{} module does. The goals and theoretical models used i
 with an emphasis on explicitly identifying assumptions and unambiguous
 definitions.
 
-% \plt{This section summarizes the purpose of the SRS document.  It does not focus
-%   on the problem itself.  The problem is described in the ``Problem
-%   Description'' section (Section~\ref{Sec_pd}).  The purpose is for the document
-%   in the context of the project itself, not in the context of this course.
-%   Although the ``purpose'' of the document is to get a grade, you should not
-%   mention this.  Instead, ``fake it'' as if this is a real project.  The purpose
-%   section will be similar between projects.  The purpose of the document is the
-%   purpose of the SRS, including communication, planning for the design stage,
-%   etc.}
 
 \subsection{Scope of Requirements} 
 
-% \plt{Modelling the real world requires simplification.  The full complexity of
-%   the actual physics, chemistry, biology is too much for existing models, and
-%   for existing computational solution techniques.  Rather than say what is in
-%   the scope, it is usually easier to say what is not.  You can think of it as
-%   the scope is initially everything, and then it is constrained to create the
-%   actual scope.  For instance, the problem can be restricted to 2 dimensions, or
-%   it can ignore the effect of temperature (or pressure) on the material
-%   properties, etc.}  
-
-% \plt{The scope section is related to the assumptions section
-%   (Section~\ref{sec_assumpt}).  However, the scope and the assumptions are not
-%   at the same level of abstraction.  The scope is at a high level.  The focus is
-%   on the ``big picture'' assumptions.  The assumptions section lists, and
-%   describes, all of the assumptions.}
-
-% \subsection{Characteristics of Intended Reader} \label{sec_IntendedReader}
-
-% \plt{This section summarizes the skills and knowledge of the readers of the
-%   SRS.  It does NOT have the same purpose as the ``User Characteristics''
-%   section (Section~\ref{SecUserCharacteristics}).  The intended readers are the
-%   people that will read, review and maintain the SRS.  They are the people that
-%   will conceivably design the software that is intended to meet the
-%   requirements.  The user, on the other hand, is the person that uses the
-%   software that is built.  They may never read this SRS document.  Of course,
-%   the same person could be a ``user'' and an ``intended reader.''}
-
-% \plt{The intended reader characteristics should be written as unambiguously and
-%   as specifically as possible.  Rather than say, the user should have an
-%   understanding of physics, say what kind of physics and at what level.  For
-%   instance, is high school physics adequate, or should the reader have had a
-%   graduate course on advanced quantum mechanics?}
 
 \subsection{Organization of Document}
-
-%\plt{This section provides a roadmap of the SRS document.  It will help the
-%  reader orient themselves.  It will provide direction that will help them
-%  select which sections they want to read, and in what order.  This section will
-%  be similar between project.}
 
 The organization of this document follows the template for an SRS for
 scientific computing software proposed by \cite{Koothoor2013} and
@@ -457,33 +294,12 @@ flow between the system and its environment. \\ \\ \\ \\ \\ \\ \\
 \subsection{User Characteristics} \label{SecUserCharacteristics}
 The end user of \progname{} have taking the university level anatomy introduction course, and is capable to point out the center of the descending aorta and the ascending aorta.
 
-% \plt{This section summarizes the knowledge/skills expected of the user.
-%   Measuring usability, which is often a required non-function requirement,
-%   requires knowledge of a typical user.  As mentioned above, the user is a
-%   different role from the ``intended reader,'' as given in
-%   Section~\ref{sec_IntendedReader}.  As in Section~\ref{sec_IntendedReader}, the
-%   user characteristics should be specific an unambiguous.  For instance, ``The
-%   end user of \progname{} should have an understanding of undergraduate Level 1
-%   Calculus and Physics.''}
-
-\subsection{System Constraints}
-% Intended environment to run the program on are the Windows 10 systems.
-% \plt{System constraints differ from other type of requirements because they
-%   limit the developers' options in the system design and they identify how the
-%   eventual system must fit into the world. This is the only place in the SRS
-%   where design decisions can be specified.  That is, the quality requirement for
-%   abstraction is relaxed here.  However, system constraints should only be
-%   included if they are truly required.}
-
 \section{Specific System Description}
 
 This section first presents the problem description, which gives a high-level
 view of the problem to be solved.  This is followed by the solution characteristics
 specification, which presents the assumptions, theories, definitions and finally
 the instance models.  
-
-% \plt{Add any project specific details that are relevant
-%   for the section overview.}
 
 \subsection{Problem Description} \label{Sec_pd}
 
@@ -552,52 +368,9 @@ To specify locations in an image we need to know to which coordinate system it i
 
 \subsubsection{Physical System Description} \label{sec_phySystDescrip}
 
-% \plt{The purpose of this section is to clearly and unambiguously state the
-%   physical system that is to be modelled. Effective problem solving requires a
-%   logical and organized approach. The statements on the physical system to be
-%   studied should cover enough information to solve the problem. The physical
-%   description involves element identification, where elements are defined as
-%   independent and separable items of the physical system. Some example elements
-%   include acceleration due to gravity, the mass of an object, and the size and
-%   shape of an object. Each element should be identified and labelled, with their
-%   interesting properties specified clearly. The physical description can also
-%   include interactions of the elements, such as the following: i) the
-%   interactions between the elements and their physical environment; ii) the
-%   interactions between elements; and, iii) the initial or boundary conditions.}
-
-We do not study the physical system for DICOM or how the data is actually generated.
-
-% \begin{itemize}
-
-% \item[PS1:] 
-
-% \item[PS2:] ...
-
-% \end{itemize}
-
-% \plt{A figure here makes sense for most SRS documents}
-
-% \begin{figure}[h!]
-% \begin{center}
-% %\rotatebox{-90}
-% {
-%  \includegraphics[width=0.5\textwidth]{<FigureName>}
-% }
-% \caption{\label{<Label>} <Caption>}
-% \end{center}
-% \end{figure}
 
 \subsubsection{Goal Statements}
 
-% \plt{The goal statements refine the ``Problem Description''
-%   (Section~\ref{Sec_pd}).  A goal is a functional objective the system under
-%   consideration should achieve. Goals provide criteria for sufficient
-%   completeness of a requirements specification and for requirements
-%   pertinence. Goals will be refined in Section “Instanced Models”
-%   (Section~\ref{sec_instance}). Large and complex goals should be decomposed
-%   into smaller sub-goals.  The goals are written abstractly, with a minimal
-%   amount of technical language.  They should be understandable by non-domain
-%   experts.}
 
 \noindent Given the DICOM image that includes patient's chest,
 the descending aorta center voxel coordinate,
@@ -731,11 +504,10 @@ Symbol & $ \text{volume} : \mathbb{R}^{m \times n \times p}$\\
 
 This section transforms the problem defined in Section~\ref{Sec_pd} into 
 one which is expressed in mathematical terms. It uses concrete symbols defined 
-in Section~\ref{sec_datadef} to replace the abstract symbols in the models 
-identified in Sections~\ref{sec_theoretical} and~\ref{sec_gendef}. \\
+in Section~\ref{sec_datadef} to replace the abstract symbols in the models. \\
 
 \noindent 
-The goals \gsref{Gsegment} are solved by finding \iref{roi} and perform \iref{segmentation} on the descending and ascending aorta.
+The goals \gsref{Gsegment} are solved by finding \iref{roi} and perform \iref{segmentation} on the aorta.
 
 ~\newline
 
@@ -771,12 +543,6 @@ $ V_{out}[i][j][k]=V_{in}[i][j][k])$
 \end{center}\\
   \hline
   Description & The regions of interest is a subset (shaped like a box) of the 3D Vout. This subset contains the anatomical structure that the users wants to read, process or extract. 
-%~\newline For Starting\_voxel $[Sv_1, Sv_2, Sv_3]$ and for Size $[S_1, S_2, S_3]$:
-%\begin{center}
-%$  m_o=S_1  \; \wedge \;  n_o=S_2   \; \wedge \;  p_o=S_3 $
-%$ \forall i,j,k:\mathbb{N} \; \{i \in [0, m_o-1]  \; \wedge \; j \in [0,n_o-1] \; \wedge \; k \in [0, p_o-1] \} $. 
-%$ \text{V}_\text{out}[i,j,k] =  \text{V}_\text{in}[Sv_1+i, Sv_2+j, Sv_3+k] $. 
-%\end{center}
   \\
   \hline
   Sources&  \\
@@ -814,17 +580,6 @@ $ V_{in}[i,j,k] \notin \text{structure} \implies V_{out}[i,j,k]=LOW)) $
 
   \hline
   Description & The process of extract an anotomical structure from the original 3D volume. The extracted anotomical structure is represented with high intensity pixel value. The rest of the image should have a lower intensity pixel value. A seed is what the algorithm needed as the inputs to perform segmentation, the type of a seed is different among different algorithm.
-%\newline For Vout:
-%\begin{center}
-%$ \forall i,j,k : \mathbb{N} \{i \in [0, m-1]  \; \wedge \; j \in [0,n-1] \; \wedge \; k \in [0, p-1] \} $.
-%\[
-%  \text{V}_\text{out}[i,j,k] = 
-%  \begin{cases} 
-%   HIGH & \text{if } \text{V}_\text{in}[i,j,k] \in \text{part of the anotomical structure} \\
-%   LOW  & \text{otherwise}
-%  \end{cases}
-%\]
-%\end{center}
   \\
   \hline
   Sources& \\
@@ -833,93 +588,6 @@ $ V_{in}[i,j,k] \notin \text{structure} \implies V_{out}[i,j,k]=LOW)) $
   \hline
 \end{tabular}
 \end{minipage}\\
-
-%~\newline
-
-%\subsubsection*{Derivation of ...}
-
-
-%\subsubsection{Input Data Constraints} \label{sec_DataConstraints}    
-%Data constraints on the input are as follows:
-%\newline
-%\begin{itemize}
-%\item{ For Starting\_voxel $[Sv_1, Sv_2, Sv_3]$, $ \text{V}_\text{in}:\mathbb{R}^{m_i \times n_i \times p_i}$ , and Size $[S_1, S_2, S_3]$:}\\
-%$ 0\leq Sv_1\leq m_i  \; \wedge \;  0 \leq  Sv_2 \leq n_i   \; \wedge \;  0 \leq  Sv_3 \leq p_i $. \\
-%$ 0 < S_1  \le m_i  \; \wedge \;  0 <  S_2 \le n_i   \; \wedge \;  0 <  S_3 \le p_i $.\\
-%$ 0 \leq  Sv_1 + S_1  \leq m_i  \; \wedge \;  0 \leq  Sv_2 +S_2 \leq n_i   \; \wedge \;  0 \leq  Sv_3+S_3 \leq p_i $\\
-%\end{itemize}
-
-%Table~\ref{TblInputVar} shows the data constraints on the input output
-%variables.  The column for physical constraints gives the physical limitations
-%on the range of values that can be taken by the variable.  The column for
-%software constraints restricts the range of inputs to reasonable values.  The%
-%software constraints will be helpful in the design stage for picking suitable
-%algorithms.  The constraints are conservative, to give the user of the model the
-%flexibility to experiment with unusual situations.  The column of typical values
-%is intended to provide a feel for a common scenario.  The uncertainty column
-%provides an estimate of the confidence with which the physical quantities can be
-%measured.  This information would be part of the input if one were performing an
-% uncertainty quantification exercise.
-
-% The specification parameters in Table~\ref{TblInputVar} are listed in
-% Table~\ref{TblSpecParams}.
-
-%\begin{table}[!h]
-%  \caption{Input Variables} \label{TblInputVar}
-%  \renewcommand{\arraystretch}{1.2}
-%\noindent \begin{longtable*}{l l l l c} 
-%  \toprule
-%  \textbf{Var} & \textbf{Physical Constraints} & \textbf{Software Constraints} &
-%                             \textbf{Typical Value} & \textbf{Uncertainty}\\
-%  \midrule 
-%$ 0\leq Sv_1\leq m_i  \; \wedge \;  0 \leq  Sv_2 \leq n_i   \; \wedge \;  0 \leq  Sv_3 \leq p_i $. 
-%$ 0 < S_1  \le m_i  \; \wedge \;  0 <  S_2 \le n_i   \; \wedge \;  0 <  S_3 \le p_i $.
-%$ 0 \leq  Sv_1 + S_1  \leq m_i  \; \wedge \;  0 \leq  Sv_2 +S_2 \leq n_i   \; \wedge \;  0 \leq  Sv_3+S_3 \leq p_i $
-
-  % Size $\it{sequence}[0..2]$ & $x>0 \forall x \in Size$ & $L_{\text{min}} \leq L \leq L_{\text{max}}$ & 1.5 \si[per-mode=symbol] {\metre} & 10\%
-%  \\
-%  \bottomrule
-%\end{longtable*}
-%\end{table}
-
-%\begin{table}[!h]
-%\caption{Specification Parameter Values} \label{TblSpecParams}
-%\renewcommand{\arraystretch}{1.2}
-%\noindent \begin{longtable*}{l l} 
-%  \toprule
-%  \textbf{Var} & \textbf{Value} \\
-%  \midrule 
-%  $L_\text{min}$ & 0.1 \si{\metre}\\
-%  \bottomrule
-%\end{longtable*}
-%\end{table}
-%
-%\subsubsection{Properties of a Correct Solution} \label{sec_CorrectSolution}
-%
-%\noindent
-%A correct solution must exhibit \plt{fill in the details}.  \plt{These
-%  properties are in addition to the stated requirements.  There is no need to
-%  repeat the requirements here.  These additional properties may not exist for
-%  every problem.  Examples include conservation laws (like conservation of
-%  energy or mass) and known constraints on outputs, which are usually summarized
-%  in tabular form.  A sample table is shown in Table~\ref{TblOutputVar}}
-
-%\begin{table}[!h]
-%\caption{Output Variables} \label{TblOutputVar}
-%\renewcommand{\arraystretch}{1.2}
-%\noindent \begin{longtable*}{l l} 
-%  \toprule
-%  \textbf{Var} & \textbf{Physical Constraints} \\
-%  \midrule 
-%  $T_W$ & $T_\text{init} \leq T_W \leq T_C$ (by~\aref{A_charge})
-%  \\
-%  \bottomrule
-%\end{longtable*}
-%\end{table}
-%
-%\plt{This section is not for test cases or techniques for verification and
-%  validation.  Those topics will be addressed in the Verification and Validation
-%  plan.}
 
 \section{Requirements}
 
@@ -949,22 +617,11 @@ $Seed$ & Any inputs neede by the segmentation algorithm (\iref{segmentation})\\
 
 \item[R\refstepcounter{reqnum}\thereqnum \label{R_visualize}:] Visualize a volume (\ddref{volume}).
 
- %non functional \item[R\refstepcounter{reqnum}\thereqnum \label{R_seed}:] Allow user to input various data type of data for seed.
-
-% \item[R\refstepcounter{reqnum}\thereqnum \label{R_output}:] Allow user to link to segmentation library, and perform segmentation (\iref{segmentation}) on the input data.
 \end{itemize}
 
 \subsection{Nonfunctional Requirements}
 
 \noindent \begin{itemize}
-
-%\item[NFR\refstepcounter{nfrnum}\thenfrnum \label{NFR_Accuracy}:]
-%  \textbf{Accuracy} \plt{Characterize the accuracy by giving the context/use for
-%    the software.  Maybe something like, ``The accuracy of the computed
-%    solutions should meet the level needed for $<$engineering or scientific
-%    application$>$.  The level of accuracy achieved by \progname{} shall be
-%    described following the procedure given in Section~X of the Verification and
-%    Validation Plan.''  A link to the VnV plan would be a nice extra.}
 
 \item[NFR\refstepcounter{nfrnum}\thenfrnum \label{NFR_GUI}:] \textbf{Usability}
 \progname{} provides a user-friendly interface to import any DICOM files, and input the required parameters.
@@ -972,20 +629,6 @@ $Seed$ & Any inputs neede by the segmentation algorithm (\iref{segmentation})\\
 \item[NFR\refstepcounter{nfrnum}\thenfrnum \label{NFR_visualize}:] \textbf{Usability}
 \progname{} can visualize the volume with 3D rendering.
 
-
-%\item[NFR\refstepcounter{nfrnum}\thenfrnum \label{NFR_Maintainability}:]
-%  \textbf{Maintainability} \plt{The effort required to make any of the likely
-%    changes listed for \progname{} should be less than FRACTION of the original
-%    development time.  FRACTION is then a symbolic constant that can be defined
-%    at the end of the report.}
-%
-%\item[NFR\refstepcounter{nfrnum}\thenfrnum \label{NFR_Portability}:]
-%  \textbf{Portability} \plt{This NFR is easier to write than the others.  The
-%    systems that \progname{} should run on should be listed here.  When possible
-%    the specific versions of the potential operating environments should be
-%    given.  To make the NFR verifiable a statement could be made that the tests
-%    from a given section of the VnV plan can be successfully run on all of the
-%    possible operating environments.}
 
 \item Other NFRs that might be discussed include verifiability,
   understandability and reusability.
@@ -1014,69 +657,53 @@ other. Table~\ref{Table:A_trace} shows the dependencies of theoretical models,
 general definitions, data definitions, instance models, and likely changes on
 the assumptions.
 
-\plt{You will have to modify these tables for your problem.}
+%\afterpage{
+%\begin{landscape}
+%\begin{table}[h!]
+%\centering
+%\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}
+%\hline
+%	& \aref{A_OnlyThermalEnergy}& \aref{A_hcoeff}& \aref{A_mixed}& \aref{A_tpcm}& \aref{A_const_density}& \aref{A_const_C}& \aref{A_Newt_coil}& \aref{A_tcoil}& \aref{A_tlcoil}& \aref{A_Newt_pcm}& \aref{A_charge}& \aref{A_InitTemp}& \aref{A_OpRangePCM}& \aref{A_OpRange}& \aref{A_htank}& \aref{A_int_heat}& \aref{A_vpcm}& \aref{A_PCM_state}& \aref{A_Pressure} \\
+%\hline
+%\tref{T_COE}        & X& & & & & & & & & & & & & & & & & & \\ \hline
+%\tref{T_SHE}        & & & & & & & & & & & & & & & & & & & \\ \hline
+%\tref{T_LHE}        & & & & & & & & & & & & & & & & & & & \\ \hline
+%\dref{NL}           & & X& & & & & & & & & & & & & & & & & \\ \hline
+%\dref{ROCT}         & & & X& X& X& X& & & & & & & & & & & & & \\ \hline
+%\ddref{FluxCoil}    & & & & & & & X& X& X& & & & & & & & & & \\ \hline
+%\ddref{FluxPCM}     & & & X& X& & & & & & X& & & & & & & & & \\ \hline
+%\ddref{D_HOF}       & & & & & & & & & & & & & & & & & & & \\ \hline
+%\ddref{D_MF}        & & & & & & & & & & & & & & & & & & & \\ \hline
+%\iref{ewat}         & & & & & & & & & & & X& X& & X& X& X& & & X \\ \hline
+%\iref{epcm}         & & & & & & & & & & & & X& X& & & X& X& X& \\ \hline
+%\iref{I_HWAT}       & & & & & & & & & & & & & & X& & & & & X \\ \hline
+%\iref{I_HPCM}       & & & & & & & & & & & & & X& & & & & X & \\ \hline
+%\lcref{LC_tpcm}     & & & & X& & & & & & & & & & & & & & & \\ \hline
+%\lcref{LC_tcoil}    & & & & & & & & X& & & & & & & & & & & \\ \hline
+%\lcref{LC_tlcoil}   & & & & & & & & & X& & & & & & & & & & \\ \hline
+%\lcref{LC_charge}   & & & & & & & & & & & X& & & & & & & & \\ \hline
+%\lcref{LC_InitTemp} & & & & & & & & & & & & X& & & & & & & \\ \hline
+%\lcref{LC_htank}    & & & & & & & & & & & & & & & X& & & & \\
+%\hline
+%\end{tabular}
+%\caption{Traceability Matrix Showing the Connections Between Assumptions and Other Items}
+%\label{Table:A_trace}
+%\end{table}
+%\end{landscape}
+%}
 
-\plt{The traceability matrix is not generally symmetric.  If GD1 uses A1, that
-  means that GD1's derivation or presentation requires invocation of A1.  A1
-  does not use GD1.  A1 is ``used by'' GD1.}
-
-\plt{The traceability matrix is challenging to maintain manually.  Please do
-  your best.  In the future tools (like Drasil) will make this much easier.}
-
-\afterpage{
-\begin{landscape}
+~\\
 \begin{table}[h!]
 \centering
-\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}
-\hline
-	& \aref{A_OnlyThermalEnergy}& \aref{A_hcoeff}& \aref{A_mixed}& \aref{A_tpcm}& \aref{A_const_density}& \aref{A_const_C}& \aref{A_Newt_coil}& \aref{A_tcoil}& \aref{A_tlcoil}& \aref{A_Newt_pcm}& \aref{A_charge}& \aref{A_InitTemp}& \aref{A_OpRangePCM}& \aref{A_OpRange}& \aref{A_htank}& \aref{A_int_heat}& \aref{A_vpcm}& \aref{A_PCM_state}& \aref{A_Pressure} \\
-\hline
-\tref{T_COE}        & X& & & & & & & & & & & & & & & & & & \\ \hline
-\tref{T_SHE}        & & & & & & & & & & & & & & & & & & & \\ \hline
-\tref{T_LHE}        & & & & & & & & & & & & & & & & & & & \\ \hline
-\dref{NL}           & & X& & & & & & & & & & & & & & & & & \\ \hline
-\dref{ROCT}         & & & X& X& X& X& & & & & & & & & & & & & \\ \hline
-\ddref{FluxCoil}    & & & & & & & X& X& X& & & & & & & & & & \\ \hline
-\ddref{FluxPCM}     & & & X& X& & & & & & X& & & & & & & & & \\ \hline
-\ddref{D_HOF}       & & & & & & & & & & & & & & & & & & & \\ \hline
-\ddref{D_MF}        & & & & & & & & & & & & & & & & & & & \\ \hline
-\iref{ewat}         & & & & & & & & & & & X& X& & X& X& X& & & X \\ \hline
-\iref{epcm}         & & & & & & & & & & & & X& X& & & X& X& X& \\ \hline
-\iref{I_HWAT}       & & & & & & & & & & & & & & X& & & & & X \\ \hline
-\iref{I_HPCM}       & & & & & & & & & & & & & X& & & & & X & \\ \hline
-\lcref{LC_tpcm}     & & & & X& & & & & & & & & & & & & & & \\ \hline
-\lcref{LC_tcoil}    & & & & & & & & X& & & & & & & & & & & \\ \hline
-\lcref{LC_tlcoil}   & & & & & & & & & X& & & & & & & & & & \\ \hline
-\lcref{LC_charge}   & & & & & & & & & & & X& & & & & & & & \\ \hline
-\lcref{LC_InitTemp} & & & & & & & & & & & & X& & & & & & & \\ \hline
-\lcref{LC_htank}    & & & & & & & & & & & & & & & X& & & & \\
-\hline
-\end{tabular}
-\caption{Traceability Matrix Showing the Connections Between Assumptions and Other Items}
-\label{Table:A_trace}
-\end{table}
-\end{landscape}
-}
-
-\begin{table}[h!]
-\centering
-\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}
+\begin{tabular}{|c|c|c|c|c|c|}
 \hline        
-	& \tref{T_COE}& \tref{T_SHE}& \tref{T_LHE}& \dref{NL}& \dref{ROCT} & \ddref{FluxCoil}& \ddref{FluxPCM} & \ddref{D_HOF}& \ddref{D_MF}& \iref{ewat}& \iref{epcm}& \iref{I_HWAT}& \iref{I_HPCM} \\
+	& \ddref{v} & \ddref{slice} & \ddref{volume} & \iref{roi} &  \iref{segmentation} \\
 \hline
-\tref{T_COE}     & & & & & & & & & & & & & \\ \hline
-\tref{T_SHE}     & & & X& & & & & & & & & & \\ \hline
-\tref{T_LHE}     & & & & & & & & & & & & & \\ \hline
-\dref{NL}        & & & & & & & & & & & & & \\ \hline
-\dref{ROCT}      & X& & & & & & & & & & & & \\ \hline
-\ddref{FluxCoil} & & & & X& & & & & & & & & \\ \hline
-\ddref{FluxPCM}  & & & & X& & & & & & & & & \\ \hline
-\ddref{D_HOF}    & & & & & & & & & & & & & \\ \hline
-\ddref{D_MF}     & & & & & & & & X& & & & & \\ \hline
-\iref{ewat}      & & & & & X& X& X& & & & X& & \\ \hline
-\iref{epcm}      & & & & & X& & X& & X& X& & & X \\ \hline
-\iref{I_HWAT}    & & X& & & & & & & & & & & \\ \hline
-\iref{I_HPCM}    & & X& X& & & & X& X& X& & X& & \\
+\ddref{v}     & &  & & & \\ \hline
+\ddref{slice}    & X & & & &\\ \hline
+\ddref{volume}    & & X & & & \\ \hline
+\iref{roi}        & & & X & & \\ \hline
+\iref{segmentation}      &  & & & X & \\
 \hline
 \end{tabular}
 \caption{Traceability Matrix Showing the Connections Between Items of Different Sections}
@@ -1085,25 +712,18 @@ the assumptions.
 
 \begin{table}[h!]
 \centering
-\begin{tabular}{|c|c|c|c|c|c|c|c|}
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|}
 \hline
-	& \iref{ewat}& \iref{epcm}& \iref{I_HWAT}& \iref{I_HPCM}& \ref{sec_DataConstraints}& \rref{R_RawInputs}& \rref{R_MassInputs} \\
+	& \iref{roi}& \iref{segmentation}& \rref{R_Inputs}& \rref{R_roi}& \rref{R_output} & \rref{R_visualize} & \nfrref{NFR_GUI} & \nfrref{NFR_visualize} \\
 \hline
-\iref{ewat}            & & X& & & & X& X \\ \hline
-\iref{epcm}            & X& & & X& & X& X \\ \hline
-\iref{I_HWAT}          & & & & & & X& X \\ \hline
-\iref{I_HPCM}          & & X& & & & X& X \\ \hline
-\rref{R_RawInputs}     & & & & & & & \\ \hline
-\rref{R_MassInputs}    & & & & & & X& \\ \hline
-\rref{R_CheckInputs}   & & & & & X& & \\ \hline
-\rref{R_OutputInputs}  & X& X& & & & X& X \\ \hline
-\rref{R_TempWater}     & X& & & & & & \\ \hline 
-\rref{R_TempPCM}       & & X& & & & & \\ \hline
-\rref{R_EnergyWater}   & & & X& & & & \\ \hline
-\rref{R_EnergyPCM}     & & & & X& & & \\ \hline
-\rref{R_VerifyOutput}  & & & X& X& & & \\ \hline
-\rref{R_timeMeltBegin} & & X& & & & & \\ \hline
-\rref{R_timeMeltEnd}   & & X& & & & & \\ 
+\iref{roi}            & & & & X & & &  & \\ \hline
+\iref{segmentation}  & & & & & X & &  & \\ \hline
+\rref{R_Inputs}       & & & & & & & & \\ \hline
+\rref{R_roi}   & X & & & & & & & \\ \hline
+\rref{R_output}  & & X & & & & & & \\ \hline
+\rref{R_visualize}  & & & & & & & & \\ \hline
+\nfrref{NFR_GUI} & & & & & & & & \\ \hline
+\nfrref{NFR_visualize}   & & & & & & & & \\ 
 \hline
 \end{tabular}
 \caption{Traceability Matrix Showing the Connections Between Requirements and Instance Models}
@@ -1115,10 +735,7 @@ what has to be additionally modified if a certain component is changed.  The
 arrows in the graphs represent dependencies. The component at the tail of an
 arrow is depended on by the component at the head of that arrow. Therefore, if a
 component is changed, the components that it points to should also be
-changed. Figure~\ref{Fig_ATrace} shows the dependencies of theoretical models,
-general definitions, data definitions, instance models, likely changes, and
-assumptions on each other. Figure~\ref{Fig_RTrace} shows the dependencies of
-instance models, requirements, and data constraints on each other.
+changed.
 
 \newpage
 
