@@ -165,11 +165,12 @@ requirements are correctness, understandability, reliability, and usability. The
 
 \subsection{Design Verification Plan}
 
-\wss{Plans for design verification}
-
-\wss{The review will include reviews by your classmates}
-
-\wss{Remember you have MG and MIS checklists}
+The GitHub issues lists the requirements and smaller tasks to fullfil the goal of the software requirements.
+%\wss{Plans for design verification}
+%
+%\wss{The review will include reviews by your classmates}
+%
+%\wss{Remember you have MG and MIS checklists}
 
 \subsection{Implementation Verification Plan}
 
@@ -191,8 +192,18 @@ requirements are correctness, understandability, reliability, and usability. The
 %  that verify that coding standards have been respected, like flake9 for
 %  Python.}
 
-\wss{The details of this section will likely evolve as you get closer to the
-  implementation.}
+%\wss{The details of this section will likely evolve as you get closer to the
+%  implementation.}
+We use GitHub Actions to implement automated tests. GitHub Actions is a new feature to automate workflows that is build a cloud instance, which can be Windows, Linux or macOS. \\
+
+\noindent GitHub Actions reads a yml file to deploy the repository on a temporary cloud instance, then execute the listed commands in the yml file. We built two automated tests with GitHub Actions: Linter and Continous Integration tests. Lint and CI tests will be executed every time when there is new code pushed on GitHub.\\
+
+\noindent Linter is a static code analysis tool to flag programming errors, bugs and code format. \\
+
+\noindent Continous Integration tests ensure the software correctness by comparing the result calculated with the new code to the result calculated by the old code. The old results are verified by testers and are set to the current ground truth. If the new result is very different from the old result then there is probably something wrong in the new code.\\
+
+
+
 
 \subsection{Software Validation Plan}
 
@@ -306,117 +317,117 @@ How test will be performed:
 \wss{Provide a table that shows which test cases are supporting which
   requirements.}
 
-\section{Unit Test Description}
-
-\wss{Reference your MIS and explain your overall philosophy for test case
-  selection.}  
-\wss{This section should not be filled in until after the MIS has
-  been completed.}
-
-\subsection{Unit Testing Scope}
-
-\wss{What modules are outside of the scope.  If there are modules that are
-  developed by someone else, then you would say here if you aren't planning on
-  verifying them.  There may also be modules that are part of your software, but
-  have a lower priority for verification than others.  If this is the case,
-  explain your rationale for the ranking of module importance.}
-
-\subsection{Tests for Functional Requirements}
-
-\wss{Most of the verification will be through automated unit testing.  If
-  appropriate specific modules can be verified by a non-testing based
-  technique.  That can also be documented in this section.}
-
-\subsubsection{Module 1}
-
-\wss{Include a blurb here to explain why the subsections below cover the module.
-  References to the MIS would be good.  You will want tests from a black box
-  perspective and from a white box perspective.  Explain to the reader how the
-  tests were selected.}
-
-\begin{enumerate}
-
-\item{test-id1\\}
-
-Type: \wss{Functional, Dynamic, Manual, Automatic, Static etc. Most will
-  be automatic}
-					
-Initial State: 
-					
-Input: 
-					
-Output: \wss{The expected result for the given inputs}
-
-Test Case Derivation: \wss{Justify the expected value given in the Output field}
-
-How test will be performed: 
-					
-\item{test-id2\\}
-
-Type: \wss{Functional, Dynamic, Manual, Automatic, Static etc. Most will
-  be automatic}
-					
-Initial State: 
-					
-Input: 
-					
-Output: \wss{The expected result for the given inputs}
-
-Test Case Derivation: \wss{Justify the expected value given in the Output field}
-
-How test will be performed: 
-
-\item{...\\}
-    
-\end{enumerate}
-
-\subsubsection{Module 2}
-
-...
-
-\subsection{Tests for Nonfunctional Requirements}
-
-\wss{If there is a module that needs to be independently assessed for
-  performance, those test cases can go here.  In some projects, planning for
-  nonfunctional tests of units will not be that relevant.}
-
-\wss{These tests may involve collecting performance data from previously
-  mentioned functional tests.}
-
-\subsubsection{Module ?}
-		
-\begin{enumerate}
-
-\item{test-id1\\}
-
-Type: \wss{Functional, Dynamic, Manual, Automatic, Static etc. Most will
-  be automatic}
-					
-Initial State: 
-					
-Input/Condition: 
-					
-Output/Result: 
-					
-How test will be performed: 
-					
-\item{test-id2\\}
-
-Type: Functional, Dynamic, Manual, Static etc.
-					
-Initial State: 
-					
-Input: 
-					
-Output: 
-					
-How test will be performed: 
-
-\end{enumerate}
-
-\subsubsection{Module ?}
-
-...
+%\section{Unit Test Description}
+%
+%\wss{Reference your MIS and explain your overall philosophy for test case
+%  selection.}  
+%\wss{This section should not be filled in until after the MIS has
+%  been completed.}
+%
+%\subsection{Unit Testing Scope}
+%
+%\wss{What modules are outside of the scope.  If there are modules that are
+%  developed by someone else, then you would say here if you aren't planning on
+%  verifying them.  There may also be modules that are part of your software, but
+%  have a lower priority for verification than others.  If this is the case,
+%  explain your rationale for the ranking of module importance.}
+%
+%\subsection{Tests for Functional Requirements}
+%
+%\wss{Most of the verification will be through automated unit testing.  If
+%  appropriate specific modules can be verified by a non-testing based
+%  technique.  That can also be documented in this section.}
+%
+%\subsubsection{Module 1}
+%
+%\wss{Include a blurb here to explain why the subsections below cover the module.
+%  References to the MIS would be good.  You will want tests from a black box
+%  perspective and from a white box perspective.  Explain to the reader how the
+%  tests were selected.}
+%
+%\begin{enumerate}
+%
+%\item{test-id1\\}
+%
+%Type: \wss{Functional, Dynamic, Manual, Automatic, Static etc. Most will
+%  be automatic}
+%					
+%Initial State: 
+%					
+%Input: 
+%					
+%Output: \wss{The expected result for the given inputs}
+%
+%Test Case Derivation: \wss{Justify the expected value given in the Output field}
+%
+%How test will be performed: 
+%					
+%\item{test-id2\\}
+%
+%Type: \wss{Functional, Dynamic, Manual, Automatic, Static etc. Most will
+%  be automatic}
+%					
+%Initial State: 
+%					
+%Input: 
+%					
+%Output: \wss{The expected result for the given inputs}
+%
+%Test Case Derivation: \wss{Justify the expected value given in the Output field}
+%
+%How test will be performed: 
+%
+%\item{...\\}
+%    
+%\end{enumerate}
+%
+%\subsubsection{Module 2}
+%
+%...
+%
+%\subsection{Tests for Nonfunctional Requirements}
+%
+%\wss{If there is a module that needs to be independently assessed for
+%  performance, those test cases can go here.  In some projects, planning for
+%  nonfunctional tests of units will not be that relevant.}
+%
+%\wss{These tests may involve collecting performance data from previously
+%  mentioned functional tests.}
+%
+%\subsubsection{Module ?}
+%		
+%\begin{enumerate}
+%
+%\item{test-id1\\}
+%
+%Type: \wss{Functional, Dynamic, Manual, Automatic, Static etc. Most will
+%  be automatic}
+%					
+%Initial State: 
+%					
+%Input/Condition: 
+%					
+%Output/Result: 
+%					
+%How test will be performed: 
+%					
+%\item{test-id2\\}
+%
+%Type: Functional, Dynamic, Manual, Static etc.
+%					
+%Initial State: 
+%					
+%Input: 
+%					
+%Output: 
+%					
+%How test will be performed: 
+%
+%\end{enumerate}
+%
+%\subsubsection{Module ?}
+%
+%...
 
 \subsection{Traceability Between Test Cases and Modules}
 
