@@ -191,9 +191,24 @@ The symbols are listed in alphabetical order.
 \\
 \textit{v} &  $\mathbb{R}$ &  A voxel reports the intensity of a single point on a grey-scale 3 dimensional image.
 \\
-\textit{volume/V} & $\mathbb{R}^{m \times n \times p}$ &  Volume formed by a sequence of slice
+\textit{m} & $\mathbb{N}$ &  The first dimension of the segmentation volume
 \\
-
+\textit{n} & $\mathbb{N}$ &  The second dimension of the segmentation volume
+\\
+\textit{p} & $\mathbb{N}$ &  The third dimension of the segmentation volume
+\\
+\textit{m}$_{i}$ & $\mathbb{N}$ &  The first dimension of the input volume for region of interest
+\\
+\textit{n}$_{i}$& $\mathbb{N}$ &  The second dimension of the input volume for region of interest
+\\
+\textit{p}$_{i}$ & $\mathbb{N}$ &  The third dimension of the input volume for region of interest
+\\
+\textit{m}$_{o}$ & $\mathbb{N}$ &  The first dimension of the output volume for region of interest
+\\
+\textit{n}$_{o}$ & $\mathbb{N}$ &  The second dimension of the output volume for region of interest
+\\
+\textit{p}$_{o}$ & $\mathbb{N}$ & The third dimension of the output volume for region of interest
+\\
 \bottomrule
 \caption{Table of Symbols}
 \label{Table of Symbols}
@@ -238,7 +253,10 @@ definitions.
 
 
 \subsection{Scope of Requirements} 
+The scope of requirements only covers for the segmentation of the organ, more specifically the ascending aorta, the aortic curvature and the descending aorta. The requirements assumes that the source of the data is accurate, and the user can manipulate (read, change dimensions) the data.
 
+\subsection{Characteristics of Intended Reader} \label{sec_IntendedReader}
+The readers of the SRS have taken the university level introduction to computational mathematic course, and is capable of understand the mathmatical notation in the instance model section. The readers might have taken the university level introduction to software engineering course, have learned at least the waterfall software development model, and understands the purpose of the software specification requirement document, and other documents.
 
 \subsection{Organization of Document}
 
@@ -250,7 +268,7 @@ assumptions. The goal statements are refined to the theoretical models, and
 theoretical
 models to the instance models. For readers that would like a more bottom-up
 approach, they can start reading the instance models in Section
-\ref{sssec:im} and trace back to find any additional information they
+\ref{sec_instance} and trace back to find any additional information they
 require. 
 
 \section{General System Description}
@@ -263,7 +281,7 @@ characteristics and lists the system constraints.
 Figure \ref{Fig_SystemContext} shows the system context.  A circle represents an
 external entity outside the software, the user in this case.  A rectangle
 represents the software system itself.  Arrows are used to show the data
-flow between the system and its environment. \\ \\ \\ \\ \\ \\ \\
+flow between the system and its environment. \\
 
 
 \begin{figure}[h!]
@@ -294,6 +312,9 @@ flow between the system and its environment. \\ \\ \\ \\ \\ \\ \\
 \subsection{User Characteristics} \label{SecUserCharacteristics}
 The end user of \progname{} have taking the university level anatomy introduction course, and is capable to point out the center of the descending aorta and the ascending aorta.
 
+\subsection{System Constraints} \label{SecSysConstraints}
+
+
 \section{Specific System Description}
 
 This section first presents the problem description, which gives a high-level
@@ -305,13 +326,13 @@ the instance models.
 
 The main purpose of \progname{} is to semi-automatically segment a 3D aorta geometry from a chest CT scan.
 
-\subsubsection{Organ segmentation}
+\subsubsection{Organ Segmentation}
 The organ segmentation or the organ boundary is useful for orientation and identification of the regions of interests inside the organ during the diagnostic or treatment procedure. The aorta segmentation is important for aortic calcification quantification and to guide the segmentation of other central vessels.
 
 \subsubsection{Coordinate Systems}
 This subsection provides a list of terms that are used in the subsequent
 sections and their meaning, with the purpose of reducing ambiguity and making it
-easier to correctly understand the requirements. \\
+easier to correctly understand the requirements. The sections below \cite{Nejad2017} \\
 
 \noindent While working with medical images, it is necessary to be familiar with the different coordinate systems of the medical literarure and how data (voxels' orientation) is interpreted in different medical and non-medical software. Each coordinate system uses one or more numbers (coordinates) to uniquely determine the position of a point (in the medical context, we refer to each point as a voxel). The purpose of this section is to introduce some of the coordinate systems related to the medical imaging. There are different coordinate systems to represent data. A knowledge of the following coordinate systems is needed to work with the medical images.
 
@@ -359,7 +380,7 @@ LPS stands for Left-Posterior-Superior which indicates the directions that spati
 % RAI Radiological preferred axes.
 \item{RAS Coordinate System:}
 
-The RAS coordiante system is the preferred basis for Neurological applications such as 3dfim+, and 3D Slicer. RAS stands for Right-Anterior-Superior is similar to LPS with the first two axes flipped.
+The RAS coordinate system is the preferred basis for Neurological applications such as 3dfim+, and 3D Slicer. RAS stands for Right-Anterior-Superior is similar to LPS with the first two axes flipped.
 \end{itemize}
 
 \paragraph{Image Coordinate System}
@@ -383,6 +404,7 @@ Extract the three dimensional segmentation of the aorta.
 
 \end{itemize}
 
+\subsection{Solution Characteristics Specification}
 
 \subsubsection{Assumptions} \label{sec_assumpt}
 
@@ -397,9 +419,11 @@ likely change [LC], in which the respective assumption is used.
 \item[A\refstepcounter{assumpnum}\theassumpnum \label{A_aorta_volume}:]
 The 3D image provided by the user must contains a visually distingushable aorta volume [\ddref{segmentation}].
 
-
 \end{itemize}
 
+\subsubsection{Theoretical Models}\label{sec_theoretical}
+
+\subsubsection{General Definitions}\label{sec_gendef}
 
 \subsubsection{Data Definitions}\label{sec_datadef}
 
@@ -500,6 +524,8 @@ Symbol & $ \text{volume} : \mathbb{R}^{m \times n \times p}$\\
 \end{tabular}
 \end{minipage}\\
 
+\subsubsection{Data Types}\label{sec_datatypes}
+
 \subsubsection{Instance Models} \label{sec_instance}    
 
 This section transforms the problem defined in Section~\ref{Sec_pd} into 
@@ -589,6 +615,82 @@ $ V_{in}[i,j,k] \notin \text{structure} \implies V_{out}[i,j,k]=LOW)) $
 \end{tabular}
 \end{minipage}\\
 
+
+\subsubsection{Input Data Constraints} \label{sec_DataConstraints}    
+
+Table~\ref{TblInputVar} shows the data constraints on the input output
+variables.  The column for physical constraints gives the physical limitations
+on the range of values that can be taken by the variable.  The column for
+software constraints restricts the range of inputs to reasonable values.  The
+software constraints will be helpful in the design stage for picking suitable
+algorithms.  The constraints are conservative, to give the user of the model the
+flexibility to experiment with unusual situations.  The column of typical values
+is intended to provide a feel for a common scenario.  The uncertainty column
+provides an estimate of the confidence with which the physical quantities can be
+measured.  This information would be part of the input if one were performing an
+uncertainty quantification exercise.
+
+The specification parameters in Table~\ref{TblInputVar} are listed in
+Table~\ref{TblSpecParams}.
+
+\begin{table}[!h]
+  \caption{Input Variables} \label{TblInputVar}
+  \renewcommand{\arraystretch}{1.2}
+\noindent \begin{longtable*}{l l l l c} 
+  \toprule
+  \textbf{Var} & \textbf{Physical Constraints} & \textbf{Software Constraints} &
+                             \textbf{Typical Value} & \textbf{Uncertainty}\\
+  \midrule 
+  $L$ & $L > 0$ & $L_{\text{min}} \leq L \leq L_{\text{max}}$ & 1.5 \si[per-mode=symbol] {\metre} & 10\%
+  \\
+  \bottomrule
+\end{longtable*}
+\end{table}
+
+\noindent 
+\begin{description}
+\item[(*)] \plt{you might need to add some notes or clarifications}
+\end{description}
+
+\begin{table}[!h]
+\caption{Specification Parameter Values} \label{TblSpecParams}
+\renewcommand{\arraystretch}{1.2}
+\noindent \begin{longtable*}{l l} 
+  \toprule
+  \textbf{Var} & \textbf{Value} \\
+  \midrule 
+  $L_\text{min}$ & 0.1 \si{\metre}\\
+  \bottomrule
+\end{longtable*}
+\end{table}
+
+\subsubsection{Properties of a Correct Solution} \label{sec_CorrectSolution}
+
+\noindent
+A correct solution must exhibit \plt{fill in the details}.  \plt{These
+  properties are in addition to the stated requirements.  There is no need to
+  repeat the requirements here.  These additional properties may not exist for
+  every problem.  Examples include conservation laws (like conservation of
+  energy or mass) and known constraints on outputs, which are usually summarized
+  in tabular form.  A sample table is shown in Table~\ref{TblOutputVar}}
+
+\begin{table}[!h]
+\caption{Output Variables} \label{TblOutputVar}
+\renewcommand{\arraystretch}{1.2}
+\noindent \begin{longtable*}{l l} 
+  \toprule
+  \textbf{Var} & \textbf{Physical Constraints} \\
+  \midrule 
+  $T_W$ & $T_\text{init} \leq T_W \leq T_C$ (by~\aref{A_charge})
+  \\
+  \bottomrule
+\end{longtable*}
+\end{table}
+
+\plt{This section is not for test cases or techniques for verification and
+  validation.  Those topics will be addressed in the Verification and Validation
+  plan.}
+
 \section{Requirements}
 
 This section provides the functional requirements, the business tasks that the
@@ -643,6 +745,14 @@ $Seed$ & Any inputs neede by the segmentation algorithm (\iref{segmentation})\\
 	
 \end{itemize}
 
+\section{Unlikely Changes}    
+
+\noindent \begin{itemize}
+
+\item[LC\refstepcounter{lcnum}\thelcnum\label{LC_seg_algorithm}:] \iref{segmentation} There are various segmentation algorithms, each has a different procedure and inputs.
+	
+\end{itemize}
+
 
 \section{Traceability Matrices and Graphs}
 
@@ -656,41 +766,6 @@ dependencies of instance models, requirements, and data constraints on each
 other. Table~\ref{Table:A_trace} shows the dependencies of theoretical models,
 general definitions, data definitions, instance models, and likely changes on
 the assumptions.
-
-%\afterpage{
-%\begin{landscape}
-%\begin{table}[h!]
-%\centering
-%\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}
-%\hline
-%	& \aref{A_OnlyThermalEnergy}& \aref{A_hcoeff}& \aref{A_mixed}& \aref{A_tpcm}& \aref{A_const_density}& \aref{A_const_C}& \aref{A_Newt_coil}& \aref{A_tcoil}& \aref{A_tlcoil}& \aref{A_Newt_pcm}& \aref{A_charge}& \aref{A_InitTemp}& \aref{A_OpRangePCM}& \aref{A_OpRange}& \aref{A_htank}& \aref{A_int_heat}& \aref{A_vpcm}& \aref{A_PCM_state}& \aref{A_Pressure} \\
-%\hline
-%\tref{T_COE}        & X& & & & & & & & & & & & & & & & & & \\ \hline
-%\tref{T_SHE}        & & & & & & & & & & & & & & & & & & & \\ \hline
-%\tref{T_LHE}        & & & & & & & & & & & & & & & & & & & \\ \hline
-%\dref{NL}           & & X& & & & & & & & & & & & & & & & & \\ \hline
-%\dref{ROCT}         & & & X& X& X& X& & & & & & & & & & & & & \\ \hline
-%\ddref{FluxCoil}    & & & & & & & X& X& X& & & & & & & & & & \\ \hline
-%\ddref{FluxPCM}     & & & X& X& & & & & & X& & & & & & & & & \\ \hline
-%\ddref{D_HOF}       & & & & & & & & & & & & & & & & & & & \\ \hline
-%\ddref{D_MF}        & & & & & & & & & & & & & & & & & & & \\ \hline
-%\iref{ewat}         & & & & & & & & & & & X& X& & X& X& X& & & X \\ \hline
-%\iref{epcm}         & & & & & & & & & & & & X& X& & & X& X& X& \\ \hline
-%\iref{I_HWAT}       & & & & & & & & & & & & & & X& & & & & X \\ \hline
-%\iref{I_HPCM}       & & & & & & & & & & & & & X& & & & & X & \\ \hline
-%\lcref{LC_tpcm}     & & & & X& & & & & & & & & & & & & & & \\ \hline
-%\lcref{LC_tcoil}    & & & & & & & & X& & & & & & & & & & & \\ \hline
-%\lcref{LC_tlcoil}   & & & & & & & & & X& & & & & & & & & & \\ \hline
-%\lcref{LC_charge}   & & & & & & & & & & & X& & & & & & & & \\ \hline
-%\lcref{LC_InitTemp} & & & & & & & & & & & & X& & & & & & & \\ \hline
-%\lcref{LC_htank}    & & & & & & & & & & & & & & & X& & & & \\
-%\hline
-%\end{tabular}
-%\caption{Traceability Matrix Showing the Connections Between Assumptions and Other Items}
-%\label{Table:A_trace}
-%\end{table}
-%\end{landscape}
-%}
 
 ~\\
 \begin{table}[h!]
@@ -739,6 +814,7 @@ changed.
 
 \newpage
 
+\section{Referance}
 \bibliographystyle {plainnat}
 \bibliography {../../refs/References}
 
