@@ -76,6 +76,9 @@
 \newcounter{lcnum} %Likely change number
 \newcommand{\lthelcnum}{LC\thelcnum}
 \newcommand{\lcref}[1]{LC\ref{#1}}
+\newcounter{ucnum} %Unlikely change number
+\newcommand{\ltheucnum}{UC\theucnum}
+\newcommand{\ucref}[1]{UC\ref{#1}}
 
 \usepackage{fullpage}
 
@@ -152,7 +155,9 @@
 \midrule
 2023-04-29 & 1.02 & Added requirements, instance models, data definitions\\
 \midrule
-2023-06-05 & 1.03 & Added Traceability Matrices and Graphs\\
+2023-06-05 & 1.03 & Added Traceability Matrices \\
+\midrule
+2023-06-18 & 1.04 & Include the missing sections, modified the equations of DD, and IM. Added 4 new NFRs.\\
 \bottomrule
 \end{tabularx}
 
@@ -168,7 +173,6 @@ Throughout this document SI (Syst\`{e}me International d'Unit\'{e}s) is employed
 as the unit system.  In addition to the basic units, several derived units are
 used as described below.  For each unit, the symbol is given followed by a
 description of the unit and the SI name.
-~\newline
 
 \subsection{Table of Symbols}
 
@@ -180,40 +184,39 @@ The symbols are listed in alphabetical order.
 \noindent \begin{longtable}{l p{2cm} p{12cm}} \toprule
   \textbf{symbol} & \textbf{type} & \textbf{description}\\
   \midrule
-\\
-\textit{LOW} &  $\mathbb{N}$ &   A low intensity values means 0 on a scale of 0 and 1, or 0 on a scale of 0 to 255.
-\\ 
-\textit{HIGH} &  $\mathbb{N}$ &  A high intensity values means 1 on a scale of 0 and 1, or 255 on a scale of 0 to 255.
-\\ 
-\textit{slice} &  $\mathbb{R}^{m \times n}$ &  A slice is a 2 dimensional image view from the superior to inferior direction.
-\\
-\textit{V} &  $\mathbb{R}^{m \times n \times p}$ &  Volume formed by a sequence of slice
-\\ 
-\textit{Start} & $\mathbb{N}^{3}$ &  A coordinate indicates the indexes of a starting voxel.
-\\
-\textit{v} &  $\mathbb{R}$ &  A voxel reports the intensity of a single point on a grey-scale 3 dimensional image.
-\\
 \textit{m} & $\mathbb{N}$ &  The first dimension of the segmentation volume.
-\\
-\textit{n} & $\mathbb{N}$ &  The second dimension of the segmentation volume.
-\\
-\textit{p} & $\mathbb{N}$ &  The third dimension of the segmentation volume.
 \\
 \textit{m}$_{i}$ & $\mathbb{N}$ &  The first dimension of \textit{V}$_\text{in}$.
 \\
-\textit{n}$_{i}$& $\mathbb{N}$ &  The second dimension of \textit{V}$_\text{in}$.
-\\
-\textit{p}$_{i}$ & $\mathbb{N}$ &  The third dimension of \textit{V}$_\text{in}$.
-\\
 \textit{m}$_{o}$ & $\mathbb{N}$ &  The first dimension of \textit{V}$_\text{out}$.
+\\
+\textit{n} & $\mathbb{N}$ &  The second dimension of the segmentation volume.
+\\
+\textit{n}$_{i}$& $\mathbb{N}$ &  The second dimension of \textit{V}$_\text{in}$.
 \\
 \textit{n}$_{o}$ & $\mathbb{N}$ &  The second dimension of \textit{V}$_\text{out}$.
 \\
+\textit{p} & $\mathbb{N}$ &  The third dimension of the segmentation volume.
+\\
+\textit{p}$_{i}$ & $\mathbb{N}$ &  The third dimension of \textit{V}$_\text{in}$.
+\\
 \textit{p}$_{o}$ & $\mathbb{N}$ & The third dimension of \textit{V}$_\text{out}$.
+\\
+\textit{slice} &  $\mathbb{R}^{m \times n}$ &  A slice is a 2 dimensional image view from the superior to inferior direction.
+\\
+\textit{v} &  $\mathbb{R}$ &  A voxel reports the intensity of a single point on a grey-scale 3 dimensional image.
+\\
+\textit{HIGH} &  $\mathbb{N}$ &  A high intensity values means 1 on a scale of 0 and 1, or 255 on a scale of 0 to 255.
+\\ 
+\textit{LOW} &  $\mathbb{N}$ &   A low intensity values means 0 on a scale of 0 and 1, or 0 on a scale of 0 to 255.
 \\
 \textit{Seed\_a} & $\mathbb{N}^3$ & The initial ascending aorta centre coordinates.
 \\
 \textit{Seed\_d} & $\mathbb{N}^3$ & The initial descending aorta centre coordinates.
+\\
+\textit{Start} & $\mathbb{N}^{3}$ &  A coordinate indicates the indexes of a starting voxel.
+\\
+\textit{V} &  $\mathbb{R}^{m \times n \times p}$ &  Volume formed by a sequence of slice
 \\
 \bottomrule
 \caption{Table of Symbols}
@@ -337,9 +340,9 @@ The main purpose of \progname{} is to semi-automatically segment a 3D aorta geom
 
 Organs are the body's recognizable structures (for example, the heart, lungs, liver, eyes, and stomach) that perform specific functions. Figure \ref{FigHO} below shows all the organs within a human body. The organ segmentation or the organ boundary segmentation is useful for orientation and identification of the regions of interests inside the organ during the diagnostic or treatment procedure. The aorta segmentation is important for aortic calcification quantification and to guide the segmentation of other central vessels. \cite{TissuesAndOrgans}
 
-\begin{figure}[hbpt!]
+\begin{figure}[H]
 \centering
-\includegraphics[width=100mm]{humanOrgans}
+\includegraphics[width=95mm]{humanOrgans}
 \caption{Human organs ~\cite{TissuesAndOrgans}}
 \label{FigHO}
 \end{figure}
@@ -371,15 +374,10 @@ Anatomical coordinate system, also known as patient coordinate system, is a righ
 \end{itemize}
 Figure \ref{ACS} shows this coordinate system.
 
-\begin{figure}[htbp!] 
+\begin{figure}[H] 
 \centering
-\subfloat{
-\includegraphics[width=80mm]{anatomicalCoordinateSystem1.png}
-}
-
-\subfloat{
-\includegraphics[width=60mm]{anatomicalCoordinateSystem2.png}
-}
+\subfloat[\centering Anatomical Coordinate System]{{\includegraphics[width=9cm]{anatomicalCoordinateSystem1.png} }}%
+\subfloat[\centering Space and Axes]{{\includegraphics[width=6cm]{anatomicalCoordinateSystem2.png} }}%
 \caption{Anatomical Coordinate System Space and Axes~\cite{slicerWCS}} %without this we cannot have label
 \label{ACS}
 \end{figure}
@@ -388,7 +386,7 @@ Figure \ref{ACS} shows this coordinate system.
 \begin{itemize}
 \item{LPS Coordinate System:}
 
-The LPS coordinate system is used in DICOM images and by the ITK toolkit. In this system, voxels are ordered from left to right in a row, rows are ordered from posterior to anterior, and slices are stored from inferior to superior.
+The LPS coordinate system is used in DICOM images. In this system, voxels are ordered from left to right in a row, rows are ordered from posterior to anterior, and slices are stored from inferior to superior.
 \indent
 LPS stands for Left-Posterior-Superior which indicates the directions that spatial axes are increasing.
 % RAI Radiological preferred axes.
@@ -398,9 +396,10 @@ The RAS coordinate system is the preferred basis for Neurological applications s
 \end{itemize}
 
 \paragraph{Image Coordinate System}
+ 
 To specify locations in an image we need to know to which coordinate system it is referenced. Different software may use different orders as their index convention.
 
-Each of the coordinate systems mentioned above are used by different systems.
+\noindent Each of the coordinate systems mentioned above are used by different systems.
 
 \subsubsection{Physical System Description} \label{sec_phySystDescrip}
 We do not study the physical system for the images or how the data is actually generated.
@@ -429,12 +428,11 @@ system. The numbers given in the square brackets refer to the theoretical model
 likely change [LC], in which the respective assumption is used.
 
 \begin{itemize}
-
 \item[A\refstepcounter{assumpnum}\theassumpnum \label{A_aorta_volume}:]
 The 3D image provided by the user must contains a visually distingushable aorta volume [\iref{roi}].
 
 \item[A\refstepcounter{assumpnum}\theassumpnum \label{A_roi}:]
-User should select a valid region of interest [\iref{segmentation}]
+User should select a valid region of interest [\iref{segmentation}].
 
 \end{itemize}
 
@@ -445,12 +443,8 @@ There are no theoretical models used in this document.
 There are no general definition used in this document.
 
 \subsubsection{Data Definitions}\label{sec_datadef}
-
 This section collects and defines all the data needed to build the instance
-models. The dimension of each quantity is also given. 
-
-~\newline
-
+models.
 
 \noindent
 \begin{minipage}{\textwidth}
@@ -479,7 +473,7 @@ Symbol & $ \textit{v} : \mathbb{R}$\\
   Ref.\ By & \ddref{slice}\\
   \hline
 \end{tabular}
-\end{minipage}\\ \\
+\end{minipage}\\
 
 % -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -502,7 +496,7 @@ Symbol & $ \textit{slice} : \mathbb{R}^{m \times n}$\\
   Equation& - \\
   \hline
   Description & 
-                A visual representation of something that is represented using only two spatial dimensions with a sequence of arrays where a voxel (\ddref{v}) represents the color or intensity. Each move in the transverse plane (Figure \ref{ACS}) is considered as one slice
+                A visual representation that is using only two spatial dimensions with a sequence of arrays where a voxel (\ddref{v}) represents the color or intensity. Each move in the transverse plane (Figure \ref{ACS}) is considered as one slice
   \\
   \hline
   Sources & \cite{Nejad2017} \\
@@ -510,7 +504,7 @@ Symbol & $ \textit{slice} : \mathbb{R}^{m \times n}$\\
   Ref.\ By & \ddref{volume}\\
   \hline
 \end{tabular}
-\end{minipage}\\ \\
+\end{minipage}\\
 
 % -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -532,11 +526,10 @@ Symbol & $ \textit{V} : \mathbb{R}^{m \times n \times p}$\\
   \hline
   Equation& - \\
   \hline
-  Description & 
-                A three dimensional image is a sequence of some images/slices (\ddref{slice}).
+  Description & A three dimensional image is a sequence of some images/slices (\ddref{slice}).
   \\
   \hline
-  Sources & \\
+  Sources & - \\
   \hline
   Ref.\ By & \iref{roi}\\
   \hline
@@ -620,12 +613,10 @@ $ \forall (i,j,k : \mathbb{N} $         $|$ \\
 $ i \in [0..m-1] \wedge $ 
 $ j \in [0..n-1] \wedge $
 $ k \in[0..p-1] :$\\
-$ (((i-Seed\_a_k[0])^2 + (j-Seed\_a_k[1])^2  \leq radius) \text{ } \lor $\\
-$ ((i-Seed\_d_k[0])^2 + (j-Seed\_d_k[1]^2 \leq radius)) $ \\
-$ \implies V_\text{in}[i,j,k] \in \text{structure} )$ \\
 $ (V_\text{in}[i,j,k] \in \text{structure} \implies V_\text{out}[i,j,k]=HIGH\text{ }|$\\
-$ V_\text{in}[i,j,k] \notin \text{structure} \implies V_\text{out}[i,j,k]=LOW)) $
+$ V_\text{in}[i,j,k] \notin \text{structure} \implies V_\text{out}[i,j,k]=LOW)) $ \\
 \end{center}
+The inputs Seed\_a and Seed\_d are used to determine whether a given element of $V_\text{in}$ is in structure or not.
 \\
   \hline
   Description & The process of extract an anotomical structure from the original 3D volume. The extracted anotomical structure is represented with high intensity pixel value. The rest of the image should have a lower intensity pixel value. The segmentation needs the region of interset from \iref{roi} to process less noise data. A seed is what the algorithm needed as the inputs to perform segmentation, the type of a seed is different among different algorithm. The seeds in this section are the centre coordinate of the descending aorta and the ascending aorta. The yellow dots shown in Figure \ref{AortaSeeds} are the example of the seed.\\
@@ -639,68 +630,17 @@ $ V_\text{in}[i,j,k] \notin \text{structure} \implies V_\text{out}[i,j,k]=LOW)) 
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=110mm]{Aorta_seeds}
+\includegraphics[width=120mm]{Aorta_seeds}
 \caption{Aorta Seeds} \label{AortaSeeds} 
 \end{figure} 
 
 \subsubsection{Input Data Constraints} \label{sec_DataConstraints}    
 The only software constraint is the input volume data. It must be an acceptable file type to the system processing the data. For example, using ITK-Snap software to perform organ segmentation, the input data must be of VTK file.
 
-%\begin{table}[!h]
-%  \caption{Input Variables} \label{TblInputVar}
-%  \renewcommand{\arraystretch}{1.2}
-%\noindent \begin{longtable*}{l l l l c} 
-%  \toprule
-%  \textbf{Var} & \textbf{Physical Constraints} & \textbf{Software Constraints} &
-%                             \textbf{Typical Value} & \textbf{Uncertainty}\\
-%  \midrule 
-%  $L$ & $L > 0$ & $L_{\text{min}} \leq L \leq L_{\text{max}}$ & 1.5 \si[per-mode=symbol] {\metre} & 10\%
-%  \\
-%  \bottomrule
-%\end{longtable*}
-%\end{table}
-%
-%\noindent 
-%\begin{description}
-%\item[(*)] \plt{you might need to add some notes or clarifications}
-%\end{description}
-%
-%\begin{table}[!h]
-%\caption{Specification Parameter Values} \label{TblSpecParams}
-%\renewcommand{\arraystretch}{1.2}
-%\noindent \begin{longtable*}{l l} 
-%  \toprule
-%  \textbf{Var} & \textbf{Value} \\
-%  \midrule 
-%  $L_\text{min}$ & 0.1 \si{\metre}\\
-%  \bottomrule
-%\end{longtable*}
-%\end{table}
-
 \subsubsection{Properties of a Correct Solution} \label{sec_CorrectSolution}
 
 \noindent
 A correct solution cannot be measured, but it can be confirmed by visually comparing the intersection of the extracted anotomical structure and the original volume.
-
-%\plt{fill in the details}.  \plt{These
-%  properties are in addition to the stated requirements.  There is no need to
-%  repeat the requirements here.  These additional properties may not exist for
-%  every problem.  Examples include conservation laws (like conservation of
-%  energy or mass) and known constraints on outputs, which are usually summarized
-%  in tabular form.  A sample table is shown in Table~\ref{TblOutputVar}}
-
-%\begin{table}[!h]
-%\caption{Output Variables} \label{TblOutputVar}
-%\renewcommand{\arraystretch}{1.2}
-%\noindent \begin{longtable*}{l l} 
-%  \toprule
-%  \textbf{Var} & \textbf{Physical Constraints} \\
-%  \midrule 
-%  $T_W$ & $T_\text{init} \leq T_W \leq T_C$ (by~\aref{A_charge})
-%  \\
-%  \bottomrule
-%\end{longtable*}
-%\end{table}
 
 \section{Requirements}
 
@@ -749,15 +689,14 @@ The user interface and documentation should allow a user that meets the user cha
 \item[NFR\refstepcounter{nfrnum}\thenfrnum \label{NFR_Accuracy}:] \textbf{Accuracy}
 For a given image the segmentation found by \progname{} should match that found by an expert using ITK-Snap. Whether to two segmentations match is something that would be judged by a medical imaging expert.
 
-\item[NFR\refstepcounter{nfrnum}\thenfrnum \label{NFR_Accuracy}:] \textbf{Consistency}
+\item[NFR\refstepcounter{nfrnum}\thenfrnum \label{NFR_Consistency}:] \textbf{Consistency}
 The coordinate system may be modified through the calculations, but any transformations will not alter the meaning of the data.
 
 %\item[NFR\refstepcounter{nfrnum}\thenfrnum \label{NFR_visualize}:] \textbf{Usability}
 %\progname{} can visualize the volume with 3D rendering.
 
 
-\item Other NFRs that might be discussed include verifiability,
-  understandability and reusability.
+\item Other NFRs that might be discussed include verifiability, and reusability.
 
 \end{itemize}
 
@@ -773,7 +712,7 @@ The coordinate system may be modified through the calculations, but any transfor
 
 \noindent \begin{itemize}
 
-\item[LC\refstepcounter{lcnum}\thelcnum\label{LC_seg_algorithm}:] \iref{segmentation} There are various segmentation algorithms, each has a different procedure and inputs.
+\item[UC\refstepcounter{ucnum}\theucnum\label{UC_roi}:] \iref{roi} The method to retrieve a region of interest from a volume is fixed.
 	
 \end{itemize}
 
@@ -789,10 +728,16 @@ instance models with each other. Table~\ref{Table:R_trace} shows the
 dependencies of instance models, requirements, and data constraints on each
 other. Table~\ref{Table:A_trace} shows the dependencies of theoretical models,
 general definitions, data definitions, instance models, and likely changes on
-the assumptions.
+the assumptions.\\
 
-~\\
-\begin{table}[h!]
+\noindent The purpose of the traceability graphs is also to provide easy references on
+what has to be additionally modified if a certain component is changed.  The
+arrows in the graphs represent dependencies. The component at the tail of an
+arrow is depended on by the component at the head of that arrow. Therefore, if a
+component is changed, the components that it points to should also be
+changed.
+
+\begin{table}[H]
 \centering
 \begin{tabular}{|c|c|c|c|c|c|}
 \hline        
@@ -809,32 +754,45 @@ the assumptions.
 \label{Table:trace}
 \end{table}
 
-\begin{table}[h!]
+\begin{table}[H]
 \centering
-\begin{tabular}{|c|c|c|c|c|c|c|c|c|}
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|}
 \hline
-	& \iref{roi}& \iref{segmentation}& \rref{R_Inputs}& \rref{R_roi}& \rref{R_output} & \rref{R_visualize} & \nfrref{NFR_GUI} & \nfrref{NFR_visualize} \\
+	& \iref{roi}& \iref{segmentation}& \rref{R_Inputs}& \rref{R_roi}& \rref{R_output} & \rref{R_visualize} & \nfrref{NFR_GUI} & \nfrref{NFR_Safety} & \nfrref{NFR_Learnability} & \nfrref{NFR_Accuracy} & \nfrref{NFR_Consistency} \\
 \hline
-\iref{roi}            & & & & X & & &  & \\ \hline
-\iref{segmentation}  & & & & & X & &  & \\ \hline
-\rref{R_Inputs}       & & & & & & & & \\ \hline
-\rref{R_roi}   & X & & & & & & & \\ \hline
-\rref{R_output}  & & X & & & & & & \\ \hline
-\rref{R_visualize}  & & & & & & & & \\ \hline
-\nfrref{NFR_GUI} & & & & & & & & \\ \hline
-\nfrref{NFR_visualize}   & & & & & & & & \\ 
-\hline
+\iref{roi}            & & & & X & & &  & & & &\\ \hline
+\iref{segmentation}  & & & & & X & &  & & & &\\ \hline
+\rref{R_Inputs}       & & X & & & & & & & & &\\ \hline
+\rref{R_roi}   & X & & & & & & & & & &\\ \hline
+\rref{R_output}  & & X & & & & & & & & &\\ \hline
+\rref{R_visualize}  & & & & & & & X & & & &\\ \hline
+\nfrref{NFR_GUI} & & & X & X & X & X & & & X & &\\ \hline
+\nfrref{NFR_Safety}   & & X &  &  &  &  & & & & &\\ \hline
+\nfrref{NFR_Learnability} & & & & X & X & X & X & & & & \\ \hline
+\nfrref{NFR_Accuracy} & & X & & & & & & & & &\\ \hline
+\nfrref{NFR_Consistency} & & X & & & & & & & & &\\ \hline
 \end{tabular}
 \caption{Traceability Matrix Showing the Connections Between Requirements and Instance Models}
 \label{Table:R_trace}
 \end{table}
 
-The purpose of the traceability graphs is also to provide easy references on
-what has to be additionally modified if a certain component is changed.  The
-arrows in the graphs represent dependencies. The component at the tail of an
-arrow is depended on by the component at the head of that arrow. Therefore, if a
-component is changed, the components that it points to should also be
-changed.
+\begin{table}[H]
+\centering
+\begin{tabular}{|c|c|c|}
+\hline
+	& \aref{A_aorta_volume}& \aref{A_roi} \\
+\hline
+\ddref{v}                     & & \\ \hline
+\ddref{slice}                 & & \\ \hline
+\ddref{volume}             & & \\ \hline
+\iref{roi}                       &X & \\ \hline
+\iref{segmentation}        & &X \\ \hline
+\lcref{LC_seg_algorithm} &X &X\\ \hline
+\ucref{UC_roi}               & & \\ \hline
+\end{tabular}
+\caption{Traceability Matrix Showing the Connections Between Assumptions and Other Items}
+\label{Table:A_trace}
+\end{table}
 
 \newpage
 
