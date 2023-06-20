@@ -204,7 +204,7 @@ The symbols are listed in alphabetical order.
 \\
 \textit{slice} &  $\mathbb{R}^{m \times n}$ &  A slice is a 2 dimensional image view from the superior to inferior direction.
 \\
-\textit{v} &  $\mathbb{R}$ &  A voxel reports the intensity of a single point on a grey-scale 3 dimensional image.
+\textit{v} &  $\mathbb{R}$ &  A voxel reports the intensity of a single point on a grey-scale three-dimensional images.
 \\
 \textit{HIGH} &  $\mathbb{N}$ &  A high intensity values means 1 on a scale of 0 and 1, or 255 on a scale of 0 to 255.
 \\ 
@@ -249,10 +249,9 @@ The symbols are listed in alphabetical order.
 \section{Introduction} \label{intro}
 
 This document provides an overview of the Software Requirements Specification
-(SRS) for the \progname{}. \progname{}
-provides a semi-automatically aorta segmentation method, a highly customizable aorta segmentation module,  and an interactive user interface to apply the segmentation workflow. \\
+(SRS) for the \progname{}. \progname{} provides a semi-automatically aorta segmentation method, a highly customizable aorta segmentation module,  and an interactive user interface to apply the segmentation workflow. \\
 
-\noindent One of the existing methods involves the use ITK-Snap software and its segmentation module. First, the user needs to convert the DICOM data files (or any other file type) to VTK file. Then, the user can load the VTK file to ITK-Snap, and use its segmentation module to perform aorta segmentation. This segmnetation method let user initiate several voxels within the aorta volume, and expand with a user's given size in each iteration. After the aorta volume has been filled by the "bubble", the user needs to cut the parts that are not within the aorta.
+\noindent One of the existing methods involves the use ITK-Snap software and its segmentation module. First, the user needs to convert the DICOM data files (or any other file type) to VTK file. Then, the user can load the VTK file to ITK-Snap, and use its segmentation module to perform aorta segmentation. This segmentation method let user initiate several voxels within the aorta volume, and expand with a user's given size in each iteration. After the aorta volume has been filled by the "bubble", the user needs to cut the parts that are not within the aorta.
 
 \subsection{Purpose of Document}
 The main purpose of this document is to provide sufficient information to
@@ -263,10 +262,10 @@ definitions.
 
 
 \subsection{Scope of Requirements} 
-The scope of requirements only covers for the segmentation of the organ, more specifically the ascending aorta, the aortic curvature and the descending aorta. The requirements assumes that the source of the data is accurate, and the user can manipulate (read, change dimensions) the data.
+The scope of requirements only covers for the segmentation of the organ, more specifically the ascending aorta, the aortic curvature and the descending aorta. The requirements assume that the source of the data is accurate, and the user can manipulate (read, change dimensions) the data.
 
 \subsection{Characteristics of Intended Reader} \label{sec_IntendedReader}
-The readers of the SRS should have taken the university level introduction to computational mathematic course, and be capable of understand the mathmatical notation in the instance model section. The readers might have taken the university level introduction to software engineering course, have learned at least the waterfall software development model, and understands the purpose of the software specification requirement document, and other documents.
+The readers of the SRS should have taken the university level introduction to computational mathematic course, and be capable of understand the mathematical notation in the instance model section. The readers might have taken the university level introduction to software engineering course, have learned at least the waterfall software development model, and understands the purpose of the software specification requirement document, and other documents.
 
 \subsection{Organization of Document}
 
@@ -352,7 +351,7 @@ This subsection provides a list of terms that are used in the subsequent
 sections and their meaning, with the purpose of reducing ambiguity and making it
 easier to correctly understand the requirements. \cite{Nejad2017} \\
 
-\noindent While working with medical images, it is necessary to be familiar with the different coordinate systems of the medical literarure and how data (voxels' orientation) is interpreted in different medical and non-medical software. Each coordinate system uses one or more numbers (coordinates) to uniquely determine the position of a point (in the medical context, we refer to each point as a voxel). The purpose of this section is to introduce some of the coordinate systems related to the medical imaging. There are different coordinate systems to represent data. A knowledge of the following coordinate systems is needed to work with the medical images.
+\noindent While working with medical images, it is necessary to be familiar with the different coordinate systems of the medical literature and how data (voxels' orientation) is interpreted in different medical and nonmedical software. Each coordinate system uses one or more numbers (coordinates) to uniquely determine the position of a point (in the medical context, we refer to each point as a voxel). The purpose of this section is to introduce some coordinate systems related to the medical imaging. There are different coordinate systems to represent data. A knowledge of the following coordinate systems is needed to work with the medical images.
 
 \paragraph{Cartesian Coordinate System}
 A Cartesian coordinate system is a coordinate system that specifies each point uniquely in a 2D plane by a pair of numerical coordinates or in a 3D space by three numerical coordinates. We assume a right-hand Cartesian coordinate system throughout this document.
@@ -408,12 +407,12 @@ We do not study the physical system for the images or how the data is actually g
 
 \noindent Given the DICOM image that includes patient's chest,
 the descending aorta center voxel coordinate,
-and the ascending aorta center voxel coordinate, the goal statements is:
+and the ascending aorta center voxel coordinate, the goal statements are:
 
 \begin{itemize}
 
 \item[GS\refstepcounter{goalnum}\thegoalnum \label{Gsegment}:] 
-Extract the three dimensional segmentation of the aorta.
+Extract the three-dimensional segmentation of the aorta.
 
 \end{itemize}
 
@@ -429,7 +428,7 @@ likely change [LC], in which the respective assumption is used.
 
 \begin{itemize}
 \item[A\refstepcounter{assumpnum}\theassumpnum \label{A_aorta_volume}:]
-The 3D image provided by the user must contains a visually distingushable aorta volume [\iref{roi}].
+The 3D image provided by the user must contain a visually distingushable aorta volume [\iref{roi}].
 
 \item[A\refstepcounter{assumpnum}\theassumpnum \label{A_roi}:]
 User should select a valid region of interest [\iref{segmentation}].
@@ -526,7 +525,7 @@ Symbol & $ \textit{V} : \mathbb{R}^{m \times n \times p}$\\
   \hline
   Equation& - \\
   \hline
-  Description & A three dimensional image is a sequence of some images/slices (\ddref{slice}).
+  Description & A three-dimensional image is a sequence of some images/slices (\ddref{slice}).
   \\
   \hline
   Sources & - \\
@@ -619,7 +618,7 @@ $ V_\text{in}[i,j,k] \notin \text{structure} \implies V_\text{out}[i,j,k]=LOW)) 
 The inputs Seed\_a and Seed\_d are used to determine whether a given element of $V_\text{in}$ is in structure or not.
 \\
   \hline
-  Description & The process of extract an anotomical structure from the original 3D volume. The extracted anotomical structure is represented with high intensity pixel value. The rest of the image should have a lower intensity pixel value. The segmentation needs the region of interset from \iref{roi} to process less noise data. A seed is what the algorithm needed as the inputs to perform segmentation, the type of a seed is different among different algorithm. The seeds in this section are the centre coordinate of the descending aorta and the ascending aorta. The yellow dots shown in Figure \ref{AortaSeeds} are the example of the seed.\\
+  Description & The process of extract an anotomical structure from the original 3D volume. The extracted anotomical structure is represented with high intensity pixel value. The rest of the image should have a lower intensity pixel value. The segmentation needs the region of interset from \iref{roi} to process less noise data. A seed is what the algorithm needed as the inputs to perform segmentation, the type of seed is different among different algorithm. The seeds in this section are the centre coordinate of the descending aorta and the ascending aorta. The yellow dots shown in Figure \ref{AortaSeeds} are the example of the seed.\\
   \hline
   Sources& \\
   \hline
@@ -665,7 +664,7 @@ $Seed\_d$ & The seed of descending aorta centre coordinate (\iref{segmentation})
          \bottomrule
 \end{longtable*}
 
-\item[R\refstepcounter{reqnum}\thereqnum \label{R_roi}:] Use the volume in \rref{R_Inputs} to create a second volume, the region of interest (\iref{roi}) that contains all of the aorta.
+\item[R\refstepcounter{reqnum}\thereqnum \label{R_roi}:] Use the volume in \rref{R_Inputs} to create a second volume, the region of interest (\iref{roi}) that contains all voxels of the aorta.
 
 \item[R\refstepcounter{reqnum}\thereqnum \label{R_output}:] Perform segmentation (\iref{segmentation}) on the volume created in \rref{R_roi}.
 
