@@ -242,7 +242,7 @@ actually be implemented.
 \item [\refstepcounter{mnum} \mthemnum \label{mAortaSeg}:] Aorta Segmentation Module
 %\item [\refstepcounter{mnum} \mthemnum \label{mAS}:] Axial Segmentation Module
 \item [\refstepcounter{mnum} \mthemnum \label{mIP}:] Image Processing Module
-\item [\refstepcounter{mnum} \mthemnum \label{mNDAP}:] Multi-Dimensional Array Processing Module
+\item [\refstepcounter{mnum} \mthemnum \label{mNDAP}:] Multidimensional Array Processing Module
 \item ...
 \end{description}
 
@@ -650,50 +650,6 @@ class AortaGeomReconDisplayModuleWidget(ScriptedLoadableModuleWidget, VTKObserva
 \caption{Trace Between Modules and Code}
 \label{TblTC}
 \end{longtable}
-
-%\begin{longtblr}[
-%  caption = {Trace Between Modules and Code},
-%  label = {TblTC},
-%]{
-%  colspec = {|XX[10]|},
-%  rowhead = 1,
-%  hlines,
-%  row{even} = {gray9},
-%  row{1} = {olive9},
-%} 
-%\textbf{Modules} & \textbf{Code}\\
-%\mref{mAortaSeg} Aorta Segmentation Module & \href{https://github.com/smiths/aorta/blob/main/src/SlicerExtension/AortaGeometryReconstructor/AortaGeomReconDisplayModule/AortaGeomReconDisplayModuleLib/AortaSegmenter.py}{AortaSegmenter class}\\
-%\mref{mInput} Input Format Module & \begin{python}
-%# AortaGeomReconDisplayModule.py
-%# AortaGeomReconDisplayModuleWidget.onApplyButton
-%stop_limit = self._parameterNode.GetParameter("stop_limit")
-%threshold_coef = self._parameterNode.GetParameter("threshold_coef")
-%rms_error = self._parameterNode.GetParameter("rms_error")
-%no_ite = self._parameterNode.GetParameter("no_ite")
-%curv_scaling = self._parameterNode.GetParameter("curv_scaling")
-%prop_scaling = self._parameterNode.GetParameter("prop_scaling")
-%kernel_size = self._parameterNode.GetParameter("kernel_size")
-%
-%# AortaGeomReconDisplayModuleLogic.process
-%des_seed = des_seed.split(",")
-%asc_seed = asc_seed.split(",")
-%asc_seed = [int(i) for i in asc_seed]
-%des_seed = [int(i) for i in des_seed]
-%\end{python}\\
-%foo  & bar \\
-%foo  & bar \\
-%foo  & bar \\
-%foo  & bar \\
-%foo  & bar \\
-%foo  & bar \\
-%foo  & bar \\
-%foo  & bar \\
-%foo  & bar \\
-%foo  & bar \\
-%foo  & bar \\
-%foo  & bar \\
-%foo  & bar \\
-%\end{longtblr}
 
 \newpage
 
