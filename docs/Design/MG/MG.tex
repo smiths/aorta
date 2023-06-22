@@ -199,7 +199,7 @@ change.
 \item[\refstepcounter{acnum} \actheacnum \label{acInput}:] The format of the initial input data.
 \item[\refstepcounter{acnum} \actheacnum \label{acAlgo}:] The algorithm to segment the aorta.
 \item[\refstepcounter{acnum} \actheacnum \label{acInputParams}:] The data structures to store the input parameters required to execute the algorithm.
-\item[\refstepcounter{acnum} \actheacnum \label{acInterface}:] The methods to create an user interface.
+\item[\refstepcounter{acnum} \actheacnum \label{acInterface}:] The methods to create a user interface.
 \item[\refstepcounter{acnum} \actheacnum \label{acGetROI}:] The methods to retrieve a region of interest.
 \item[\refstepcounter{acnum} \actheacnum \label{acVisualize}:] The methods to visualize a volume.
 \item[\refstepcounter{acnum} \actheacnum \label{acControl}:] How the overall control of the calculations is orchestrated.
@@ -366,7 +366,7 @@ are isolated to their own access programs.
 
 \subsubsection{Crop Module (\mref{mROI})}
 \begin{description}
-\item[Secrets:] The parameters, libraries to retrieve a region of interest from a volume.s
+\item[Secrets:] The parameters, libraries to retrieve a region of interest from a volume.
 \item[Services:] Import the necessary libraries, store the input parameter, and coordinate the uses of these data and libraries to retrieve a region of interest.
 \item[Implemented By:] 3D Slicer
 % \item[Use case:] This module should always have a \emph{begin\_segmentation} API available for the developer to begin the aorta segmentation.
@@ -411,8 +411,8 @@ are isolated to their own access programs.
 
 \subsubsection{Multi-Dimensional Array Processing Module(\mref{mNDAP})}
 \begin{description}
-\item[Secrets:] The libraries and the APIs to perform element-wise mathematic operations on multi-dimensional array.
-\item[Services:] Provides useful APIs such as calculating the max, min, average of multi-dimensional array. NumPy.where function provides the search in the multi-dimensional array functionality which will return any element's indexes if it satisfies the given condition.
+\item[Secrets:] The libraries and the APIs to perform element-wise mathematic operations on multidimensional array.
+\item[Services:] Provides useful APIs such as calculating the max, min, average of multidimensional array. NumPy.where function provides the search in the multidimensional array functionality which will return any element's indexes if it satisfies the given condition.
 \item[Implemented By:] NumPy
 \end{description}
 
