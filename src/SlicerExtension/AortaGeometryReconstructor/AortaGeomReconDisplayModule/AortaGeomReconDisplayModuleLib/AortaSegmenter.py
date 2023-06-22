@@ -71,7 +71,6 @@ class AortaSegmenter():
         self._segment_filter.SetCurvatureScaling(curvature_scaling)
         self._segment_filter.SetPropagationScaling(propagation_scaling)
         self._segment_filter.ReverseExpansionDirectionOn()
-        self._skipped_slices = []
         self._k = 2
 
         # Initializing processing image
