@@ -219,7 +219,6 @@ The symbols are listed in alphabetical order.
 \textit{V} &  $\mathbb{R}^{m \times n \times p}$ &  Volume formed by a sequence of slice
 \\
 \bottomrule
-\caption{Table of Symbols}
 \label{Table of Symbols}
 \end{longtable}
 
@@ -251,7 +250,7 @@ The symbols are listed in alphabetical order.
 This document provides an overview of the Software Requirements Specification
 (SRS) for the \progname{}. \progname{} provides a semi-automatically aorta segmentation method, a highly customizable aorta segmentation module,  and an interactive user interface to apply the segmentation workflow. \\
 
-\noindent One of the existing methods involves the use ITK-Snap software and its segmentation module. First, the user needs to convert the DICOM data files (or any other file type) to VTK file. Then, the user can load the VTK file to ITK-Snap, and use its segmentation module to perform aorta segmentation. This segmentation method let user initiate several voxels within the aorta volume, and expand with a user's given size in each iteration. After the aorta volume has been filled by the "bubble", the user needs to cut the parts that are not within the aorta.
+\noindent One of the existing methods involves the use ITK-Snap software and its segmentation module. First, the user needs to convert the DICOM data files (or any other file type) to VTK file. Then, the user can load the VTK file to ITK-Snap, and use its segmentation module to perform aorta segmentation. This segmentation method lets user initiate several voxels within the aorta volume and expand with a user's given size in each iteration. After the aorta volume has been filled by the ``bubble", the user needs to cut the parts that are not within the aorta.
 
 \subsection{Purpose of Document}
 The main purpose of this document is to provide sufficient information to
@@ -293,7 +292,7 @@ represents the software system itself.  Arrows are used to show the data
 flow between the system and its environment. \\
 
 
-\begin{figure}[h!]
+\begin{figure}[H]
 \begin{center}
  \includegraphics[width=1\textwidth]{AortaSystemContext.png}
 \caption{System Context}
@@ -322,7 +321,7 @@ flow between the system and its environment. \\
 The end user of \progname{} should have taken the university level anatomy introduction course, and be capable of finding the center of the descending aorta and the ascending aorta.
 
 \subsection{System Constraints} \label{SecSysConstraints}
-
+There are no system constraints of \progname{}.
 
 \section{Specific System Description}
 
@@ -432,6 +431,9 @@ The 3D image provided by the user must contain a visually distingushable aorta v
 
 \item[A\refstepcounter{assumpnum}\theassumpnum \label{A_roi}:]
 User should select a valid region of interest [\iref{segmentation}].
+
+\item[A\refstepcounter{assumpnum}\theassumpnum \label{A_singular_volume}:]
+User should input a singular volume (3 dimensional image) even the data format supports the 4th dimension (time) [\iref{roi}].
 
 \end{itemize}
 
@@ -615,7 +617,7 @@ $ k \in[0..p-1] :$\\
 $ (V_\text{in}[i,j,k] \in \text{structure} \implies V_\text{out}[i,j,k]=HIGH\text{ }|$\\
 $ V_\text{in}[i,j,k] \notin \text{structure} \implies V_\text{out}[i,j,k]=LOW)) $ \\
 \end{center}
-The inputs Seed\_a and Seed\_d are used to determine whether a given element of $V_\text{in}$ is in structure or not.
+The inputs $Seed\_a$ and $Seed\_d$ are used to determine whether a given element of $V_\text{in}$ is in structure or not.
 \\
   \hline
   Description & The process of extract an anotomical structure from the original 3D volume. The extracted anotomical structure is represented with high intensity pixel value. The rest of the image should have a lower intensity pixel value. The segmentation needs the region of interset from \iref{roi} to process less noise data. A seed is what the algorithm needed as the inputs to perform segmentation, the type of seed is different among different algorithm. The seeds in this section are the centre coordinate of the descending aorta and the ascending aorta. The yellow dots shown in Figure \ref{AortaSeeds} are the example of the seed.\\
@@ -677,7 +679,7 @@ $Seed\_d$ & The seed of descending aorta centre coordinate (\iref{segmentation})
 \noindent \begin{itemize}
 
 \item[NFR\refstepcounter{nfrnum}\thenfrnum \label{NFR_GUI}:] \textbf{Usability}
-\progname{} provides a user-friendly interface to import any DICOM files, and input the required parameters.
+The usability will be judged by a medical imaging expert. \progname{} allows a user that meets the user characteristics (Section \ref{SecUserCharacteristics})  to import any DICOM files, input the required parameters, and begin the segmentation with ease. The number of steps should be at least 30\% less of the number of steps it takes by using ITK-Snap  (bubble method mentioned in Section \ref{intro}).
 
 \item[NFR\refstepcounter{nfrnum}\thenfrnum \label{NFR_Safety}:] \textbf{Safety}
 For a valid image, the \progname{} provides a correct solution, or no answer.
@@ -694,10 +696,10 @@ The coordinate system may be modified through the calculations, but any transfor
 %\item[NFR\refstepcounter{nfrnum}\thenfrnum \label{NFR_visualize}:] \textbf{Usability}
 %\progname{} can visualize the volume with 3D rendering.
 
-
-\item Other NFRs that might be discussed include verifiability, and reusability.
-
 \end{itemize}
+
+
+\noindent Other NFRs that might be discussed include verifiability, and reusability.
 
 \section{Likely Changes}    
 
@@ -777,17 +779,17 @@ changed.
 
 \begin{table}[H]
 \centering
-\begin{tabular}{|c|c|c|}
+\begin{tabular}{|c|c|c|c|}
 \hline
-	& \aref{A_aorta_volume}& \aref{A_roi} \\
+	& \aref{A_aorta_volume}& \aref{A_roi} & \aref{A_singular_volume}\\
 \hline
-\ddref{v}                     & & \\ \hline
-\ddref{slice}                 & & \\ \hline
-\ddref{volume}             & & \\ \hline
-\iref{roi}                       &X & \\ \hline
-\iref{segmentation}        & &X \\ \hline
-\lcref{LC_seg_algorithm} &X &X\\ \hline
-\ucref{UC_roi}               & & \\ \hline
+\ddref{v}                     & & &\\ \hline
+\ddref{slice}                 & & &\\ \hline
+\ddref{volume}             & & &X\\ \hline
+\iref{roi}                       &X & &X\\ \hline
+\iref{segmentation}        & &X &X\\ \hline
+\lcref{LC_seg_algorithm} &X &X &X\\ \hline
+\ucref{UC_roi}               & & &X\\ \hline
 \end{tabular}
 \caption{Traceability Matrix Showing the Connections Between Assumptions and Other Items}
 \label{Table:A_trace}
