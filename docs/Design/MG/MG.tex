@@ -243,6 +243,7 @@ actually be implemented.
 %\item [\refstepcounter{mnum} \mthemnum \label{mAS}:] Axial Segmentation Module
 \item [\refstepcounter{mnum} \mthemnum \label{mIP}:] Image Processing Module
 \item [\refstepcounter{mnum} \mthemnum \label{mNDAP}:] Multidimensional Array Processing Module
+\item [\refstepcounter{mnum} \mthemnum \label{mDE}:] Digital Enhancement Module
 \item ...
 \end{description}
 
@@ -264,6 +265,7 @@ actually be implemented.
 & Volume Visualization Module  & \\
 & Crop Module & \\
 & Aorta Segmentation Module & \\
+& Digital Enhancement Module & \\
 \midrule
 
 \multirow{3}{0.3\textwidth}{Software Decision Module}
@@ -380,6 +382,14 @@ are isolated to their own access programs.
 \item[Source:] \href{https://joviel25.github.io/AortaGR-design-document/AortaGeomReconDisplayModuleLib.html#module-AortaSegmenter}{AortaSegmenter module}
 \end{description}
 
+\subsubsection{Digital Enhancement Module (\mref{mDE})}
+\begin{description}
+\item[Secrets:] The algorithm to enhance a digital image. 
+\item[Services:] Accepts a 2D image, output a 2D image with the same dimension as the input, improves visual quality of its greyscale image
+\item[Implemented By:] \progname
+\item[Source:] \href{https://joviel25.github.io/AortaGR-design-document/AortaGeomReconDisplayModule.html#AortaGeomReconDisplayModule.AortaGeomReconDisplayModuleLogic.transform_image}{AortaGeomReconDisplayModuleLogic's transform\_image function}
+\end{description}
+
 \subsection{Software Decision Module}
 
 \begin{description}
@@ -474,7 +484,7 @@ NFR5 & \mref{mParams}\\
 \multicolumn{2}{p{0.1\textwidth}}{\mref{mHH}} & - \\
 \multicolumn{2}{p{0.1\textwidth}}{\mref{mInput} Input Format Module} & \begin{python}
 # AortaGeomReconDisplayModule.py
-# AortaGeomReconDisplayModuleWidget.onApplyButton
+# https://github.com/smiths/aorta/blob/main/src/SlicerExtension/AortaGeometryReconstructor/AortaGeomReconDisplayModule/AortaGeomReconDisplayModule.py#L543-L554
 stop_limit = self._parameterNode.GetParameter("stop_limit")
 threshold_coef = self._parameterNode.GetParameter("threshold_coef")
 rms_error = self._parameterNode.GetParameter("rms_error")
@@ -483,7 +493,7 @@ curv_scaling = self._parameterNode.GetParameter("curv_scaling")
 prop_scaling = self._parameterNode.GetParameter("prop_scaling")
 kernel_size = self._parameterNode.GetParameter("kernel_size")
 
-# AortaGeomReconDisplayModuleLogic.process
+# https://github.com/smiths/aorta/blob/main/src/SlicerExtension/AortaGeometryReconstructor/AortaGeomReconDisplayModule/AortaGeomReconDisplayModule.py#L824-L855
 def process(self, des_seed, asc_seed, stop_limit, threshold_coef,
             kernel_size, rms_error, no_ite, curvature_scaling,
             propagation_scaling, debug):
@@ -519,7 +529,7 @@ def process(self, des_seed, asc_seed, stop_limit, threshold_coef,
 \end{python} \\
 \multicolumn{2}{p{0.2\textwidth}}{\mref{mParams} Input Parameter Module}& \begin{python}
 # AortaSegmenter.py
-# AortaSegmenter.__init__ (Constructor)
+# https://github.com/smiths/aorta/blob/main/src/SlicerExtension/AortaGeometryReconstructor/AortaGeomReconDisplayModule/AortaGeomReconDisplayModuleLib/AortaSegmenter.py#L53-L82
 def __init__(
             self, cropped_image, des_seed, asc_seed, stop_limit=10,
             threshold_coef=3, kernel_size=6, rms_error=0.02, no_ite=600,
@@ -546,8 +556,7 @@ def __init__(
 \\
 \multicolumn{2}{p{0.2\textwidth}}{\mref{mControl} Control Module} & 
 \begin{python}
-# AortaGeomReconDisplayModule.py
-# AortaGeomReconDisplayModuleWidget.onApplyButton
+# https://github.com/smiths/aorta/blob/main/src/SlicerExtension/AortaGeometryReconstructor/AortaGeomReconDisplayModule/AortaGeomReconDisplayModule.py#L537-L583
 def onApplyButton(self):
     """
     Go to next phase if on phase 1 crop aorta or perform segmentation if on phase 2 aorta segmentation.
@@ -586,7 +595,7 @@ def onApplyButton(self):
 \multicolumn{2}{p{0.2\textwidth}}{\mref{mGUI} GUI Module} & 
 \begin{python}
 # AortaGeomReconDisplayModule.AortaGeomReconDisplayModuleWidget class
-# Set up code
+# https://github.com/smiths/aorta/blob/main/src/SlicerExtension/AortaGeometryReconstructor/AortaGeomReconDisplayModule/AortaGeomReconDisplayModule.py#L139-L245
 class AortaGeomReconDisplayModuleWidget(ScriptedLoadableModuleWidget, VTKObservationMixin):
     def setup(self):
         ScriptedLoadableModuleWidget.setup(self) 
@@ -641,11 +650,42 @@ class AortaGeomReconDisplayModuleWidget(ScriptedLoadableModuleWidget, VTKObserva
         self.initializeParameterNode()
 \end{python}
 \\
-\multicolumn{2}{p{0.2\textwidth}}{\mref{mVV} Volume Visualization Module} & {\href{https://slicer.readthedocs.io/en/latest/user_guide/modules/volumerendering.html}{3D Slicer's Volume Rendering Module}}\\
+\multicolumn{2}{p{0.2\textwidth}}{\mref{mVV} Volume Visualization Module} & {\href{https://slicer.readthedocs.io/en/latest/user_guide/modules/volumerendering.html}{3D Slicer's Volume Rendering Module}} \\
+\multicolumn{2}{p{0.2\textwidth}}{} & {\href{https://github.com/Slicer/Slicer/blob/main/Modules/Loadable/VolumeRendering/Logic/vtkSlicerVolumeRenderingLogic.h}{3D Slicer's Volume Rendering Source Code}} \\ \\
 \multicolumn{2}{p{0.2\textwidth}}{\mref{mROI} Crop Volume Module} &  {\href{https://slicer.readthedocs.io/en/latest/user_guide/modules/cropvolume.html}{3D Slicer's Crop Volume Module}} \\
+\multicolumn{2}{p{0.2\textwidth}}{} &
+{\href{https://github.com/Slicer/Slicer/blob/main/Modules/Loadable/CropVolume/Logic/vtkSlicerCropVolumeLogic.h}{3D Slicer's Crop Volume Module Source Code}}\\ \\
+
 \multicolumn{2}{p{0.2\textwidth}}{\mref{mAortaSeg} Aorta Segmentation Module} & \href{https://github.com/smiths/aorta/blob/main/src/SlicerExtension/AortaGeometryReconstructor/AortaGeomReconDisplayModule/AortaGeomReconDisplayModuleLib/AortaSegmenter.py}{AortaSegmenter class}\\
 \multicolumn{2}{p{0.2\textwidth}}{\mref{mIP} Image Processing Module} &   \href{https://simpleitk.org/}{SimpleITK} \\
 \multicolumn{2}{p{0.2\textwidth}}{\mref{mNDAP} Multi-Dimensional Array Processing Module} & \href{https://numpy.org/}{NumPy}\\
+
+\multicolumn{2}{p{0.2\textwidth}}{\mref{mDE} Digital Enhancement Module} & \begin{python}
+# AortaGeomReconDisplayModule.py
+# https://github.com/smiths/aorta/blob/main/src/SlicerExtension/AortaGeometryReconstructor/AortaGeomReconDisplayModule/AortaGeomReconDisplayModule.py#L739-L769
+    def transform_image(self, cropped_volume):
+        """
+        Histogram Equalization for Digital Image Enhancement.
+        https://levelup.gitconnected.com/introduction-to-histogram-equalization-for-digital-image-enhancement-420696db9e43
+        """
+        cropped_image = sitkUtils.PullVolumeFromSlicer(cropped_volume)
+        img_array = sitk.GetArrayFromImage(
+            (sitk.Cast(sitk.RescaleIntensity(cropped_image), sitk.sitkUInt8)))
+        histogram_array = np.bincount(img_array.flatten(), minlength=256)
+        num_pixels = np.sum(histogram_array)
+        histogram_array = histogram_array/num_pixels
+        chistogram_array = np.cumsum(histogram_array)
+        transform_map = np.floor(255 * chistogram_array).astype(np.uint8)
+        img_list = list(img_array.flatten())
+        eq_img_list = [transform_map[p] for p in img_list]
+        eq_img_array = np.reshape(np.asarray(eq_img_list), img_array.shape)
+        eq_img = sitk.GetImageFromArray(eq_img_array)
+        eq_img.CopyInformation(cropped_image)
+        median = sitk.MedianImageFilter()
+        median_img = sitk.Cast(median.Execute(eq_img), sitk.sitkUInt8)
+        self._cropped_image = median_img
+\end{python}
+\\
 \bottomrule
 \caption{Trace Between Modules and Code}
 \label{TblTC}
