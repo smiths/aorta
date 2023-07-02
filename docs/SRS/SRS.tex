@@ -244,6 +244,9 @@ The symbols are listed in alphabetical order.
   \bottomrule
 \end{tabular}\\
 
+\newpage
+
+\pagenumbering{arabic}
 
 \section{Introduction} \label{intro}
 
@@ -433,7 +436,7 @@ The 3D image provided by the user must contain a visually distingushable aorta v
 User should select a valid region of interest [\iref{segmentation}].
 
 \item[A\refstepcounter{assumpnum}\theassumpnum \label{A_singular_volume}:]
-User should input a singular volume (3 dimensional image) even the data format supports the 4th dimension (time) [\iref{roi}].
+User should input a singular volume (3 dimensional image) even if the data format supports the 4th dimension (time) [\iref{roi}].
 
 \end{itemize}
 
@@ -632,7 +635,7 @@ The inputs $Seed\_a$ and $Seed\_d$ are used to determine whether a given element
 \begin{figure}[H]
 \centering
 \includegraphics[width=120mm]{Aorta_seeds}
-\caption{Aorta Seeds} \label{AortaSeeds} 
+\caption{Aorta Seeds ~\cite{6346433}} \label{AortaSeeds} 
 \end{figure} 
 
 \subsubsection{Input Data Constraints} \label{sec_DataConstraints}    
@@ -679,7 +682,7 @@ $Seed\_d$ & The seed of descending aorta centre coordinate (\iref{segmentation})
 \noindent \begin{itemize}
 
 \item[NFR\refstepcounter{nfrnum}\thenfrnum \label{NFR_GUI}:] \textbf{Usability}
-The usability will be judged by a medical imaging expert. \progname{} allows a user that meets the user characteristics (Section \ref{SecUserCharacteristics})  to import any DICOM files, input the required parameters, and begin the segmentation effortlessly. The number of steps it takes using \progname{} should be at least 30\% less of the number of steps it takes by using ITK-Snap  (bubble method mentioned in Section \ref{intro}).
+\progname{} allows a user that meets the user characteristics (Section \ref{SecUserCharacteristics})  to import any DICOM files, input the required parameters, and begin the segmentation effortlessly. The number of steps it takes using \progname{} should be at least 30\% less than the number of steps it takes by using ITK-Snap  (bubble method mentioned in Section \ref{intro}).
 
 \item[NFR\refstepcounter{nfrnum}\thenfrnum \label{NFR_Safety}:] \textbf{Safety}
 For a valid image, the \progname{} provides a correct solution, or no answer.
