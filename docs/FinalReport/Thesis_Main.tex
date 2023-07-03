@@ -28,9 +28,10 @@
 % ********************************
 \begin{document}
 \include{definitions} % LaTeX variables for preface pages/headers
-    
+   
+
+% \include{layabstr} % Lay Abstract
 \beforepreface % Half title page, title page, declaration page   
-  \include{layabstr} % Lay Abstract
   \include{abstr} % Abstract
   \include{dedic} % Dedication
   \include{acknowledgements} % Acknowledgements
@@ -45,7 +46,12 @@
         \setcounter{equation}{0}
         \setcounter{table}{0}
         
-  \include{sample_chapter}                  
+  \include{AGR_RnD}                  
+       \setcounter{figure}{0}
+       \setcounter{equation}{0}
+       \setcounter{table}{0}
+
+  \include{Assurance_Cases}                  
        \setcounter{figure}{0}
        \setcounter{equation}{0}
        \setcounter{table}{0}
