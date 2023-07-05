@@ -42,20 +42,14 @@ class AortaGeomReconDisplayModule(ScriptedLoadableModule):  # noqa: F405
         ScriptedLoadableModule.__init__(self, parent)  # noqa: F405
 
         self.crosshairNode = None
-        # TODO: make this more human readable by adding spaces
         self.parent.title = "AortaGeomReconDisplayModule"
 
-        # TODO: set categories
         # (folders where the module shows up in the module selector)
         self.parent.categories = ["Segmentation"]
 
-        # TODO: add here list of module names that this module requires
         self.parent.dependencies = ["Markups"]
 
         self.parent.contributors = ["Jingyi Lin (McMaster University)"]
-
-        # TODO: update with short description of the module
-        # and a link to online module documentation
         self.parent.helpText = """
 This is an example of scripted loadable module bundled in an extension.
 See more information in <a href="https://github.com/organization/projectname#AortaGeomReconDisplayModule">module documentation</a>.
@@ -484,7 +478,6 @@ class AortaGeomReconDisplayModuleWidget(ScriptedLoadableModuleWidget, VTKObserva
         This method is called when the user click on Get VTK button.
         Depends on what state the module is in, the module output a vtk file under the root folder of Slicer application.
 
-        # TODO Add a pop-up window to select output path.
         """ # noqa
         sceneObj = slicer.mrmlScene
         if self._parameterNode.GetParameter("phase") == "1":
