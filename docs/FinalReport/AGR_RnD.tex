@@ -1,6 +1,6 @@
 \chapter{AortaGeomRecon Research and Development}
 This chapter will discuss about the research and development of the \progname{}. \\
-AortaGeomRecon stands for Aorta Geometry Reconstruction. The main objective of this software is to semi-automatically build 3D geometry of the Aorta from the patient's chest ct scans.  The existing methods are often involved of extensive manual works with very complex software, with a minimum of 10 minutes of human operator, who are likely a medical domain expert. \\
+AortaGeomRecon stands for Aorta Geometry Reconstruction. The main objective of this software is to semi-automatically build 3D geometry of the Aorta from the patient's chest ct scans.  The existing methods are often involved of extensive manual works with very complex software, with a minimum of 10 minutes of human operator, who is a medical domain expert. \\
 The implementation till the date of this report can let the users who have the user characteristics described in SRS get the Aorta 3D geometry with only a few hyperparameters and 2 minutes of execution time. \\
 
 
@@ -9,12 +9,42 @@ There are many segmentation software available to the users, we will discuss the
 
 
 \begin{itemize}
-\item ITK-Snap
-ITK-Snap provides 
-\item 3D Slicer
+\item ITK-Snap\\
+ITK-Snap provides a segmentation method that first let user to select multiple voxels with a custom intial size and expanding size within any volume. We refer this method as ``bubble method''.\\
+Through many iterations, the voxels expand to fill the entire volume, finally user will need to cut the extra part of the volume. \\
+The advantages of the bubble method is that it guarantes to produce a correct the segmentation result. A medical domain expert can manually control the wanted area, and visually observing the segmentation result expanding, shrinking and the user can erase the unwanted part.
+
+The disadvantages of this method is that the operations described above are complicated. Eeasier to say then do, an opeartor who has previous experience building the geometry with this method still needed 20 minutes of manual work building a new aorta geometry. ITK-Snap software can only read VTK file, therefore the chest CT scans are usually DICOM needed a manual conversion before using this software and its segmentation method.
+
+\item 3D Slicer\\
+3D Slicer is another well-known medical image processing software for academic. 3D Slicer provides multiple segmentation methods, and one of the quickiest and easiest to use is the intensity based segmentation.\\
+
+This method first let user select a small area that belongs to the wanted area on a 2D plane (Axial, Sagittal, and ). 3D Slicer read the pixels' intensity of the surrounding area, and segment based on the intensity. Any pixels's intensity that are within the range will be segmented as the segmentation result. 
+
+Like the bubble method, this method often reads extra volume, and requires user to cut the unwanted parts. A Youtube video shows an experience user who gets the aorta 3D geometry with 10 minutes of manual works.
 \end{itemize}
 
+
+\section{GitHub and Workflows}
+This project uses GitHub for version control. \\
+GitHub issues tracker use to keep track the items to work on throughout the development of the project\\
+GitHub Project is used for dividing a large issue into smaller tasks, expected date of the completion. This is useful for project management.\\
+GitHub Workflow is a great tool for Continuous Integration tests. \\
+We uses GitHub Workflow for Linter and Continuous Integration tests. \\
+
 \section{3D Slicer Extension Development}
+The project has started with the a simple segmentation algoritm build on the jupyter notebook. When getting a new patient's data, the user will need to investigate the chest ct scans using another software (3D Slicer, ITK-Snap), in order to know the starting voxel and the size crop the volume, and get the index of the aorta seed. This Figure~\ref{fig_aorta_seed} shows an example of the aorta seeds.
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.6\textwidth]{figures/Sample/Aorta_seeds.png}
+    \caption[Single Figure Environment Listed Title]{The aorta seeds}
+    \label{fig_aorta_seed}
+\end{figure}
+
+In order to improve the usability of the \progname{} (reduce the amount of time for user inputs and execution), we implemented an extension module on 3D Slicer. 
+
+3D Slicer provides 
 
 \section{Segmentation Algorithm}
 
@@ -22,7 +52,6 @@ This is a sample chapter
 
 If you need to use quotes, type it ``like this''.
 
-\section{GitHub and Workflows}
 
 \section{Referencing}
 These are some sample references to GAMYGDALA~\citep{popescu2014gamygdala} from 
