@@ -1,5 +1,6 @@
 import os
 import sys
+import math
 
 import SimpleITK as sitk
 import numpy as np
@@ -70,7 +71,6 @@ class AortaSegmenter():
         self._segment_filter.SetCurvatureScaling(curvature_scaling)
         self._segment_filter.SetPropagationScaling(propagation_scaling)
         self._segment_filter.ReverseExpansionDirectionOn()
-        self._skipped_slices = []
         self._k = 2
 
         # Initializing processing image
@@ -81,7 +81,7 @@ class AortaSegmenter():
         self._is_size_decreasing = False
 
     def begin_segmentation(self):
-        """This is the main entry point of the axial segmentation.
+        """This is the main entry point of the segmentation algorithm.
         This api should be called to perform aorta segmentation.
         (superior to inferior, then inferior to superior starting from the seed slice).
     
@@ -112,11 +112,11 @@ class AortaSegmenter():
         print("bottom to top finished")
 
     def __prepare_label_map(self):
-        """Create a label map image that has a circle-like shape around the previous descending aorta centre and ascending aorta centre (if any).
+        """Create a label map image that has a circle-like shape around the previous descending aorta centroid and ascending aorta centroid (if any).
         The pixels within the circle are labeled as white pixels (value of 1), the other are labeled as black pixels (value of 0).
 
         Returns:
-            SITK::IMAGE: A label map image that has a circle like shape around the previous descending aorta centre and ascending aorta centre.
+            SITK::IMAGE: A label map image that has a circle like shape around the previous descending aorta centroid and ascending aorta centroid.
         """ # noqa
         label_map = sitk.Image(self._cur_img_slice.GetSize(), sitk.sitkUInt8)
         label_map.CopyInformation(self._cur_img_slice)
@@ -140,7 +140,7 @@ class AortaSegmenter():
         to perform segmentation with SITK::ThresholdSegmentationLevelSetImageFilter and
 
         Returns:
-            SITK::image: Segmented image
+            SITK::image: Segmented slice label image
 
         """ # noqa
         label_map = self.__prepare_label_map()
@@ -165,9 +165,11 @@ class AortaSegmenter():
         Next, the algorithm calculates new centroids based on the segmented slice.
         Repeat this process until the stop condition has reached. The stop conditions are:
 
-        1. The new centroid located too far from the previous centroid
+        1. The distance from the new ascending centroid to the previous ascending centroid reaches the stop limit.
 
-        2. The difference of the std of the initial label image and of the final segmented image reaches the stop limit.
+        2. The difference of the std of the initial label image and of the final segmented label image reaches the stop limit.
+
+        The first stop condition only removes the ascending aorta centroid from the segmentation process, the segmentation of descending aorta is unaffected.
 
         """ # noqa
         for slice_i in range(self._start, self._end, self._step):
@@ -251,7 +253,11 @@ class AortaSegmenter():
         for point in points:
             dist_des = self.__get_dist(point, des_c)
             dist_asc = self.__get_dist(point, asc_c) if asc_c else float("inf")
-            if not asc_c or min(dist_des, dist_asc) == dist_des:
+            if (not asc_c or
+                math.isclose(
+                    min(dist_des, dist_asc),
+                    dist_des,
+                    rel_tol=1e-05)):
                 des_points.append(point)
             else:
                 asc_points.append(point)
@@ -271,7 +277,7 @@ class AortaSegmenter():
         """Calculate new centroids on the segmented slice.
 
         Args:
-            new_slice (SITK::image): A label image of the segmentation result.
+            new_slice (SITK::image): Segmentation result label image.
 
         Returns:
             (tuple): tuple containing:
@@ -286,6 +292,18 @@ class AortaSegmenter():
         )
         if len(points) <= 1:
             return (float("inf"), float("inf")), (float("inf"), float("inf"))
+
+        # __calculate_centroids function can be replaced by sklearn.KMeans
+        # This function is inspired by the K Means clustering algorithm
+
+        # init = np.array([self._des_prev_centre, self._asc_prev_centre])
+        # km = KMeans(
+        #  n_clusters=self._k,
+        #  init=init,
+        #  n_init=1
+        # ).fit(points)
+        # des_centroid, asc_centroid = km.cluster_centers_
+
         if self._k == 1:
             des_centroid = self.__calculate_centroids(
                 points, None, self._des_prev_centre)[0]

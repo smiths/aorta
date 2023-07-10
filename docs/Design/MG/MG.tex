@@ -8,6 +8,12 @@
 \usepackage{graphicx}
 \usepackage{float}
 \usepackage{hyperref}
+\usepackage{longtable}
+\usepackage{tabularray}
+\usepackage{xcolor}
+% Custom colors
+\usepackage{color}
+\usepackage{listings}
 \hypersetup{
     colorlinks,
     citecolor=blue,
@@ -15,6 +21,38 @@
     linkcolor=red,
     urlcolor=blue
 }
+
+% Default fixed font does not support bold face
+\DeclareFixedFont{\ttb}{T1}{txtt}{bx}{n}{12} % for bold
+\DeclareFixedFont{\ttm}{T1}{txtt}{m}{n}{12}  % for normal
+
+\definecolor{deepblue}{rgb}{0,0,0.5}
+\definecolor{deepred}{rgb}{0.6,0,0}
+\definecolor{deepgreen}{rgb}{0,0.5,0}
+
+% Python style for highlighting
+\newcommand\pythonstyle{\lstset{
+language=Python,
+aboveskip=0mm,
+belowskip=0mm,
+basicstyle=\scriptsize\ttfamily,
+morekeywords={self},              % Add keywords here
+keywordstyle=\footnotesize\color{deepblue},
+emph={MyClass,__init__},          % Custom highlighting
+emphstyle=\footnotesize\color{deepred},    % Custom highlighting style
+stringstyle=\color{deepgreen},
+frame=tb,                         % Any extra options here
+showstringspaces=false,
+breaklines=true
+}}
+
+% Python environment
+\lstnewenvironment{python}[1][]
+{
+\pythonstyle
+\lstset{#1}
+}
+{}
 
 \input{../../Comments}
 \input{../../Common}
@@ -48,6 +86,7 @@
 \midrule
 2022-10-18 & 1.0 & First draft of Module Guide\\
 2023-04-21 & 1.1 & Second draft of Module Guide\\
+2023-07-05 & 1.2 & Added Traceability matrix between modules and source code. Added User Hierarchy between modules.\\
 \bottomrule
 \end{tabularx}
 
@@ -70,10 +109,10 @@ This section records information for easy reference.
   MG & Module Guide \\
   OS & Operating System \\
   R & Requirement\\
-  NFR & Non-functional requirements\\
+  NFR & Non-Functional requirements\\
   SC & Scientific Computing \\
   SRS & Software Requirements Specification\\
-  \progname & Aorta geometry reconstruction\\
+  \progname & Aorta Geometry Reconstruction\\
   UC & Unlikely Change \\
   \bottomrule
 \end{tabular}\\
@@ -160,12 +199,12 @@ change.
 \item[\refstepcounter{acnum} \actheacnum \label{acHardware}:] The specific hardware on which the software is running.
 \item[\refstepcounter{acnum} \actheacnum \label{acInput}:] The format of the initial input data.
 \item[\refstepcounter{acnum} \actheacnum \label{acAlgo}:] The algorithm to segment the aorta.
-\item[\refstepcounter{acnum} \actheacnum \label{acInputParams}:] The input parameters required to execute the algorithm.
-\item[\refstepcounter{acnum} \actheacnum \label{acGetInput}:] The methods to get the inputs from the user.
+\item[\refstepcounter{acnum} \actheacnum \label{acInputParams}:] The data structures to store the input parameters required to execute the algorithm.
+\item[\refstepcounter{acnum} \actheacnum \label{acInterface}:] The methods to create a user interface.
 \item[\refstepcounter{acnum} \actheacnum \label{acGetROI}:] The methods to retrieve a region of interest.
 \item[\refstepcounter{acnum} \actheacnum \label{acVisualize}:] The methods to visualize a volume.
-\item[\refstepcounter{acnum} \actheacnum \label{acControl}:] The program state is likely changing during the processing.
-\item[\refstepcounter{acnum} \actheacnum \label{acOutput}:] The output data varies in data type.
+\item[\refstepcounter{acnum} \actheacnum \label{acControl}:] How the overall control of the calculations is orchestrated.
+\item[\refstepcounter{acnum} \actheacnum \label{acOutput}:] The format of the final output data.
 
 \item ...
 \end{description}
@@ -182,7 +221,7 @@ decisions will be changed.
 \begin{description}
 \item[\refstepcounter{ucnum} \uctheucnum \label{ucIO}:] Input/Output devices
   (Input: File and/or Keyboard, Output: File, Memory, and/or Screen).
-\item[\refstepcounter{ucnum} \uctheucnum \label{ucVolDim}:] The input volume data's dimension is unlikely to change.
+\item[\refstepcounter{ucnum} \uctheucnum \label{ucVolDim}:] The input volume data's dimensionality is unlikely to change.
 \item ...
 \end{description}
 
@@ -199,13 +238,13 @@ actually be implemented.
 \item [\refstepcounter{mnum} \mthemnum \label{mParams}:] Input Parameter Module
 \item [\refstepcounter{mnum} \mthemnum \label{mControl}:] Control Module
 \item [\refstepcounter{mnum} \mthemnum \label{mGUI}:] GUI Module
-\item [\refstepcounter{mnum} \mthemnum \label{mDisplay}:] Display Module
+\item [\refstepcounter{mnum} \mthemnum \label{mVV}:] Volume Visualization Module
 \item [\refstepcounter{mnum} \mthemnum \label{mROI}:] Crop Volume Module
 \item [\refstepcounter{mnum} \mthemnum \label{mAortaSeg}:] Aorta Segmentation Module
-\item [\refstepcounter{mnum} \mthemnum \label{mAS}:] Axial Segmentation Module
-\item [\refstepcounter{mnum} \mthemnum \label{mSS}:] Sagittal Segmentation Module
-\item [\refstepcounter{mnum} \mthemnum \label{mSITK}:] SITK Module
-\item [\refstepcounter{mnum} \mthemnum \label{mNP}:] NumPy Module
+%\item [\refstepcounter{mnum} \mthemnum \label{mAS}:] Axial Segmentation Module
+\item [\refstepcounter{mnum} \mthemnum \label{mIP}:] Image Processing Module
+\item [\refstepcounter{mnum} \mthemnum \label{mNDAP}:] Multidimensional Array Processing Module
+\item [\refstepcounter{mnum} \mthemnum \label{mDE}:] Digital Enhancement Module
 \item ...
 \end{description}
 
@@ -224,16 +263,16 @@ actually be implemented.
 &  Input Format Module & \\
 &  Input Parameter Module & \\
 & Control Module  & \\
-& GUI Module & \\
-& Display Module  & \\
+& Volume Visualization Module  & \\
+& Crop Module & \\
 & Aorta Segmentation Module & \\
+& Digital Enhancement Module & \\
 \midrule
 
 \multirow{3}{0.3\textwidth}{Software Decision Module}
-& SITK Module \\
-& Numpy Module\\
-& Axial Aorta Segmentation Module\\
-& Sagittal Aorta Segmentation Module\\
+& GUI Module & \\
+& Image Processing Module \\
+& Multi-Dimensional Array Processing Module\\
 \bottomrule
 
 \end{tabular}
@@ -290,7 +329,8 @@ to be implemented.
 \begin{description}
 \item[Secrets:]The format and structure of the input data.
 \item[Services:]Converts the input data into the data structure used by the input parameters module.
-\item[Implemented By:] 3D Slicer
+\item[Implemented By:] \progname{}
+\item[Source:] \href{https://joviel25.github.io/AortaGR-design-document/AortaGeomReconDisplayModule.html#AortaGeomReconDisplayModule.AortaGeomReconDisplayModuleLogic.process}{AortaGeomReconDisplayModuleLogic module's process function}
 %\item[Type of Module:] [Abstract Data Type]
 %  [Information to include for leaf modules in the decomposition by secrets tree.]
 \end{description}
@@ -308,6 +348,7 @@ are isolated to their own access programs.
   individually, but write access is only to redefine the entire set of inputs.
  % This module knows how many parameters it stores.
 \item[Implemented By:] \progname{}
+\item[Source:] \href{https://joviel25.github.io/AortaGR-design-document/AortaGeomReconDisplayModuleLib.html#AortaSegmenter.AortaSegmenter}{AortaSegmenter class' atributes}
 \end{description}
 
 \subsubsection{Control Module (\mref{mControl})}
@@ -316,21 +357,14 @@ are isolated to their own access programs.
 \item[Secrets:]The algorithm for coordinating the running of the program.
 \item[Services:]Provides the main program's entry point, the ability to jump from a program state to another.
 \item[Implemented By:] \progname
+\item[Source:] \href{https://joviel25.github.io/AortaGR-design-document/AortaGeomReconDisplayModule.html#AortaGeomReconDisplayModule.AortaGeomReconDisplayModuleWidget.onApplyButton}{AortaGeomReconDisplayModuleWidget module}
 \end{description}
 
-\subsubsection{GUI Module (\mref{mGUI})}
+\subsubsection{Volume Visualization Module (\mref{mVV})}
 \begin{description}
-\item[Secrets:]The necessary library/framework to build a GUI software.
-\item[Services:]Povide GUI software for user to write/read inputs, and send commands to the program. It could include the rendering a windows, inputs, keyboard and mouse interaction with the GUI elements.
-\item[Implemented By:] 3D Slicer
-\end{description}
-
-\subsubsection{Display Module (\mref{mDisplay})}
-\begin{description}
-\item[Secrets:]The methods by which it displays input data and output data, along 
-with any other info to the screen.
+\item[Secrets:]The methods which allow users to visualize a 3D Volume.
 \item[Services:]Display the aorta images and vtk 3D geometry.
-\item[Implemented By:] \progname
+\item[Implemented By:] 3D Slicer
 \end{description}
 
 \subsubsection{Crop Module (\mref{mROI})}
@@ -346,12 +380,16 @@ with any other info to the screen.
 \item[Secrets:] The parameters, libraries to perform segmentation.
 \item[Services:] Import the necessary libraries, store the input parameter, and coordinate the uses of these data and libraries to perform segmentation.
 \item[Implemented By:] \progname
-% \item[Use case:] This module should always have a \emph{begin\_segmentation} API available for the developer to begin the aorta segmentation.
+\item[Source:] \href{https://joviel25.github.io/AortaGR-design-document/AortaGeomReconDisplayModuleLib.html#module-AortaSegmenter}{AortaSegmenter module}
 \end{description}
 
-
-\subsubsection{Etc.}
-
+\subsubsection{Digital Enhancement Module (\mref{mDE})}
+\begin{description}
+\item[Secrets:] The algorithm to enhance a digital image. 
+\item[Services:] Accepts a 2D image, output a 2D image with the same dimension as the input, improves visual quality of its greyscale image
+\item[Implemented By:] \progname
+\item[Source:] \href{https://joviel25.github.io/AortaGR-design-document/AortaGeomReconDisplayModule.html#AortaGeomReconDisplayModule.AortaGeomReconDisplayModuleLogic.transform_image}{AortaGeomReconDisplayModuleLogic's transform\_image function}
+\end{description}
 
 \subsection{Software Decision Module}
 
@@ -366,26 +404,15 @@ with any other info to the screen.
 \item[Implemented By:] --
 \end{description}
 
-%\item [\refstepcounter{mnum} \mthemnum \label{mSITK}:] SITK Module
-%\item [\refstepcounter{mnum} \mthemnum \label{mNP}:] NumPy Module
 
-\subsubsection{Axial Segmentation Module (\mref{mAS})}
+\subsubsection{GUI Module (\mref{mGUI})}
 \begin{description}
-\item[Secrets:] The parameters, libraries to perform segmentation along the axial axis.
-\item[Services:] Import the necessary libraries, store the input parameter, and coordinate the uses of these data and libraries to perform axial segmentation.
-\item[Implemented By:] \progname
-% \item[Use case:] This module should always have a \emph{begin\_segmentation} API available for the developer to begin the aorta segmentation.
+\item[Secrets:]The necessary library/framework to build a GUI software.
+\item[Services:]Povide Graphical User Interface for user to write/read inputs, and send commands to the program. It could include the rendering a windows, inputs, keyboard and mouse interaction with the GUI elements.
+\item[Implemented By:] 3D Slicer
 \end{description}
 
-\subsubsection{Sagittal Segmentation Module (\mref{mSS})}
-\begin{description}
-\item[Secrets:] The parameters, libraries to perform segmentation along the Sagittal axis.
-\item[Services:] Import the necessary libraries, store the input parameter, and coordinate the uses of these data and libraries to perform sagittal segmentation.
-\item[Implemented By:] \progname
-% \item[Use case:] This module should always have a \emph{begin\_segmentation} API available for the developer to begin the aorta segmentation.
-\end{description}
-
-\subsubsection{Simple ITK module (\mref{mSITK})}
+\subsubsection{Image Processing Module (\mref{mIP})}
 \begin{description}
 \item[Secrets:] The libraries and the APIs to perform image analysis, and image segmentation.
 \item[Services:] Provides useful APIs such as ThresholdSegmentationLevelSetsImageFilter, LabelStatisticImageFilter to perform aorta segmentation.
@@ -393,23 +420,20 @@ with any other info to the screen.
 % \item[Use case:] This module should always have a \emph{begin\_segmentation} API available for the developer to begin the aorta segmentation.
 \end{description}
 
-\subsubsection{NumPy module (\mref{mNP})}
+\subsubsection{Multi-Dimensional Array Processing Module(\mref{mNDAP})}
 \begin{description}
-\item[Secrets:] The libraries and the APIs to perform element-wise mathematic operations on multi-dimensional array.
-\item[Services:] Provides useful APIs such as calculating the max, min, average of multi-dimensional array. NumPy.where function provides the search in the multi-dimensional array functionality which will return any element's indexes if it satisfies the given condition.
+\item[Secrets:] The libraries and the APIs to perform element-wise mathematic operations on multidimensional array.
+\item[Services:] Provides useful APIs such as calculating the max, min, average of multidimensional array. NumPy.where function provides the search in the multidimensional array functionality which will return any element's indexes if it satisfies the given condition.
 \item[Implemented By:] NumPy
-% \item[Use case:] This module should always have a \emph{begin\_segmentation} API available for the developer to begin the aorta segmentation.
 \end{description}
+
+\newpage
 
 \section{Traceability Matrix} \label{SecTM}
 
-% \item [\refstepcounter{mnum} \mthemnum \label{mSAS}] Aorta Sagital Segmentation Module
-
 This section shows two traceability matrices: between the modules and the
-requirements and between the modules and the anticipated changes.
+requirements and between the modules and the anticipated changes. The list of requirements can refer to the \progname{}'s SRS. \cite{SRS}
 
-% the table should use mref, the requirements should be named, use something
-% like fref
 \begin{table}[H]
 \centering
 \begin{tabular}{p{0.2\textwidth} p{0.6\textwidth}}
@@ -418,10 +442,13 @@ requirements and between the modules and the anticipated changes.
 \midrule
 R1 & \mref{mHH}, \mref{mInput}, \mref{mParams}, \mref{mControl}\\
 R2 & \mref{mParams}, \mref{mROI}\\
-R3 & \mref{mROI}, \mref{mAortaSeg}, \mref{mAS}, \mref{mSS}, \mref{mSITK}, \mref{mNP}\\
-R4 & \mref{mDisplay}\\
-NFR1 & \mref{mControl}, \mref{mParams}, \mref{mGUI}\\
-NFR2 & \mref{mDisplay}\\
+R3 &  \mref{mAortaSeg}, \mref{mIP}, \mref{mNDAP}\\
+R4 & \mref{mVV}\\
+NFR1 & \mref{mParams}, \mref{mControl}, \mref{mGUI}\\
+NFR2 & \mref{mControl}, \mref{mAortaSeg}, \mref{mIP}, \mref{mNDAP}\\
+NFR3 & \mref{mParams}, \mref{mControl}, \mref{mGUI} \mref{mVV}, \mref{mROI},  \mref{mAortaSeg}\\
+NFR4 & \mref{mROI},  \mref{mAortaSeg}, \mref{mIP}, \mref{mNDAP}\\
+NFR5 & \mref{mParams}\\
 \bottomrule
 \end{tabular}
 \caption{Trace Between Requirements and Modules}
@@ -438,15 +465,234 @@ NFR2 & \mref{mDisplay}\\
 \acref{acInput} & \mref{mInput}\\
 \acref{acAlgo} & \mref{mAortaSeg}\\
 \acref{acInputParams} & \mref{mParams}\\
-\acref{acGetInput} & \mref{mGUI}\\
-\acref{acVisualize} & \mref{mDisplay}\\
+\acref{acInterface} & \mref{mGUI}\\
+\acref{acGetROI} & \mref{mROI} \\
+\acref{acVisualize} & \mref{mVV}\\
 \acref{acControl} & \mref{mControl}\\
-\acref{acOutput} & \\
+\acref{acOutput} & \mref{mIP}, \mref{mNDAP} \\
 \bottomrule
 \end{tabular}
 \caption{Trace Between Anticipated Changes and Modules}
 \label{TblACT}
 \end{table}
+
+\newpage
+
+\begin{longtable}[H]{p{0.1\textwidth} p{0.00001\textwidth} p{0.8\textwidth}}
+\toprule
+\multicolumn{2}{p{0.1\textwidth}}{\textbf{Modules}} & \textbf{Code}\\
+\midrule
+\multicolumn{2}{p{0.1\textwidth}}{\mref{mHH}} & - \\
+\multicolumn{2}{p{0.1\textwidth}}{\mref{mInput} Input Format Module} & \begin{python}
+# AortaGeomReconDisplayModule.py
+# https://github.com/smiths/aorta/blob/main/src/SlicerExtension/AortaGeometryReconstructor/AortaGeomReconDisplayModule/AortaGeomReconDisplayModule.py#L543-L554
+stop_limit = self._parameterNode.GetParameter("stop_limit")
+threshold_coef = self._parameterNode.GetParameter("threshold_coef")
+rms_error = self._parameterNode.GetParameter("rms_error")
+no_ite = self._parameterNode.GetParameter("no_ite")
+curv_scaling = self._parameterNode.GetParameter("curv_scaling")
+prop_scaling = self._parameterNode.GetParameter("prop_scaling")
+kernel_size = self._parameterNode.GetParameter("kernel_size")
+
+# https://github.com/smiths/aorta/blob/main/src/SlicerExtension/AortaGeometryReconstructor/AortaGeomReconDisplayModule/AortaGeomReconDisplayModule.py#L824-L855
+def process(self, des_seed, asc_seed, stop_limit, threshold_coef,
+            kernel_size, rms_error, no_ite, curvature_scaling,
+            propagation_scaling, debug):
+    """Convert the parameters to the correct format and
+    call begin_segmentation from AortaSegmenter.
+
+    Returns:
+        SITK::image: The processing image, or the segmentation label image
+    """
+    des_seed = des_seed.split(",")
+    asc_seed = asc_seed.split(",")
+    asc_seed = [int(i) for i in asc_seed]
+    des_seed = [int(i) for i in des_seed]
+    now = datetime.now()
+    if not self._cropped_image:
+        volume = slicer.mrmlScene.GetFirstNode(
+                "cropped", None, None, False)
+        self.transform_image(volume)
+    logging.info(f"{now} processing")
+    segmenter = AortaSegmenter(
+        cropped_image=self._cropped_image, des_seed=des_seed,
+        asc_seed=asc_seed, stop_limit=float(stop_limit),
+        threshold_coef=float(threshold_coef),
+        kernel_size=int(float(kernel_size)),
+        rms_error=float(rms_error), no_ite=int(no_ite.split(".")[0]),
+        curvature_scaling=float(curvature_scaling),
+        propagation_scaling=float(propagation_scaling), debug=debug
+    )
+    segmenter.begin_segmentation()
+    now = datetime.now()
+    logging.info(f"{now} Finished processing")
+    return segmenter.processing_image
+\end{python} \\
+\multicolumn{2}{p{0.2\textwidth}}{\mref{mParams} Input Parameter Module}& \begin{python}
+# AortaSegmenter.py
+# https://github.com/smiths/aorta/blob/main/src/SlicerExtension/AortaGeometryReconstructor/AortaGeomReconDisplayModule/AortaGeomReconDisplayModuleLib/AortaSegmenter.py#L53-L82
+def __init__(
+            self, cropped_image, des_seed, asc_seed, stop_limit=10,
+            threshold_coef=3, kernel_size=6, rms_error=0.02, no_ite=600,
+            curvature_scaling=2, propagation_scaling=0.5, debug=False
+    ):
+    self._des_seed = des_seed
+    self._des_prev_centre = des_seed[:2]
+    self._asc_seed = asc_seed
+    self._asc_prev_centre = asc_seed[:2]
+    self._stop_limit = stop_limit
+    self._threshold_coef = threshold_coef
+    self._cropped_image = cropped_image
+    self._kernel_size = kernel_size
+    self._debug_mod = debug
+    self._stats_filter = sitk.LabelStatisticsImageFilter()
+    self._segment_filter = sitk.ThresholdSegmentationLevelSetImageFilter()
+    self._segment_filter.SetMaximumRMSError(rms_error)
+    self._segment_filter.SetNumberOfIterations(no_ite)
+    self._segment_filter.SetCurvatureScaling(curvature_scaling)
+    self._segment_filter.SetPropagationScaling(propagation_scaling)
+    self._segment_filter.ReverseExpansionDirectionOn()
+    self._k = 2
+\end{python}
+\\
+\multicolumn{2}{p{0.2\textwidth}}{\mref{mControl} Control Module} & 
+\begin{python}
+# https://github.com/smiths/aorta/blob/main/src/SlicerExtension/AortaGeometryReconstructor/AortaGeomReconDisplayModule/AortaGeomReconDisplayModule.py#L537-L583
+def onApplyButton(self):
+    """
+    Go to next phase if on phase 1 crop aorta or perform segmentation if on phase 2 aorta segmentation.
+    """
+
+    with slicer.util.tryWithErrorDisplay(errorMessage, waitCursor=True):
+        if self._parameterNode.GetParameter("phase") == "1":
+            size = len(slicer.util.getNodes("*cropped*", useLists=True))
+            if not size:
+                logging.info("Cannot find cropped volume")
+            else:
+                self.showPhaseAS()
+        elif self._parameterNode.GetParameter("phase") == "2":
+            descAortaSeed = self._parameterNode.GetParameter(
+                "descAortaSeed")
+            ascAortaSeed = self._parameterNode.GetParameter(
+                "ascAortaSeed")
+            volume = sceneObj.GetFirstNode("cropped", None, None, False)
+            self.logic.transform_image(volume)
+            image = self.logic.process(
+                descAortaSeed, ascAortaSeed, stop_limit,
+                threshold_coef, kernel_size, rms_error, no_ite,
+                curv_scaling, prop_scaling, self.ui.debugBox.checked
+            )
+            sitkUtils.PushVolumeToSlicer(
+                image,
+                name="Seg_th{}_k{}_c{}_p{}".format(
+                    threshold_coef,
+                    kernel_size,
+                    curv_scaling,
+                    prop_scaling),
+                className="vtkMRMLScalarVolumeNode"
+            )
+\end{python}
+\\
+\multicolumn{2}{p{0.2\textwidth}}{\mref{mGUI} GUI Module} & 
+\begin{python}
+# AortaGeomReconDisplayModule.AortaGeomReconDisplayModuleWidget class
+# https://github.com/smiths/aorta/blob/main/src/SlicerExtension/AortaGeometryReconstructor/AortaGeomReconDisplayModule/AortaGeomReconDisplayModule.py#L139-L245
+class AortaGeomReconDisplayModuleWidget(ScriptedLoadableModuleWidget, VTKObservationMixin):
+    def setup(self):
+        ScriptedLoadableModuleWidget.setup(self) 
+        uiWidget = slicer.util.loadUI(self.resourcePath('UI/AortaGeomReconDisplayModule.ui'))  # noqa: E501
+        self.layout.addWidget(uiWidget)
+        self.ui = slicer.util.childWidgetVariables(uiWidget)
+        uiWidget.setMRMLScene(slicer.mrmlScene)
+        self.logic = AortaGeomReconDisplayModuleLogic()
+        scene = slicer.mrmlScene
+        self.crosshairNode = slicer.util.getNode("Crosshair")
+        self.crosshairNode.AddObserver(
+            slicer.vtkMRMLCrosshairNode.CursorPositionModifiedEvent,
+            self.onMouseMoved
+        )
+
+        self.addObserver(scene, scene.StartCloseEvent, self.onSceneStartClose)
+        self.addObserver(scene, scene.EndCloseEvent, self.onSceneEndClose)
+        self.ui.ascAortaSeed.connect(
+            "coordinatesChanged(double*)", self.updateParameterNodeFromGUI)
+        self.ui.descAortaSeed.connect(
+            "coordinatesChanged(double*)", self.updateParameterNodeFromGUI)
+        self.ui.stopLimit.connect(
+            "valueChanged(double)", self.updateParameterNodeFromGUI)
+        self.ui.kernelSize.connect(
+            "valueChanged(double)", self.updateParameterNodeFromGUI)
+        self.ui.thresholdCoefficient.connect(
+            "valueChanged(double)", self.updateParameterNodeFromGUI)
+        self.ui.rmsError.connect(
+            "valueChanged(double)", self.updateParameterNodeFromGUI)
+        self.ui.noIteration.connect(
+            "valueChanged(double)", self.updateParameterNodeFromGUI)
+        self.ui.curvatureScaling.connect(
+            "valueChanged(double)", self.updateParameterNodeFromGUI)
+        self.ui.propagationScaling.connect(
+            "valueChanged(double)", self.updateParameterNodeFromGUI)
+
+        # Buttons
+        self.ui.applyButton.connect('clicked(bool)', self.onApplyButton)
+        self.ui.revertButton.connect('clicked(bool)', self.onRevertButton)
+        self.ui.resetButton.connect('clicked(bool)', self.onResetButton)
+        self.ui.skipButton.connect('clicked(bool)', self.onSkipButton)
+        self.ui.getVTKButton.connect('clicked(bool)', self.onGetVTKButton)
+
+        sliceDisplayNodes = slicer.util.getNodesByClass(
+            "vtkMRMLSliceDisplayNode")
+        for sliceDisplayNode in sliceDisplayNodes:
+            sliceDisplayNode.SetIntersectingSlicesVisibility(1)
+
+        sliceNodes = slicer.util.getNodesByClass('vtkMRMLSliceNode')
+        for sliceNode in sliceNodes:
+            sliceNode.Modified()
+        self.initializeParameterNode()
+\end{python}
+\\
+\multicolumn{2}{p{0.2\textwidth}}{\mref{mVV} Volume Visualization Module} & {\href{https://slicer.readthedocs.io/en/latest/user_guide/modules/volumerendering.html}{3D Slicer's Volume Rendering Module}} \\
+\multicolumn{2}{p{0.2\textwidth}}{} & {\href{https://github.com/Slicer/Slicer/blob/main/Modules/Loadable/VolumeRendering/Logic/vtkSlicerVolumeRenderingLogic.h}{3D Slicer's Volume Rendering Source Code}} \\ \\
+\multicolumn{2}{p{0.2\textwidth}}{\mref{mROI} Crop Volume Module} &  {\href{https://slicer.readthedocs.io/en/latest/user_guide/modules/cropvolume.html}{3D Slicer's Crop Volume Module}} \\
+\multicolumn{2}{p{0.2\textwidth}}{} &
+{\href{https://github.com/Slicer/Slicer/blob/main/Modules/Loadable/CropVolume/Logic/vtkSlicerCropVolumeLogic.h}{3D Slicer's Crop Volume Module Source Code}}\\ \\
+
+\multicolumn{2}{p{0.2\textwidth}}{\mref{mAortaSeg} Aorta Segmentation Module} & \href{https://github.com/smiths/aorta/blob/main/src/SlicerExtension/AortaGeometryReconstructor/AortaGeomReconDisplayModule/AortaGeomReconDisplayModuleLib/AortaSegmenter.py}{AortaSegmenter class}\\
+\multicolumn{2}{p{0.2\textwidth}}{\mref{mIP} Image Processing Module} &   \href{https://simpleitk.org/}{SimpleITK} \\
+\multicolumn{2}{p{0.2\textwidth}}{\mref{mNDAP} Multi-Dimensional Array Processing Module} & \href{https://numpy.org/}{NumPy}\\
+
+\multicolumn{2}{p{0.2\textwidth}}{\mref{mDE} Digital Enhancement Module} & \begin{python}
+# AortaGeomReconDisplayModule.py
+# https://github.com/smiths/aorta/blob/main/src/SlicerExtension/AortaGeometryReconstructor/AortaGeomReconDisplayModule/AortaGeomReconDisplayModule.py#L739-L769
+    def transform_image(self, cropped_volume):
+        """
+        Histogram Equalization for Digital Image Enhancement.
+        https://levelup.gitconnected.com/introduction-to-histogram-equalization-for-digital-image-enhancement-420696db9e43
+        """
+        cropped_image = sitkUtils.PullVolumeFromSlicer(cropped_volume)
+        img_array = sitk.GetArrayFromImage(
+            (sitk.Cast(sitk.RescaleIntensity(cropped_image), sitk.sitkUInt8)))
+        histogram_array = np.bincount(img_array.flatten(), minlength=256)
+        num_pixels = np.sum(histogram_array)
+        histogram_array = histogram_array/num_pixels
+        chistogram_array = np.cumsum(histogram_array)
+        transform_map = np.floor(255 * chistogram_array).astype(np.uint8)
+        img_list = list(img_array.flatten())
+        eq_img_list = [transform_map[p] for p in img_list]
+        eq_img_array = np.reshape(np.asarray(eq_img_list), img_array.shape)
+        eq_img = sitk.GetImageFromArray(eq_img_array)
+        eq_img.CopyInformation(cropped_image)
+        median = sitk.MedianImageFilter()
+        median_img = sitk.Cast(median.Execute(eq_img), sitk.sitkUInt8)
+        self._cropped_image = median_img
+\end{python}
+\\
+\bottomrule
+\caption{Trace Between Modules and Code}
+\label{TblTC}
+\end{longtable}
+
+\newpage
 
 \section{Use Hierarchy Between Modules} \label{SecUse}
 
@@ -463,12 +709,13 @@ because they use modules from the lower levels.
 
 \begin{figure}[H]
 \centering
-%\includegraphics[width=0.7\textwidth]{UsesHierarchy.png}
+\includegraphics[width=\textwidth]{UsesHierarchy.png}
 \caption{Use hierarchy among modules}
 \label{FigUH}
 \end{figure}
 
-%\section*{References}
+\newpage
+\section{References}
 
 \bibliographystyle {plainnat}
 \bibliography{../../../refs/References}

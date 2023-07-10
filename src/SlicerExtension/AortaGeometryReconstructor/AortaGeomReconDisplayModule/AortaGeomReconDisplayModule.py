@@ -50,7 +50,6 @@ class AortaGeomReconDisplayModule(ScriptedLoadableModule):  # noqa: F405
         self.parent.dependencies = ["Volume Rendering", "Crop Volume"]
 
         self.parent.contributors = ["Jingyi Lin (McMaster University)"]
-
         self.parent.helpText = """
 This is an example of scripted loadable module bundled in an extension.
 See more information in <a href="https://github.com/organization/projectname#AortaGeomReconDisplayModule">module documentation</a>.

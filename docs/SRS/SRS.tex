@@ -76,6 +76,9 @@
 \newcounter{lcnum} %Likely change number
 \newcommand{\lthelcnum}{LC\thelcnum}
 \newcommand{\lcref}[1]{LC\ref{#1}}
+\newcounter{ucnum} %Unlikely change number
+\newcommand{\ltheucnum}{UC\theucnum}
+\newcommand{\ucref}[1]{UC\ref{#1}}
 
 \usepackage{fullpage}
 
@@ -151,6 +154,10 @@
 2023-03-01 & 1.01 & Modified system context image, coordinate systems, and goal statements.\\
 \midrule
 2023-04-29 & 1.02 & Added requirements, instance models, data definitions\\
+\midrule
+2023-06-05 & 1.03 & Added Traceability Matrices \\
+\midrule
+2023-06-18 & 1.04 & Include the missing sections, modified the equations of DD, and IM. Added 4 new NFRs.\\
 \bottomrule
 \end{tabularx}
 
@@ -166,24 +173,6 @@ Throughout this document SI (Syst\`{e}me International d'Unit\'{e}s) is employed
 as the unit system.  In addition to the basic units, several derived units are
 used as described below.  For each unit, the symbol is given followed by a
 description of the unit and the SI name.
-~\newline
-
-%\renewcommand{\arraystretch}{1.2}
-%\begin{table}[ht]
-  % \noindent \begin{tabular}{l l l} 
-  %   \toprule		
-  %   \textbf{symbol} & \textbf{unit} & \textbf{SI}\\
-  %   \midrule 
-  %   \si{\metre} & length & metre\\
-  %   \si{\kilogram} & mass	& kilogram\\
-  %   \si{\second} & time & second\\
-  %   \si{\celsius} & temperature & centigrade\\
-  %   \si{\joule} & energy & joule\\
-  %   \si{\watt} & power & watt (W = \si{\joule\per\second})\\
-  %   \bottomrule
-  % \end{tabular}
-  %	\caption{Provide a caption}
-%\end{table}
 
 \subsection{Table of Symbols}
 
@@ -195,41 +184,43 @@ The symbols are listed in alphabetical order.
 \noindent \begin{longtable}{l p{2cm} p{12cm}} \toprule
   \textbf{symbol} & \textbf{type} & \textbf{description}\\
   \midrule
+\textit{m} & $\mathbb{N}$ &  The first dimension of the segmentation volume.
 \\
-\textit{LOW} &  $\mathbb{N}$ &   A low intensity values means 0 on a scale of 0 and 1, or 0 on a scale of 0 to 255.
-\\ 
+\textit{m}$_{i}$ & $\mathbb{N}$ &  The first dimension of \textit{V}$_\text{in}$.
+\\
+\textit{m}$_{o}$ & $\mathbb{N}$ &  The first dimension of \textit{V}$_\text{out}$.
+\\
+\textit{n} & $\mathbb{N}$ &  The second dimension of the segmentation volume.
+\\
+\textit{n}$_{i}$& $\mathbb{N}$ &  The second dimension of \textit{V}$_\text{in}$.
+\\
+\textit{n}$_{o}$ & $\mathbb{N}$ &  The second dimension of \textit{V}$_\text{out}$.
+\\
+\textit{p} & $\mathbb{N}$ &  The third dimension of the segmentation volume.
+\\
+\textit{p}$_{i}$ & $\mathbb{N}$ &  The third dimension of \textit{V}$_\text{in}$.
+\\
+\textit{p}$_{o}$ & $\mathbb{N}$ & The third dimension of \textit{V}$_\text{out}$.
+\\
+\textit{slice} &  $\mathbb{R}^{m \times n}$ &  A slice is a 2 dimensional image view from the superior to inferior direction.
+\\
+\textit{v} &  $\mathbb{R}$ &  A voxel reports the intensity of a single point on a grey-scale three-dimensional images.
+\\
 \textit{HIGH} &  $\mathbb{N}$ &  A high intensity values means 1 on a scale of 0 and 1, or 255 on a scale of 0 to 255.
 \\ 
-\textit{slice} &  $\mathbb{R}^{m \times n}$ &  A slice is a 2 dimensional image view from the superior to inferior direction.
-\\ 
-\textit{Sv} & $\mathbb{N}^{3}$ &  A coordinate indicates the indexes of a starting voxel.
+\textit{LOW} &  $\mathbb{N}$ &   A low intensity values means 0 on a scale of 0 and 1, or 0 on a scale of 0 to 255.
 \\
-\textit{S} & $\mathbb{N}^{3}$ &  The size to crop a rectangular shaped subset of a volume.
+\textit{Seed\_a} & $\mathbb{N}^3$ & The initial ascending aorta centre coordinates.
 \\
-\textit{v} &  $\mathbb{R}$ &  A voxel reports the intensity of a single point on a grey-scale 3 dimensional image.
+\textit{Seed\_d} & $\mathbb{N}^3$ & The initial descending aorta centre coordinates.
 \\
-\textit{volume} & $\mathbb{R}^{m \times n \times p}$ &  Volume formed by a sequence of slice
+\textit{Start} & $\mathbb{N}^{3}$ &  A coordinate indicates the indexes of a starting voxel.
 \\
-
+\textit{V} &  $\mathbb{R}^{m \times n \times p}$ &  Volume formed by a sequence of slice
+\\
 \bottomrule
-\caption{Table of Symbols}
 \label{Table of Symbols}
 \end{longtable}
-
-% \renewcommand{\arraystretch}{1.2}
-% %\noindent \begin{tabularx}{1.0\textwidth}{l l X}
-% \noindent \begin{longtable*}{l l p{12cm}} \toprule
-% \textbf{symbol} & \textbf{unit} & \textbf{description}\\
-% \midrule 
-% $A_C$ & \si[per-mode=symbol] {\square\metre} & coil surface area
-% \\
-% $A_\text{in}$ & \si[per-mode=symbol] {\square\metre} & surface area over 
-% which heat is transferred in
-% \\ 
-% \bottomrule
-% \end{longtable*}
-% \plt{Use your problems actual symbols.  The si package is a good idea to use for
-%   units.}
 
 \subsection{Abbreviations and Acronyms}
 
@@ -253,99 +244,16 @@ The symbols are listed in alphabetical order.
   \bottomrule
 \end{tabular}\\
 
-% \subsection{Mathematical Notation}
-
-% \plt{This section is optional, but should be included for projects that make use
-%   of notation to convey mathematical information.  For instance, if typographic
-%   conventions (like bold face font) are used to distinguish matrices, this
-%   should be stated here.  If symbols are used to show mathematical operations,
-%   these should be summarized here.  In some cases the easiest way to summarize
-%   the notation is to point to a text or other source that explains the
-%   notation.}
-
-% \plt{This section was added to the template because some students use very
-%   domain specific notation.  This notation will not be readily understandable to
-%   people outside of your domain.  It should be explained.}
-
 \newpage
 
 \pagenumbering{arabic}
 
-% \plt{This SRS template is based on \citet{SmithAndLai2005, SmithEtAl2007}.  It
-%   will get you started.  You should not modify the section headings, without
-%   first discussing the change with the course instructor.  Modification means
-%   you are not following the template, which loses some of the advantage of a
-%   template, especially standardization.  Although the bits shown below do not
-%   include type information, you may need to add this information for your
-%   problem.  If you are unsure, please can ask the instructor.}
-
-% \plt{Feel free to change the appearance of the report by modifying the LaTeX
-%   commands.}
-
-% \plt{This template document assumes that a single program is being documented.
-%   If you are documenting a family of models, you should start with a commonality
-%   analysis.  A separate template is provided for this.  For program
-%   families you should look at \cite{Smith2006, SmithMcCutchanAndCarette2017}.
-%   Single family member programs are often programs based on a single physical
-%   model.  General purpose tools are usually documented as a family.  Families of
-%   physical models also come up.}
-
-% \plt{The SRS is not generally written, or read, sequentially.  The SRS is a
-%   reference document.  It is generally read in an ad hoc order, as the need
-%   arises.  For writing an SRS, and for reading one for the first time, the
-%   suggested order of sections is:
-% \begin{itemize}
-% \item Goal Statement
-% \item Instance Models
-% \item Requirements
-% \item Introduction
-% \item Specific System Description
-% \end{itemize}
-% }
-
-% \plt{Guiding principles for the SRS document:
-% \begin{itemize}
-% \item Do not repeat the same information at the same abstraction level.  If
-%   information is repeated, the repetition should be at a different abstraction
-%   level.  For instance, there will be overlap between the scope section and the
-%   assumptions, but the scope section will not go into as much detail as the
-%   assumptions section.
-% \end{itemize}
-% }
-
-% \plt{The template description comments should be disabled before submitting this
-%   document for grading.}
-
-% \plt{You can borrow any wording from the text given in the template.  It is part
-%   of the template, and not considered an instance of academic integrity.  Of
-%   course, you need to cite the source of the template.}
-
-% \plt{When the documentation is done, it should be possible to trace back to the
-%   source of every piece of information.  Some information will come from
-%   external sources, like terminology.  Other information will be derived, like
-%   General Definitions.}
-
-% \plt{An SRS document should have the following qualities: unambiguous,
-%   consistent, complete, validatable, abstract and traceable.}
-
-% \plt{The overall goal of the SRS is that someone that meets the Characteristics
-%   of the Intended Reader (Section~\ref{sec_IntendedReader}) can learn,
-%   understand and verify the captured domain knowledge.  They should not have to
-%   trust the authors of the SRS on any statements.  They should be able to
-%   independently verify/derive every statement made.}
-
-\section{Introduction}
+\section{Introduction} \label{intro}
 
 This document provides an overview of the Software Requirements Specification
-(SRS) for the \progname{}. \progname{}
-provides a highly customizable aorta segmentation module, 
-and an interactive user interface to apply the segmentation workflow.
+(SRS) for the \progname{}. \progname{} provides a semi-automatically aorta segmentation method, a highly customizable aorta segmentation module,  and an interactive user interface to apply the segmentation workflow. \\
 
-% \plt{The introduction section is written to introduce the problem.  It starts
-%   general and focuses on the problem domain. The general advice is to start with
-% a paragraph or two that describes the problem, followed by a ``roadmap''
-% paragraph.  A roadmap orients the reader by telling them what sub-sections to
-% expect in the Introduction section.}
+\noindent One of the existing methods involves the use ITK-Snap software and its segmentation module. First, the user needs to convert the DICOM data files (or any other file type) to VTK file. Then, the user can load the VTK file to ITK-Snap, and use its segmentation module to perform aorta segmentation. This segmentation method lets user initiate several voxels within the aorta volume and expand with a user's given size in each iteration. After the aorta volume has been filled by the ``bubble", the user needs to cut the parts that are not within the aorta.
 
 \subsection{Purpose of Document}
 The main purpose of this document is to provide sufficient information to
@@ -354,56 +262,14 @@ understand what \progname{} module does. The goals and theoretical models used i
 with an emphasis on explicitly identifying assumptions and unambiguous
 definitions.
 
-% \plt{This section summarizes the purpose of the SRS document.  It does not focus
-%   on the problem itself.  The problem is described in the ``Problem
-%   Description'' section (Section~\ref{Sec_pd}).  The purpose is for the document
-%   in the context of the project itself, not in the context of this course.
-%   Although the ``purpose'' of the document is to get a grade, you should not
-%   mention this.  Instead, ``fake it'' as if this is a real project.  The purpose
-%   section will be similar between projects.  The purpose of the document is the
-%   purpose of the SRS, including communication, planning for the design stage,
-%   etc.}
 
 \subsection{Scope of Requirements} 
+The scope of requirements only covers for the segmentation of the organ, more specifically the ascending aorta, the aortic curvature and the descending aorta. The requirements assume that the source of the data is accurate, and the user can manipulate (read, change dimensions) the data.
 
-% \plt{Modelling the real world requires simplification.  The full complexity of
-%   the actual physics, chemistry, biology is too much for existing models, and
-%   for existing computational solution techniques.  Rather than say what is in
-%   the scope, it is usually easier to say what is not.  You can think of it as
-%   the scope is initially everything, and then it is constrained to create the
-%   actual scope.  For instance, the problem can be restricted to 2 dimensions, or
-%   it can ignore the effect of temperature (or pressure) on the material
-%   properties, etc.}  
-
-% \plt{The scope section is related to the assumptions section
-%   (Section~\ref{sec_assumpt}).  However, the scope and the assumptions are not
-%   at the same level of abstraction.  The scope is at a high level.  The focus is
-%   on the ``big picture'' assumptions.  The assumptions section lists, and
-%   describes, all of the assumptions.}
-
-% \subsection{Characteristics of Intended Reader} \label{sec_IntendedReader}
-
-% \plt{This section summarizes the skills and knowledge of the readers of the
-%   SRS.  It does NOT have the same purpose as the ``User Characteristics''
-%   section (Section~\ref{SecUserCharacteristics}).  The intended readers are the
-%   people that will read, review and maintain the SRS.  They are the people that
-%   will conceivably design the software that is intended to meet the
-%   requirements.  The user, on the other hand, is the person that uses the
-%   software that is built.  They may never read this SRS document.  Of course,
-%   the same person could be a ``user'' and an ``intended reader.''}
-
-% \plt{The intended reader characteristics should be written as unambiguously and
-%   as specifically as possible.  Rather than say, the user should have an
-%   understanding of physics, say what kind of physics and at what level.  For
-%   instance, is high school physics adequate, or should the reader have had a
-%   graduate course on advanced quantum mechanics?}
+\subsection{Characteristics of Intended Reader} \label{sec_IntendedReader}
+The readers of the SRS should have taken the university level introduction to computational mathematic course, and be capable of understand the mathematical notation in the instance model section. The readers might have taken the university level introduction to software engineering course, have learned at least the waterfall software development model, and understands the purpose of the software specification requirement document, and other documents.
 
 \subsection{Organization of Document}
-
-%\plt{This section provides a roadmap of the SRS document.  It will help the
-%  reader orient themselves.  It will provide direction that will help them
-%  select which sections they want to read, and in what order.  This section will
-%  be similar between project.}
 
 The organization of this document follows the template for an SRS for
 scientific computing software proposed by \cite{Koothoor2013} and
@@ -413,7 +279,7 @@ assumptions. The goal statements are refined to the theoretical models, and
 theoretical
 models to the instance models. For readers that would like a more bottom-up
 approach, they can start reading the instance models in Section
-\ref{sssec:im} and trace back to find any additional information they
+\ref{sec_instance} and trace back to find any additional information they
 require. 
 
 \section{General System Description}
@@ -426,10 +292,10 @@ characteristics and lists the system constraints.
 Figure \ref{Fig_SystemContext} shows the system context.  A circle represents an
 external entity outside the software, the user in this case.  A rectangle
 represents the software system itself.  Arrows are used to show the data
-flow between the system and its environment. \\ \\ \\ \\ \\ \\ \\
+flow between the system and its environment. \\
 
 
-\begin{figure}[h!]
+\begin{figure}[H]
 \begin{center}
  \includegraphics[width=1\textwidth]{AortaSystemContext.png}
 \caption{System Context}
@@ -455,25 +321,10 @@ flow between the system and its environment. \\ \\ \\ \\ \\ \\ \\
 \end{itemize}
 
 \subsection{User Characteristics} \label{SecUserCharacteristics}
-The end user of \progname{} have taking the university level anatomy introduction course, and is capable to point out the center of the descending aorta and the ascending aorta.
+The end user of \progname{} should have taken the university level anatomy introduction course, and be capable of finding the center of the descending aorta and the ascending aorta.
 
-% \plt{This section summarizes the knowledge/skills expected of the user.
-%   Measuring usability, which is often a required non-function requirement,
-%   requires knowledge of a typical user.  As mentioned above, the user is a
-%   different role from the ``intended reader,'' as given in
-%   Section~\ref{sec_IntendedReader}.  As in Section~\ref{sec_IntendedReader}, the
-%   user characteristics should be specific an unambiguous.  For instance, ``The
-%   end user of \progname{} should have an understanding of undergraduate Level 1
-%   Calculus and Physics.''}
-
-\subsection{System Constraints}
-% Intended environment to run the program on are the Windows 10 systems.
-% \plt{System constraints differ from other type of requirements because they
-%   limit the developers' options in the system design and they identify how the
-%   eventual system must fit into the world. This is the only place in the SRS
-%   where design decisions can be specified.  That is, the quality requirement for
-%   abstraction is relaxed here.  However, system constraints should only be
-%   included if they are truly required.}
+\subsection{System Constraints} \label{SecSysConstraints}
+There are no system constraints of \progname{}.
 
 \section{Specific System Description}
 
@@ -482,22 +333,27 @@ view of the problem to be solved.  This is followed by the solution characterist
 specification, which presents the assumptions, theories, definitions and finally
 the instance models.  
 
-% \plt{Add any project specific details that are relevant
-%   for the section overview.}
-
 \subsection{Problem Description} \label{Sec_pd}
 
 The main purpose of \progname{} is to semi-automatically segment a 3D aorta geometry from a chest CT scan.
 
-\subsubsection{Organ segmentation}
-The organ segmentation or the organ boundary is useful for orientation and identification of the regions of interests inside the organ during the diagnostic or treatment procedure. The aorta segmentation is important for aortic calcification quantification and to guide the segmentation of other central vessels.
+\subsubsection{Organ Segmentation}
+
+Organs are the body's recognizable structures (for example, the heart, lungs, liver, eyes, and stomach) that perform specific functions. Figure \ref{FigHO} below shows all the organs within a human body. The organ segmentation or the organ boundary segmentation is useful for orientation and identification of the regions of interests inside the organ during the diagnostic or treatment procedure. The aorta segmentation is important for aortic calcification quantification and to guide the segmentation of other central vessels. \cite{TissuesAndOrgans}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=95mm]{humanOrgans}
+\caption{Human organs ~\cite{TissuesAndOrgans}}
+\label{FigHO}
+\end{figure}
 
 \subsubsection{Coordinate Systems}
 This subsection provides a list of terms that are used in the subsequent
 sections and their meaning, with the purpose of reducing ambiguity and making it
-easier to correctly understand the requirements. \\
+easier to correctly understand the requirements. \cite{Nejad2017} \\
 
-\noindent While working with medical images, it is necessary to be familiar with the different coordinate systems of the medical literarure and how data (voxels' orientation) is interpreted in different medical and non-medical software. Each coordinate system uses one or more numbers (coordinates) to uniquely determine the position of a point (in the medical context, we refer to each point as a voxel). The purpose of this section is to introduce some of the coordinate systems related to the medical imaging. There are different coordinate systems to represent data. A knowledge of the following coordinate systems is needed to work with the medical images.
+\noindent While working with medical images, it is necessary to be familiar with the different coordinate systems of the medical literature and how data (voxels' orientation) is interpreted in different medical and nonmedical software. Each coordinate system uses one or more numbers (coordinates) to uniquely determine the position of a point (in the medical context, we refer to each point as a voxel). The purpose of this section is to introduce some coordinate systems related to the medical imaging. There are different coordinate systems to represent data. A knowledge of the following coordinate systems is needed to work with the medical images.
 
 \paragraph{Cartesian Coordinate System}
 A Cartesian coordinate system is a coordinate system that specifies each point uniquely in a 2D plane by a pair of numerical coordinates or in a 3D space by three numerical coordinates. We assume a right-hand Cartesian coordinate system throughout this document.
@@ -519,97 +375,50 @@ Anatomical coordinate system, also known as patient coordinate system, is a righ
 \end{itemize}
 Figure \ref{ACS} shows this coordinate system.
 
-\begin{figure}[htbp!] 
+\begin{figure}[H] 
 \centering
-\subfloat{
-\includegraphics[width=80mm]{anatomicalCoordinateSystem1.png}
-}
-
-\subfloat{
-\includegraphics[width=60mm]{anatomicalCoordinateSystem2.png}
-}
+\subfloat[\centering Anatomical Coordinate System]{{\includegraphics[width=9cm]{anatomicalCoordinateSystem1.png} }}%
+\subfloat[\centering Space and Axes]{{\includegraphics[width=6cm]{anatomicalCoordinateSystem2.png} }}%
 \caption{Anatomical Coordinate System Space and Axes~\cite{slicerWCS}} %without this we cannot have label
 \label{ACS}
 \end{figure}
-\indent
 
-Medical applications follow an anatomical coordinate system to store voxels in sequences. Depending on how the data is stored, this coordinate system can be divided into different bases. The most common ones are:
+\noindent Medical applications follow an anatomical coordinate system to store voxels in sequences. Depending on how the data is stored, this coordinate system can be divided into different bases. The most common ones are:
 \begin{itemize}
 \item{LPS Coordinate System:}
 
-The LPS coordinate system is used in DICOM images and by the ITK toolkit. In this system, voxels are ordered from left to right in a row, rows are ordered from posterior to anterior, and slices are stored from inferior to superior.
+The LPS coordinate system is used in DICOM images. In this system, voxels are ordered from left to right in a row, rows are ordered from posterior to anterior, and slices are stored from inferior to superior.
 \indent
 LPS stands for Left-Posterior-Superior which indicates the directions that spatial axes are increasing.
 % RAI Radiological preferred axes.
 \item{RAS Coordinate System:}
 
-The RAS coordiante system is the preferred basis for Neurological applications such as 3dfim+, and 3D Slicer. RAS stands for Right-Anterior-Superior is similar to LPS with the first two axes flipped.
+The RAS coordinate system is the preferred basis for Neurological applications such as 3dfim+, and 3D Slicer. RAS stands for Right-Anterior-Superior is similar to LPS with the first two axes flipped.
 \end{itemize}
 
 \paragraph{Image Coordinate System}
+ 
 To specify locations in an image we need to know to which coordinate system it is referenced. Different software may use different orders as their index convention.
 
+\noindent Each of the coordinate systems mentioned above are used by different systems.
 
 \subsubsection{Physical System Description} \label{sec_phySystDescrip}
-
-% \plt{The purpose of this section is to clearly and unambiguously state the
-%   physical system that is to be modelled. Effective problem solving requires a
-%   logical and organized approach. The statements on the physical system to be
-%   studied should cover enough information to solve the problem. The physical
-%   description involves element identification, where elements are defined as
-%   independent and separable items of the physical system. Some example elements
-%   include acceleration due to gravity, the mass of an object, and the size and
-%   shape of an object. Each element should be identified and labelled, with their
-%   interesting properties specified clearly. The physical description can also
-%   include interactions of the elements, such as the following: i) the
-%   interactions between the elements and their physical environment; ii) the
-%   interactions between elements; and, iii) the initial or boundary conditions.}
-
-We do not study the physical system for DICOM or how the data is actually generated.
-
-% \begin{itemize}
-
-% \item[PS1:] 
-
-% \item[PS2:] ...
-
-% \end{itemize}
-
-% \plt{A figure here makes sense for most SRS documents}
-
-% \begin{figure}[h!]
-% \begin{center}
-% %\rotatebox{-90}
-% {
-%  \includegraphics[width=0.5\textwidth]{<FigureName>}
-% }
-% \caption{\label{<Label>} <Caption>}
-% \end{center}
-% \end{figure}
+We do not study the physical system for the images or how the data is actually generated.
 
 \subsubsection{Goal Statements}
 
-% \plt{The goal statements refine the ``Problem Description''
-%   (Section~\ref{Sec_pd}).  A goal is a functional objective the system under
-%   consideration should achieve. Goals provide criteria for sufficient
-%   completeness of a requirements specification and for requirements
-%   pertinence. Goals will be refined in Section “Instanced Models”
-%   (Section~\ref{sec_instance}). Large and complex goals should be decomposed
-%   into smaller sub-goals.  The goals are written abstractly, with a minimal
-%   amount of technical language.  They should be understandable by non-domain
-%   experts.}
-
 \noindent Given the DICOM image that includes patient's chest,
 the descending aorta center voxel coordinate,
-and the ascending aorta center voxel coordinate, the goal statements is:
+and the ascending aorta center voxel coordinate, the goal statements are:
 
 \begin{itemize}
 
 \item[GS\refstepcounter{goalnum}\thegoalnum \label{Gsegment}:] 
-Extract the three dimensional segmentation of the aorta.
+Extract the three-dimensional segmentation of the aorta.
 
 \end{itemize}
 
+\subsection{Solution Characteristics Specification}
 
 \subsubsection{Assumptions} \label{sec_assumpt}
 
@@ -620,21 +429,26 @@ system. The numbers given in the square brackets refer to the theoretical model
 likely change [LC], in which the respective assumption is used.
 
 \begin{itemize}
-
 \item[A\refstepcounter{assumpnum}\theassumpnum \label{A_aorta_volume}:]
-The 3D image provided by the user must contains a visually distingushable aorta volume [\ddref{segmentation}].
+The 3D image provided by the user must contain a visually distingushable aorta volume [\iref{roi}].
 
+\item[A\refstepcounter{assumpnum}\theassumpnum \label{A_roi}:]
+User should select a valid region of interest [\iref{segmentation}].
+
+\item[A\refstepcounter{assumpnum}\theassumpnum \label{A_singular_volume}:]
+User should input a singular volume (3 dimensional image) even if the data format supports the 4th dimension (time) [\iref{roi}].
 
 \end{itemize}
 
+\subsubsection{Theoretical Models}\label{sec_theoretical}
+There are no theoretical models used in this document.
+
+\subsubsection{General Definitions}\label{sec_gendef}
+There are no general definition used in this document.
 
 \subsubsection{Data Definitions}\label{sec_datadef}
-
 This section collects and defines all the data needed to build the instance
-models. The dimension of each quantity is also given. 
-
-~\newline
-
+models.
 
 \noindent
 \begin{minipage}{\textwidth}
@@ -646,7 +460,7 @@ Number& DD\refstepcounter{datadefnum}\thedatadefnum \label{v}\\
 \hline
 Label& \bf Voxel \\
 \hline
-Symbol & $ \text{v} : \mathbb{R}$\\
+Symbol & $ \textit{v} : \mathbb{R}$\\
 \hline
 % Units& $Mt^{-3}$\\
 % \hline
@@ -655,15 +469,15 @@ Symbol & $ \text{v} : \mathbb{R}$\\
   Equation& - \\
   \hline
   Description & 
-                A slice (\ddref{slice}) consists of n $\times$ n voxels. A real number is assigned to each voxel to reports the intensity on a grey-scale image.
+                A slice (\ddref{slice}) consists of $ n \times n$ voxels. A real number is assigned to each voxel to reports the intensity on a grey-scale image.
   \\
   \hline
-  Sources & \\
+  Sources & \cite{Nejad2017} \\
   \hline
   Ref.\ By & \ddref{slice}\\
   \hline
 \end{tabular}
-\end{minipage}\\ \\
+\end{minipage}\\
 
 % -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -677,7 +491,7 @@ Number& DD\refstepcounter{datadefnum}\thedatadefnum \label{slice}\\
 \hline
 Label& \bf Image/Slice \\
 \hline
-Symbol & $ \text{slice} : \mathbb{R}^{m \times n}$\\
+Symbol & $ \textit{slice} : \mathbb{R}^{m \times n}$\\
 \hline
 % Units& $Mt^{-3}$\\
 % \hline
@@ -686,15 +500,15 @@ Symbol & $ \text{slice} : \mathbb{R}^{m \times n}$\\
   Equation& - \\
   \hline
   Description & 
-                A visual representation of something that is represented using only two spatial dimensions with a sequence of arrays where a voxel (\ddref{v}) represents the color or intensity. Each move in the Z plane is considered as one slice
+                A visual representation that is using only two spatial dimensions with a sequence of arrays where a voxel (\ddref{v}) represents the color or intensity. Each move in the transverse plane (Figure \ref{ACS}) is considered as one slice
   \\
   \hline
-  Sources & \\
+  Sources & \cite{Nejad2017} \\
   \hline
   Ref.\ By & \ddref{volume}\\
   \hline
 \end{tabular}
-\end{minipage}\\ \\
+\end{minipage}\\
 
 % -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -708,7 +522,7 @@ Number& DD\refstepcounter{datadefnum}\thedatadefnum \label{volume}\\
 \hline
 Label& \bf Volume\\
 \hline
-Symbol & $ \text{volume} : \mathbb{R}^{m \times n \times p}$\\
+Symbol & $ \textit{V} : \mathbb{R}^{m \times n \times p}$\\
 \hline
 % Units& $Mt^{-3}$\\
 % \hline
@@ -716,26 +530,27 @@ Symbol & $ \text{volume} : \mathbb{R}^{m \times n \times p}$\\
   \hline
   Equation& - \\
   \hline
-  Description & 
-                A three dimensional image is a sequence of some images/slices (\ddref{slice}).
+  Description & A three-dimensional image is a sequence of some images/slices (\ddref{slice}).
   \\
   \hline
-  Sources & \\
+  Sources & - \\
   \hline
   Ref.\ By & \iref{roi}\\
   \hline
 \end{tabular}
 \end{minipage}\\
 
+\subsubsection{Data Types}\label{sec_datatypes}
+There are no additional data types used in this document.
+
 \subsubsection{Instance Models} \label{sec_instance}    
 
 This section transforms the problem defined in Section~\ref{Sec_pd} into 
 one which is expressed in mathematical terms. It uses concrete symbols defined 
-in Section~\ref{sec_datadef} to replace the abstract symbols in the models 
-identified in Sections~\ref{sec_theoretical} and~\ref{sec_gendef}. \\
+in Section~\ref{sec_datadef} to replace the abstract symbols in the models. There are no theoretical models or general definitions used in this document.\\
 
 \noindent 
-The goals \gsref{Gsegment} are solved by finding \iref{roi} and perform \iref{segmentation} on the descending and ascending aorta.
+The goals \gsref{Gsegment} are solved by finding \iref{roi} and perform \iref{segmentation} on the aorta.
 
 ~\newline
 
@@ -751,32 +566,26 @@ The goals \gsref{Gsegment} are solved by finding \iref{roi} and perform \iref{se
   \hline
   Label& \bf Region of interest \\
   \hline
-  Inputs & $ \text{V}_\text{in}:\mathbb{R}^{m_i \times n_i \times p_i}$ , $\text{Start} : \mathbb{N}^3 $, $m_o, n_o, p_o : \mathbb{N}$,  with the following constraints:
+  Inputs & $ \textit{V}_\text{in}:\mathbb{R}^{m_i \times n_i \times p_i}$ , $\textit{Start} : \mathbb{N}^3 $, $m_o, n_o, p_o : \mathbb{N}$,  with the following constraints:
 \begin{center}
-$ 0 \leq start[0] \leq (m_i-1) $ \\
-$ 0 \leq start[1] \leq (n_i-1) $ \\
-$ 0 \leq start[2] \leq (p_i-1) $ \\
-$ 0 < m_o < (m_i-start[0]) $ \\
-$ 0 < n_o < (n_i-start[1]) $ \\
-$ 0 < p_o < (p_i-start[2]) $ \\
+$ 0 \leq Start[0] < (m_i-1) $ \\
+$ 0 \leq Start[1] < (n_i-1) $ \\
+$ 0 \leq Start[2] < (p_i-1) $ \\
+$ 0 < m_o \leq (m_i-Start[0]) $ \\
+$ 0 < n_o \leq (n_i-Start[1]) $ \\
+$ 0 < p_o \leq (p_i-Start[2]) $ \\
 \end{center}\\
   \hline
-  Output& $ \text{V}_\text{out} : \mathbb{R}^{m_o \times n_o \times p_o}$ such that
+  Output& $ \textit{V}_\text{out} : \mathbb{R}^{m_o \times n_o \times p_o}$ such that
 \begin{center}
-$ \forall (i,j,k : \mathbb{N} | $ \\
-$ i \in [start[0]..start[0]+m_o] \wedge $ \\
-$ j \in [start[1]..start[1]+n_o] \wedge $ \\
-$ k \in [start[2]..start[2]+p_o] :$\\
-$ V_{out}[i][j][k]=V_{in}[i][j][k])$
+$ \forall (i,j,k : \mathbb{N}\text{ } | \text{ }$ \\
+$ i \in [Start[0]..Start[0]+m_o] \wedge $ \\
+$ j \in [Start[1]..Start[1]+n_o] \wedge $ \\
+$ k \in [Start[2]..Start[2]+p_o] :$\\
+$ V_\text{out}[i][j][k]=V_\text{in}[i][j][k])$
 \end{center}\\
   \hline
-  Description & The regions of interest is a subset (shaped like a box) of the 3D Vout. This subset contains the anatomical structure that the users wants to read, process or extract. 
-%~\newline For Starting\_voxel $[Sv_1, Sv_2, Sv_3]$ and for Size $[S_1, S_2, S_3]$:
-%\begin{center}
-%$  m_o=S_1  \; \wedge \;  n_o=S_2   \; \wedge \;  p_o=S_3 $
-%$ \forall i,j,k:\mathbb{N} \; \{i \in [0, m_o-1]  \; \wedge \; j \in [0,n_o-1] \; \wedge \; k \in [0, p_o-1] \} $. 
-%$ \text{V}_\text{out}[i,j,k] =  \text{V}_\text{in}[Sv_1+i, Sv_2+j, Sv_3+k] $. 
-%\end{center}
+  Description & The regions of interest is a subset (shaped like a box) of the 3D $V_{\text{out}}$. This subset contains the anatomical structure that the users wants to read, process or extract. 
   \\
   \hline
   Sources&  \\
@@ -800,126 +609,42 @@ $ V_{out}[i][j][k]=V_{in}[i][j][k])$
   \hline
   Label& \bf Segmentation \\
   \hline
-  Input & $ \text{V}_\text{in} : \mathbb{R}^{m \times n \times p}$ \\
+  Input & $ V_\text{in} : \mathbb{R}^{m \times n \times p}$, $Seed\_a: \mathbb{N}^{3}$, $Seed\_d: \mathbb{N}^3$ \\
   \hline
-  Output& $ \text{V}_\text{out} : \mathbb{R}^{m \times n \times p}$ such that
+  Output& $ V_\text{out} : \mathbb{R}^{m \times n \times p}$ such that
 \begin{center}
 $ \forall (i,j,k : \mathbb{N} $         $|$ \\
-$ i \in [0..m-1] \wedge $ \\
-$ j \in [1..n-1] \wedge $ \\
-$ k \in[2..p-1] :$\\
-$ (V_{in}[i,j,k] \in \text{structure} \implies V_{out}[i,j,k]=HIGH /)$\\
-$ V_{in}[i,j,k] \notin \text{structure} \implies V_{out}[i,j,k]=LOW)) $
-\end{center}\\
-
+$ i \in [0..m-1] \wedge $ 
+$ j \in [0..n-1] \wedge $
+$ k \in[0..p-1] :$\\
+$ (V_\text{in}[i,j,k] \in \text{structure} \implies V_\text{out}[i,j,k]=HIGH\text{ }|$\\
+$ V_\text{in}[i,j,k] \notin \text{structure} \implies V_\text{out}[i,j,k]=LOW)) $ \\
+\end{center}
+The inputs $Seed\_a$ and $Seed\_d$ are used to determine whether a given element of $V_\text{in}$ is in structure or not.
+\\
   \hline
-  Description & The process of extract an anotomical structure from the original 3D volume. The extracted anotomical structure is represented with high intensity pixel value. The rest of the image should have a lower intensity pixel value. A seed is what the algorithm needed as the inputs to perform segmentation, the type of a seed is different among different algorithm.
-%\newline For Vout:
-%\begin{center}
-%$ \forall i,j,k : \mathbb{N} \{i \in [0, m-1]  \; \wedge \; j \in [0,n-1] \; \wedge \; k \in [0, p-1] \} $.
-%\[
-%  \text{V}_\text{out}[i,j,k] = 
-%  \begin{cases} 
-%   HIGH & \text{if } \text{V}_\text{in}[i,j,k] \in \text{part of the anotomical structure} \\
-%   LOW  & \text{otherwise}
-%  \end{cases}
-%\]
-%\end{center}
-  \\
+  Description & The process of extract an anotomical structure from the original 3D volume. The extracted anotomical structure is represented with high intensity pixel value. The rest of the image should have a lower intensity pixel value. The segmentation needs the region of interset from \iref{roi} to process less noise data. A seed is what the algorithm needed as the inputs to perform segmentation, the type of seed is different among different algorithm. The seeds in this section are the centre coordinate of the descending aorta and the ascending aorta. The yellow dots shown in Figure \ref{AortaSeeds} are the example of the seed.\\
   \hline
   Sources& \\
   \hline
-  Ref.\ By & \rref{R_output}, \lcref{LC_seg_algorithm} \\
+  Ref.\ By & \rref{R_output}, \lcref{LC_seg_algorithm}\\
   \hline
 \end{tabular}
-\end{minipage}\\
+\end{minipage}
 
-%~\newline
+\begin{figure}[H]
+\centering
+\includegraphics[width=120mm]{Aorta_seeds}
+\caption{Aorta Seeds ~\cite{6346433}} \label{AortaSeeds} 
+\end{figure} 
 
-%\subsubsection*{Derivation of ...}
+\subsubsection{Input Data Constraints} \label{sec_DataConstraints}    
+The only software constraint is the input volume data. It must be an acceptable file type to the system processing the data. For example, using ITK-Snap software to perform organ segmentation, the input data must be of VTK file.
 
+\subsubsection{Properties of a Correct Solution} \label{sec_CorrectSolution}
 
-%\subsubsection{Input Data Constraints} \label{sec_DataConstraints}    
-%Data constraints on the input are as follows:
-%\newline
-%\begin{itemize}
-%\item{ For Starting\_voxel $[Sv_1, Sv_2, Sv_3]$, $ \text{V}_\text{in}:\mathbb{R}^{m_i \times n_i \times p_i}$ , and Size $[S_1, S_2, S_3]$:}\\
-%$ 0\leq Sv_1\leq m_i  \; \wedge \;  0 \leq  Sv_2 \leq n_i   \; \wedge \;  0 \leq  Sv_3 \leq p_i $. \\
-%$ 0 < S_1  \le m_i  \; \wedge \;  0 <  S_2 \le n_i   \; \wedge \;  0 <  S_3 \le p_i $.\\
-%$ 0 \leq  Sv_1 + S_1  \leq m_i  \; \wedge \;  0 \leq  Sv_2 +S_2 \leq n_i   \; \wedge \;  0 \leq  Sv_3+S_3 \leq p_i $\\
-%\end{itemize}
-
-%Table~\ref{TblInputVar} shows the data constraints on the input output
-%variables.  The column for physical constraints gives the physical limitations
-%on the range of values that can be taken by the variable.  The column for
-%software constraints restricts the range of inputs to reasonable values.  The%
-%software constraints will be helpful in the design stage for picking suitable
-%algorithms.  The constraints are conservative, to give the user of the model the
-%flexibility to experiment with unusual situations.  The column of typical values
-%is intended to provide a feel for a common scenario.  The uncertainty column
-%provides an estimate of the confidence with which the physical quantities can be
-%measured.  This information would be part of the input if one were performing an
-% uncertainty quantification exercise.
-
-% The specification parameters in Table~\ref{TblInputVar} are listed in
-% Table~\ref{TblSpecParams}.
-
-%\begin{table}[!h]
-%  \caption{Input Variables} \label{TblInputVar}
-%  \renewcommand{\arraystretch}{1.2}
-%\noindent \begin{longtable*}{l l l l c} 
-%  \toprule
-%  \textbf{Var} & \textbf{Physical Constraints} & \textbf{Software Constraints} &
-%                             \textbf{Typical Value} & \textbf{Uncertainty}\\
-%  \midrule 
-%$ 0\leq Sv_1\leq m_i  \; \wedge \;  0 \leq  Sv_2 \leq n_i   \; \wedge \;  0 \leq  Sv_3 \leq p_i $. 
-%$ 0 < S_1  \le m_i  \; \wedge \;  0 <  S_2 \le n_i   \; \wedge \;  0 <  S_3 \le p_i $.
-%$ 0 \leq  Sv_1 + S_1  \leq m_i  \; \wedge \;  0 \leq  Sv_2 +S_2 \leq n_i   \; \wedge \;  0 \leq  Sv_3+S_3 \leq p_i $
-
-  % Size $\it{sequence}[0..2]$ & $x>0 \forall x \in Size$ & $L_{\text{min}} \leq L \leq L_{\text{max}}$ & 1.5 \si[per-mode=symbol] {\metre} & 10\%
-%  \\
-%  \bottomrule
-%\end{longtable*}
-%\end{table}
-
-%\begin{table}[!h]
-%\caption{Specification Parameter Values} \label{TblSpecParams}
-%\renewcommand{\arraystretch}{1.2}
-%\noindent \begin{longtable*}{l l} 
-%  \toprule
-%  \textbf{Var} & \textbf{Value} \\
-%  \midrule 
-%  $L_\text{min}$ & 0.1 \si{\metre}\\
-%  \bottomrule
-%\end{longtable*}
-%\end{table}
-%
-%\subsubsection{Properties of a Correct Solution} \label{sec_CorrectSolution}
-%
-%\noindent
-%A correct solution must exhibit \plt{fill in the details}.  \plt{These
-%  properties are in addition to the stated requirements.  There is no need to
-%  repeat the requirements here.  These additional properties may not exist for
-%  every problem.  Examples include conservation laws (like conservation of
-%  energy or mass) and known constraints on outputs, which are usually summarized
-%  in tabular form.  A sample table is shown in Table~\ref{TblOutputVar}}
-
-%\begin{table}[!h]
-%\caption{Output Variables} \label{TblOutputVar}
-%\renewcommand{\arraystretch}{1.2}
-%\noindent \begin{longtable*}{l l} 
-%  \toprule
-%  \textbf{Var} & \textbf{Physical Constraints} \\
-%  \midrule 
-%  $T_W$ & $T_\text{init} \leq T_W \leq T_C$ (by~\aref{A_charge})
-%  \\
-%  \bottomrule
-%\end{longtable*}
-%\end{table}
-%
-%\plt{This section is not for test cases or techniques for verification and
-%  validation.  Those topics will be addressed in the Verification and Validation
-%  plan.}
+\noindent
+A correct solution cannot be measured, but it can be confirmed by visually comparing the intersection of the extracted anotomical structure and the original volume.
 
 \section{Requirements}
 
@@ -937,65 +662,61 @@ qualities that the software is expected to exhibit.
   \noindent \begin{longtable*}{l l p{12cm}} \toprule
          \textbf{symbol}  & \textbf{description}\\
          \midrule 
-$volume$ & CT Scans volume
+$V$ & CT Scans volume
 (\ddref{volume})\\ %comparing value used for excluding correlation coefficients
-$Seed$ & Any inputs neede by the segmentation algorithm (\iref{segmentation})\\
+$Seed\_a$ & The seed of ascending aorta centre coordinate (\iref{segmentation})\\
+$Seed\_d$ & The seed of descending aorta centre coordinate (\iref{segmentation})\\
          \bottomrule
 \end{longtable*}
 
-\item[R\refstepcounter{reqnum}\thereqnum \label{R_roi}:] Use the volume in \rref{R_Inputs} to create a second volume, the region of interest (\iref{roi}) that contains all of the aorta.
+\item[R\refstepcounter{reqnum}\thereqnum \label{R_roi}:] Use the volume in \rref{R_Inputs} to create a second volume, the region of interest (\iref{roi}) that contains all voxels of the aorta.
 
 \item[R\refstepcounter{reqnum}\thereqnum \label{R_output}:] Perform segmentation (\iref{segmentation}) on the volume created in \rref{R_roi}.
 
 \item[R\refstepcounter{reqnum}\thereqnum \label{R_visualize}:] Visualize a volume (\ddref{volume}).
 
- %non functional \item[R\refstepcounter{reqnum}\thereqnum \label{R_seed}:] Allow user to input various data type of data for seed.
-
-% \item[R\refstepcounter{reqnum}\thereqnum \label{R_output}:] Allow user to link to segmentation library, and perform segmentation (\iref{segmentation}) on the input data.
 \end{itemize}
 
 \subsection{Nonfunctional Requirements}
 
 \noindent \begin{itemize}
 
-%\item[NFR\refstepcounter{nfrnum}\thenfrnum \label{NFR_Accuracy}:]
-%  \textbf{Accuracy} \plt{Characterize the accuracy by giving the context/use for
-%    the software.  Maybe something like, ``The accuracy of the computed
-%    solutions should meet the level needed for $<$engineering or scientific
-%    application$>$.  The level of accuracy achieved by \progname{} shall be
-%    described following the procedure given in Section~X of the Verification and
-%    Validation Plan.''  A link to the VnV plan would be a nice extra.}
-
 \item[NFR\refstepcounter{nfrnum}\thenfrnum \label{NFR_GUI}:] \textbf{Usability}
-\progname{} provides a user-friendly interface to import any DICOM files, and input the required parameters.
+\progname{} allows a user that meets the user characteristics (Section \ref{SecUserCharacteristics})  to import any DICOM files, input the required parameters, and begin the segmentation effortlessly. The number of steps it takes using \progname{} should be at least 30\% less than the number of steps it takes by using ITK-Snap  (bubble method mentioned in Section \ref{intro}).
 
-\item[NFR\refstepcounter{nfrnum}\thenfrnum \label{NFR_visualize}:] \textbf{Usability}
-\progname{} can visualize the volume with 3D rendering.
+\item[NFR\refstepcounter{nfrnum}\thenfrnum \label{NFR_Safety}:] \textbf{Safety}
+For a valid image, the \progname{} provides a correct solution, or no answer.
 
-%\item[NFR\refstepcounter{nfrnum}\thenfrnum \label{NFR_Maintainability}:]
-%  \textbf{Maintainability} \plt{The effort required to make any of the likely
-%    changes listed for \progname{} should be less than FRACTION of the original
-%    development time.  FRACTION is then a symbolic constant that can be defined
-%    at the end of the report.}
-%
-%\item[NFR\refstepcounter{nfrnum}\thenfrnum \label{NFR_Portability}:]
-%  \textbf{Portability} \plt{This NFR is easier to write than the others.  The
-%    systems that \progname{} should run on should be listed here.  When possible
-%    the specific versions of the potential operating environments should be
-%    given.  To make the NFR verifiable a statement could be made that the tests
-%    from a given section of the VnV plan can be successfully run on all of the
-%    possible operating environments.}
+\item[NFR\refstepcounter{nfrnum}\thenfrnum \label{NFR_Learnability}:] \textbf{Learnability}
+The user interface and documentation should allow a user that meets the user characteristics (Section \ref{SecUserCharacteristics}) to learn how to do an aorta segmentation in at least 30\% of the time it takes to learn and use ITK-Snap (bubble method mentioned in Section \ref{intro}).
 
-\item Other NFRs that might be discussed include verifiability,
-  understandability and reusability.
+\item[NFR\refstepcounter{nfrnum}\thenfrnum \label{NFR_Accuracy}:] \textbf{Accuracy}
+For a given image the segmentation found by \progname{} should match that found by an expert using ITK-Snap. Whether to two segmentations match is something that would be judged by a medical imaging expert.
+
+\item[NFR\refstepcounter{nfrnum}\thenfrnum \label{NFR_Consistency}:] \textbf{Consistency}
+The coordinate system may be modified through the calculations, but any transformations will not alter the meaning of the data.
+
+%\item[NFR\refstepcounter{nfrnum}\thenfrnum \label{NFR_visualize}:] \textbf{Usability}
+%\progname{} can visualize the volume with 3D rendering.
 
 \end{itemize}
+
+
+\noindent Other NFRs that might be discussed in the future include verifiability, and reusability.
 
 \section{Likely Changes}    
 
 \noindent \begin{itemize}
 
 \item[LC\refstepcounter{lcnum}\thelcnum\label{LC_seg_algorithm}:] \iref{segmentation} There are various segmentation algorithms, each has a different procedure and inputs.
+	
+\end{itemize}
+
+\section{Unlikely Changes}    
+
+\noindent \begin{itemize}
+
+\item[UC\refstepcounter{ucnum}\theucnum\label{UC_roi}:] \iref{roi} The method to retrieve a region of interest from a volume is fixed.
 	
 \end{itemize}
 
@@ -1011,199 +732,76 @@ instance models with each other. Table~\ref{Table:R_trace} shows the
 dependencies of instance models, requirements, and data constraints on each
 other. Table~\ref{Table:A_trace} shows the dependencies of theoretical models,
 general definitions, data definitions, instance models, and likely changes on
-the assumptions.
+the assumptions.\\
 
-\plt{You will have to modify these tables for your problem.}
+\noindent The purpose of the traceability graphs is also to provide easy references on
+what has to be additionally modified if a certain component is changed.  The
+arrows in the graphs represent dependencies. The component at the tail of an
+arrow is depended on by the component at the head of that arrow. Therefore, if a
+component is changed, the components that it points to should also be
+changed.
 
-\plt{The traceability matrix is not generally symmetric.  If GD1 uses A1, that
-  means that GD1's derivation or presentation requires invocation of A1.  A1
-  does not use GD1.  A1 is ``used by'' GD1.}
-
-\plt{The traceability matrix is challenging to maintain manually.  Please do
-  your best.  In the future tools (like Drasil) will make this much easier.}
-
-\afterpage{
-\begin{landscape}
-\begin{table}[h!]
+\begin{table}[H]
 \centering
-\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}
-\hline
-	& \aref{A_OnlyThermalEnergy}& \aref{A_hcoeff}& \aref{A_mixed}& \aref{A_tpcm}& \aref{A_const_density}& \aref{A_const_C}& \aref{A_Newt_coil}& \aref{A_tcoil}& \aref{A_tlcoil}& \aref{A_Newt_pcm}& \aref{A_charge}& \aref{A_InitTemp}& \aref{A_OpRangePCM}& \aref{A_OpRange}& \aref{A_htank}& \aref{A_int_heat}& \aref{A_vpcm}& \aref{A_PCM_state}& \aref{A_Pressure} \\
-\hline
-\tref{T_COE}        & X& & & & & & & & & & & & & & & & & & \\ \hline
-\tref{T_SHE}        & & & & & & & & & & & & & & & & & & & \\ \hline
-\tref{T_LHE}        & & & & & & & & & & & & & & & & & & & \\ \hline
-\dref{NL}           & & X& & & & & & & & & & & & & & & & & \\ \hline
-\dref{ROCT}         & & & X& X& X& X& & & & & & & & & & & & & \\ \hline
-\ddref{FluxCoil}    & & & & & & & X& X& X& & & & & & & & & & \\ \hline
-\ddref{FluxPCM}     & & & X& X& & & & & & X& & & & & & & & & \\ \hline
-\ddref{D_HOF}       & & & & & & & & & & & & & & & & & & & \\ \hline
-\ddref{D_MF}        & & & & & & & & & & & & & & & & & & & \\ \hline
-\iref{ewat}         & & & & & & & & & & & X& X& & X& X& X& & & X \\ \hline
-\iref{epcm}         & & & & & & & & & & & & X& X& & & X& X& X& \\ \hline
-\iref{I_HWAT}       & & & & & & & & & & & & & & X& & & & & X \\ \hline
-\iref{I_HPCM}       & & & & & & & & & & & & & X& & & & & X & \\ \hline
-\lcref{LC_tpcm}     & & & & X& & & & & & & & & & & & & & & \\ \hline
-\lcref{LC_tcoil}    & & & & & & & & X& & & & & & & & & & & \\ \hline
-\lcref{LC_tlcoil}   & & & & & & & & & X& & & & & & & & & & \\ \hline
-\lcref{LC_charge}   & & & & & & & & & & & X& & & & & & & & \\ \hline
-\lcref{LC_InitTemp} & & & & & & & & & & & & X& & & & & & & \\ \hline
-\lcref{LC_htank}    & & & & & & & & & & & & & & & X& & & & \\
-\hline
-\end{tabular}
-\caption{Traceability Matrix Showing the Connections Between Assumptions and Other Items}
-\label{Table:A_trace}
-\end{table}
-\end{landscape}
-}
-
-\begin{table}[h!]
-\centering
-\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}
+\begin{tabular}{|c|c|c|c|c|c|}
 \hline        
-	& \tref{T_COE}& \tref{T_SHE}& \tref{T_LHE}& \dref{NL}& \dref{ROCT} & \ddref{FluxCoil}& \ddref{FluxPCM} & \ddref{D_HOF}& \ddref{D_MF}& \iref{ewat}& \iref{epcm}& \iref{I_HWAT}& \iref{I_HPCM} \\
+	& \ddref{v} & \ddref{slice} & \ddref{volume} & \iref{roi} &  \iref{segmentation} \\
 \hline
-\tref{T_COE}     & & & & & & & & & & & & & \\ \hline
-\tref{T_SHE}     & & & X& & & & & & & & & & \\ \hline
-\tref{T_LHE}     & & & & & & & & & & & & & \\ \hline
-\dref{NL}        & & & & & & & & & & & & & \\ \hline
-\dref{ROCT}      & X& & & & & & & & & & & & \\ \hline
-\ddref{FluxCoil} & & & & X& & & & & & & & & \\ \hline
-\ddref{FluxPCM}  & & & & X& & & & & & & & & \\ \hline
-\ddref{D_HOF}    & & & & & & & & & & & & & \\ \hline
-\ddref{D_MF}     & & & & & & & & X& & & & & \\ \hline
-\iref{ewat}      & & & & & X& X& X& & & & X& & \\ \hline
-\iref{epcm}      & & & & & X& & X& & X& X& & & X \\ \hline
-\iref{I_HWAT}    & & X& & & & & & & & & & & \\ \hline
-\iref{I_HPCM}    & & X& X& & & & X& X& X& & X& & \\
+\ddref{v}     & &  & & & \\ \hline
+\ddref{slice}    & X & & & &\\ \hline
+\ddref{volume}    & & X & & & \\ \hline
+\iref{roi}        & & & X & & \\ \hline
+\iref{segmentation}      &  & & & X & \\
 \hline
 \end{tabular}
 \caption{Traceability Matrix Showing the Connections Between Items of Different Sections}
 \label{Table:trace}
 \end{table}
 
-\begin{table}[h!]
+\begin{table}[H]
 \centering
-\begin{tabular}{|c|c|c|c|c|c|c|c|}
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|}
 \hline
-	& \iref{ewat}& \iref{epcm}& \iref{I_HWAT}& \iref{I_HPCM}& \ref{sec_DataConstraints}& \rref{R_RawInputs}& \rref{R_MassInputs} \\
+	& \iref{roi}& \iref{segmentation}& \rref{R_Inputs}& \rref{R_roi}& \rref{R_output} & \rref{R_visualize} & \nfrref{NFR_GUI} & \nfrref{NFR_Safety} & \nfrref{NFR_Learnability} & \nfrref{NFR_Accuracy} & \nfrref{NFR_Consistency} \\
 \hline
-\iref{ewat}            & & X& & & & X& X \\ \hline
-\iref{epcm}            & X& & & X& & X& X \\ \hline
-\iref{I_HWAT}          & & & & & & X& X \\ \hline
-\iref{I_HPCM}          & & X& & & & X& X \\ \hline
-\rref{R_RawInputs}     & & & & & & & \\ \hline
-\rref{R_MassInputs}    & & & & & & X& \\ \hline
-\rref{R_CheckInputs}   & & & & & X& & \\ \hline
-\rref{R_OutputInputs}  & X& X& & & & X& X \\ \hline
-\rref{R_TempWater}     & X& & & & & & \\ \hline 
-\rref{R_TempPCM}       & & X& & & & & \\ \hline
-\rref{R_EnergyWater}   & & & X& & & & \\ \hline
-\rref{R_EnergyPCM}     & & & & X& & & \\ \hline
-\rref{R_VerifyOutput}  & & & X& X& & & \\ \hline
-\rref{R_timeMeltBegin} & & X& & & & & \\ \hline
-\rref{R_timeMeltEnd}   & & X& & & & & \\ 
-\hline
+\iref{roi}            & & & & X & & &  & & & &\\ \hline
+\iref{segmentation}  & & & & & X & &  & & & &\\ \hline
+\rref{R_Inputs}       & & X & & & & & & & & &\\ \hline
+\rref{R_roi}   & X & & & & & & & & & &\\ \hline
+\rref{R_output}  & & X & & & & & & & & &\\ \hline
+\rref{R_visualize}  & & & & & & & X & & & &\\ \hline
+\nfrref{NFR_GUI} & & & X & X & X & X & & & X & &\\ \hline
+\nfrref{NFR_Safety}   & & X &  &  &  &  & & & & &\\ \hline
+\nfrref{NFR_Learnability} & & & & X & X & X & X & & & & \\ \hline
+\nfrref{NFR_Accuracy} & & X & & & & & & & & &\\ \hline
+\nfrref{NFR_Consistency} & & X & & & & & & & & &\\ \hline
 \end{tabular}
 \caption{Traceability Matrix Showing the Connections Between Requirements and Instance Models}
 \label{Table:R_trace}
 \end{table}
 
-The purpose of the traceability graphs is also to provide easy references on
-what has to be additionally modified if a certain component is changed.  The
-arrows in the graphs represent dependencies. The component at the tail of an
-arrow is depended on by the component at the head of that arrow. Therefore, if a
-component is changed, the components that it points to should also be
-changed. Figure~\ref{Fig_ATrace} shows the dependencies of theoretical models,
-general definitions, data definitions, instance models, likely changes, and
-assumptions on each other. Figure~\ref{Fig_RTrace} shows the dependencies of
-instance models, requirements, and data constraints on each other.
-
-% \begin{figure}[h!]
-% 	\begin{center}
-% 		%\rotatebox{-90}
-% 		{
-% 			\includegraphics[width=\textwidth]{ATrace.png}
-% 		}
-% 		\caption{\label{Fig_ATrace} Traceability Matrix Showing the Connections Between Items of Different Sections}
-% 	\end{center}
-% \end{figure}
-
-
-% \begin{figure}[h!]
-% 	\begin{center}
-% 		%\rotatebox{-90}
-% 		{
-% 			\includegraphics[width=0.7\textwidth]{RTrace.png}
-% 		}
-% 		\caption{\label{Fig_RTrace} Traceability Matrix Showing the Connections Between Requirements, Instance Models, and Data Constraints}
-% 	\end{center}
-% \end{figure}
-
-\section{Development Plan}
-
-\plt{This section is optional.  It is used to explain the plan for developing
-  the software.  In particular, this section gives a list of the order in which
-  the requirements will be implemented.  In the context of a course  this is
-  where you can indicate which requirements will be implemented as part of the
-  course, and which will be ``faked'' as future work.  This section can be
-  organized as a prioritized list of requirements, or it could should the
-  requirements that will be implemented for ``phase 1'', ``phase 2'', etc.}
-
-\section{Values of Auxiliary Constants}
-
-\plt{Show the values of the symbolic parameters introduced in the report.}
-
-\plt{The definition of the requirements will likely call for SYMBOLIC\_CONSTANTS.
-Their values are defined in this section for easy maintenance.}
-
-\plt{The value of FRACTION, for the Maintainability NFR would be given here.}
+\begin{table}[H]
+\centering
+\begin{tabular}{|c|c|c|c|}
+\hline
+	& \aref{A_aorta_volume}& \aref{A_roi} & \aref{A_singular_volume}\\
+\hline
+\ddref{v}                     & & &\\ \hline
+\ddref{slice}                 & & &\\ \hline
+\ddref{volume}             & & &X\\ \hline
+\iref{roi}                       &X & &X\\ \hline
+\iref{segmentation}        & &X &X\\ \hline
+\lcref{LC_seg_algorithm} &X &X &X\\ \hline
+\ucref{UC_roi}               & & &X\\ \hline
+\end{tabular}
+\caption{Traceability Matrix Showing the Connections Between Assumptions and Other Items}
+\label{Table:A_trace}
+\end{table}
 
 \newpage
 
+\section{Referance}
 \bibliographystyle {plainnat}
 \bibliography {../../refs/References}
-
-\newpage
-
-\noindent \plt{The following is not part of the template, just some things to consider
-  when filing in the template.}
-
-\noindent \plt{Grammar, flow and \LaTeX advice:
-\begin{itemize}
-\item For Mac users \texttt{*.DS\_Store} should be in \texttt{.gitignore}
-\item \LaTeX{} and formatting rules
-\begin{itemize}
-\item Variables are italic, everything else not, includes subscripts (link to
-  document)
-\begin{itemize}
-\item \href{https://physics.nist.gov/cuu/pdf/typefaces.pdf}{Conventions}
-\item Watch out for implied multiplication
-\end{itemize}
-\item Use BibTeX
-\item Use cross-referencing
-\end{itemize}
-\item Grammar and writing rules
-\begin{itemize}
-\item Acronyms expanded on first usage (not just in table of acronyms)
-\item ``In order to'' should be ``to''
-\end{itemize}
-\end{itemize}}
-
-\noindent \plt{Advice on using the template:
-\begin{itemize}
-\item Difference between physical and software constraints
-\item Properties of a correct solution means \emph{additional} properties, not
-  a restating of the requirements (may be ``not applicable'' for your problem).
-  If you have a table of output constraints, then these are properties of a
-  correct solution.
-\item Assumptions have to be invoked somewhere
-\item ``Referenced by'' implies that there is an explicit reference
-\item Think of traceability matrix, list of assumption invocations and list of
-  reference by fields as automatically generatable
-\item If you say the format of the output (plot, table etc), then your
-  requirement could be more abstract
-\end{itemize}
-}
 
 \end{document}
