@@ -47,7 +47,7 @@ class AortaGeomReconDisplayModule(ScriptedLoadableModule):  # noqa: F405
 
         self.parent.categories = ["Segmentation"]
 
-        self.parent.dependencies = ["Volume Rendering", "Crop Volume"]
+        self.parent.dependencies = []
 
         self.parent.contributors = ["Jingyi Lin (McMaster University)"]
         self.parent.helpText = """
