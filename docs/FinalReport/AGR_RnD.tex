@@ -38,26 +38,53 @@ The project has started with the a simple segmentation algoritm build on the jup
 \begin{figure}[ht]
     \centering
     \includegraphics[width=0.6\textwidth]{figures/Sample/Aorta_seeds.png}
-    \caption[Single Figure Environment Listed Title]{The aorta seeds}
+    \caption[Single Figure Environment Listed Title]{The aorta seeds \citep{6346433}}
     \label{fig_aorta_seed}
 \end{figure}
 
 In order to improve the usability of the \progname{} (reduce the amount of time for user inputs and execution), we implemented an extension module on 3D Slicer. 
 
-3D Slicer provides very useful modules such as Crop Volume module and Volume Rendering module.
+3D Slicer is a open-sourced medical image processing software for research. 3D Slicer provides useful modules such as Crop Volume module and Volume Rendering module, and it's highly modulizable with Python Scripting to control the extension module sequence, and QT designer to generate useful UI.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{figures/Sample/SlicerUI.png}
+    \caption[Single Figure Environment Listed Title]{AortaGeomRecon UI phase 1}
+    \label{fig_UI_1}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{figures/Sample/SlicerUI_2.png}
+    \caption[Single Figure Environment Listed Title]{AortaGeomRecon UI phase 2}
+    \label{fig_UI_2}
+\end{figure}
+
+\begin{itemize}
+\item 3D Slicer Data Structure
+\item 3D Slicer Widget Class
+\item 3D Slicer Logic Class
+\end{itemize}
+
 
 \section{Segmentation Algorithm}
 
-This is a sample chapter
+\begin{itemize}
+\item Inputs Parameter
+\item Threshold
+\item LevelSets
+\item Stop Condition
+\end{itemize}
+%This is a sample chapter
+%
+%If you need to use quotes, type it ``like this''.
 
-If you need to use quotes, type it ``like this''.
 
-
-\section{Referencing}
-These are some sample references to GAMYGDALA~\citep{popescu2014gamygdala} from 
-the \texttt{references.bib} file and state effects of 
-cognition~\citep{hudlicka2002time} from the \texttt{references\_another.bib} 
-file. These references are not in the same .bib file.
+%\section{Referencing}
+%These are some sample references to GAMYGDALA~\citep{popescu2014gamygdala} from 
+%the \texttt{references.bib} file and state effects of 
+%cognition~\citep{hudlicka2002time} from the \texttt{references\_another.bib} 
+%file. These references are not in the same .bib file.
 %
 %\section{Figures}
 %This is a single image figure (Figure~\ref{fig_singleenv}):
