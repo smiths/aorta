@@ -1,7 +1,7 @@
 \chapter{AortaGeomRecon Research and Development}
 This chapter will discuss about the research and development of the \progname{}. \\
-AortaGeomRecon stands for Aorta Geometry Reconstruction. The main objective of this software is to semi-automatically build 3D geometry of the Aorta from the patient's chest ct scans.  The existing methods are often involved of extensive manual works with very complex software, with a minimum of 10 minutes of human operator, who is a medical domain expert. \\
-The implementation till the date of this report can let the users who have the user characteristics described in SRS get the Aorta 3D geometry with only a few hyperparameters and 2 minutes of execution time. \\
+AortaGeomRecon stands for Aorta Geometry Reconstruction. The main objective of this software is to semi-automatically build 3D geometry of the Aorta from the patient's chest ct scans.  The existing methods are often involved of extensive manual works by using a software with many steps. An experienced user, who might be a medical domain expert, needs to do a minimum of 10 minutes of manual works. \\
+The implementation till the date of this report can let the users who have the user characteristics described in SRS \citep{SRS} get the Aorta 3D geometry with only a few hyperparameters which can be set within half a minute, and the result requires maximum 2 minutes of execution time. \\
 
 
 \section{Existing Methods}
@@ -11,17 +11,32 @@ There are many segmentation software available to the users, we will discuss the
 \begin{itemize}
 \item ITK-Snap\\
 ITK-Snap provides a segmentation method that first let user to select multiple voxels with a custom intial size and expanding size within any volume. We refer this method as ``bubble method''.\\
-Through many iterations, the voxels expand to fill the entire volume, finally user will need to cut the extra part of the volume. \\
+Through many iterations, the voxels expand to fill the entire volume, finally user will need to cut the extra part of the volume. This Figure~\ref{fig_ITK} shows the ITK-Snap UI executing the segmentation.
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.65\textwidth]{figures/Sample/ITK-Bubble-method.png}
+    \caption[ITK-Snap's Bubble segmentation UI]{ITK-Snap's Bubble segmentation method}
+    \label{fig_ITK}
+\end{figure}
+
 The advantages of the bubble method is that it guarantes to produce a correct the segmentation result. A medical domain expert can manually control the wanted area, and visually observing the segmentation result expanding, shrinking and the user can erase the unwanted part.
 
-The disadvantages of this method is that the operations described above are complicated. Eeasier to say then do, an opeartor who has previous experience building the geometry with this method still needed 20 minutes of manual work building a new aorta geometry. ITK-Snap software can only read VTK file, therefore the chest CT scans are usually DICOM needed a manual conversion before using this software and its segmentation method.
+The disadvantages of this method is that the operations described above are complicated. Eeasier to say then do, an opeartor who has previous experience building the geometry with this method still needed 20 minutes of manual work building a new aorta geometry. Plus, ITK-Snap software can only read VTK file, therefore the chest CT scans are usually DICOM needed a manual conversion before using this software and its segmentation method.
 
 \item 3D Slicer\\
-3D Slicer is another well-known medical image processing software for academic. 3D Slicer provides multiple segmentation methods, and one of the quickiest and easiest to use is the intensity based segmentation.\\
+3D Slicer is another well-known medical image processing software for academic. 3D Slicer provides multiple segmentation methods, and one of the quickiest and easiest to use is the intensity based segmentation.
 
-This method first let user select a small area that belongs to the wanted area on a 2D plane (Axial, Sagittal, and ). 3D Slicer read the pixels' intensity of the surrounding area, and segment based on the intensity. Any pixels's intensity that are within the range will be segmented as the segmentation result. 
+This method first let user select a small area that belongs to the wanted area on a 2D plane (Axial, Sagittal, and Coronal). 3D Slicer read the pixels' intensity of the surrounding area, and segment based on the intensity. Any pixels's intensity that is within the range will be segmented as the segmentation result. 
 
 Like the bubble method, this method often reads extra volume, and requires user to cut the unwanted parts. A Youtube video shows an experience user who gets the aorta 3D geometry with 10 minutes of manual works.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{figures/Sample/3D-Slicer-Segmentation.png}
+    \caption[3D Slicer BuiltIn Segmentation UI]{3D Slicer BuiltIn Segmentation Method}
+    \label{fig_3D_Seg_Builtin}
+\end{figure}
 \end{itemize}
 
 
@@ -30,51 +45,62 @@ This project uses GitHub for version control. \\
 GitHub issues tracker use to keep track the items to work on throughout the development of the project\\
 GitHub Project is used for dividing a large issue into smaller tasks, expected date of the completion. This is useful for project management.\\
 GitHub Workflow is a great tool for Continuous Integration tests. \\
-We uses GitHub Workflow for Linter and Continuous Integration tests. \\
+We uses GitHub Workflow for Linter and Continuous Integration tests. 
 
 \section{3D Slicer Extension Development}
-The project has started with the a simple segmentation algoritm build on the jupyter notebook. When getting a new patient's data, the user will need to investigate the chest ct scans using another software (3D Slicer, ITK-Snap), in order to know the starting voxel and the size crop the volume, and get the index of the aorta seed. This Figure~\ref{fig_aorta_seed} shows an example of the aorta seeds.
+The project has started with the a simple segmentation algoritm build on the jupyter notebook. When getting a new patient's data, the user will need to investigate the chest ct scans using another software (3D Slicer, ITK-Snap), to get the readings of the starting voxel and the size crop the volume, and get the index of the aorta seed. This Figure~\ref{fig_aorta_seed} shows an example of the aorta seeds.
 
 \begin{figure}[ht]
     \centering
-    \includegraphics[width=0.6\textwidth]{figures/Sample/Aorta_seeds.png}
-    \caption[Single Figure Environment Listed Title]{The aorta seeds \citep{6346433}}
+    \includegraphics[width=0.8\textwidth]{figures/Sample/Aorta_seeds.png}
+    \caption[The Aorta Seeds]{The aorta seeds \citep{6346433}}
     \label{fig_aorta_seed}
 \end{figure}
 
-In order to improve the usability of the \progname{} (reduce the amount of time for user inputs and execution), we implemented an extension module on 3D Slicer. 
+To improve the usability of the \progname{} (reduce the amount of time for user inputs and execution), we implemented an extension module on 3D Slicer. 
 
-3D Slicer is a open-sourced medical image processing software for research. 3D Slicer provides useful modules such as Crop Volume module and Volume Rendering module, and it's highly modulizable with Python Scripting to control the extension module sequence, and QT designer to generate useful UI.
+3D Slicer is a open-sourced medical image processing software for research. 3D Slicer provides useful modules such as Crop Volume module and Volume Rendering module, and it's highly modulizable with Python Scripting to control the extension module sequence, and QT designer to generate Graphical User Interface.
 
-\begin{figure}[H]
+\begin{figure}[ht]
     \centering
     \includegraphics[width=\textwidth]{figures/Sample/SlicerUI.png}
-    \caption[Single Figure Environment Listed Title]{AortaGeomRecon UI phase 1}
+    \caption[AortaGeomRecon phase 1 User Interface]{AortaGeomRecon UI phase 1}
     \label{fig_UI_1}
 \end{figure}
 
-\begin{figure}[H]
+\begin{figure}[ht]
     \centering
     \includegraphics[width=\textwidth]{figures/Sample/SlicerUI_2.png}
-    \caption[Single Figure Environment Listed Title]{AortaGeomRecon UI phase 2}
+    \caption[AortaGeomRecon phase 2 User Interface]{AortaGeomRecon UI phase 2}
     \label{fig_UI_2}
 \end{figure}
 
-\begin{itemize}
-\item 3D Slicer Data Structure
-\item 3D Slicer Widget Class
-\item 3D Slicer Logic Class
-\end{itemize}
+3D Slicer supports modulization with an extension. An extension is a software bundle that includes every modules to solve a specific medical image problem. An extension can compose multiple module, where each module is dedicated to solve a sub-problem.
+
+%\begin{itemize}
+%\item 3D Slicer Data Structure \\ 
+
+3D Slicer's Data Structure can be divided into two categories: Node for storing large data such as DICOM with a Volume Node, Volume rendering Region of Interest Node, Label Map Volume Node, and parameters are read from extension's module UI and are stored as string. Every data stored in 3D Slicer can be accessed by the 3D Slicer's Widget Class and Logic Class for further processing.
+
+On a higher level, 3D Slicer stores all the above data in a scene object. 3D Slicer can load any MRMLscene file, this allowed user to retrieve all the data nodes and parameters. On the other hand, 3D Slicer has a special input module, the DICOM database allowed user to store DICOM metadata in 3D Slicer.
+
+Every ScriptLoadableModule in 3D Slicer have a Widget Class and a Logic Class. The Widget Class is used to initialize the extension module's UI component, and the parameters tied to the UI compoenent. The module's Logic Class is used to perform the processing of the data. In the Logic Class, we initialize an AortaGeomRecon Segmenter object with the attributes set to the parameters reading from UI component, which are inputs by the user. After completing the segmentation with Segmenter object, we convert the SimpleITK image object to a volume node corresponding in 3D Slicer, which allow the user to visualize the segmentation result. 
+%\end{itemize}
 
 
 \section{Segmentation Algorithm}
 
-\begin{itemize}
-\item Inputs Parameter
-\item Threshold
-\item LevelSets
-\item Stop Condition
-\end{itemize}
+The 
+
+%\begin{itemize}
+%\item Inputs Parameter
+
+\indent The parameters for AortaGeomRecon Segmenter class are passing the 
+
+%\item Threshold
+%\item LevelSets
+%\item Stop Condition
+%\end{itemize}
 %This is a sample chapter
 %
 %If you need to use quotes, type it ``like this''.
