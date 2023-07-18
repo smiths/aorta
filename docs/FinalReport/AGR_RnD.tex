@@ -7,10 +7,10 @@ The implementation till the date of this report can let the users who have the u
 \section{Existing Methods}
 There are many segmentation software available to the users, we will discuss the two main methods on two softwares.
 
+\subsection{ITK-Snap bubble method} 
+\indent
+ITK-Snap provides a segmentation method that first let user to select multiple voxels with a custom intial size and expanding size within any volume. We refer this method as ``bubble method''.
 
-\begin{itemize}
-\item ITK-Snap\\
-ITK-Snap provides a segmentation method that first let user to select multiple voxels with a custom intial size and expanding size within any volume. We refer this method as ``bubble method''.\\
 Through many iterations, the voxels expand to fill the entire volume, finally user will need to cut the extra part of the volume. This Figure~\ref{fig_ITK} shows the ITK-Snap UI executing the segmentation.
 
 \begin{figure}[ht]
@@ -24,7 +24,7 @@ The advantages of the bubble method is that it guarantes to produce a correct th
 
 The disadvantages of this method is that the operations described above are complicated. Eeasier to say then do, an opeartor who has previous experience building the geometry with this method still needed 20 minutes of manual work building a new aorta geometry. Plus, ITK-Snap software can only read VTK file, therefore the chest CT scans are usually DICOM needed a manual conversion before using this software and its segmentation method.
 
-\item 3D Slicer\\
+\subsection{3D Slicer intensity interval segmentation}
 3D Slicer is another well-known medical image processing software for academic. 3D Slicer provides multiple segmentation methods, and one of the quickiest and easiest to use is the intensity based segmentation.
 
 This method first let user select a small area that belongs to the wanted area on a 2D plane (Axial, Sagittal, and Coronal). 3D Slicer read the pixels' intensity of the surrounding area, and segment based on the intensity. Any pixels's intensity that is within the range will be segmented as the segmentation result. 
@@ -37,15 +37,35 @@ Like the bubble method, this method often reads extra volume, and requires user 
     \caption[3D Slicer BuiltIn Segmentation UI]{3D Slicer BuiltIn Segmentation Method}
     \label{fig_3D_Seg_Builtin}
 \end{figure}
+
+\section{Segmentation Algorithm}
+
+This section introduces the key concepts of the implementation on the segmentation algorithm. The algorithm is developed in Python, by using external libraries including SimpleITK and Numpy. 
+
+\subsection{Background}
+
+SimpleITK is an open-source multi-dimensional image analysis library Developed by the Insight Toolkit community for the biomedical sciences and beyond. NumPy is the fundamental package for scientific computing with Python, especially for the performance on multi-dimensional array processing.
+
+The algorithm works best with the chest volume cropped to a rectangular prism that contains the aorta and parts of the other organs such as the backbone, blood vessels, and the heart. This can be done with 3D Slicer and its builtIn modules, Volume rendering and Crop Volume.
+
+\subsection{Parameters}
+The main parameters inputs from the users are:
+\begin{itemize}
+\item The centre coordinates of Descending Aorta and Ascending Aorta locate on the same axial plane
+\item The stop limit which controls the stop condition
+\item The threshold coefficient which controls the segmentation acceptable intensity range
+\item The kernel size which controls the init size 
+\item The threshold Segmentation Level Sets Image Filter parameters, including:
+\begin{itemize}
+\item The rms error
+\item The maximum iteration
+\item The curvature scaling
+\item The propagation scaling
+\end{itemize}
 \end{itemize}
 
 
-\section{GitHub and Workflows}
-This project uses GitHub for version control. \\
-GitHub issues tracker use to keep track the items to work on throughout the development of the project\\
-GitHub Project is used for dividing a large issue into smaller tasks, expected date of the completion. This is useful for project management.\\
-GitHub Workflow is a great tool for Continuous Integration tests. \\
-We uses GitHub Workflow for Linter and Continuous Integration tests. 
+
 
 \section{3D Slicer Extension Development}
 The project has started with the a simple segmentation algoritm build on the jupyter notebook. When getting a new patient's data, the user will need to investigate the chest ct scans using another software (3D Slicer, ITK-Snap), to get the readings of the starting voxel and the size crop the volume, and get the index of the aorta seed. This Figure~\ref{fig_aorta_seed} shows an example of the aorta seeds.
@@ -80,22 +100,29 @@ To improve the usability of the \progname{} (reduce the amount of time for user 
 %\begin{itemize}
 %\item 3D Slicer Data Structure \\ 
 
+\subsection{3D Slicer's data structure}
+
 3D Slicer's Data Structure can be divided into two categories: Node for storing large data such as DICOM with a Volume Node, Volume rendering Region of Interest Node, Label Map Volume Node, and parameters are read from extension's module UI and are stored as string. Every data stored in 3D Slicer can be accessed by the 3D Slicer's Widget Class and Logic Class for further processing.
 
 On a higher level, 3D Slicer stores all the above data in a scene object. 3D Slicer can load any MRMLscene file, this allowed user to retrieve all the data nodes and parameters. On the other hand, 3D Slicer has a special input module, the DICOM database allowed user to store DICOM metadata in 3D Slicer.
 
+\subsection{3D Slicer's scripted module}
+
 Every ScriptLoadableModule in 3D Slicer have a Widget Class and a Logic Class. The Widget Class is used to initialize the extension module's UI component, and the parameters tied to the UI compoenent. The module's Logic Class is used to perform the processing of the data. In the Logic Class, we initialize an AortaGeomRecon Segmenter object with the attributes set to the parameters reading from UI component, which are inputs by the user. After completing the segmentation with Segmenter object, we convert the SimpleITK image object to a volume node corresponding in 3D Slicer, which allow the user to visualize the segmentation result. 
+
+\section{GitHub and Workflows}
+This project uses GitHub for version control. \\
+GitHub issues tracker use to keep track the items to work on throughout the development of the project\\
+GitHub Project is used for dividing a large issue into smaller tasks, expected date of the completion. This is useful for project management.\\
+GitHub Workflow is a great tool for Continuous Integration tests. \\
+We uses GitHub Workflow for Linter and Continuous Integration tests. 
+
 %\end{itemize}
 
-
-\section{Segmentation Algorithm}
-
-The 
 
 %\begin{itemize}
 %\item Inputs Parameter
 
-\indent The parameters for AortaGeomRecon Segmenter class are passing the 
 
 %\item Threshold
 %\item LevelSets
