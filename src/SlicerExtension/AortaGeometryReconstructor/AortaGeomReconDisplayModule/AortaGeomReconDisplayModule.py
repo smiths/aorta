@@ -51,14 +51,15 @@ class AortaGeomReconDisplayModule(ScriptedLoadableModule):  # noqa: F405
 
         self.parent.contributors = ["Jingyi Lin (McMaster University)"]
         self.parent.helpText = """
-This is an example of scripted loadable module bundled in an extension.
-See more information in <a href="https://github.com/organization/projectname#AortaGeomReconDisplayModule">module documentation</a>.
+Please select the correct aorta seeds and adjust the hyperparameters in little adjustment.
+<br>
+Please input a Chest CT Scans, AortaGeomRecon is not responsible to detect a correct CT Scans.
+<br><br>
+See more about the segmentation algorithm in <a href="https://joviel25.github.io/AortaGR-design-document/index.html">Design documentation</a>.
 """  # noqa: E501
 
-        # TODO: replace with organization, grant and thanks
         self.parent.acknowledgementText = """
-This file was originally developed by Jean-Christophe Fillion-Robin, Kitware Inc., Andras Lasso, PerkLab,
-and Steve Pieper, Isomics, Inc. and was partially funded by NIH grant 3P41RR013218-12S1.
+        The segmentation algorithm was partialy developed by Kailin Chu.
 """  # noqa: E501
 
         # Additional initialization step after application startup is complete
@@ -249,6 +250,7 @@ class AortaGeomReconDisplayModuleWidget(ScriptedLoadableModuleWidget, VTKObserva
         Called each time the user opens this module.
         """
         # Make sure parameter node exists and observed
+        slicer.util.setDataProbeVisible(False)
         self.initializeParameterNode()
 
     def exit(self):
@@ -724,6 +726,7 @@ class AortaGeomReconDisplayModuleLogic(ScriptedLoadableModuleLogic):  # noqa: F4
             Boolean: Return True if desc aorta seed and asc aorta seed
             are not empty.
         """ # noqa
+        cond1 = cond2 = False
         if phase == '2':
             cond1 = (ui.descAortaSeed.coordinates == "0,0,0")
             cond2 = (ui.ascAortaSeed.coordinates == "0,0,0")
