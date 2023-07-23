@@ -1,0 +1,423 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Aorta Geometry Reconstruction &mdash; AortaGeomRecon  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/_static/custom.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> AortaGeomRecon
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption" role="heading"><span class="caption-text">Modules documentation:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">AortaGeomReconModule</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="glossary.html">Glossary</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">AortaGeomRecon</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Aorta Geometry Reconstruction</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/User Instructions.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <section id="aorta-geometry-reconstruction">
+<h1>Aorta Geometry Reconstruction<a class="headerlink" href="#aorta-geometry-reconstruction" title="Permalink to this heading">¶</a></h1>
+<div class="line-block">
+<div class="line">Developer Names: Jingyi Lin</div>
+<div class="line">&gt; *Segmentation algorithm implemented partly based the
+<a class="reference external" href="https://github.com/smiths/GeomRecon/tree/master/People/Kailin">work</a>
+from Kailin Chu</div>
+</div>
+<p>Date of project update: 2023/05/15</p>
+<p>The AortaGeomRecon <a class="reference external" href="https://joviel25.github.io/AortaGR-design-document/index.html">design
+document</a>
+explains in detail of the algorithm workflow; It includes a detailed
+glossary of the terms used throughout the other documentation.</p>
+<p>This project provides a software tool to semi-automatically segment a 3D
+aorta geometry from a chest CT scan. It uses a <a class="reference external" href="https://www.slicer.org/">3D
+Slicer</a> extension in the source folder
+(<a class="reference external" href="https://github.com/smiths/aorta/tree/main/src/SlicerExtension/AortaGeometryReconstructor">SlicerExtension/AortaGeometryReconstructor</a>)
+to accomplish the goal.</p>
+<p>Users must first install the 3D Slicer software, import the extension in
+the source folder, and load the CT scans in DICOM file format to 3D
+Slicer. Valuable resources for using 3D Slicer includes a <a class="reference external" href="https://www.dropbox.com/s/vn8sqlof2kag2kk/SlicerWelcome-tutorial_Slicer4.8_SoniaPujol.pdf">Welcome
+tutorial</a>,
+a description of <a class="reference external" href="https://slicer.readthedocs.io/en/latest/user_guide/user_interface.html#application-overview">3D Slicer
+user-interface</a>,
+information on the <a class="reference external" href="https://slicer.readthedocs.io/en/latest/user_guide/modules/volumerendering.html">Volume rendering
+module</a>,
+and the 3D Slicer’s <a class="reference external" href="https://slicer.readthedocs.io/en/latest/developer_guide/index.html">developer
+guide</a>.</p>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Permalink to this heading">¶</a></h2>
+<p>Automatic aorta segmentation in thoracic computed tomography (CT) scans
+is important for aortic calcification quantification and to guide the
+segmentation of other central vessels. The work to manually segment
+regions of interest can be time-consuming and repetitive, and there are
+some automatic aorta segmentation algorithms posted.</p>
+<p>This project implemented one of the aorta segmentation algorithms as 3D
+Slicer extension module. The algorithm first needs the user to crop the
+volume of interest (VOI) by using the 3D Slicer’s volume rendering
+module. Next, the user needs to provide two important seeds, the center
+point of the descending Aorta and the center point of the ascending
+Aorta, as shown by the yellow dots in the image below.</p>
+<p align="center"></p><section id="about-3d-slicer">
+<h3>About 3D Slicer<a class="headerlink" href="#about-3d-slicer" title="Permalink to this heading">¶</a></h3>
+<p>3D Slicer is an open-sourced desktop software that solves advanced image
+computing challenges with a focus on clinical and biomedical
+applications. 3D Slicer software provides a clean user interface and a
+clear guide to developing highly customizable extensions and modules.</p>
+<p>The folders and files for this project are as follows:</p>
+<div class="line-block">
+<div class="line">docs - Documentation for the project</div>
+<div class="line">refs - Reference material used for the project, including papers</div>
+<div class="line">src - Source code</div>
+<div class="line">test - Test cases</div>
+<div class="line">src/SlicerExtension/AortaGeometryReconstructor - 3D Slicer extension
+folder to be loaded to 3D Slicer</div>
+</div>
+</section>
+</section>
+<section id="to-install-3d-slicer-and-import-an-extension">
+<h2>To install 3D Slicer and import an extension:<a class="headerlink" href="#to-install-3d-slicer-and-import-an-extension" title="Permalink to this heading">¶</a></h2>
+<ol class="arabic simple">
+<li><p>Download 3D Slicer from <a class="reference external" href="https://download.slicer.org/">here</a>. This
+project has been tested with the stable release, version 5.0.3.</p></li>
+<li><p>Click on the image below for a video demonstrating the import of
+AortaGeomRecon module, and the complete workflow to perform aorta
+segmentation. <a class="reference external" href="https://youtu.be/1eK5k6bazNs"><img alt="AortaGeomRecon Video instruction" src="_images/52a80405132d509b372216db95c2796026fd8211.jpg" /></a></p></li>
+</ol>
+</section>
+<section id="to-apply-the-segmentation-algorithm">
+<h2>To apply the segmentation algorithm<a class="headerlink" href="#to-apply-the-segmentation-algorithm" title="Permalink to this heading">¶</a></h2>
+<ol class="arabic">
+<li><p>Make sure that you have done the cropping and have a cropped volume
+in phase 1 Crop Aorta, then click on Apply to move to next phase.</p></li>
+<li><p>Once you are in phase 2 Aorta Segmentation, right click on one of the
+red, green or yellow window image area, you should see a list of
+options as shown below.</p></li>
+<li><p>Select the “Slice intersection” option once you have loaded AGR
+module. Right click and check “Interaction” option. Alternatively,
+you can hold “shift” and move around mouse cursor to move around the
+intersection point.</p>
+<p align="center"></p></li>
+<li><p>Hold on Mouse left button to drag and place the intersection point on
+the point of interest, as described in the image from Overview
+section.</p></li>
+<li><p>In phase 2 Aorta Segmentation, you should see that the values of
+DesAortaSeeds and AscAortaSeeds coordinate are changing when moving
+the intersection point. Simply lock one of the two seeds with the
+corresponding checkbox and use intersection to input the other one.
+Make sure you select the two seeds from the same slice. Once you have
+entered all hyperparameters, click on Apply. After a few minutes, you
+should see a new volume named “Seg_th{a number}_k{a number}_c{a
+number}_p{a number}”, the name simply takes some of the important
+hyperparameters as the name, where “th” stands for threshold
+coefficient, k stands for kernel size, c for curvature scaling, and p
+for propagation scaling.</p></li>
+</ol>
+<section id="additional-tips-for-hyperparmeters-optimization-based-on-the-6-samples">
+<h3>Additional tips for hyperparmeters optimization (based on the 6 samples).<a class="headerlink" href="#additional-tips-for-hyperparmeters-optimization-based-on-the-6-samples" title="Permalink to this heading">¶</a></h3>
+<ol class="arabic simple">
+<li><p>As tested with the current 6 samples, I would always start with a
+threshold coefficient range of 2-3, a stop limit of 5-6, and kernel
+size of 7-10. This would ensure that the noises (blood vessels,
+backbones) are excluded as much as possible. Then start increasing
+the stop limit, threshold coefficient.</p></li>
+<li><p>Curvature scaling adds weight to the segmentation speed term at the
+curvature. This implies the segmentation result would have high
+probability to include the curvature. However, this might not be the
+best hyperparameter to tune up, because usually the aorta is not an
+isolated island, and it connects to the backbone or other noises.
+Tune this hyperparameter up will segment out any connected island
+(noises).</p></li>
+<li><p>Propagation scaling adds weight to the segmentation speed term in
+general, this means that if not reaching the boarder, the
+segmentation filter will include the next layer of pixels.</p></li>
+</ol>
+</section>
+</section>
+<section id="to-display-the-segmentation-label-image">
+<h2>To display the segmentation label image<a class="headerlink" href="#to-display-the-segmentation-label-image" title="Permalink to this heading">¶</a></h2>
+<ol class="arabic simple">
+<li><p>Use Volume Rendering Module and follow the <a class="reference external" href="https://github.com/smiths/aorta/tree/main#to-use-volume-rendering-to-crop-a-voi">step
+2</a>
+to display the segmented volume. For example, to show the segmented
+result from phase 2 Descending Aorta Segmentation, you should select
+the volume with the name “Segmented Descending Aorta Volume” by
+default.</p></li>
+<li><p>You can see both the original volume and the segmented volume to see
+the overlaps between the two volumes. Make sure you select the eye
+icon for both volumes, and make sure that the original volume use
+preset of CT-Bones to have the different coloring.</p></li>
+</ol>
+<section id="get-the-vtk-output-of-the-cropped-volume-or-segmentation-label-image">
+<h3>Get the vtk output of the cropped volume or segmentation label image<a class="headerlink" href="#get-the-vtk-output-of-the-cropped-volume-or-segmentation-label-image" title="Permalink to this heading">¶</a></h3>
+<ol class="arabic simple">
+<li><p>Use file dialog to select a path.</p></li>
+<li><p>If on phase 1, the program outputs the cropped volume. Otherwise, the
+program outputs the segmentation label image.</p></li>
+</ol>
+</section>
+</section>
+<section id="additional-tips-to-use-this-application">
+<h2>Additional tips to use this application:<a class="headerlink" href="#additional-tips-to-use-this-application" title="Permalink to this heading">¶</a></h2>
+<ol class="arabic simple">
+<li><p>The user can save and load an MRML scene object, which is used to
+store all types of data, including the loaded Dicom data, any inputs
+by the user on the UI, markups, etc.</p></li>
+<li><p>In “Application Settings”, and “Modules”, drag
+“AortaGeomReconDisplayModule”, “Volume Rendering”, and “Crop Volume”
+modules to your favorite modules to access these modules quickly from
+UI. Restart the application for the changes to the UI to appear.</p></li>
+</ol>
+</section>
+<section id="the-text-description-version-of-how-to-import-an-extension-load-dicom-data-use-volume-rendering-and-crop-volume">
+<h2>The text description version of how to import an extension, load DICOM data, use volume rendering and crop volume:<a class="headerlink" href="#the-text-description-version-of-how-to-import-an-extension-load-dicom-data-use-volume-rendering-and-crop-volume" title="Permalink to this heading">¶</a></h2>
+<section id="to-import-aortageomrecondisplay-module">
+<h3>To import AortaGeomReconDisplay module<a class="headerlink" href="#to-import-aortageomrecondisplay-module" title="Permalink to this heading">¶</a></h3>
+<ol class="arabic">
+<li><p>Open Slicer application, select “Edit” from the bar menu, then
+“Application Settings” from the drop-down menu.</p>
+<ul>
+<li><p>Select “Modules”, and add the “AortaGeomReconDisplayModule” folder
+in the additional module paths. This folder is located in
+src:raw-latex:<cite>SlicerExtension</cite>\<a class="reference external" href="https://github.com/smiths/aorta/tree/main/src/SlicerExtension/AortaGeometryReconstructor">AortaGeomReconDisplayModule</a>.</p></li>
+<li><p>Restart the application to take into account the new module paths.</p></li>
+<li><p>Find the “AortaGeomReconDisplayModule” module as shown below:</p>
+<p align="center"></p></li>
+</ul>
+</li>
+</ol>
+</section>
+<section id="to-load-dicom-data">
+<h3>To load DICOM data:<a class="headerlink" href="#to-load-dicom-data" title="Permalink to this heading">¶</a></h3>
+<ol class="arabic simple">
+<li><p>Select “File” from the bar menu, then “Add DICOM Data”.</p></li>
+<li><p>The uploaded volume must be a scalar volume object to be viewed in
+the Volume Rendering module. Therefore, to make sure that we are
+uploading volume as a scalar volume, in “Add DICOM data” module,
+unselect the plugin MultiVolumeImporterPlugin as shown below,</p></li>
+</ol>
+<p align="center"></p><ol class="arabic simple" start="3">
+<li><p>Select “Import DICOM files”, and select one of the patient’s folders.</p>
+<ul class="simple">
+<li><p>Once loaded, 3D Slicer will keep the patient record in the DICOM
+database, and the user can easily reload DICOM data from the DICOM
+database.</p></li>
+</ul>
+</li>
+<li><p>Select the patient file, click “load” button or double-click on the
+patient file to load the data into the program.</p></li>
+</ol>
+</section>
+<section id="to-use-volume-rendering-to-crop-a-voi">
+<h3>To use Volume Rendering to crop a VOI:<a class="headerlink" href="#to-use-volume-rendering-to-crop-a-voi" title="Permalink to this heading">¶</a></h3>
+<p>For this step we use the <a class="reference external" href="https://slicer.readthedocs.io/en/latest/user_guide/modules/volumerendering.html">Volume Rendering
+module</a>,
+a built-in module for 3D Slicer. 1. Load the Dicom files as described in
+the section To load DICOM
+<a class="reference external" href="https://github.com/smiths/aorta#to-load-dicom-data">data</a>. 2. Once
+loaded, select the Volume Rendering module. Select the volume that you
+want to crop, and click on the eye icon on the left.</p>
+<p align="center"></p><ol class="arabic simple" start="3">
+<li><p>Within the module UI, under Display, enable Crop Display ROI, open
+the eye for ROI, and select CT-Bones for the preset. You should be
+able to see the 3D rendering in the top right corner. You can drag
+the points controls to control the crop, and use the sliders at the
+top of the image to scroll through the slice.</p></li>
+</ol>
+<p align="center"></p><p align="center"></p><ol class="arabic" start="4">
+<li><p>Change back to AortaGeomReconDisplayModule, you should also have a
+Volume rendering ROI or vtkMRMLMarkupsROINode object.</p></li>
+<li><p>Select a new module, Crop volume, in Converters category. Select
+CreateNewVolumeParameters on Crop Volume Parameter Set.</p>
+<p align="center"></p></li>
+<li><p>For Input volume, select the volume to crop. For Input ROI, select
+the ROI we created with Volume Rendering module. The default name of
+the ROI is “Volume rendering ROI”. If you are unable to select ROI,
+go back to step 2 and use Volume Rendering module to create a ROI.
+For output volume, you can select create new volume or modify the
+original volume.</p>
+<p align="center"></p></li>
+<li><p>Clicks on “Apply”, and change back to AortaGeomReconDisplayModule,
+you should be able to find a new volume or the cropped volume.</p></li>
+</ol>
+</section>
+</section>
+</section>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2023, Jingyi Lin
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
