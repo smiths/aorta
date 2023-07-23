@@ -22,6 +22,7 @@ import SimpleITK as sitk
 
 
 class AGR_phase(Enum):
+    warning = "Warning!"
     crop_aorta = "Phase 1 Crop Aorta"
     segment_desc_aorta = "Phase 2 Aorta Segmentation"
 
@@ -51,6 +52,10 @@ class AortaGeomReconDisplayModule(ScriptedLoadableModule):  # noqa: F405
 
         self.parent.contributors = ["Jingyi Lin (McMaster University)"]
         self.parent.helpText = """
+<h2 style="text-align:center;">Warnings!</h2>
+Only qualified persons who have reviewed the user instructions should use the software. The user instructions is available on
+<a href="https://joviel25.github.io/AortaGR-design-document/UserInstructions.html">Design Documentation - User Instructions section</a>.
+<h2 style="text-align:center;">Tips</h2>
 Please select the correct aorta seeds and adjust the hyperparameters in little adjustment.
 <br>
 Please input a Chest CT Scans, AortaGeomRecon is not responsible to detect a correct CT Scans.
@@ -226,6 +231,7 @@ class AortaGeomReconDisplayModuleWidget(ScriptedLoadableModuleWidget, VTKObserva
         self.ui.resetButton.connect('clicked(bool)', self.onResetButton)
         self.ui.skipButton.connect('clicked(bool)', self.onSkipButton)
         self.ui.getVTKButton.connect('clicked(bool)', self.onGetVTKButton)
+        self.ui.warningConfirmButton.connect('clicked(bool)', self.onConfirmWarningButton)
 
         sliceDisplayNodes = slicer.util.getNodesByClass(
             "vtkMRMLSliceDisplayNode")
@@ -308,7 +314,6 @@ class AortaGeomReconDisplayModuleWidget(ScriptedLoadableModuleWidget, VTKObserva
         # Changes of parameter node are observed so that
         # whenever parameters are changed by a script or any other module
         # those are reflected immediately in the GUI.
-
         if self._parameterNode is not None:
             self.removeObserver(
                 self._parameterNode,
@@ -336,14 +341,12 @@ class AortaGeomReconDisplayModuleWidget(ScriptedLoadableModuleWidget, VTKObserva
         if self._parameterNode is None or self._updatingGUIFromParameterNode:
             return
 
+        self.showWarning()
+
         # Make sure GUI changes do not call updateParameterNodeFromGUI
         # (it could cause infinite loop)
         self._updatingGUIFromParameterNode = True
-        phase = self._parameterNode.GetParameter("phase")
-        if not phase or phase == '1':
-            self.showPhaseCropAorta()
-        elif phase == '2':
-            self.showPhaseAS()
+
         self.ui.ascAortaSeed.coordinates = self._parameterNode.GetParameter(
             "ascAortaSeed")
         self.ui.descAortaSeed.coordinates = self._parameterNode.GetParameter(
@@ -417,8 +420,16 @@ class AortaGeomReconDisplayModuleWidget(ScriptedLoadableModuleWidget, VTKObserva
         This method is called when the user makes change the current phase to phase 1 crop aorta.
         This method includes all the ui elements that need to hide or to show.
         """ # noqa
+        self.ui.applyButton.show()
+        self.ui.revertButton.show()
+        self.ui.resetButton.show()
+        self.ui.skipButton.show()
+        self.ui.getVTKButton.show()
         self.ui.revertButton.enabled = False
         self.ui.phaseLabel.text = AGR_phase.crop_aorta.value
+        self.ui.SubjectHierarchyTreeView.show()
+        self.ui.warningConfirmButton.hide()
+        self.ui.warningEdit.hide()
         self.ui.ascAortaSeed.hide()
         self.ui.descAortaSeed.hide()
         self.ui.thresholdCoefficient.hide()
@@ -438,6 +449,44 @@ class AortaGeomReconDisplayModuleWidget(ScriptedLoadableModuleWidget, VTKObserva
         self.ui.debugBox.hide()
         self.ui.ascSeedLocker.hide()
         self.ui.desSeedLocker.hide()
+        self.ui.segmentationCollapsibleBox.hide()
+        self.ui.inputsCollapsibleButton.hide()
+        self.ui.kernelSizeLabel.hide()
+        self.ui.kernelSize.hide()
+
+    def showWarning(self):
+        """
+        This method is called when the user makes change the current phase to phase 2 aorta segmentation.
+        This method includes calling of all UI elements that need to show or to hide.
+        """ # noqa
+        self._parameterNode.SetParameter("phase", "1")
+        self.ui.phaseLabel.text = AGR_phase.warning.value
+        self.ui.revertButton.enabled = False
+        self.ui.applyButton.hide()
+        self.ui.revertButton.hide()
+        self.ui.resetButton.hide()
+        self.ui.skipButton.hide()
+        self.ui.getVTKButton.hide()
+        self.ui.SubjectHierarchyTreeView.hide()
+        self.ui.ascAortaSeed.hide()
+        self.ui.ascSeedLocker.hide()
+        self.ui.desSeedLocker.hide()
+        self.ui.ascAortaSeedLabel.hide()
+        self.ui.descAortaSeed.hide()
+        self.ui.descAortaSeedLabel.hide()
+        self.ui.stopLimit.hide()
+        self.ui.stopLimitLabel.hide()
+        self.ui.rmsLabel.hide()
+        self.ui.noIteLabel.hide()
+        self.ui.curScalingLabel.hide()
+        self.ui.propScalingLabel.hide()
+        self.ui.rmsError.hide()
+        self.ui.noIteration.hide()
+        self.ui.curvatureScaling.hide()
+        self.ui.propagationScaling.hide()
+        self.ui.thresholdCoefficient.hide()
+        self.ui.thresholdCoefLabel.hide()
+        self.ui.debugBox.hide()
         self.ui.segmentationCollapsibleBox.hide()
         self.ui.inputsCollapsibleButton.hide()
         self.ui.kernelSizeLabel.hide()
@@ -474,6 +523,13 @@ class AortaGeomReconDisplayModuleWidget(ScriptedLoadableModuleWidget, VTKObserva
         self.ui.inputsCollapsibleButton.show()
         self.ui.kernelSizeLabel.show()
         self.ui.kernelSize.show()
+
+    def onConfirmWarningButton(self):
+        phase = self._parameterNode.GetParameter("phase")
+        if not phase or phase == '1':
+            self.showPhaseCropAorta()
+        elif phase == '2':
+            self.showPhaseAS()
 
     def onGetVTKButton(self):
         """
@@ -555,7 +611,7 @@ class AortaGeomReconDisplayModuleWidget(ScriptedLoadableModuleWidget, VTKObserva
                     logging.info("Cannot find cropped volume")
                 else:
                     self.showPhaseAS()
-            elif self._parameterNode.GetParameter("phase") == "2":
+            else:
                 descAortaSeed = self._parameterNode.GetParameter(
                     "descAortaSeed")
                 ascAortaSeed = self._parameterNode.GetParameter(
