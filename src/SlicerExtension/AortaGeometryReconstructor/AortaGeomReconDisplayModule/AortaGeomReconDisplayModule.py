@@ -421,6 +421,7 @@ class AortaGeomReconDisplayModuleWidget(ScriptedLoadableModuleWidget, VTKObserva
         This method is called when the user makes change the current phase to phase 1 crop aorta.
         This method includes all the ui elements that need to hide or to show.
         """ # noqa
+        self._parameterNode.SetParameter("phase", "1")
         self.ui.applyButton.show()
         self.ui.revertButton.show()
         self.ui.resetButton.show()
@@ -454,13 +455,13 @@ class AortaGeomReconDisplayModuleWidget(ScriptedLoadableModuleWidget, VTKObserva
         self.ui.inputsCollapsibleButton.hide()
         self.ui.kernelSizeLabel.hide()
         self.ui.kernelSize.hide()
+        self.ui.skipButton.enabled = True
 
     def showWarning(self):
         """
         This method is called when the user makes change the current phase to phase 2 aorta segmentation.
         This method includes calling of all UI elements that need to show or to hide.
         """ # noqa
-        self._parameterNode.SetParameter("phase", "1")
         self.ui.phaseLabel.text = AGR_phase.warning.value
         self.ui.revertButton.enabled = False
         self.ui.applyButton.hide()
@@ -501,6 +502,13 @@ class AortaGeomReconDisplayModuleWidget(ScriptedLoadableModuleWidget, VTKObserva
         self._parameterNode.SetParameter("phase", "2")
         self.ui.phaseLabel.text = AGR_phase.segment_desc_aorta.value
         self.ui.revertButton.enabled = True
+        self.ui.warningConfirmButton.hide()
+        self.ui.applyButton.show()
+        self.ui.revertButton.show()
+        self.ui.resetButton.show()
+        self.ui.skipButton.show()
+        self.ui.getVTKButton.show()
+        self.ui.warningEdit.hide()
         self.ui.ascAortaSeed.show()
         self.ui.ascSeedLocker.show()
         self.ui.desSeedLocker.show()
@@ -524,10 +532,12 @@ class AortaGeomReconDisplayModuleWidget(ScriptedLoadableModuleWidget, VTKObserva
         self.ui.inputsCollapsibleButton.show()
         self.ui.kernelSizeLabel.show()
         self.ui.kernelSize.show()
+        self.ui.skipButton.enabled = False
 
     def onConfirmWarningButton(self):
         phase = self._parameterNode.GetParameter("phase")
         if not phase or phase == '1':
+            print(phase)
             self.showPhaseCropAorta()
         elif phase == '2':
             self.showPhaseAS()
@@ -583,7 +593,7 @@ class AortaGeomReconDisplayModuleWidget(ScriptedLoadableModuleWidget, VTKObserva
         with slicer.util.tryWithErrorDisplay(errorMessage, waitCursor=True):
             if self._parameterNode.GetParameter("phase") == "1":
                 # Update phase
-                self._parameterNode.SetParameter("phase", "2")
+                self.showPhaseAS()
                 self.ui.phaseLabel.text = AGR_phase.segment_desc_aorta.value
 
     def onApplyButton(self):
