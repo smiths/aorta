@@ -231,7 +231,8 @@ class AortaGeomReconDisplayModuleWidget(ScriptedLoadableModuleWidget, VTKObserva
         self.ui.resetButton.connect('clicked(bool)', self.onResetButton)
         self.ui.skipButton.connect('clicked(bool)', self.onSkipButton)
         self.ui.getVTKButton.connect('clicked(bool)', self.onGetVTKButton)
-        self.ui.warningConfirmButton.connect('clicked(bool)', self.onConfirmWarningButton)
+        self.ui.warningConfirmButton.connect(
+            'clicked(bool)', self.onConfirmWarningButton)
 
         sliceDisplayNodes = slicer.util.getNodesByClass(
             "vtkMRMLSliceDisplayNode")
