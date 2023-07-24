@@ -5,7 +5,7 @@ The implementation till the date of this report can let the users who have the u
 
 
 \section{Existing Methods}
-There are many segmentation software available to the users, we will discuss the two main methods on two softwares.
+There are many segmentation software available to the users, we will discuss the two builtIn methods in two softwares, ITK-nap and 3D Slicer.
 
 \subsection{ITK-Snap bubble method} 
 \indent
@@ -22,14 +22,14 @@ Through many iterations, the voxels expand to fill the entire volume, finally us
 
 The advantages of the bubble method is that it guarantes to produce a correct the segmentation result. A medical domain expert can manually control the wanted area, and visually observing the segmentation result expanding, shrinking and the user can erase the unwanted part.
 
-The disadvantages of this method is that the operations described above are complicated. Eeasier to say then do, an opeartor who has previous experience building the geometry with this method still needed 20 minutes of manual work building a new aorta geometry. Plus, ITK-Snap software can only read VTK file, therefore the chest CT scans are usually DICOM needed a manual conversion before using this software and its segmentation method.
+The disadvantages of this method is that the operations described above are complicated. Eeasier to say then do, an opeartor who has previous experience building the geometry with this method still needed 20 minutes of manual work building a new aorta geometry. Plus, ITK-Snap software can only read VTK file, therefore the chest CT scans that are usually DICOM, needed a manual conversion before using this software and its segmentation method.
 
 \subsection{3D Slicer threshold segmentation}
 3D Slicer is another well-known medical image processing software for academic. 3D Slicer provides multiple segmentation methods, and one of the quickiest and easiest to use is the intensity based segmentation.
 
 This method first let user select a small area that belongs to the wanted area on a 2D plane (Axial, Sagittal, and Coronal). 3D Slicer read the pixels' intensity of the surrounding area, and segment based on the intensity threshold. Any pixels's intensity that is within the range will be segmented as the segmentation result. 
 
-Like the bubble method, this method often reads extra volume, and requires user to cut the unwanted parts. A Youtube video shows an experience user who gets the aorta 3D geometry with 10 minutes of manual works.
+Like the bubble method, this method often reads extra volume, and requires user to cut the unwanted parts. A \href{https://www.youtube.com/watch?v=5_673cHMBiY}{YouTube video} shows an experience user who gets the aorta 3D geometry with 8 minutes of manual works. 
 
 \begin{figure}[H]
     \centering
@@ -76,8 +76,13 @@ The main parameters inputs from the users are:
 
 \subsection{Algorithm Overview}
 
-\subsubsection{Label Map}
-The algorithm uses SITK::BinaryDilateImageFilter to perform binary dilation to generate a circle-like shape around the centre coordinates (user input’s for the first slice and calculated by the algorithm for the rest of the slices). Each pixel within this shape will be labeled as a white pixel (value of 1), and the rest of the pixels are labeled as black pixels (value of 0). The generated result is the label map image, and we will use it in the next few steps. The size of the circle-like shape is determined by the kernel size (user's input). The Figure ~\ref{fig_label_map} shows an example of generated label map image (the green parts) on top of the original slice.
+When the user has selected the aorta seeds, the plane where the aorta seeds located is the initial plane. From this plane towards the bottom (the feet) is inferior direction. On the other hand, it is superior direction. Instead of processing the entire volume, the algorithm will process each axial plane 
+
+\subsection{The steps repeat for each axial plane}
+\subsubsection{Create A Label Map}
+The algorithm uses SITK::BinaryDilateImageFilter to perform binary dilation to generate a circle-like shape around the centre coordinates (user input’s for the first slice and calculated by the algorithm for the rest of the slices). Each pixel within this shape will be labeled as a white pixel (value of 1), and the rest of the pixels are labeled as black pixels (value of 0). 
+
+The generated result is the label map image, and we will use it in the next few steps. The size of the circle-like shape is determined by the kernel size (user's input). The Figure \ref{fig_label_map} shows an example of generated label map image (the green parts) overlay over the original slice.
 
 \begin{figure}[H]
     \centering
@@ -86,8 +91,8 @@ The algorithm uses SITK::BinaryDilateImageFilter to perform binary dilation to g
     \label{fig_label_map}
 \end{figure}
 
-\subsubsection{Distance Map}
-With SITK::SignedMaurerDistanceMapImageFilter, the algorithm creates another image, the Euclidean distance transform of the label image. This is used as a contour line that helps build the gradient mentioned in Level sets. The Figure ~\ref{fig_distance_map} shows an example of distance map.
+\subsubsection{Create A Distance Map}\label{distance_map}
+With SITK::SignedMaurerDistanceMapImageFilter, the algorithm creates another image, the Euclidean distance transform of the label image from previous step. This is used as a contour line that helps build the gradient mentioned in Level sets. The Figure \ref{fig_distance_map} shows an example of distance map.
 
 \begin{figure}[H]
     \centering
@@ -97,22 +102,22 @@ With SITK::SignedMaurerDistanceMapImageFilter, the algorithm creates another ima
 \end{figure}
 
 
-\subsubsection{Calculate a threshold range}
-By using SITK::LabelStatisticsImageFilter, the algorithm gets the mean and the standard deviation of the intensity values of the pixels that were labeled as the white pixel in the previous step. The algorithm uses threshold coefficient to calculate the lower and upper threshold to be used in the next step.
+\subsubsection{Calculate a threshold range} \label{threshold}
+By using SITK::LabelStatisticsImageFilter, the algorithm gets the mean and the standard deviation of the intensity values of the pixels that were labeled as the white pixel in the label map. The algorithm uses threshold coefficient to calculate the lower and upper threshold to be used in the next step.
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=\textwidth]{figures/AGR/threshold.png}
+    \includegraphics[width=0.8\textwidth]{figures/AGR/threshold.png}
     \caption[Code that shows how to calculate the threshold range]{Code snippet shows the intensity threshold calculation}
     \label{fig_threshold}
 \end{figure}
 
 \subsubsection{Segment a single slice}
-With SITK::ThresholdSegmentationLevelSetImageFilter, the seed image calculated in step 2, and the lower and upper threshold value calculated in step 3, the algorithm performs segmentation and generated a segmented slice. The Figure ~\ref{fig_segmented_image} shows an example of generated segmented slice (the green parts) on top of the original slice.
+With SITK::ThresholdSegmentationLevelSetImageFilter, the seed image calculated in step \ref{distance_map}, and the lower and upper threshold value calculated in step \ref{threshold}, the algorithm performs segmentation and generated a segmented slice. The Figure~\ref{fig_segmented_image} shows an example of generated segmented slice (the green parts) overlay over the original slice.
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.7\textwidth]{figures/AGR/segment_label_image.png}
+    \includegraphics[width=0.45\textwidth]{figures/AGR/segment_label_image.png}
     \caption[A segmented image]{A segmented image on top of the original slice}
     \label{fig_segmented_image}
 \end{figure}
@@ -120,8 +125,16 @@ With SITK::ThresholdSegmentationLevelSetImageFilter, the seed image calculated i
 \subsubsection{Calculate new centroids}
 By comparing each pixel segmented as aorta to the previous descending centroid and the previous ascending centroid, the algorithm use the positions of the points closer to the previous descending centroid to calculate new descending aorta centroid, and vice-versa for the ascending aorta centroid. However, at certain point during the segmentation in inferior direciton, the slice might reaches the end of the ascending aorta, where the voxels belong to the part of the heart. The algorithm will stop using ascending aorta centroid and only computes descending aorta centroid for the slices afterward.
 
+\subsubsection{Verify segmentation result}
+There are two main stop conditions for verifying segmentation result, one condition for the segmentation in inferior direction and the other one for the segmentation in superior direction. Stop limit is an user defined parameter to control the algorithm.
+
+\subsection{Algorithm Summary}
+After repeating the steps explained above,
+
+
+
 \section{3D Slicer Extension Development}
-The project has started with the a simple segmentation algoritm build on the jupyter notebook. When getting a new patient's data, the user will need to investigate the chest ct scans using another software (3D Slicer, ITK-Snap), to get the readings of the starting voxel and the size crop the volume, and get the index of the aorta seed. This Figure~\ref{fig_aorta_seed} shows an example of the aorta seeds.
+The project has started with the a simple segmentation algoritm build on the jupyter notebook. When getting a new patient's data, the user will need to investigate the chest ct scans using another software (3D Slicer, ITK-Snap), to get the readings of the starting voxel and the size crop the volume, and get the index of the aorta seed. This Figure \ref{fig_aorta_seed} shows an example of the aorta seeds.
 
 
 
