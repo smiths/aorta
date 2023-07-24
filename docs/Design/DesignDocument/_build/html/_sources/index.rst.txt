@@ -26,9 +26,9 @@ After cropping the volume, which only contains the region of interest, the algor
 
 1. The centre coordinates of :term:`Descending Aorta` and :term:`Ascending Aorta` located on the same :term:`slice` (a voxel).
 
-.. figure:: Aorta_seeds.png
-   :align: center
-   :alt: Aorta seeds
+.. raw:: html
+    
+   <p style="text-align:center;"><img src="_images/Aorta_seeds.png" width="500px" alt="Aorta seeds"></p>
 
 2. The :term:`Stop limit`.
 3. The :term:`threshold coefficient`.
@@ -50,11 +50,10 @@ For each slice starting from the user's selected slice, going in the :term:`infe
 1. **[Create a label map]**
 The algorithm uses `SITK\:\:BinaryDilateImageFilter <https://simpleitk.org/doxygen/latest/html/classitk_1_1simple_1_1BinaryDilateImageFilter.html>`_ to perform :term:`binary dilation` to generate a circle-like shape around the centre coordinates (user input's or calculated by the algorithm). Each pixel within this shape will be labeled as a white pixel (value of 1), and the rest of the pixels are labeled as black pixels (value of 0). The generated result is the :term:`label map` image, and we will use it in the next few steps. The size of the circle-like shape is determined by the :term:`kernel size`.
 
-.. figure:: label_image.png
-   :align: center
-   :alt: label image
-
-   The green circles shows the binary dilation of the two centroids.
+.. raw:: html
+    
+   <p style="text-align:center;"><img src="_images/label_image.png" alt="label image"></p>
+   <p style="text-align:center;">The green circles shows the binary dilation of the two centroids.</p>
 
 2. **[Create a distance map]**
 With `SITK\:\:SignedMaurerDistanceMapImageFilter <https://simpleitk.org/doxygen/latest/html/classitk_1_1simple_1_1SignedMaurerDistanceMapImageFilter.html>`_, the algorithm creates another image, the :term:`Euclidean distance transform` of the label image. This is used as a :term:`contour line` that helps build the gradient mentioned in :term:`Level sets`.
@@ -67,11 +66,10 @@ By using `SITK\:\:LabelStatisticsImageFilter <https://simpleitk.org/doxygen/late
 4. **[Segment a single slice]**
 With `SITK\:\:ThresholdSegmentationLevelSetImageFilter <https://simpleitk.org/doxygen/latest/html/classitk_1_1simple_1_1ThresholdSegmentationLevelSetImageFilter.html>`_,  the seed image calculated in step 2, and the lower and upper threshold value calculated in step 3, the algorithm performs segmentation and generated a :term:`segmented slice`.
 
-.. figure:: segment_label_image.png
-   :align: center
-   :alt: segment label image
-
-   The green pixels are labeled as part of the aorta.
+.. raw:: html
+    
+   <p style="text-align:center;"><img src="_images/segment_label_image.png" alt="label image"></p>
+   <p style="text-align:center;">The green pixels are labeled as part of the aorta.</p>
 
 5. **[Calculate new centroids]**
 By comparing each pixel segmented as aorta to the previous descending centroid and the previous ascending centroid, the algorithm use the positions of the points closer to the previous descending centroid to calculate new descending aorta centroid, and vice-versa for the ascending aorta centroid. However, at certain point during the segmentation in inferior direciton, the slice might reaches the end of the ascending aorta, where the voxels belong to the part of the heart. The algorithm will stop using ascending aorta centroid and only computes descending aorta centroid for the slices afterward.
@@ -87,9 +85,10 @@ There are two main stop conditions for verifying segmentation result, one condit
 
 The simplified version of the algorithm
 ***************************************
-.. figure:: program_flowchart.png
-   :align: center
-   :alt: Program flowchart
+
+.. raw:: html
+    
+   <p style="text-align:center;"><img src="_images/program_flowchart.png" alt="Program flowchart"></p>
    
 .. note::
 
@@ -100,6 +99,8 @@ The simplified version of the algorithm
    :caption: Modules documentation:
 
    modules
+   UserInstructions
+   glossary
 
 
 Indices and tables
@@ -108,7 +109,7 @@ Indices and tables
 | :ref:`genindex`
 | :ref:`modindex`
 
-.. toctree::
-   :maxdepth: 1
+.. .. toctree::
+..    :maxdepth: 1
    
-   Glossary <glossary>
+..    Glossary <glossary>

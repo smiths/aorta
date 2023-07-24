@@ -1,4 +1,4 @@
-Glossary of Terms Used in AortaGeomRecon Documentation
+Glossary
 ======================================================
 
 
