@@ -87,8 +87,7 @@
               <p class="caption" role="heading"><span class="caption-text">Modules documentation:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="modules.html">AortaGeomReconModule</a></li>
-</ul>
-<ul>
+<li class="toctree-l1"><a class="reference internal" href="UserInstructions.html">User Instructions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="glossary.html">Glossary</a></li>
 </ul>
 
@@ -170,10 +169,7 @@
 <ol class="arabic simple">
 <li><p>The centre coordinates of <a class="reference internal" href="glossary.html#term-Descending-Aorta"><span class="xref std std-term">Descending Aorta</span></a> and <a class="reference internal" href="glossary.html#term-Ascending-Aorta"><span class="xref std std-term">Ascending Aorta</span></a> located on the same <a class="reference internal" href="glossary.html#term-slice"><span class="xref std std-term">slice</span></a> (a voxel).</p></li>
 </ol>
-<figure class="align-center">
-<img alt="Aorta seeds" src="_images/Aorta_seeds.png" />
-</figure>
-<ol class="arabic simple" start="2">
+<p style="text-align:center;"><img src="_images/Aorta_seeds.png" width="500px" alt="Aorta seeds"></p><ol class="arabic simple" start="2">
 <li><p>The <a class="reference internal" href="glossary.html#term-Stop-limit"><span class="xref std std-term">Stop limit</span></a>.</p></li>
 <li><p>The <a class="reference internal" href="glossary.html#term-threshold-coefficient"><span class="xref std std-term">threshold coefficient</span></a>.</p></li>
 <li><p>An integer for <a class="reference internal" href="glossary.html#term-kernel-size"><span class="xref std std-term">kernel size</span></a>.</p></li>
@@ -195,25 +191,15 @@
 <p>For each slice starting from the user’s selected slice, going in the <a class="reference internal" href="glossary.html#term-inferior"><span class="xref std std-term">inferior</span></a> first, then <a class="reference internal" href="glossary.html#term-superior"><span class="xref std std-term">superior</span></a> direction:</p>
 <p>1. <strong>[Create a label map]</strong>
 The algorithm uses <a class="reference external" href="https://simpleitk.org/doxygen/latest/html/classitk_1_1simple_1_1BinaryDilateImageFilter.html">SITK::BinaryDilateImageFilter</a> to perform <a class="reference internal" href="glossary.html#term-binary-dilation"><span class="xref std std-term">binary dilation</span></a> to generate a circle-like shape around the centre coordinates (user input’s or calculated by the algorithm). Each pixel within this shape will be labeled as a white pixel (value of 1), and the rest of the pixels are labeled as black pixels (value of 0). The generated result is the <a class="reference internal" href="glossary.html#term-label-map"><span class="xref std std-term">label map</span></a> image, and we will use it in the next few steps. The size of the circle-like shape is determined by the <a class="reference internal" href="glossary.html#term-kernel-size"><span class="xref std std-term">kernel size</span></a>.</p>
-<figure class="align-center" id="id2">
-<img alt="label image" src="_images/label_image.png" />
-<figcaption>
-<p><span class="caption-text">The green circles shows the binary dilation of the two centroids.</span><a class="headerlink" href="#id2" title="Permalink to this image">¶</a></p>
-</figcaption>
-</figure>
-<p>2. <strong>[Create a distance map]</strong>
+<p style="text-align:center;"><img src="_images/label_image.png" alt="label image"></p>
+<p style="text-align:center;">The green circles shows the binary dilation of the two centroids.</p><p>2. <strong>[Create a distance map]</strong>
 With <a class="reference external" href="https://simpleitk.org/doxygen/latest/html/classitk_1_1simple_1_1SignedMaurerDistanceMapImageFilter.html">SITK::SignedMaurerDistanceMapImageFilter</a>, the algorithm creates another image, the <a class="reference internal" href="glossary.html#term-Euclidean-distance-transform"><span class="xref std std-term">Euclidean distance transform</span></a> of the label image. This is used as a <a class="reference internal" href="glossary.html#term-contour-line"><span class="xref std std-term">contour line</span></a> that helps build the gradient mentioned in <a class="reference internal" href="glossary.html#term-Level-sets"><span class="xref std std-term">Level sets</span></a>.</p>
 <p>3. <strong>[Calculate a threshold range]</strong>
 By using <a class="reference external" href="https://simpleitk.org/doxygen/latest/html/classitk_1_1simple_1_1LabelStatisticsImageFilter.html">SITK::LabelStatisticsImageFilter</a>, the algorithm gets the mean and the standard deviation of the intensity values of the pixels that were labeled as the white pixel in the previous step. The algorithm uses <a class="reference internal" href="glossary.html#term-threshold-coefficient"><span class="xref std std-term">threshold coefficient</span></a> to calculate the lower and upper <a class="reference internal" href="glossary.html#term-threshold"><span class="xref std std-term">threshold</span></a> to be used in the next step.</p>
 <p>4. <strong>[Segment a single slice]</strong>
 With <a class="reference external" href="https://simpleitk.org/doxygen/latest/html/classitk_1_1simple_1_1ThresholdSegmentationLevelSetImageFilter.html">SITK::ThresholdSegmentationLevelSetImageFilter</a>,  the seed image calculated in step 2, and the lower and upper threshold value calculated in step 3, the algorithm performs segmentation and generated a <a class="reference internal" href="glossary.html#term-segmented-slice"><span class="xref std std-term">segmented slice</span></a>.</p>
-<figure class="align-center" id="id3">
-<img alt="segment label image" src="_images/segment_label_image.png" />
-<figcaption>
-<p><span class="caption-text">The green pixels are labeled as part of the aorta.</span><a class="headerlink" href="#id3" title="Permalink to this image">¶</a></p>
-</figcaption>
-</figure>
-<p>5. <strong>[Calculate new centroids]</strong>
+<p style="text-align:center;"><img src="_images/segment_label_image.png" alt="label image"></p>
+<p style="text-align:center;">The green pixels are labeled as part of the aorta.</p><p>5. <strong>[Calculate new centroids]</strong>
 By comparing each pixel segmented as aorta to the previous descending centroid and the previous ascending centroid, the algorithm use the positions of the points closer to the previous descending centroid to calculate new descending aorta centroid, and vice-versa for the ascending aorta centroid. However, at certain point during the segmentation in inferior direciton, the slice might reaches the end of the ascending aorta, where the voxels belong to the part of the heart. The algorithm will stop using ascending aorta centroid and only computes descending aorta centroid for the slices afterward.</p>
 <p>6. <strong>[Verify segmentation result]</strong>
 There are two main stop conditions for verifying segmentation result, one condition for the segmentation in inferior direction and the other one for the segmentation in superior direction. <a class="reference internal" href="glossary.html#term-Stop-limit"><span class="xref std std-term">Stop limit</span></a> is an user defined parameter to control the algorithm.</p>
@@ -227,10 +213,7 @@ There are two main stop conditions for verifying segmentation result, one condit
 </section>
 <section id="the-simplified-version-of-the-algorithm">
 <h2>The simplified version of the algorithm<a class="headerlink" href="#the-simplified-version-of-the-algorithm" title="Permalink to this heading">¶</a></h2>
-<figure class="align-center">
-<img alt="Program flowchart" src="_images/program_flowchart.png" />
-</figure>
-<div class="admonition note">
+<p style="text-align:center;"><img src="_images/program_flowchart.png" alt="Program flowchart"></p><div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>You can find the definitions of each function within the module below</p>
 </div>
@@ -243,6 +226,16 @@ There are two main stop conditions for verifying segmentation result, one condit
 <li class="toctree-l2"><a class="reference internal" href="test.html">test package</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="UserInstructions.html">User Instructions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="UserInstructions.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="UserInstructions.html#to-install-3d-slicer-and-import-an-extension">To install 3D Slicer and import an extension:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="UserInstructions.html#to-apply-the-segmentation-algorithm">To apply the segmentation algorithm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="UserInstructions.html#to-display-the-segmentation-label-image">To display the segmentation label image</a></li>
+<li class="toctree-l2"><a class="reference internal" href="UserInstructions.html#additional-tips-to-use-this-application">Additional tips to use this application:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="UserInstructions.html#the-text-description-version-of-how-to-import-an-extension-load-dicom-data-use-volume-rendering-and-crop-volume">The text description version of how to import an extension, load DICOM data, use volume rendering and crop volume:</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="glossary.html">Glossary</a></li>
 </ul>
 </div>
 </section>
@@ -251,11 +244,6 @@ There are two main stop conditions for verifying segmentation result, one condit
 <div class="line-block">
 <div class="line"><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></div>
 <div class="line"><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></div>
-</div>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="glossary.html">Glossary</a></li>
-</ul>
 </div>
 </section>
 </section>
