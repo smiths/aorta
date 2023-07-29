@@ -154,6 +154,7 @@ class AortaGeomReconDisplayModuleWidget(ScriptedLoadableModuleWidget, VTKObserva
         self.logic = None
         self._parameterNode = None
         self._updatingGUIFromParameterNode = False
+        self._showWarning = True
 
     def setup(self):
         """
@@ -342,11 +343,12 @@ class AortaGeomReconDisplayModuleWidget(ScriptedLoadableModuleWidget, VTKObserva
         if self._parameterNode is None or self._updatingGUIFromParameterNode:
             return
 
-        self.showWarning()
-
         # Make sure GUI changes do not call updateParameterNodeFromGUI
         # (it could cause infinite loop)
         self._updatingGUIFromParameterNode = True
+        if self._showWarning:
+            self.showWarning()
+            self._showWarning = False
 
         self.ui.ascAortaSeed.coordinates = self._parameterNode.GetParameter(
             "ascAortaSeed")
@@ -456,6 +458,7 @@ class AortaGeomReconDisplayModuleWidget(ScriptedLoadableModuleWidget, VTKObserva
         self.ui.kernelSizeLabel.hide()
         self.ui.kernelSize.hide()
         self.ui.skipButton.enabled = True
+        self.ui.outputPath.show()
 
     def showWarning(self):
         """
@@ -493,6 +496,7 @@ class AortaGeomReconDisplayModuleWidget(ScriptedLoadableModuleWidget, VTKObserva
         self.ui.inputsCollapsibleButton.hide()
         self.ui.kernelSizeLabel.hide()
         self.ui.kernelSize.hide()
+        self.ui.outputPath.hide()
 
     def showPhaseAS(self):
         """
@@ -503,6 +507,7 @@ class AortaGeomReconDisplayModuleWidget(ScriptedLoadableModuleWidget, VTKObserva
         self.ui.phaseLabel.text = AGR_phase.segment_desc_aorta.value
         self.ui.revertButton.enabled = True
         self.ui.warningConfirmButton.hide()
+        self.ui.SubjectHierarchyTreeView.show()
         self.ui.applyButton.show()
         self.ui.revertButton.show()
         self.ui.resetButton.show()
@@ -533,6 +538,7 @@ class AortaGeomReconDisplayModuleWidget(ScriptedLoadableModuleWidget, VTKObserva
         self.ui.kernelSizeLabel.show()
         self.ui.kernelSize.show()
         self.ui.skipButton.enabled = False
+        self.ui.outputPath.show()
 
     def onConfirmWarningButton(self):
         phase = self._parameterNode.GetParameter("phase")
@@ -548,22 +554,31 @@ class AortaGeomReconDisplayModuleWidget(ScriptedLoadableModuleWidget, VTKObserva
         Depends on what state the module is in, the module output a vtk file under the root folder of Slicer application.
 
         """ # noqa
+
         sceneObj = slicer.mrmlScene
+        path = os.path.abspath(self.ui.outputPath.currentPath)
         if self._parameterNode.GetParameter("phase") == "1":
             size = len(slicer.util.getNodes("*cropped*", useLists=True))
             if size == 1:
                 volume = sceneObj.GetFirstNode("cropped", None, None, False)
                 self.logic.transform_image(volume)
                 self.logic.saveVtk("crop_volume.vtk", None, 1)
+                path = os.path.join(path, "crop_volume.vtk")
+                self.logic.saveVtk(path, None, 1)
+            else:
+                logging.warning("Cannot find cropped volume")
         elif self._parameterNode.GetParameter("phase") == "2":
             size = len(slicer.util.getNodes("*Seg*", useLists=True))
             if size == 1:
                 volume = sceneObj.GetFirstNode("Seg", None, None, False)
+                path = os.path.join(path, volume.GetName())
                 self.logic.saveVtk(
-                    "{}.vtk".format(volume.GetName()),
+                    "{}.vtk".format(path),
                     volume,
                     2
                 )
+            else:
+                logging.warning("Cannot find Segmentation label volume")
 
     def onRevertButton(self):
         """
@@ -636,11 +651,11 @@ class AortaGeomReconDisplayModuleWidget(ScriptedLoadableModuleWidget, VTKObserva
                 )
                 sitkUtils.PushVolumeToSlicer(
                     image,
-                    name="Seg_th{}_k{}_c{}_p{}".format(
-                        threshold_coef,
-                        kernel_size,
-                        curv_scaling,
-                        prop_scaling),
+                    name="Seg_th{tc:.2f}_k{ks}_c{c}_p{p}".format(
+                        tc=float(threshold_coef),
+                        ks=kernel_size,
+                        c=curv_scaling,
+                        p=prop_scaling),
                     className="vtkMRMLScalarVolumeNode"
                 )
 
