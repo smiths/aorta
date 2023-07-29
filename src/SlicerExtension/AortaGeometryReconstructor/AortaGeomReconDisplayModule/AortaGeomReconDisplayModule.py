@@ -456,6 +456,7 @@ class AortaGeomReconDisplayModuleWidget(ScriptedLoadableModuleWidget, VTKObserva
         self.ui.kernelSizeLabel.hide()
         self.ui.kernelSize.hide()
         self.ui.skipButton.enabled = True
+        self.ui.outputPath.show()
 
     def showWarning(self):
         """
@@ -493,6 +494,7 @@ class AortaGeomReconDisplayModuleWidget(ScriptedLoadableModuleWidget, VTKObserva
         self.ui.inputsCollapsibleButton.hide()
         self.ui.kernelSizeLabel.hide()
         self.ui.kernelSize.hide()
+        self.ui.outputPath.hide()
 
     def showPhaseAS(self):
         """
@@ -533,6 +535,7 @@ class AortaGeomReconDisplayModuleWidget(ScriptedLoadableModuleWidget, VTKObserva
         self.ui.kernelSizeLabel.show()
         self.ui.kernelSize.show()
         self.ui.skipButton.enabled = False
+        self.ui.outputPath.show()
 
     def onConfirmWarningButton(self):
         phase = self._parameterNode.GetParameter("phase")
