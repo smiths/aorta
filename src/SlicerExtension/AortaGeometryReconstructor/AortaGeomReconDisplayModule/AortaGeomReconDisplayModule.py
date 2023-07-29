@@ -620,7 +620,7 @@ class AortaGeomReconDisplayModuleWidget(ScriptedLoadableModuleWidget, VTKObserva
         stop_limit = self._parameterNode.GetParameter(
             "stop_limit")
         threshold_coef = self._parameterNode.GetParameter(
-            "threshold_coef").format(price = 49)
+            "threshold_coef")
         rms_error = self._parameterNode.GetParameter("rms_error")
         no_ite = self._parameterNode.GetParameter("no_ite")
         curv_scaling = self._parameterNode.GetParameter(
