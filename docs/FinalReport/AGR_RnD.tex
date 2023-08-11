@@ -165,38 +165,50 @@ The project has started with the a simple segmentation algoritm build on the jup
     \label{fig_jnr}
 \end{figure}
 
-Originally, the input file paths, the total number of slices and the inputs by the users are hardcoded in the Jupyter Notebook. To improve the usability of the \progname{} (reduce the amount of time for user inputs and execution), we implemented an extension module on 3D Slicer. 
+Originally, the parameters entered by the "users", and many other values are hardcoded in the Jupyter Notebook. To improve the usability of the \progname{} (reduce the amount of time for user inputs and execution), we implemented an extension module on 3D Slicer. 
 
-3D Slicer is a open-sourced medical image processing software for research. 3D Slicer provides useful modules such as Crop Volume module and Volume Rendering module, and it's highly modulizable with Python Scripting to control the extension module sequence, and QT designer to generate Graphical User Interface.
+3D Slicer is a open-sourced medical image processing software for research. 3D Slicer provides useful modules such as Crop Volume module and Volume Rendering module that easily crop any volume. 3D Slicer is highly modulizable with Python scripting to control the extension module sequence, and QT designer to generate Graphical User Interface.
 
-\begin{figure}[ht]
-    \centering
-    \includegraphics[width=\textwidth]{figures/Sample/SlicerUI.png}
-    \caption[AortaGeomRecon phase 1 User Interface]{AortaGeomRecon UI phase 1}
-    \label{fig_UI_1}
-\end{figure}
+%\begin{figure}[ht]
+%    \centering
+%    \includegraphics[width=\textwidth]{figures/Sample/SlicerUI.png}
+%    \caption[AortaGeomRecon phase 1 User Interface]{AortaGeomRecon UI phase 1}
+%    \label{fig_UI_1}
+%\end{figure}
+%
+%\begin{figure}[ht]
+%    \centering
+%    \includegraphics[width=\textwidth]{figures/Sample/SlicerUI_2.png}
+%    \caption[AortaGeomRecon phase 2 User Interface]{AortaGeomRecon UI phase 2}
+%    \label{fig_UI_2}
+%\end{figure}
 
-\begin{figure}[ht]
-    \centering
-    \includegraphics[width=\textwidth]{figures/Sample/SlicerUI_2.png}
-    \caption[AortaGeomRecon phase 2 User Interface]{AortaGeomRecon UI phase 2}
-    \label{fig_UI_2}
-\end{figure}
-
-3D Slicer supports modulization with an extension. An extension is a software bundle that includes every modules to solve a specific medical image problem. An extension can compose multiple module, where each module is dedicated to solve a sub-problem.
-
+3D Slicer supports modulization with an extension. An extension can compose multiple modules, where each module is dedicated to solve a sub-problem.
 %\begin{itemize}
 %\item 3D Slicer Data Structure \\ 
-
 \subsection{3D Slicer's data structure}
 
-3D Slicer's Data Structure can be divided into two categories: Node for storing large data such as DICOM with a Volume Node, Volume rendering Region of Interest Node, Label Map Volume Node, and parameters are read from extension's module UI and are stored as string. Every data stored in 3D Slicer can be accessed by the 3D Slicer's Widget Class and Logic Class for further processing.
+3D Slicer's Data Structure can be divided into two categories.  The Node data structure store large data such as DICOM with a Volume Node, Volume rendering Region of Interest Node, Label Map Volume Node. The Figure~\ref{fig_sub} shows the SubjectHierarchyTreeView which the module already stored many data nodes. The first node is the DICOM patient data with the chest CT scans stored as a volume, and the cropped volume I generated with Crop Volume Module.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{figures/AGR/SubjectHierarchyTreeViewCrop.png}
+    \caption[AortaGeomRecon SubjectHierarchyTreeView]{AortaGeomRecon SubjectHierarchyTreeView}
+    \label{fig_sub}
+\end{figure}
+
+
+parameters are read from extension's module UI and are stored as string. Every data stored in 3D Slicer can be accessed by the 3D Slicer's Widget Class and Logic Class for further processing.
 
 On a higher level, 3D Slicer stores all the above data in a scene object. 3D Slicer can load any MRMLscene file, this allowed user to retrieve all the data nodes and parameters. On the other hand, 3D Slicer has a special input module, the DICOM database allowed user to store DICOM metadata in 3D Slicer.
 
 \subsection{3D Slicer's scripted module}
 
 Every ScriptLoadableModule in 3D Slicer have a Widget Class and a Logic Class. The Widget Class is used to initialize the extension module's UI component, and the parameters tied to the UI compoenent. The module's Logic Class is used to perform the processing of the data. In the Logic Class, we initialize an AortaGeomRecon Segmenter object with the attributes set to the parameters reading from UI component, which are inputs by the user. After completing the segmentation with Segmenter object, we convert the SimpleITK image object to a volume node corresponding in 3D Slicer, which allow the user to visualize the segmentation result. 
+
+\subsection{AortaGeomReconDisplayModule}
+\subsubsection{Graphical User Interface}
+\subsubsection{Module's Workflow}
 
 \section{GitHub and Workflows}
 This project uses GitHub for version control. \\
