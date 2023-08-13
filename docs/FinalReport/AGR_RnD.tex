@@ -76,7 +76,7 @@ On the other hand, this list of hyperparameters that can be tuned to get the bes
 One of the most important parameters is the threshold coefficient. Since the algorithm segments based on the intensity of the grey scale pixels, decreasing the threshold coefficient would decrease the acceptable range of the pixels, and vice-versa. 
 
 
-\subsection{Algorithm Overview}
+\subsection{Algorithm Overview} \label{algo}
 
 When the user has selected the aorta seeds, the plane where the aorta seeds located is the initial plane. From this plane towards the bottom (the feet) is inferior direction. On the other hand, it is superior direction. This algorithm segments each slice with SITK::ThresholdSegmentationLevelSetImageFilter. The principles of this image filter can be explained with two terms: Level sets segmentation method, and a threshold range that defines the intensity of the acceptable pixel.
 
@@ -165,7 +165,7 @@ The project has started with the a simple segmentation algoritm build on the jup
     \label{fig_jnr}
 \end{figure}
 
-Originally, the parameters entered by the "users", and many other values are hardcoded in the Jupyter Notebook. To improve the usability of the \progname{} (reduce the amount of time for user inputs and execution), we implemented an extension module on 3D Slicer. 
+Originally, the parameters entered by the users, and many other values are hardcoded in the Jupyter Notebook. To improve the usability of the \progname{} (reduce the amount of time for user inputs and execution), we implemented an extension module on 3D Slicer. 
 
 3D Slicer is a open-sourced medical image processing software for research. 3D Slicer provides useful modules such as Crop Volume module and Volume Rendering module that easily crop any volume. 3D Slicer is highly modulizable with Python scripting to control the extension module sequence, and QT designer to generate Graphical User Interface.
 
@@ -188,19 +188,9 @@ Originally, the parameters entered by the "users", and many other values are har
 %\item 3D Slicer Data Structure \\ 
 \subsection{3D Slicer's data structure}
 
-3D Slicer's Data Structure can be divided into two categories.  The Node data structure store large data such as DICOM with a Volume Node, Volume rendering Region of Interest Node, Label Map Volume Node. The Figure~\ref{fig_sub} shows the SubjectHierarchyTreeView which the module already stored many data nodes. The first node is the DICOM patient data with the chest CT scans stored as a volume, and the cropped volume I generated with Crop Volume Module.
+3D Slicer's Data Structure can be divided into two categories. The Node data structure store large data such as DICOM with a Volume Node, Volume rendering Region of Interest Node, Label Map Volume Node. The parameters are stored as string from the UI component of the module. Every data stored in 3D Slicer can be accessed by the 3D Slicer's Widget Class and Logic Class for further processing. 
 
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=\textwidth]{figures/AGR/SubjectHierarchyTreeViewCrop.png}
-    \caption[AortaGeomRecon SubjectHierarchyTreeView]{AortaGeomRecon SubjectHierarchyTreeView}
-    \label{fig_sub}
-\end{figure}
-
-
-parameters are read from extension's module UI and are stored as string. Every data stored in 3D Slicer can be accessed by the 3D Slicer's Widget Class and Logic Class for further processing.
-
-On a higher level, 3D Slicer stores all the above data in a scene object. 3D Slicer can load any MRMLscene file, this allowed user to retrieve all the data nodes and parameters. On the other hand, 3D Slicer has a special input module, the DICOM database allowed user to store DICOM metadata in 3D Slicer.
+3D Slicer stores all the above data in a scene object, which is also refered as MRMLscene file, on the higher level data format. 3D Slicer can load any MRMLscene file, this allowed user to retrieve all the data nodes and parameters. On the other hand, 3D Slicer has a special input module, the DICOM database allowed user to store DICOM metadata in 3D Slicer.
 
 \subsection{3D Slicer's scripted module}
 
@@ -208,14 +198,48 @@ Every ScriptLoadableModule in 3D Slicer have a Widget Class and a Logic Class. T
 
 \subsection{AortaGeomReconDisplayModule}
 \subsubsection{Graphical User Interface}
-\subsubsection{Module's Workflow}
 
-\section{GitHub and Workflows}
-This project uses GitHub for version control. \\
-GitHub issues tracker use to keep track the items to work on throughout the development of the project\\
-GitHub Project is used for dividing a large issue into smaller tasks, expected date of the completion. This is useful for project management.\\
-GitHub Workflow is a great tool for Continuous Integration tests. \\
-We uses GitHub Workflow for Linter and Continuous Integration tests. 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{figures/AGR/Slicer_UI.png}
+    \caption[3D Slicer UI]{3D Slicer UI}
+    \label{fig_slicer_ui}
+\end{figure}
+
+3D Slicer separate the UI into two parts. From the Figure~\ref{fig_slicer_ui}, we can see that the four windows on the right side of the UI are used to visualize a volume. The left side shows the SubjectHierarchyTreeView which the module already stored many data nodes. The first node is the DICOM patient data with the chest CT scans stored as a volume, and the cropped volume I generated with Crop Volume Module. There is a Volume rendering ROI node and several ScalarVolumeNode which are the generated segmentation volume with different parameters.
+
+The left side is the module UI. This part is designed and implemented differently based on the requirements of the modules. The Figure~\ref{fig_module_ui} shows the module UI that the AGR implemented, where each parameter stored to be passing to the algorithm class.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{figures/AGR/Module_UI.png}
+    \caption[AortaGeomRecon Module UI]{AortaGeomRecon Module UI}
+    \label{fig_module_ui}
+\end{figure}
+
+
+\subsubsection{Module's Workflow}
+When the user first starting 3D Slicer and click on the AGR module, this warning message and Tips appears in the module UI. The user must click on the confirm button below to proceed into the next steps. This warning message is an evidence for the assurance case, which I will explain in the next chapter.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{figures/AGR/AGR_warning.png}
+    \caption[AortaGeomRecon Warning message]{AortaGeomRecon Warning message}
+    \label{fig_agr_warning}
+\end{figure}
+
+In the next step, assuming that the user has already read a DICOM image of the patient's chest, the user is asked to generate a cropped volume using the 3D Slicer's Volume Rendering module and the Crop Volume module. In this phase, the module UI displays only a SubjectHierarchyTreeView where the large data node are shown in this view. After generated a cropped volume, the apply button is enabled and the user can proceed to the next step.
+
+In phase 2 aorta segmentation, the user is asked to inputs the parameters to perform the segmentation. The module UI is same as the Figure~\ref{fig_module_ui}. The necessary inputs are the two aorta seeds, without any value for these two inputs, the module will not allow user to generate segmentation result.
+
+%\section{GitHub and Workflows}
+%This project uses GitHub for version control. \\
+%We used GitHub 
+%
+%GitHub issues tracker use to keep track the items to work on throughout the development of the project\\
+%GitHub Project is used for dividing a large issue into smaller tasks, expected date of the completion. This is useful for project management.\\
+%GitHub Workflow is a great tool for Continuous Integration tests. \\
+%We uses GitHub Workflow for Linter and Continuous Integration tests. 
 
 %\end{itemize}
 
