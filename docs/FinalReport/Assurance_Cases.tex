@@ -2,23 +2,41 @@
 
 \section{Assurance Case Development}
 
-Assurance Case shows the statements and the evidences to ensure the goals are fulfilled. By using Astah GSN drawing software, we have a Tree view of our assurance case.
+Assurance Case shows the statements and the evidences to ensure the goals are fulfilled. By using Astah System Safety presenting in Goal Structuring Notation (GSN) arguments, we want to show that our software delivers correct outputs when used for its intended use/purpose in its intended environment, and within its assumed operating assumptions. The Figure~\ref{fig_agr_ac_top} shows the top level of the assurance cases. Having the goal of delivering correct outputs, we are decomposing the goal into 4 sub goals, GR, GI, GA and GBA.
+
+\begin{figure}[H]
+    \centering
+    \fbox{\includegraphics[width=\textwidth]{figures/AC/Top_Level.png}}
+    \caption[AortaGeomRecon Assurance Cases Top Level]{AortaGeomRecon Assurance Cases Top Level}
+    \label{fig_agr_ac_top}
+\end{figure}
+
 
 \section{Assurance Case for Software Specification Requirements}
 
-The first goal of having a trusted software is a complete, consistant, unambiguous, cTODO Software Specification Requirements \citep{SRS} which shows the complete breakdown of the requirements with mathematical notation, data models and instance models.
+The first goal of getting a trusted software is having a complete, unambiguous, correct, consistent, verifiable, modifiable and traceable Software Specification Requirements \citep{SRS} which shows the complete breakdown of the requirements with mathematical notation, data models and instance models. It's the foundation of the software development, and the design and the implementation will be based on the requirement document.
 
-As explains in the assurance case GR, the Software Specification Requirement having these characteristics by using a standard template. This template is provided by the domain expert Spencer Smith.
+
+\begin{figure}[H]
+    \centering
+    \fbox{\includegraphics[width=\textwidth]{figures/AC/SRS/GSN_GR.png}}
+    \caption[AortaGeomRecon Assurance Cases GR]{AortaGeomRecon Assurance Cases GR}
+    \label{fig_agr_ac_gr}
+\end{figure}
+
+
+
+As explains in the assurance case GR, one of  most important statement of SRS having these characteristics is using a standard template. This template is provided by the domain expert, and my professor, Dr. Spencer Smith, who has researched on Application of Software Engineering Principles, Methods, Techniques and Tools to Improve the Sustainability of Research Software.
 
 The chapters in SRS and some of the most important sections in the chapter are explained below:
 \begin{itemize}
 \item Reference Material
 
-In this setion, a Table of Symbols and a Abbreviations and Acronyms table are used to explain every symbol and Abbreviations used in the SRS document. These tables ensures the consistancy and the unambiguous characteristics of the document. They are located at the very beginning of the document, so the reader will firstly look at these tables before reading the entire document.
+In this section, a Table of Symbols and an Abbreviations and Acronyms table are used to explain every symbol and Abbreviations used in the SRS document. These tables ensure the consistency and the unambiguous characteristics of the document. They are located at the very beginning of the document, so the reader will firstly look at these tables before reading the entire document.
 
 \item Introduction
 
-In the introduction section, we introduced the problems and the scope of the document to the user by explaining the purpose of document, abstracting the scope of requirements and defining the characterstics of intended reader. 
+In the introduction section, we introduced the problems and the scope of the document to the user by explaining the purpose of document, abstracting the scope of requirements and defining the characteristics of intended reader. 
 
 \item General System Description
 
@@ -26,9 +44,9 @@ The general system description includes a system context diagram which explains 
 
 \item Specific System Description
 
-In this section, we are presenting more details about the problem and the specific system to solve the problem. The first subsection Problem Description disucssed on the definition of Organ Segmentation, Coordinate Systems related to Human Organs visualization, Physical System Description which is not available, and Goal Statements which is extract the three-dimensional segmentation of the aorta.
+In this section, we are presenting more details about the problem and the specific system to solve the problem. The first subsection Problem Description discussed on the definition of Organ Segmentation, Coordinate Systems related to Human Organs visualization, Physical System Description which is not available, and Goal Statements which is extract the three-dimensional segmentation of the aorta.
 
-In the next subsection, Solution Charateristics Specification, we started with Assumptions to simplify the problem and helps in developing the theoretical model by filling in the missing information for the physical systems. In the subsection Data Definitions, we defined Voxel, Image/Slice, and Volume with mathematical notation so that the developer can easily interpret. Next, in the subsection Instance Model, we showed the mathematical meaning of Region of Interest, and Segmentation, which are the two essential terms that the developer must know in order to develop the solution.
+In the next subsection, Solution Characteristics Specification, we started with Assumptions to simplify the problem and helps in developing the theoretical model by filling in the missing information for the physical systems. In the subsection Data Definitions, we defined Voxel, Image/Slice, and Volume with mathematical notation so that the developer can easily interpret. Next, in the subsection Instance Model, we showed the mathematical meaning of Region of Interest, and Segmentation, which are the two essential terms that the developer must know in order to develop the solution.
 
 
 \begin{figure}[H]
@@ -59,11 +77,11 @@ With all the information in the document, we can now present the Functional Requ
 
 \item Likely Changes and Unlikely Changes
 
-This section discussed the likely changes that the developer might expect a change in the future works, and the unlikely changes that is most certainly not going to change for a justified reason. The only likely change discussed in the AortaGeomRecon's SRS is regarding the segmentation method. For different segmentation method, the inputs varies, since the segmentation method is a likely change, the inputs variables are also likely changes. The only unlikely change is the method of retrieve a region of interest. Most methods takes a starting point and sizes in different dimensions to get the region of interest.
+This section discussed the likely changes that the developer might expect a change in the future works, and the unlikely changes that is most certainly not going to change for a justified reason. The only likely change discussed in the AortaGeomRecon's SRS is regarding the segmentation method. For different segmentation method, the inputs varies, since the segmentation method is a likely change, the inputs variables are also likely changes. The only unlikely change is the method of retrieve a region of interest. Most methods take a starting point and sizes in different dimensions to get the region of interest.
 
 \item Traceability Matrix and Graphs
 
-The traceability matrices is to provide easy references on what has to be additionally modified if a certain component is changed. Below shows the traceability matrices of different sections:
+The traceability matrices are to provide easy references on what has to be additionally modified if a certain component is changed. Below shows the traceability matrices of different sections:
 \begin{figure}[H]
     \centering
     \fbox{\includegraphics[width=0.7\textwidth]{figures/AC/SRS/tm_dd_im.png}}
@@ -74,7 +92,7 @@ The traceability matrices is to provide easy references on what has to be additi
 \begin{figure}[H]
     \centering
     \fbox{\includegraphics[width=0.7\textwidth]{figures/AC/SRS/tm_im_r.png}}
-    \caption[[AortaGeomRecon Traceability Matrix between Requirements and Other sections]{AortaGeomRecon Traceability Matrix between Requirements and Other sections}
+    \caption[AortaGeomRecon Traceability Matrix between Requirements and Other sections]{AortaGeomRecon Traceability Matrix between Requirements and Other sections}
     \label{fig_agr_tm_im_r}
 \end{figure}
 
@@ -89,18 +107,19 @@ The traceability matrices is to provide easy references on what has to be additi
 \end{itemize}
 
 \section{Assurance Case for Implementation}
-The goal of implementation asked the developer to fully comply the design and the implementation with the Software Requirements Specification document. Since we have showed with Assurance Case that our SRS is complete, consistant, and unambiguous, the design and the implementation that fully complying with requirements is correct.
+The goal of implementation asked the developer to fully comply the design and the implementation with the Software Requirements Specification document. Since we have showed with Assurance Case that our SRS is complete, consistent, and unambiguous, the design and the implementation that fully complying with requirements is correct.
 
 \subsection{Design Document}
-The purpose of the Design Document is to explain in details how the algorithm works, and why it worked. Similar to what section \ref{algo} wrote, the design document explains in plan text the workflow of the algorithm. Since before the domain expert can agree on the design and implementation, he/shee needs to understand the algorithm, we are building a Design Document that is easy to access. 
+The purpose of the Design Document is to explain in details how the algorithm works, and why it worked. Similar to what section \ref{algo} wrote, the design document explains in plan text the workflow of the algorithm. Since before the domain expert can agree on the design and implementation, the person needs to understand the algorithm, we are building a Design Document that is easy to access. 
 
 \subsubsection{Sphinx - Python Documentation Generator}
-To implement this Design Document, I used Sphinx, a Python Documentation Generator that can build module's documentation with the comments in the source code. Moreover, using reStructuredText to write the Algorithm Overview, we can build html binary which can be publish on a webserver, which I was able to implement and accomplish. Another important section in Design Document is the Glossary. It has rich vocubulary explanation, images, and links to the outside source to let the reader understands as much as possible.
+To implement this Design Document, I used Sphinx, a Python Documentation Generator that can build module's documentation with the comments in the source code. Moreover, using reStructuredText to write the Algorithm Overview, we can build HTML binary which can be published on a web server, which I was able to implement and accomplish. Another important section in Design Document is the Glossary. It has rich vocabulary explanation, images, and links to the outside source to let the reader understands as much as possible.
 
 \subsection{Module Guide}
-Module Guide is a document that support the modulization of the program. By doing the module decomposition, we have separate of concerns for each module. Sometimes, modules are tight to one or multiple requirements, we have built a Traceability Matrix between Modules and Requirements, Modules and Source code such that we trust all pieces of the source code are built for a reason, and they are built correctly.
+Module Guide is a document that support the modularization of the program. By doing the module decomposition, we have separate of concerns for each module. Sometimes, modules are tight to one or multiple requirements, we have built a Traceability Matrix between Modules and Requirements, Modules and Source code such that we trust all pieces of the source code are built for a reason, and they are built correctly.
 
-% TODO: add TM images
+
+To-do: add TM images
 
 Test Case
 \begin{itemize}
@@ -115,14 +134,15 @@ Test Case
 
 \section{Algorithm Review}
 
-The algorithm review was an idea started with Code Walkthrough. The difference is that Code Walkthrough aims to increase the confidence of the reviewer such that the reviewed implementation is doing what we have discussed. For an Algorithm Review, we have not discussed what the program should do; we are presenting the algorithm to the domain expert and aksing them if the design and implementation fullfill our requirements.
+The algorithm review was an idea started with Code Walkthrough. The difference is that Code Walkthrough aims to increase the confidence of the reviewer such that the reviewed implementation is doing what we have discussed. For an Algorithm Review, we have not discussed what the program should do; we are presenting the algorithm to the domain expert and asking them if the design and implementation fulfill our requirements.
 
 \subsection{Algorithm Review with Kailin Chu}
-The first algorithm review was done with Kailin Chu, who is a biomedical engineer and started the semi-automacial aorta segmentation algorithm. Along with Smith Spencer, we were aiming to increase the domain expert's confidence in this code walkthrough. For various reaseon, this code walkthrough has not been successful, this implies that the domain expert has not gain confidence over the implementation. However, this meeting was helpful, because knowing that the algorithm might have flaw, I was able to iterate the algorithm and reaching a better result in a more efficient way.
+The first algorithm review was done with Kailin Chu, who is a biomedical engineer and started the semi-automacial aorta segmentation algorithm. Along with Smith Spencer, we were aiming to increase the domain expert's confidence in this code walkthrough. For various reasons, this code walkthrough has not been successful, this implies that the domain expert has not gained confidence over the implementation. However, this meeting was helpful, because knowing that the algorithm might have flaw, I was able to iterate the algorithm and reaching a better result in a more efficient way.
 
 \subsection{Algorithm Review with Dr. Dean Inglis}
 
-The second algorithm review was done with Dr. Dean Inglish, who is a biomedical engineer and started the semi-automacial aorta segmentation algorithm. Along with Smith Spencer, we were aiming to increase the domain expert's confidence in this code walkthrough. For various reaseon, this code walkthrough has not been successful, this implies that the domain expert has not gain confidence over the implementation. However, this meeting was helpful, because knowing that the algorithm might have flaw, I was able to iterate the algorithm and reaching a better result in a more efficient way.
+The second algorithm review was done with Dr. Dean Inglis, who is an experienced professor, Medical Image Analyst and Software Developer. We showed him our segmentation algorithm and asked for a confirmation of this method, or a better algorithm.
+
 \subsubsection{}
 
 
