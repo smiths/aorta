@@ -1,4 +1,5 @@
 \chapter{AortaGeomRecon Research and Development}
+
 This chapter will discuss the research and development of the \progname{}.\\
 AortaGeomRecon stands for Aorta Geometry Reconstruction. The main objective of this software is to semi-automatically build 3D geometry of the Aorta from the patient's chest ct scans.  The existing methods are often involved of extensive manual works by using a software with many steps. An experienced user, who might be a medical domain expert, needs to do a minimum of 10 minutes of manual works. \\
 The implementation till the date of this report can let the users who have the user characteristics described in SRS \citep{SRS} get the Aorta 3D geometry with only a few hyperparameters which can be set within half a minute, and the result requires maximum 2 minutes of execution time. \\
@@ -15,7 +16,7 @@ Through many iterations, the voxels expand to fill the entire volume, finally us
 
 \begin{figure}[ht]
     \centering
-    \includegraphics[width=0.9\textwidth]{figures/AGR/bubbles.png}
+    \includegraphics[width=\textwidth]{figures/AGR/bubbles.png}
     \caption[ITK-Snap's Bubble segmentation UI]{ITK-Snap's Bubble segmentation method}
     \label{fig_ITK}
 \end{figure}
@@ -33,14 +34,14 @@ Like the bubble method, this method often reads extra volume, and requires user 
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.8\textwidth]{figures/Sample/3D-Slicer-Segmentation.png}
+    \includegraphics[width=\textwidth]{figures/Sample/3D-Slicer-Segmentation.png}
     \caption[3D Slicer Built-in Segmentation UI]{3D Slicer Built-in Segmentation Method}
     \label{fig_3D_Seg_Builtin}
 \end{figure}
 
 \section{Segmentation Algorithm}
 
-This section introduces the key concepts of the implementation on the segmentation algorithm. The algorithm is developed in Python, by using external libraries, SimpleITK and NumPy. The algorithm builds the 3D Aorta geometry by doing segmentation on each axial slice. From the axial view, there is one or two circles that is edged bounded. Using this information, and given an initial Aorta center coordination, the algorithm continuously segments each axial's slice circle closest to the previous Aorta center coordinate. Finally, some hyperparameters tuning can let the algorithm pick up the pixels that were missing but belongs to the part of the Aorta.
+This section introduces the key concepts of the implementation on the segmentation algorithm. The algorithm is developed in Python with the external libraries, SimpleITK and NumPy. The algorithm builds the 3D Aorta geometry by doing segmentation on each axial slice. The logic behind segmenting each slice from the axial view, is that there is one or two circles that is edged bounded in each axial plane view. Using this information, and given an initial Aorta center coordination, the algorithm continuously segments each axial's slice circle closest to the previous Aorta center coordinate. Finally, some hyperparameters tuning can let the algorithm pick up the pixels that were missing but belongs to the part of the Aorta.
 
 \subsection{Background} \label{algo_bg}
 
@@ -54,7 +55,7 @@ At the beginning of the algorithm, the user inputs two integer coordinates indic
 
 \begin{figure}[ht]
     \centering
-    \includegraphics[width=0.55\textwidth]{figures/Sample/Aorta_seeds.png}
+    \includegraphics[width=0.7\textwidth]{figures/Sample/Aorta_seeds.png}
     \caption[The Aorta Seeds]{The aorta seeds \citep{6346433}}
     \label{fig_aorta_seed}
 \end{figure}
@@ -80,7 +81,7 @@ One of the most important parameters is the threshold coefficient. Since the alg
 
 When the user has selected the aorta seeds, the plane where the aorta seeds located is the initial plane. From this plane towards the bottom (the feet) is inferior direction. On the other hand, it is superior direction. This algorithm segments each slice with SITK::ThresholdSegmentationLevelSetImageFilter. The principles of this image filter can be explained with two terms: Level sets segmentation method, and a threshold range that defines the intensity of the acceptable pixel.
 
-Level Sets are an important category of modern image segmentation techniques based on partial differential equations (PDE), i.e. progressive evaluation of the differences among neighboring pixels to find object boundaries. The pictures below demonstrate an example of how Level Sets method work on finding the region of the heart. It starts with a seed contour that is within the region of interest, then by finding the gradient based on the contour line, the segmentation result will propagate towards outside the region until the maximum difference between the neighboring pixels are reached.
+Level Sets are an important category of modern image segmentation techniques based on partial differential equations (PDE), i.e. progressive evaluation of the differences among neighboring pixels to find object boundaries. The pictures~\ref{LSS} demonstrate an example of how Level Sets method work on finding the region of the heart. It starts with a seed contour that is within the region of interest, then by finding the gradient based on the contour line, the segmentation result will propagate towards outside the region until the maximum difference between the neighboring pixels are reached.
 
 \begin{figure}[H] 
 \centering
@@ -100,7 +101,7 @@ The generated result is the label map image, and we will use it in the next few 
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.33\textwidth]{figures/AGR/label_image.png}
+    \includegraphics[width=0.5\textwidth]{figures/AGR/label_image.png}
     \caption[A label image]{A label map}
     \label{fig_label_map}
 \end{figure}
@@ -120,7 +121,7 @@ By using SITK::LabelStatisticsImageFilter, the algorithm gets the mean and the s
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.8\textwidth]{figures/AGR/threshold.png}
+    \includegraphics[width=\textwidth]{figures/AGR/threshold.png}
     \caption[Code that shows how to calculate the threshold range]{Code snippet shows the intensity threshold calculation}
     \label{fig_threshold}
 \end{figure}
@@ -130,7 +131,7 @@ With SITK::ThresholdSegmentationLevelSetImageFilter, the seed image calculated i
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.45\textwidth]{figures/AGR/segment_label_image.png}
+    \includegraphics[width=0.5\textwidth]{figures/AGR/segment_label_image.png}
     \caption[A segmented image]{A segmented image on top of the original slice}
     \label{fig_segmented_image}
 \end{figure}
@@ -146,7 +147,7 @@ In inferior direction, if the new ascending aorta centroid that is closest to th
 In superior direction, if the standard deviation of the initial label map and the segmentation result label map has larger difference than the limit, the algorithm will stop processing segmentation for the rest of the slices. For example, assume that the standard deviation of the initial label image is 20, and the standard deviation of the segmentation label image is 40, with stop limit of 10, the program halt immediately.
 
 \subsection{Algorithm Summary}
-Given two integer coordinates, ascending aorta centroid and descending aorta centroid, the algorithm set the inputted plane as the initial plane. From the initial plane to the bottom (the feet) plane, the algorithm calculate a label map with two centroid coordinates and kernel size, calculate a distance map with the label map, calculate a threshold range with the label map's selected pixels, perform segmentation, calculate new centroid coordinates, and verify the segmentation result in case that it reaches the stop condition. Once the algorithm finished the segmentation in inferior direction, the algorithm works from the initial plane to the top (the head) plane, repeating the similar steps. Each segmentation result slice is stored in SITK's image, which supports the conversion to VTK file or DICOM file.
+Given two integer coordinates, ascending aorta centroid and descending aorta centroid, the algorithm set the inputted plane as the initial plane. From the initial plane to the bottom (the feet) plane, the algorithm calculate a label map with two centroid coordinates and kernel size, calculate a distance map with the label map, calculate a threshold range with the label map's selected pixels, perform segmentation, calculate new centroid coordinates, and verify the segmentation result in case that it reaches the stop condition. Once the algorithm finished the segmentation in inferior direction, the algorithm works from the initial plane to the top (the head) plane, repeating the similar steps. Each segmentation result slice is stored in a SITK's image, which supports the conversion to VTK file or DICOM file.
 
 \begin{figure}[H]
     \centering
@@ -212,7 +213,7 @@ The left side is the module UI. This part is designed and implemented differentl
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.8\textwidth]{figures/AGR/Module_UI.png}
+    \includegraphics[width=\textwidth]{figures/AGR/Module_UI.png}
     \caption[AortaGeomRecon Module UI]{AortaGeomRecon Module UI}
     \label{fig_module_ui}
 \end{figure}
@@ -223,7 +224,7 @@ When the user first starting 3D Slicer and click on the AGR module, this warning
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.8\textwidth]{figures/AGR/AGR_warning.png}
+    \includegraphics[width=\textwidth]{figures/AGR/AGR_warning.png}
     \caption[AortaGeomRecon Warning message]{AortaGeomRecon Warning message}
     \label{fig_agr_warning}
 \end{figure}
