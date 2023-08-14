@@ -117,7 +117,7 @@ The goal of implementation asked the developer to fully comply the design and th
 \end{figure}
 
 \subsection{Design Document}
-The purpose of the Design Document \citep{DD} is to explain in details how the algorithm works, and why it worked. Similar to what section \ref{algo} wrote, the design document explains in plan text the workflow of the algorithm. Since before the domain expert can agree on the design and implementation, the person needs to understand the algorithm, we are building a Design Document that is easy to access. 
+The purpose of the Design Document \cite{DD} is to explain in details how the algorithm works, and why it worked. Similar to what section \ref{algo} wrote, the design document explains in plan text the workflow of the algorithm. Since before the domain expert can agree on the design and implementation, the person needs to understand the algorithm, we are building a Design Document that is easy to access. 
 
 \subsubsection{Sphinx - Python Documentation Generator}
 To implement this Design Document, I used Sphinx, a Python Documentation Generator that can build module's documentation with the comments in the source code. Moreover, using reStructuredText to write the Algorithm Overview, we can build HTML binary which can be published on a web server, which I was able to implement and accomplish. Another important section in Design Document is the Glossary. It has rich vocabulary explanation, images, and links to the outside source to let the reader understands as much as possible.
@@ -189,11 +189,11 @@ GI.1.2 states that a test plan must be adequate and test report demonstrates suc
 Instead of using ITK-Snap's bubble method, we build ground truth test case with our existing algorithm and updated algorithm. If there exists a difference between two results, our domain experts can make a visual comparison of both test cases to see which algorithm to use for the future.
 
 \subsubsection{GitHub Actions workflows}
-This leads to our Continuous Integration infrastrucuture, implemented with GitHub Actions workflow. A workflow is a configurable automated process that will run one or more jobs on the desired system. GitHub Actions workflow used a YAML file to define the events and the commands to be executed on the temporary system, which has the build of the repository. \citep{GitHubActions}
+This leads to our Continuous Integration infrastrucuture, implemented with GitHub Actions workflow. A workflow is a configurable automated process that will run one or more jobs on the desired system. GitHub Actions workflow used a YAML file to define the events and the commands to be executed on the temporary system, which has the build of the repository. \cite{GitHubActions}
 
 We have set up two automated process which happens on each "push" event and "pull" event. A "push" event implies that something is changed in one or multiple commits, therefore there is a need to verify whether the commits has bugs that need extra fixes. A "pull" event happens when a feature branch is going to merge with the main branch. Since our main branch is protected, any update to the main branch must be merged by using a pull-request. Before a pull-request can be approved, the continuous integration tests are examined and until there are no errors, a pull-request cannot be merged with the main branch. 
 
-The first automated process is a linter. A linter is a tool for static code analysis to flag programming errors, bugs, stylistic errors and suspicious constructs. We used Python Flake8 as our linter to find bugs and errors, and ensures that program's readability by stricting the source code with Google's published  Python Style Guide. \citep{Linter}
+The first automated process is a linter. A linter is a tool for static code analysis to flag programming errors, bugs, stylistic errors and suspicious constructs. We used Python Flake8 as our linter to find bugs and errors, and ensures that program's readability by stricting the source code with Google's published  Python Style Guide. \cite{Linter}
 
 The second automated process is our continuous integration tests. By setting up Git Large File System (LFS) and upload the pre-build ground truth test data in the repository, we can now pass the cropped volume as the inputs data, the same Aorta seeds and the hyperparameters that we have used to generate the ground truth test data to the algorithm and verify the results. To compare the volumes, we used Dice similarity coefficient.
 
@@ -201,24 +201,27 @@ The second automated process is our continuous integration tests. By setting up 
 
 The algorithm review was an idea started with Code Walkthrough. The difference is that Code Walkthrough aims to increase the confidence of the reviewer such that the reviewed implementation is doing what we have discussed. For an Algorithm Review, we have not discussed what the program should do; we are presenting the algorithm to the domain expert and asking them if the design and implementation fulfill the implementation objectives.
 
-\subsubsection{Tools used in Algorithm Review}
+\subsection{Tool used in Algorithm Review}
 
+Spyder is a free and open source scientific environment written in Python, for Python, and designed by and for scientists, engineers and data analysts. The Variable Explorer allows the user to interactively browse the variables and the objects in debugging mode. 
+\citep{Spyder}
 
-\begin{itemize}
-\item 
-\item 
-\item 
-\end{itemize}
+\begin{figure}[H]
+    \centering
+    \fbox{\includegraphics[width=0.9\textwidth]{figures/AC/AR/variable-explorer-standard.png}}
+    \caption[Spyder Variable Explorer]{Spyder Variable Explorer}
+    \label{fig_spyder_ve}
+\end{figure}
+
+This feature allows us to execute the program step by step, and see what happens when executing the segmentation algorithm. 
+
 
 \subsection{Algorithm Review with Kailin Chu}
-The first algorithm review was done with Kailin Chu, who is a biomedical engineer and started the semi-automacial aorta segmentation algorithm. Along with Smith Spencer, we were aiming to increase the domain expert's confidence in this code walkthrough. For various reasons, this code walkthrough has not been successful, this implies that the domain expert has not gained confidence over the implementation. However, this meeting was helpful, because knowing that the algorithm might have flaws, I was able to iterate the algorithm and reaching a better result in a more efficient way.
+The first algorithm review was done with Kailin Chu, who is a biomedical engineer and started the semi-automacial aorta segmentation algorithm. Along with Smith Spencer, we were aiming to increase the domain expert's confidence in this code walkthrough. This code walkthrough did not increase our confidence in the software, because the code was developed by Kailin from two years ago. Some of the details and design decisions are missing, and some variables were decided by trial and error. Despite that the code walkthrough did not achieve what we wanted in the first place, this meeting was still very helpful. Knowing that the algorithm was partially based on trial and error, I was able to improve the algorithm and reaching a better result in a more efficient way.
 
 \subsection{Algorithm Review with Dr. Dean Inglis}
 
-The second algorithm review was done with Dr. Dean Inglis, who is an experienced professor, Medical Image Analyst and Software Developer. We showed him our segmentation algorithm and asked for a confirmation of this method, or a better algorithm.
-
-
-
+The second algorithm review was done with Dr. Dean Inglis, who is an experienced professor, Medical Image Analyst and Software Developer. We showed him our segmentation algorithm and asked for a confirmation of this method, or a better algorithm. Dr. Dean Inglish has shared his thoughts on the algorithm, and we have noted all of his advices on GitHub issue tracker for the developer who will be in charge of improving this program. This meeting effectively increase our confidence in the software, whether the idea of developing extension module on 3D Slicer or the algorithm, our works have been affirmed.
 
 
 %\section{Referencing}
