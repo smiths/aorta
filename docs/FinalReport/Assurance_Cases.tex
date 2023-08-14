@@ -117,7 +117,7 @@ The goal of implementation asked the developer to fully comply the design and th
 \end{figure}
 
 \subsection{Design Document}
-The purpose of the Design Document is to explain in details how the algorithm works, and why it worked. Similar to what section \ref{algo} wrote, the design document explains in plan text the workflow of the algorithm. Since before the domain expert can agree on the design and implementation, the person needs to understand the algorithm, we are building a Design Document that is easy to access. 
+The purpose of the Design Document \citep{DD} is to explain in details how the algorithm works, and why it worked. Similar to what section \ref{algo} wrote, the design document explains in plan text the workflow of the algorithm. Since before the domain expert can agree on the design and implementation, the person needs to understand the algorithm, we are building a Design Document that is easy to access. 
 
 \subsubsection{Sphinx - Python Documentation Generator}
 To implement this Design Document, I used Sphinx, a Python Documentation Generator that can build module's documentation with the comments in the source code. Moreover, using reStructuredText to write the Algorithm Overview, we can build HTML binary which can be published on a web server, which I was able to implement and accomplish. Another important section in Design Document is the Glossary. It has rich vocabulary explanation, images, and links to the outside source to let the reader understands as much as possible.
@@ -189,12 +189,13 @@ GI.1.2 states that a test plan must be adequate and test report demonstrates suc
 Instead of using ITK-Snap's bubble method, we build ground truth test case with our existing algorithm and updated algorithm. If there exists a difference between two results, our domain experts can make a visual comparison of both test cases to see which algorithm to use for the future.
 
 \subsubsection{GitHub Actions workflows}
-This leads to our Continuous Integration infrastrucuture, implemented with GitHub Actions workflow. A workflow is a configurable automated process that will run one or more jobs on the desired system. GitHub Actions workflow used a YAML file to define the events and the commands to be executed on the temporary system, which has the build of the repository. (cite docs.github.com/en/actions/using-workflows/about-workflows)
+This leads to our Continuous Integration infrastrucuture, implemented with GitHub Actions workflow. A workflow is a configurable automated process that will run one or more jobs on the desired system. GitHub Actions workflow used a YAML file to define the events and the commands to be executed on the temporary system, which has the build of the repository. \citep{GitHubActions}
 
-\item Steps
-\item Coverage
-\end{itemize}
-\end{itemize}
+We have set up two automated process which happens on each "push" event and "pull" event. A "push" event implies that something is changed in one or multiple commits, therefore there is a need to verify whether the commits has bugs that need extra fixes. A "pull" event happens when a feature branch is going to merge with the main branch. Since our main branch is protected, any update to the main branch must be merged by using a pull-request. Before a pull-request can be approved, the continuous integration tests are examined and until there are no errors, a pull-request cannot be merged with the main branch. 
+
+The first automated process is a linter. A linter is a tool for static code analysis to flag programming errors, bugs, stylistic errors and suspicious constructs. We used Python Flake8 as our linter to find bugs and errors, and ensures that program's readability by stricting the source code with Google's published  Python Style Guide. \citep{Linter}
+
+The second automated process is our continuous integration tests. By setting up Git Large File System (LFS) and upload the pre-build ground truth test data in the repository, we can now pass the cropped volume as the inputs data, the same Aorta seeds and the hyperparameters that we have used to generate the ground truth test data to the algorithm and verify the results. To compare the volumes, we used Dice similarity coefficient.
 
 \section{Algorithm Review}
 
