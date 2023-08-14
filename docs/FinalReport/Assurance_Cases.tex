@@ -183,12 +183,14 @@ On top of relating the modules to the requirements, we are relating the actual s
 
 \subsection{Test Plan}
 
-GI.1.2
-\begin{itemize}
-\item GitHub Workflow
-\item Continuous Integration tests
-\begin{itemize}
-\item build ``Ground Truth Data''
+GI.1.2 states that a test plan must be adequate and test report demonstrates success. Unlike the other algorithm that can easily be tested with a ground truth test case, our ground truth case is build by using another more accurate method such as ITK-Snap's bubble method, then manually erase the unwanted pixels.
+
+\subsubsection{Build "Ground Truth" data}
+Instead of using ITK-Snap's bubble method, we build ground truth test case with our existing algorithm and updated algorithm. If there exists a difference between two results, our domain experts can make a visual comparison of both test cases to see which algorithm to use for the future.
+
+\subsubsection{GitHub Actions workflows}
+This leads to our Continuous Integration infrastrucuture, implemented with GitHub Actions workflow. A workflow is a configurable automated process that will run one or more jobs on the desired system. GitHub Actions workflow used a YAML file to define the events and the commands to be executed on the temporary system, which has the build of the repository. (cite docs.github.com/en/actions/using-workflows/about-workflows)
+
 \item Steps
 \item Coverage
 \end{itemize}
