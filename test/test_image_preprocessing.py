@@ -115,8 +115,8 @@ def mean_square_error(ref_image, test_image):
 
 def test_compare_segmentation(testCase, limit):
     """Read a test cases' cropped volume from /project-repo/test/sample,
-    perform descending aorta segmentation,
-    and compare the result with the existing volume from /project-repo/test/sample.
+    perform aorta segmentation, and compare the result
+    with the existing volume from /project-repo/test/sample.
 
     Args:
         limit (float): The limit of the test result based on the Sørensen–Dice coefficient.
@@ -151,10 +151,8 @@ def test_compare_segmentation(testCase, limit):
     elif testCase == "032":
         sample = "032-22429388"
     file_p = os.path.abspath(glob.glob("test/*.json")[0])
-    print(sample)
     with open(file_p, "r") as f:
         parameters = json.load(f)[sample]
-    print(parameters)
     cropped_image = get_cropped_volume_image(sample)
     segmenter = AortaSegmenter(
         cropped_image=cropped_image, des_seed=parameters["des_seed"],
@@ -163,7 +161,6 @@ def test_compare_segmentation(testCase, limit):
         kernel_size=parameters["kernel_size"], rms_error=0.02, no_ite=600,
         curvature_scaling=2, propagation_scaling=0.5, debug=False
     )
-
     segmenter.begin_segmentation()
     test_image = segmenter.processing_image
     ref_image = read_volume_image(sample)
