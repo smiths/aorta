@@ -2,7 +2,7 @@
 
 \section{Assurance Case Development}
 
-Assurance Case shows the statements and the evidences to ensure the goals are fulfilled. By using Astah System Safety presenting in Goal Structuring Notation (GSN) arguments, we want to show that our software delivers correct outputs when used for its intended use/purpose in its intended environment, and within its assumed operating assumptions. The Figure~\ref{fig_agr_ac_top} shows the top level of the assurance cases. Having the goal of delivering correct outputs, we are decomposing the goal into 4 sub goals, GR, GI, GA and GBA.
+Assurance Case is build with claims, subclaims, contexts and the evidences to ensure the goals are fulfilled. By using Astah System Safety presenting in Goal Structuring Notation (GSN) arguments, we want to show that our software delivers correct outputs when used for its intended use/purpose in its intended environment, and within its assumed operating assumptions. The Figure~\ref{fig_agr_ac_top} shows the top level of the assurance cases. Having the goal of delivering correct outputs, we are decomposing the goal into 4 sub goals, GR, GI, GA and GBA, where GR stands for the goals to accomplish for the requirements of the software, GI stands for the goals of the implementation, GA are the goals of inputs satisfty the operational assumptions, and GBA are the goals of defining operational assumptions. \cite{kelly2004goal}
 
 \begin{figure}[H]
     \centering
@@ -44,9 +44,9 @@ The general system description includes a system context diagram which explains 
 
 \item Specific System Description
 
-In this section, we are presenting more details about the problem and the specific system to solve the problem. The first subsection Problem Description discussed on the definition of Organ Segmentation, Coordinate Systems used in Medical Image, Physical System Description which is not available, and Goal Statements which is extract the three-dimensional segmentation of the aorta.
+In this section, we are presenting more details about the problem and the specific system to solve the problem. The first subsection Problem Description discussed on the definition of Organ Segmentation, Coordinate Systems used in medical image problem, Physical System Description which is not available, and Goal Statements which is extract the three-dimensional segmentation of the aorta.
 
-In the next subsection, Solution Characteristics Specification, we started with Assumptions to simplify the problem and helps in developing the theoretical model by filling in the missing information for the physical systems. In the subsection Data Definitions, we defined Voxel, Image/Slice, and Volume with mathematical notation so that the developer can easily interpret. Next, in the subsection Instance Model, we showed the mathematical meaning of Region of Interest, and Segmentation, which are the two essential terms that the developer must know in order to develop the solution.
+In the next subsection, Solution Characteristics Specification, we started with Assumptions to define clearly the scope of the requirement document. In the subsection Data Definitions, we defined Voxel, Image/Slice, and Volume with mathematical notation so that the developer can easily interpret. Next, in the subsection Instance Model, we showed the mathematical meaning of Region of Interest, and Segmentation, which are the two essential models that the developer must know in order to develop the solution.
 
 
 \begin{figure}[H]
@@ -117,14 +117,14 @@ The goal of implementation asked the developer to fully comply the design and th
 \end{figure}
 
 \subsection{Design Document}
-The purpose of the Design Document \cite{DD} is to explain in details how the algorithm works, and why it worked. Similar to what section \ref{algo} wrote, the design document explains in plan text the workflow of the algorithm. Since before the domain expert can agree on the design and implementation, the person needs to understand the algorithm, we are building a Design Document that is easy to access. 
+The purpose of the Design Document \cite{DD} is to explain in details how the algorithm works, and why it worked. Similar to what section \ref{algo} wrote, the design document explains in plan text the workflow of the algorithm. The design document is a piece of evidences that demonstrate unambiguity characteristic.
 
 \subsubsection{Sphinx - Python Documentation Generator}
-To implement this Design Document, I used Sphinx, a Python Documentation Generator that can build module's documentation with the comments in the source code. Moreover, using reStructuredText to write the Algorithm Overview, we can build HTML binary which can be published on a web server, which I was able to implement and accomplish. Another important section in Design Document is the Glossary. It has rich vocabulary explanation, images, and links to the outside source to let the reader understands as much as possible.
+To implement this Design Document, I used Sphinx, a Python Documentation Generator that can build module's documentation with the comments in the source code. Moreover, using reStructuredText to write the Algorithm Overview, we can build HTML binary which can be published on a web server. Another important section in Design Document is the Glossary. It has rich vocabulary explanation, images, and links to the outside source to let the reader understands as much as possible.
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.8\textwidth]{figures/AC/DD/Main_page.png}
+    \includegraphics[width=0.9\textwidth]{figures/AC/DD/Main_page.png}
     \caption[AortaGeomRecon Design Document website]{AortaGeomRecon Design Document website}
     \label{fig_agr_dd}
 \end{figure}
@@ -138,7 +138,7 @@ To implement this Design Document, I used Sphinx, a Python Documentation Generat
 
 \subsection{Module Guide}
 
-In the design of the software, we first list the anticipated changes such that since we are expecting a change to this piece of requirement of information, we will keep it a single module so when the changes did happen, we only need to concern about the module and its dependency modules. The anticipated changes are listed in the Figure~\ref{fig_agr_ac} below.
+Another important documentation to show that the design is complete, correct, and consistent design is Module Guide. In the design of the software, we first list the anticipated changes such that we are expecting a change to this piece of requirement of information, we will keep it a single module so when the changes did happen, we only need to concern about the module and its dependency modules. The anticipated changes are listed in the Figure~\ref{fig_agr_ac} below.
 
 \begin{figure}[H]
     \centering
@@ -183,7 +183,7 @@ On top of relating the modules to the requirements, we are relating the actual s
 
 \subsection{Test Plan}
 
-GI.1.2 states that a test plan must be adequate and test report demonstrates success. Unlike the other algorithm that can easily be tested with a ground truth test case, our ground truth case is build by using another more accurate method such as ITK-Snap's bubble method, then manually erase the unwanted pixels.
+GI.1.2 claim states that a test plan must be adequate and test report demonstrates success. Unlike the other algorithm that can easily be tested with a ground truth test case, our ground truth case is build by using another more accurate method such as ITK-Snap's bubble method, then manually erase the unwanted pixels.
 
 \subsubsection{Build "Ground Truth" data}
 Instead of using ITK-Snap's bubble method, we build ground truth test case with our existing algorithm and updated algorithm. If there exists a difference between two results, our domain experts can make a visual comparison of both test cases to see which algorithm to use for the future.
@@ -199,7 +199,7 @@ The second automated process is our continuous integration tests. By setting up 
 
 \subsection{Algorithm Review}
 
-The algorithm review was an idea started with Code Walkthrough. The difference is that Code Walkthrough aims to increase the confidence of the reviewer such that the reviewed implementation is doing what we have discussed. For an Algorithm Review, we have not discussed what the program should do; we are presenting the algorithm to the domain expert and asking them if the design and implementation fulfill the implementation objectives.
+The algorithm review was an idea started with Code Walkthrough. A code walkthrough is one of the methods that can increase the participants' confidence, or finding program's bugs or error. For an Algorithm Review, we have not discussed what the program should do; we are presenting the algorithm to the domain expert and asking them if the design and implementation fulfill the implementation objectives.
 
 \subsubsection{Tool used in Algorithm Review}
 
@@ -209,15 +209,15 @@ Spyder is a free and open source scientific environment written in Python, for P
 \begin{figure}[H]
     \centering
     \fbox{\includegraphics[width=0.8\textwidth]{figures/AC/AR/variable-explorer-standard.png}}
-    \caption[Spyder Variable Explorer]{Spyder Variable Explorer}
+    \caption[Spyder Variable Explorer]{Spyder Variable Explorer \cite{raybaut2009spyder}}
     \label{fig_spyder_ve}
 \end{figure}
 
-This feature allows us to execute the program step by step, and see what happens when executing the segmentation algorithm. 
+This feature allows us to execute the program step by step, and see what happens to the variable (segmentation result) when executing the segmentation algorithm. 
 
 
 \subsubsection{Algorithm Review with Kailin Chu}
-The first algorithm review was done with Kailin Chu, who is a biomedical engineer and started the semi-automacial aorta segmentation algorithm. Along with Smith Spencer, we were aiming to increase the domain expert's confidence in this code walkthrough. This code walkthrough did not increase our confidence in the software, because the code was developed by Kailin from two years ago. Some of the details and design decisions are missing, and some variables were decided by trial and error. Despite that the code walkthrough did not achieve what we wanted in the first place, this meeting was still very helpful. Knowing that the algorithm was partially based on trial and error, I was able to improve the algorithm and reaching a better result in a more efficient way.
+The first algorithm review was done with Kailin Chu, who is a biomedical engineering student and started working the semi-automacial aorta segmentation algorithm as a summer researcher. Along with Smith Spencer, we were aiming to increase our confidence in this code walkthrough. This code walkthrough did not increase our confidence in the software, because the code was developed by Kailin from two years ago, so some of the details and design decisions are missing, and some variables were decided by trial and error. Despite that the code walkthrough has turned into a algorithm review, and it did not achieve what we wanted in the first place, this meeting was still very helpful. Knowing that the algorithm was partially based on trial and error, I was able to improve the algorithm and reaching a better result in a more efficient way.
 
 \subsubsection{Algorithm Review with Dr. Dean Inglis}
 
@@ -233,7 +233,7 @@ The second algorithm review was done with Dr. Dean Inglis, who is an experienced
     \label{fig_agr_ac_gba}
 \end{figure}
 
-The evidence for the statement "To the greatest extent possible, all relevant operational assumptions have been defined" is quite simple as only Domain experts/customers approve the quality of the documentation. This documentation was build from the beginning of the project to the end of the project, where we want to continuously adjust the content of the document matching the most recent updates.
+The evidence for the statement "To the greatest extent possible, all relevant operational assumptions have been defined" is quite simple as only Domain experts/customers approve the quality of the documentation. However, finalizing this evidence takes much efforts from the beginning of the project to the end of the project, because we want to continuously improve the quality of the content matching the most recent updates of the software.
 
 \subsection{User Manual}
 An user manual serves the purpose of documenting the all operational assumptions. When the user getting unexpected results by using this software, they can always refer to the user manual to see what pieces are different. Our user manual is initially located in GitHub repo's README, which is only available to the developers invited as the contributors. The content includes the installation of the software, importing the extension modules, import inputs data, and perform segmentation. The user manual is also available publicly on the design document website, assuming that the users might not be the repository contributors.
@@ -244,8 +244,6 @@ An user manual serves the purpose of documenting the all operational assumptions
     \caption[AortaGeomRecon User Manual on GitHub README]{AortaGeomRecon User Manual on GitHub README}
     \label{fig_agr_git_um}
 \end{figure}
-
-
 
 
 \subsection{User Instruction Video}

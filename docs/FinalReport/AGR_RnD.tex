@@ -17,7 +17,7 @@ Through many iterations, the voxels expand to fill the entire volume, finally us
 \begin{figure}[ht]
     \centering
     \includegraphics[width=\textwidth]{figures/AGR/bubbles.png}
-    \caption[ITK-Snap's Bubble segmentation UI]{ITK-Snap's Bubble segmentation method}
+    \caption[ITK-Snap's Bubble segmentation UI]{ITK-Snap's Bubble segmentation method \cite{py06nimg}}
     \label{fig_ITK}
 \end{figure}
 
@@ -35,17 +35,17 @@ Like the bubble method, this method often reads extra volume, and requires user 
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{figures/Sample/3D-Slicer-Segmentation.png}
-    \caption[3D Slicer Built-in Segmentation UI]{3D Slicer Built-in Segmentation Method}
+    \caption[3D Slicer Built-in Segmentation UI]{3D Slicer Built-in Segmentation Method \cite{Kikinis2014}}
     \label{fig_3D_Seg_Builtin}
 \end{figure}
 
 \section{Segmentation Algorithm}
 
-This section introduces the key concepts of the implementation on the segmentation algorithm. The algorithm is developed in Python with the external libraries, SimpleITK and NumPy. The algorithm builds the 3D Aorta geometry by doing segmentation on each axial slice. The logic behind segmenting each slice from the axial view, is that there is one or two circles that is edged bounded in each axial plane view. Using this information, and given an initial Aorta center coordination, the algorithm continuously segments each axial's slice circle closest to the previous Aorta center coordinate. Finally, some hyperparameters tuning can let the algorithm pick up the pixels that were missing but belongs to the part of the Aorta.
+This section introduces the key concepts of the implementation on the segmentation algorithm. The algorithm is developed in Python with the external libraries, SimpleITK and NumPy. The algorithm builds the 3D Aorta geometry by doing segmentation on each axial slice. The logic behind segmenting each slice from the axial view, is that there is one or two circles that is edged bounded in each axial plane view. Using this information, and given an initial Aorta center coordination, the algorithm continuously segments each axial's slice circles closest to the previous Aorta center coordinates. Finally, some hyperparameters tuning can let the algorithm pick up the pixels that were missing but belongs to the part of the Aorta.
 
 \subsection{Background} \label{algo_bg}
 
-SimpleITK is an open-source multidimensional image analysis library Developed by the Insight Toolkit community for the biomedical sciences and beyond. NumPy is the fundamental package for scientific computing with Python, especially for the performance on multidimensional array processing. The algorithm will use functions from these two libraries for image processing and multidimensional array processing. For example, the algorithm segments each slice with ThresholdSegmentationLevelSetImageFilter from SITK.
+SimpleITK is an open-source multidimensional image analysis library Developed by the Insight Toolkit community for the biomedical sciences and beyond \cite{JSSv086i08}\cite{10.3389/fninf.2013.00045}. NumPy is the fundamental package for scientific computing with Python, especially for the performance on multidimensional array processing \cite{harris2020array}. The algorithm will use functions from these two libraries for image processing and multidimensional array processing. For example, the algorithm segments each slice with ThresholdSegmentationLevelSetImageFilter from SITK.
 
 The algorithm works best with the chest volume cropped to a rectangular prism that contains the aorta and parts of the other organs such as the backbone, blood vessels, and the heart. This can be done with 3D Slicer and its built-in modules, Volume rendering and Crop Volume, or researched by the user to find the starting point and the size to crop.
 
@@ -88,7 +88,7 @@ Level Sets are an important category of modern image segmentation techniques bas
 \subfloat[\centering Init image]{{\includegraphics[width=0.33\textwidth]{figures/AGR/heart-1.png}}}%
 \subfloat[\centering Expanding]{{\includegraphics[width=0.33\textwidth]{figures/AGR/heart-2.png}}}%
 \subfloat[\centering Result]{{\includegraphics[width=0.33\textwidth]{figures/AGR/heart-3.png}}}%
-\caption{Level Sets Segmentation}
+\caption[Level Sets Segmentation]{Level Sets Segmentation}
 \label{LSS}
 \end{figure}
 
@@ -157,7 +157,7 @@ Given two integer coordinates, ascending aorta centroid and descending aorta cen
 \end{figure}
 
 \section{3D Slicer Extension Development}
-The project has started with a simple segmentation algorithm build on the Jupyter notebook. When getting a new patient's data, the user will need to investigate the chest ct scans using another software (3D Slicer, ITK-Snap), to get the readings such as coordinates and size to crop (the coordinates of the yellow dots shown in Figure~\ref{fig_aorta_seed}).
+The project has started with a simple segmentation program build on the Jupyter notebook. When getting a new patient's data, the user will need to investigate the chest ct scans using another software (3D Slicer, ITK-Snap), to get the readings such as coordinates and size to crop (the coordinates of the yellow dots shown in Figure~\ref{fig_aorta_seed}).
 
 \begin{figure}[H]
     \centering
@@ -213,7 +213,7 @@ The left side is the module UI. This part is designed and implemented differentl
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=\textwidth]{figures/AGR/Module_UI.png}
+    \includegraphics[width=0.7\textwidth]{figures/AGR/Module_UI.png}
     \caption[AortaGeomRecon Module UI]{AortaGeomRecon Module UI}
     \label{fig_module_ui}
 \end{figure}
@@ -231,7 +231,7 @@ When the user first starting 3D Slicer and click on the AGR module, this warning
 
 In the next step, assuming that the user has already read a DICOM image of the patient's chest, the user is asked to generate a cropped volume using the 3D Slicer's Volume Rendering module and the Crop Volume module. In this phase, the module UI displays only a SubjectHierarchyTreeView where the large data node are shown in this view. After generated a cropped volume, the apply button is enabled and the user can proceed to the next step.
 
-In phase 2 aorta segmentation, the user is asked to input the parameters to perform the segmentation. The module UI is same as the Figure~\ref{fig_module_ui}. The necessary inputs are the two aorta seeds, without any value for these two inputs, the module will not allow user to generate segmentation result.
+In phase 2 aorta segmentation, the user is asked to input the parameters to perform the segmentation. The module UI is same as the Figure~\ref{fig_module_ui}. The necessary inputs are the two aorta seeds, without any value for these two inputs, the module will not allow user to generate segmentation result. One of the advantages using 3D Slicer is the interactive UI that supports the reading coordinate on the volume in real-time. On the right side of the Figure~\ref{fig_slicer_ui}, we see a crossed intersection pointing to parts of the aorta, this intersection point allows the developer to read the coordinates. Moreover, we were able to automatically pick up the coordinates in real-time in the coordinate widget. As the user moving the intersection, we get the coordinate readings. The Figure~\ref{fig_module_ui} also demonstrates that the user can lock a seed, so the program stop picking up newest coordinate from the intersection point.
 
 %\section{GitHub and Workflows}
 %This project uses GitHub for version control. \\
