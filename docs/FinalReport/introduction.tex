@@ -1,22 +1,21 @@
 \chapter{Introduction} \label{intro}
-Trust and confidence that a system will behave as expected is stress-tested every day, whether from operational issues (expected or unexpected), environmental impacts and system hazards
-or malicious unauthorized parties. Confidence and trust require organized attention to the key characteristics of a system and the collection of appropriate evidence that the desired characteristics are being achieved.
+The trustworthiness and assurance that a system will perform as anticipated needs heavy testing. When a software carries the critical responsibility of examining the human body, administering medication to patients, saving millions of lifes, and conversely, the tiniest bug or error in the implementation process could have derive into seriour consequences for individuals' well-being. This happens when there are problems with how the system works, whether we expected them or not. It's also influenced by things like the environment it's in, the risks it might face, and people who might want to cause harm. To feel sure about the system, we need to pay attention to its main qualities and collect good evidence that it's doing what we want it to do.
 
-Medical software is one of the domains that is difficult to prove its trustworthiness; the implementation details are very sensitive thus it might not be open-sourced to let every user to verify the program themself, but without knowing the implementation details, it is challenging to gain confidence and trust especially over the medical software. The medical software can be used to examine the human bodies, inject medicine to the patients, saving the patients life. On the other hand, a very small implementation mistake could cause people's life.
+Medical software is tricky to make sure it's reliable. The way it's built is very sensitive, so it might not be possible for the users to check how it works. But without the implementation details, it's hard to trust it, especially for something as important as medical software.
 
 Under this context, we want to explore the feasibility of applying assurance cases over a medical software from the beginning of the development. With selected arguments and evidences, we want to show to the domain experts that the software delivers correct outputs when used for its intented use/purpose in its intended environment, and within its assumed operating assumptions.
 
-
 \section{Objective} \label{obj}
-In this study, we present the result of applying of assurance cases in a developing medical software to build the stakeholders' confidence in this software. The software AortaGeomRecon is a 3D Slicer extension module aims to semi-automatically build 3D geometry of the Aorta from the patient's chest ct scans. Assurance cases are a method for providing assurance for a system by giving an
-argument to justify a claim about the system, based on evidence about its design, development, and tested behavior. This case study first presents the problem of Organ/Aorta Segmentation, and the existing solutions which might take time and efforts from the domain experts. Then, we present our algorithm's workflow and logic, and the work environment of using this module in 3D Slicer. Finally, we discussed our assurance cases with selected arguments and evidence, to explain why with these selected pieces, we were able to build confidence in the medical software.
+In this study, we present the results of applying assurance cases during the development of medical software to enhance stakeholders' confidence in this software. The software, AortaGeomRecon, is a 3D Slicer extension module that aims to semi-automatically construct a 3D model of the Aorta from a patient's chest CT scans. Assurance cases serve as a method for providing assurance for a system by presenting arguments to justify claims about the system, based on evidence regarding its design, development, and tested behavior.
+
+This case study first introduces the challenge of Organ/Aorta Segmentation and explores existing solutions, which might require time and effort from domain experts. Then, we outline the workflow and logic of our algorithm, as well as the working environment for using this module within 3D Slicer. Finally, we discuss our assurance cases, including selected arguments and evidence. This discussion aims to explain how these selected elements enabled us to cultivate confidence in the reliability of the medical software.
 
 \section{Background} \label{bg}
 Aorta is the largest artery that carries blood from the heart to the circulatory system. It has a cane-liked shape with Ascending aorta, Aortic arch and Descending aorta. 
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.7\textwidth]{figures/Sample/Aorta.png}
+    \includegraphics[width=0.5\textwidth]{figures/Sample/Aorta.png}
     \caption[Aorta]{Aorta}
     \label{fig_aorta}
 \end{figure}

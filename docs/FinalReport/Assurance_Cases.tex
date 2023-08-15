@@ -124,7 +124,7 @@ To implement this Design Document, I used Sphinx, a Python Documentation Generat
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=\textwidth]{figures/AC/DD/Main_page.png}
+    \includegraphics[width=0.8\textwidth]{figures/AC/DD/Main_page.png}
     \caption[AortaGeomRecon Design Document website]{AortaGeomRecon Design Document website}
     \label{fig_agr_dd}
 \end{figure}
@@ -197,18 +197,18 @@ The first automated process is a linter. A linter is a tool for static code anal
 
 The second automated process is our continuous integration tests. By setting up Git Large File System (LFS) and upload the pre-build ground truth test data in the repository, we can now pass the cropped volume as the inputs data, the same Aorta seeds and the hyperparameters that we have used to generate the ground truth test data to the algorithm and verify the results. To compare the volumes, we used Dice similarity coefficient.
 
-\section{Algorithm Review}
+\subsection{Algorithm Review}
 
 The algorithm review was an idea started with Code Walkthrough. The difference is that Code Walkthrough aims to increase the confidence of the reviewer such that the reviewed implementation is doing what we have discussed. For an Algorithm Review, we have not discussed what the program should do; we are presenting the algorithm to the domain expert and asking them if the design and implementation fulfill the implementation objectives.
 
-\subsection{Tool used in Algorithm Review}
+\subsubsection{Tool used in Algorithm Review}
 
 Spyder is a free and open source scientific environment written in Python, for Python, and designed by and for scientists, engineers and data analysts. The Variable Explorer allows the user to interactively browse the variables and the objects in debugging mode. 
 \citep{Spyder}
 
 \begin{figure}[H]
     \centering
-    \fbox{\includegraphics[width=0.9\textwidth]{figures/AC/AR/variable-explorer-standard.png}}
+    \fbox{\includegraphics[width=0.8\textwidth]{figures/AC/AR/variable-explorer-standard.png}}
     \caption[Spyder Variable Explorer]{Spyder Variable Explorer}
     \label{fig_spyder_ve}
 \end{figure}
@@ -216,12 +216,73 @@ Spyder is a free and open source scientific environment written in Python, for P
 This feature allows us to execute the program step by step, and see what happens when executing the segmentation algorithm. 
 
 
-\subsection{Algorithm Review with Kailin Chu}
+\subsubsection{Algorithm Review with Kailin Chu}
 The first algorithm review was done with Kailin Chu, who is a biomedical engineer and started the semi-automacial aorta segmentation algorithm. Along with Smith Spencer, we were aiming to increase the domain expert's confidence in this code walkthrough. This code walkthrough did not increase our confidence in the software, because the code was developed by Kailin from two years ago. Some of the details and design decisions are missing, and some variables were decided by trial and error. Despite that the code walkthrough did not achieve what we wanted in the first place, this meeting was still very helpful. Knowing that the algorithm was partially based on trial and error, I was able to improve the algorithm and reaching a better result in a more efficient way.
 
-\subsection{Algorithm Review with Dr. Dean Inglis}
+\subsubsection{Algorithm Review with Dr. Dean Inglis}
 
 The second algorithm review was done with Dr. Dean Inglis, who is an experienced professor, Medical Image Analyst and Software Developer. We showed him our segmentation algorithm and asked for a confirmation of this method, or a better algorithm. Dr. Dean Inglish has shared his thoughts on the algorithm, and we have noted all of his advices on GitHub issue tracker for the developer who will be in charge of improving this program. This meeting effectively increase our confidence in the software, whether the idea of developing extension module on 3D Slicer or the algorithm, our works have been affirmed.
+
+
+\section{Assurance Case for Operational Assumptions}
+
+\begin{figure}[H]
+    \centering
+    \fbox{\includegraphics[width=0.3\textwidth]{figures/AC/GBA/GBA.png}}
+    \caption[AortaGeomRecon Assurance Case Operational Assumptions]{AortaGeomRecon Assurance Case Operational Assumptions}
+    \label{fig_agr_ac_gba}
+\end{figure}
+
+The evidence for the statement "To the greatest extent possible, all relevant operational assumptions have been defined" is quite simple as only Domain experts/customers approve the quality of the documentation. This documentation was build from the beginning of the project to the end of the project, where we want to continuously adjust the content of the document matching the most recent updates.
+
+\subsection{User Manual}
+An user manual serves the purpose of documenting the all operational assumptions. When the user getting unexpected results by using this software, they can always refer to the user manual to see what pieces are different. Our user manual is initially located in GitHub repo's README, which is only available to the developers invited as the contributors. The content includes the installation of the software, importing the extension modules, import inputs data, and perform segmentation. The user manual is also available publicly on the design document website, assuming that the users might not be the repository contributors.
+
+\begin{figure}[H]
+    \centering
+    \fbox{\includegraphics[width=0.9\textwidth]{figures/AC/GBA/User_manual.png}}
+    \caption[AortaGeomRecon User Manual on GitHub README]{AortaGeomRecon User Manual on GitHub README}
+    \label{fig_agr_git_um}
+\end{figure}
+
+
+
+
+\subsection{User Instruction Video}
+Videos are an effective way to engage your audience and deliver information in a way that's easy to follow along and understand. A better instructional content is a YouTube Video where I make step by step instruction with voice over to instruct user. The video is not listed publicly on YouTube, but the users who have access to the GitHub repository or Design Document website can access this video by the url link.
+
+\begin{figure}[H]
+    \centering
+    \fbox{\includegraphics[width=0.8\textwidth]{figures/AC/GBA/User_instructions_video.png}}
+    \caption[AortaGeomRecon User Instructions on YouTube]{AortaGeomRecon User Instructions on YouTube}
+    \label{fig_video}
+\end{figure}
+
+
+\section{Assurance Case for Inputs Assumptions}
+
+\begin{figure}[H]
+    \centering
+    \fbox{\includegraphics[width=\textwidth]{figures/AC/GA/GSN_GA.png}}
+    \caption[AortaGeomRecon Assurance Case Inputs Assumptions]{AortaGeomRecon Assurance Case Inputs Assumptions}
+    \label{fig_agr_ac_ga}
+\end{figure}
+
+This statement requires the user know what inputs are valid, and only used the valid inputs in the software.
+
+\subsection{Warning Message}
+
+As we initially planned, this piece of information is available in the User Manual and User Instruction Video, where we showed the user how to import DICOM patient's data, and operate on the inputs data till we get a segmentation result. An user who has read the User Manual and watched the instruction video should know what inputs are valid. Therefore, in the AortaGeomRecon module, we need to effectively guide the user to the User Manual, whether the user has used this software before or it is a first time user.
+
+\begin{figure}[H]
+    \centering
+    \fbox{\includegraphics[width=0.6\textwidth]{figures/AC/GA/AGR_warning.png}}
+    \caption[AortaGeomRecon Warning Message]{AortaGeomRecon Warning Message}
+    \label{fig_agr_ac_wm}
+\end{figure}
+
+As mentioned in the section \ref{module_workflow}, when the user first starting 3D Slicer and click on the AGR module, this warning message appears. The user must clicks on the Confirm button to continue to to the next steps. With the warning message shown to the user, it is now the user's responsibility to use the valid inputs for AGR, which the program will deliver the correct outputs if the other operations are performed correctly. 
+
 
 
 %\section{Referencing}
