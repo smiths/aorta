@@ -11,11 +11,13 @@ In this study, we present the results of applying assurance cases during the dev
 This case study first introduces the challenge of Organ/Aorta Segmentation and explores existing solutions, which might require time and effort from domain experts. Then, we outline the workflow and logic of our algorithm, as well as the working environment for using this module within 3D Slicer. Finally, we discuss our assurance cases, including selected arguments and evidence. This discussion aims to explain how these selected elements enabled us to cultivate confidence in the reliability of the medical software.
 
 \section{Background} \label{bg}
+
+\subsection{Aorta}
 Aorta is the largest artery that carries blood from the heart to the circulatory system. It has a cane-liked shape with Ascending aorta, Aortic arch and Descending aorta. 
 
-\begin{figure}[H]
+\begin{figure}[ht]
     \centering
-    \includegraphics[width=0.5\textwidth]{figures/Sample/Aorta.png}
+    \includegraphics[width=0.4\textwidth]{figures/Intro/Aorta.png}
     \caption[Aorta]{Aorta}
     \label{fig_aorta}
 \end{figure}
@@ -26,6 +28,24 @@ Aorta segmentation in CT scans is important for:
 \item Aortic calcification quantification
 \item To guide the segmentation of other central vessels. 
 \end{itemize} ~\\
+
+\subsection{Organ Segmentation}
+The definition of the organ boundary or organ segmentation is helpful for the orientation and identification of the regions of interest inside the organ during the diagnostic or treatment procedure. Further, it allows the volume estimation of the organ, such as the aorta.
+
+\subsection{Assurance Case}
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.5\textwidth]{figures/Intro/ac_diagram.png}
+    \caption[Simple Assurance Case Diagram]{Simple Assurance Case Diagram}
+    \label{fig_ac_diagram}
+\end{figure}
+
+
+An assurance case can be thought of as a specific type of argumentation used in various cases. When building an assurance case, you're essentially making a point that specific evidence backs up a particular statement. The fundamental structure is depicted in Figure \ref{fig_ac_diagram}. So, an assurance case essentially boils down to an organized collection of arguments, backed by a body of evidence, that helps validate the belief in a specific claim.
+
+In a practical sense, creating an assurance case involves beginning with a main claim and then breaking it down into smaller claims through a step-by-step process. These smaller claims, at the most basic level, are supported by concrete evidence.
+
 
 \section{Thesis Outline} \label{TO}
 
