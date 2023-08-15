@@ -22,3 +22,6 @@ reStructuredText
 semi-automacial
 Inglis
 Spyder
+modulable
+unambiguity
+Parnas
