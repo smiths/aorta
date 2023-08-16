@@ -1,5 +1,8 @@
 \chapter{Assurance Cases and Selected Evidence for AortaGeomRecon}
 
+In this chapter, we discuss the scope of our work and the assurance case for the correctness of \progname{}. To provide the necessary evidence for the assurance case the
+following material is also presented: the Software Requirements Specification, the Design Document, the Module Guide, the test cases, and the algorithm review.
+
 \section{Assurance Case Development}
 
 Assurance Case is build with claims, subclaims, contexts and the evidences to ensure the goals are fulfilled. By using Astah System Safety presenting in Goal Structuring Notation (GSN) arguments \cite{Astah_2023}\cite{kelly2004goal}, we want to show that our software delivers correct outputs when used for its intended use/purpose in its intended environment, and within its assumed operating assumptions. The Figure~\ref{fig_agr_ac_top} shows the top level of the assurance cases. Having the goal of delivering correct outputs, we are decomposing the goal into 4 sub goals, GR, GI, GA and GBA, where GR stands for the goals to accomplish for the requirements of the software, GI stands for the goals of the implementation, GA is the goals of inputs satisfy the operational assumptions, and GBA are the goals of defining operational assumptions. 
@@ -221,8 +224,7 @@ The first algorithm review was done with Kailin Chu, who is a biomedical enginee
 
 \subsubsection{Algorithm Review with Dr. Dean Inglis}
 
-The second algorithm review was done with Dr. Dean Inglis, who is an experienced professor, Medical Image Analyst and Software Developer. We showed him our segmentation algorithm and asked for a confirmation of this method, or a better algorithm. Dr. Dean Inglis has shared his thoughts on the algorithm, and we have noted all of his advices on GitHub issue tracker for the developer who will be in charge of improving this program. This meeting effectively increase our confidence in the software, whether the idea of developing extension module on 3D Slicer or the algorithm, our works have been affirmed.
-
+The second algorithm review was conducted with Dr. Dean Inglis, an experienced professor, Medical Image Analyst, and Software Developer. We presented our segmentation algorithm to him and requested validation of our approach or suggestions for a potentially superior algorithm. Dr. Dean Inglis provided his insights on the algorithm, which we meticulously recorded on the GitHub issue tracker. These insights will guide the developer responsible for enhancing the program. This meeting significantly reinforced our confidence in both the software and our endeavors, whether the idea of developing an extension module for 3D Slicer or the algorithm itself.
 
 \section{Assurance Case for Operational Assumptions}
 
