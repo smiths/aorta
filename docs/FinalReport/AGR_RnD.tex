@@ -10,7 +10,7 @@ There are much segmentation software available to the users, we will discuss the
 
 \subsection{ITK-Snap bubble method} 
 \indent
-ITK-Snap provides a segmentation method that first let user select multiple voxels with a custom initial size and expanding size within the volume. We refer this method as ``bubble method''.
+ITK-Snap provides a segmentation method that first let user select multiple voxels with a custom initial size and expanding size within the volume. We refer this method as ``bubble method''\cite{gerig}.
 
 Through many iterations, the voxels expand to fill the entire volume, finally user will need to cut the extra part of the volume. This Figure~\ref{fig_ITK} shows the ITK-Snap UI executing the segmentation.
 
@@ -23,10 +23,10 @@ Through many iterations, the voxels expand to fill the entire volume, finally us
 
 The advantages of the bubble method is that it guarantee to produce a correct the segmentation result. A medical domain expert can manually control the wanted area, and visually observing the segmentation result expanding, shrinking and the user can erase the unwanted part.
 
-The disadvantages of this method is that the operations described above are complicated. Easier to say then do, an operator who has previous experience building the geometry with this method still needed 20 minutes of manual work building a new aorta geometry. Plus, ITK-Snap software can only read VTK file, therefore the chest CT scans that are usually DICOM, needed a manual conversion before using this software and its segmentation method.
+The disadvantages of this method is that the operations described above are complicated. Easier to say then do, an operator who has previous experience building the geometry with this method still needed 20 minutes of manual work building a new aorta geometry. Plus, ITK-Snap software can only read VTK file, therefore the chest CT scans that are usually DICOM \cite{10.1007/978-1-4020-8752-3_13}, needed a manual conversion before using this software and its segmentation method.
 
 \subsection{3D Slicer threshold segmentation}
-3D Slicer is another well-known medical image processing software for academic. 3D Slicer provides multiple segmentation methods, and one of the quickest and easiest to use is the intensity based segmentation.
+3D Slicer is another well-known medical image processing software for academic. 3D Slicer provides multiple segmentation methods\cite{Slicer_Wiki}, and one of the quickest and easiest to use is the intensity based segmentation.
 
 This method first let user select a small area that belongs to the wanted area on a 2D plane (Axial, Sagittal, and Coronal). 3D Slicer read the pixels' intensity of the surrounding area, and segment based on the intensity threshold. Any pixel's intensity that is within the range will be segmented as the segmentation result. 
 
