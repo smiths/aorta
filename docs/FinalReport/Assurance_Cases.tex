@@ -7,7 +7,7 @@ following material is also presented: the Software Requirements Specification, t
 
 Assurance Case is build with claims, subclaims, contexts and the evidences to ensure the goals are fulfilled. By using Astah System Safety presenting in Goal Structuring Notation (GSN) arguments \cite{Astah_2023}\cite{kelly2004goal}, we want to show that our software delivers correct outputs when used for its intended use/purpose in its intended environment, and within its assumed operating assumptions. The Figure~\ref{fig_agr_ac_top} shows the top level of the assurance cases. Having the goal of delivering correct outputs, we are decomposing the goal into 4 sub goals, GR, GI, GA and GBA, where GR stands for the goals to accomplish for the requirements of the software, GI stands for the goals of the implementation, GA is the goals of inputs satisfy the operational assumptions, and GBA are the goals of defining operational assumptions. 
 
-\begin{figure}[H]
+\begin{figure}[ht]
     \centering
     \fbox{\includegraphics[width=\textwidth]{figures/AC/Top_Level.png}}
     \caption[AortaGeomRecon Assurance Cases Top Level]{AortaGeomRecon Assurance Cases Top Level}
@@ -17,7 +17,7 @@ Assurance Case is build with claims, subclaims, contexts and the evidences to en
 
 \section{Assurance Case for Software Specification Requirements}
 
-The first goal of getting a trusted software is having a complete, unambiguous, correct, consistent, verifiable, modifiable and traceable Software Specification Requirements \citep{SRS} which shows the complete breakdown of the requirements with mathematical notation, data models and instance models. It's the foundation of the software development, and the design and the implementation will be based on the requirement document.
+The first goal of getting a trusted software is having a complete, unambiguous, correct, consistent, verifiable, modifiable and traceable SRS which shows the complete breakdown of the requirements with mathematical notation, data models and instance models. It's the foundation of the software development, and the design and the implementation will be based on the requirement document.
 
 
 \begin{figure}[H]
@@ -95,14 +95,14 @@ The traceability matrices are to provide easy references on what has to be addit
 \begin{figure}[H]
     \centering
     \fbox{\includegraphics[width=\textwidth]{figures/AC/SRS/tm_im_r.png}}
-    \caption[AortaGeomRecon Traceability Matrix between Requirements and Other sections]{AortaGeomRecon Traceability Matrix between Requirements and Other sections}
+    \caption[AortaGeomRecon Traceability Matrix Between Requirements and Other sections]{AortaGeomRecon Traceability Matrix Between Requirements and Other sections}
     \label{fig_agr_tm_im_r}
 \end{figure}
 
 \begin{figure}[H]
     \centering
     \fbox{\includegraphics[width=\textwidth]{figures/AC/SRS/tm_a.png}}
-    \caption[AortaGeomRecon Traceability Matrix between Assumptions and Other sections]{AortaGeomRecon Traceability Matrix between Assumptions and Other sections}
+    \caption[AortaGeomRecon Traceability Matrix Between Assumptions and Other sections]{AortaGeomRecon Traceability Matrix Between Assumptions and Other sections}
     \label{fig_agr_tm_a}
 \end{figure}
 
@@ -115,7 +115,7 @@ The goal of implementation asked the developer to fully comply the design and th
 \begin{figure}[H]
     \centering
     \fbox{\includegraphics[width=\textwidth]{figures/AC/GI/GSN_GI.png}}
-    \caption[AortaGeomRecon Assurance Cases for Implementation]{AortaGeomRecon Assurance Cases for Implementation}
+    \caption[AortaGeomRecon Assurance Cases For Implementation]{AortaGeomRecon Assurance Cases For Implementation}
     \label{fig_agr_ac_gi}
 \end{figure}
 
@@ -128,7 +128,7 @@ To implement this Design Document, I used Sphinx, a Python Documentation Generat
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.9\textwidth]{figures/AC/DD/Main_page.png}
-    \caption[AortaGeomRecon Design Document website]{AortaGeomRecon Design Document website}
+    \caption[AortaGeomRecon Design Document Website]{AortaGeomRecon Design Document Website}
     \label{fig_agr_dd}
 \end{figure}
 
@@ -180,7 +180,7 @@ On top of relating the modules to the requirements, we are relating the actual s
 \begin{figure}[H]
     \centering
     \fbox{\includegraphics[width=0.9\textwidth]{figures/AC/MG/TM_modules_code.png}}
-    \caption[AortaGeomRecon Part of the Traceability Matrix on Modules and Code]{AortaGeomRecon Part of the Traceability Matrix on Modules and Code}
+    \caption[AortaGeomRecon Part Of The Traceability Matrix On Modules And Code]{AortaGeomRecon Part Of The Traceability Matrix On Modules And Code}
     \label{fig_agr_mtm_modules_code}
 \end{figure}
 
@@ -206,9 +206,8 @@ The algorithm review was an idea started with Code Walkthrough. A code walkthrou
 
 \subsubsection{Tool used in Algorithm Review}
 
-Spyder is a free and open source scientific environment written in Python, for Python, and designed by and for scientists, engineers and data analysts. The Variable Explorer allows the user to interactively browse the variables and the objects in debugging mode. 
-\citep{Spyder}
-
+Spyder is a free and open source scientific environment written in Python, for Python, and designed by and for scientists, engineers and data analysts. The Variable Explorer allows the user to interactively browse the variables and the objects in debugging mode \cite{Spyder}
+.
 \begin{figure}[H]
     \centering
     \fbox{\includegraphics[width=0.8\textwidth]{figures/AC/AR/variable-explorer-standard.png}}
@@ -243,7 +242,7 @@ A user manual serves the purpose of documenting the all operational assumptions.
 \begin{figure}[H]
     \centering
     \fbox{\includegraphics[width=0.9\textwidth]{figures/AC/GBA/User_manual.png}}
-    \caption[AortaGeomRecon User Manual on GitHub README]{AortaGeomRecon User Manual on GitHub README}
+    \caption[AortaGeomRecon User Manual On GitHub README]{AortaGeomRecon User Manual On GitHub README}
     \label{fig_agr_git_um}
 \end{figure}
 
@@ -283,70 +282,6 @@ As we initially planned, this piece of information is available in the User Manu
 
 As mentioned in the section \ref{module_workflow}, when the user first starting 3D Slicer and click on the AGR module, this warning message appears. The user must clicks on the Confirm button to continue to the next steps. With the warning message shown to the user, it is now the user's responsibility to use the valid inputs for AGR, which the program will deliver the correct outputs if the other operations are performed correctly. 
 
-
-
-%\section{Referencing}
-%These are some sample references to GAMYGDALA~\citep{popescu2014gamygdala} from 
-%the \texttt{references.bib} file and state effects of 
-%cognition~\citep{hudlicka2002time} from the \texttt{references\_another.bib} 
-%file. These references are not in the same .bib file.
-%
-%\section{Figures}
-%This is a single image figure (Figure~\ref{fig_singleenv}):
-%
-%\begin{figure}[ht]
-%    \centering
-%    \includegraphics[width=0.6\textwidth]{figures/Sample/tumblr_static_eaceks0rfxsss8o4swscw40wo.jpg}
-%    \caption[Single Figure Environment Listed Title]{This is a single figure 
-%    environment}
-%    \label{fig_singleenv}
-%\end{figure}
-%
-%This is a multi-image figure with a top (Figure~\ref{fig_multienv_1}) and bottom (Figure~\ref{fig_multienv_2}) aligned subfigures:
-%
-%\begin{figure}[ht]
-%	\centering
-%	\begin{subfigure}[t]{\textwidth}
-%		\centering
-%		
-%\includegraphics[width=0.7\textwidth]{figures/Sample/tumblr_static_eaceks0rfxsss8o4swscw40wo.jpg}
-%		\caption{Figure 1}
-%		\label{fig_multienv_1}
-%	\end{subfigure}
-%	~
-%	\begin{subfigure}[t]{\textwidth}
-%		\centering
-%		
-%\includegraphics[width=0.7\textwidth]{figures/Sample/tumblr_static_eaceks0rfxsss8o4swscw40wo.jpg}
-%		\caption{Figure 2}
-%		\label{fig_multienv_2}
-%	\end{subfigure}
-%	
-%	\caption{A Multi-Figure Environment}
-%	\label{fig_multienv}
-%\end{figure}
-%
-%\section{Tables}
-%
-%Here is a sample table (Table~\ref{tab_sample}):
-%
-%	\begin{table}[ht]
-%	\centering
-%	\begin{tabular}{ m{0.2\textwidth} m {0.1\textwidth} m{0.15\textwidth} }
-%		\toprule
-%		A & $\longleftrightarrow$ & B \\
-%		C & $\longleftrightarrow$ & D \\
-%		\bottomrule	
-%	\end{tabular}	
-%	\caption{A sample table}	
-%	\label{tab_sample}
-%\end{table}
-%
-%\subsection{Long Tables}
-%A sample long table is shown in Appendix~\ref{appendix_b}.
-%
-%\section{Equations}
-%
 %Here is a sample equation (Equation~\ref{eq_lineslope}):
 %
 %\begin{equation} \label{eq_lineslope}

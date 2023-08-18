@@ -20,7 +20,7 @@
 \usepackage[shortcuts]{extdash} % Allows manual hyphenation of hypenated words
 \usepackage{amsmath} % Non-standard math symbols
 \usepackage{amsfonts} % Extended fonts for mathematics
-
+\usepackage{pdfpages}
 \usepackage[hidelinks]{hyperref} % Linking to LaTeX labels and external URLs
 
 \numberwithin{equation}{section} % Numbers equations based on their section
@@ -65,10 +65,14 @@
         \setcounter{table}{0}
 
 \begin{appendix}
-    \include{appendixA}
-        \setcounter{figure}{0}
-        \setcounter{equation}{0}	
-        \setcounter{table}{0}
+\chapter{Software Requirements Specification for \progname{}}
+\includepdf[pages=-]{../SRS/SRS.pdf}
+\chapter{Module Guide for \progname{}}
+\includepdf[pages=-]{../Design/MG/MG.pdf}
+%    \include{appendixA}
+%        \setcounter{figure}{0}
+%        \setcounter{equation}{0}	
+%        \setcounter{table}{0}
 
 %    \include{appendixB}
 %        \setcounter{figure}{0}

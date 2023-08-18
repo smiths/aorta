@@ -1,44 +1,27 @@
 \chapter{Introduction} \label{intro}
 
-Medical Software is a critical component of patient diagnosis and treatment. The most common observation about the medical software is that this type of software is typically used in a hospital or a clinic, whether it is a system software controlling a machine, or a system to keep track of the patient's case. For our project, we are focusing on the medical software that has a direct and critical impact on the patients' body or has direct influence on the patient's diagnosis. For example, the system software controling a ventilator is within the discussion of our project, but we will focus on a software that helps the medical workers making diagnosis on the aorta. 
+Medical Software is a critical component of patient diagnosis and treatment. Medical software refers to computer programs, applications, or systems specifically designed for use within the healthcare and medical field. These software solutions are developed to assist healthcare professionals, researchers, administrators, and patients in various aspects of medical care, research, management, and education \cite{medical_software}. Our project focuses on medical software that wields a direct and crucial influence on patients' well-being, particularly software that contributes to diagnosing issues related to the aorta. The aorta, a vital organ responsible for transporting blood from the heart to other bodily organs, holds immense significance. Any malfunction in its blood-carrying function could yield severe and potentially life-threatening consequences for the entire body's physiology. Our objective centers around the Aorta Geometry Reconstruction (AortaGeomRecon or AGR) software, which can build the 3-dimensional model of the aorta, to help the health professional disagnosing issues related to the aorta quickly and correctly.
 
-The aorta is one of the most important organs that carries blood from the heart to the other organs. If the aorta failed to carry blood to the other organs, the organs might quickly be permanently damaged. Diagnosis of the aorta is therefore critical, it requires fast and correct response. This 
+Given the importance of medical software like AortaGeomRecon, we need a means to build confidence in the software. In this report, we explore the use of assurance cases. An assurance case can be thought of as a specific type of argumentation used in various cases. The main purpose of an assurance case is to establish confidence and trust in the reliability and safety of a system by presenting a well-structured argument supported by evidence \cite{Weinstock_2013}. Assurance cases have been applied regularly in the medical device for approval in U.S. In Europe, the assurance cases are required in systems as diverse as flight control systems, nuclear reactor shutdown systems, and railroad signaling systems, which are all critical systems \cite{Weinstock_2013}. Previous works \cite{scs_ac} building assurance cases for scientific computing software such as 3dfim+, a medical imaging software analysing activity in the brain, has demonstrated a great success in showing the software's correctness and reliability. The motivation of our project is to build an assurance case for AortaGeomRecon by adding more details on the evidence needed to support our claim, thus building our confidence in AortaGeomRecon.
 
-\section{}
-The trustworthiness and assurance that a system will perform as anticipated need thorough testing. When software carries the critical responsibility of examining the human body, administering medication to patients, saving millions of lives, and conversely, even the tiniest bug or error in the implementation process could lead to serious consequences for individuals' well-being. These issues arise when there are problems with how the system works, whether we expected them or not. It's also influenced by factors such as the environment it's in, the risks it might face, and people who might want to cause harm. To have confidence in the system, we need to pay attention to its main qualities and gather strong evidence that it's performing as desired.
-
-Medical software is challenging to ensure its reliability. The way it's built is very delicate, making it difficult for users to assess its inner workings. However, lacking implementation details makes it hard to trust it, especially for something as critical as medical software.
-
-In this context, we aim to explore the feasibility of applying assurance cases to medical software from the outset of development. With carefully selected arguments and evidence, we intend to demonstrate to domain experts that the software delivers accurate outputs when used for its intended purpose in its designated environment, and within its assumed operating conditions.
-
-\section{Methodology} \label{methodology}
-In this study, we present the outcomes of integrating assurance cases throughout the development of medical software to bolster stakeholders' confidence in the software's capabilities. The software, known as AortaGeomRecon, represents a 3D Slicer extension module designed to semi-automatically construct a 3D model of the aorta using CT scans from a patient's chest. Assurance cases function as a method to provide assurance for a system by presenting arguments that substantiate claims about the system. These arguments are based on evidence related to the system's design, development, and tested behavior.
-
-This case study initially introduces the challenge of Organ/Aorta Segmentation and examines existing solutions, which might necessitate time and effort from domain experts. Subsequently, we elucidate the workflow and logic of our algorithm, along with the operational environment for utilizing this module within 3D Slicer. Finally, we delve into our assurance cases, encompassing chosen arguments and supporting evidence. Through this discussion, we elucidate how these specific components contributed to fostering confidence in the reliability of the medical software.
+In this chapter, we first explain in details the contexts for the key concepts that will be discussed throughout the document, including what is organ segmentation, what is aorta, listing the diseases that aorta segmentation could detect, and demosntrates an example of assurance case by showing a simple diagram of assurance case. Next, we will briefly discuss on the methodology, especially how we achieved the objective of design, implementation of the software, and building confidence with the evidences in assurance cases. In the final section, we will explain our thesis outline covering the entire report.
 
 \section{Background} \label{bg}
 
 In this section, we present some contexts on the key concepts within the scope of our work.
 
 \subsection{Aorta}
-Aorta is the largest artery that carries blood from the heart to the circulatory system. It has a cane-liked shape with Ascending aorta, Aortic arch and Descending aorta. 
+Aorta is the largest artery that carries blood from the heart to the circulatory system. It has a cane-liked shape with ascending aorta, aortic arch and descending aorta. Figure~\ref{fig_aorta} shows the entired aorta, but abdominal aorta is outside of the scope of the current work. Our work focus on building the 3D geometry from aortic root to descending aorta.
 
 \begin{figure}[ht]
     \centering
-    \includegraphics[width=0.4\textwidth]{figures/Intro/Aorta.png}
+    \includegraphics[width=0.35\textwidth]{figures/Intro/Aorta.png}
     \caption[Aorta]{Aorta}
     \label{fig_aorta}
 \end{figure}
 
-Aorta segmentation in computerized tomography (CT) scans is important for:
-\begin{itemize}
-\item Coarctation of the aorta
-\item Aortic calcification quantification
-\item To guide the segmentation of other central vessels. 
-\end{itemize} ~\\
-
 \subsection{Organ Segmentation}
-The definition of the organ boundary or organ segmentation is helpful for the orientation and identification of the regions of interest inside the organ during the diagnostic or treatment procedure. Further, it allows the volume estimation of the organ, such as the aorta.
+The definition of the organ boundary or organ segmentation is helpful for the orientation and identification of the regions of interest inside the organ during the diagnostic or treatment procedure. Further, it allows the volume estimation of the organ, such as the aorta. Figure~\ref{fig_seg} demonstrates an example of abdominal organ segmentation.
 
 \begin{figure}[ht]
     \centering
@@ -47,8 +30,15 @@ The definition of the organ boundary or organ segmentation is helpful for the or
     \label{fig_seg}
 \end{figure}
 
-\subsection{Assurance Case}
+Aorta segmentation in computerized tomography (CT) scans is important for:
+\begin{itemize}
+\item Coarctation of the aorta
+\item Aortic Aneurysm
+\item Aortic calcification quantification
+\item To guide the segmentation of other central vessels. 
+\end{itemize} ~
 
+\subsection{Assurance Case}
 \begin{figure}[ht]
     \centering
     \includegraphics[width=0.45\textwidth]{figures/Intro/ac_diagram.png}
@@ -56,12 +46,14 @@ The definition of the organ boundary or organ segmentation is helpful for the or
     \label{fig_ac_diagram}
 \end{figure}
 
-
-An assurance case can be thought of as a specific type of argumentation used in various cases \cite{doi:10.2514/6.2009-1921}. When building an assurance case, you're essentially making a point that specific evidence backs up a particular statement. The fundamental structure is depicted in Figure \ref{fig_ac_diagram}. So, an assurance case essentially boils down to an organized collection of arguments, backed by a body of evidence, that helps validate the belief in a specific claim.
+An assurance case can be thought of as a specific type of argumentation used in various cases. When building an assurance case, you're essentially making a point that specific evidence backs up a particular statement. The fundamental structure is depicted in Figure \ref{fig_ac_diagram}. So, an assurance case essentially boils down to an organized collection of arguments, backed by a body of evidence, that helps validate the belief in a specific claim \cite{doi:10.2514/6.2009-1921}.
 
 In a practical sense, creating an assurance case involves beginning with a main claim and then breaking it down into smaller claims through a step-by-step process. These smaller claims, at the most bottom, are supported by concrete evidence.
 
 
+\section{Methodology} \label{methodology}
+In this study, we present the outcomes of integrating assurance cases throughout the development of medical software to reinforce stakeholders' confidence in the software's capabilities. The software, known as AortaGeomRecon, represents a 3D Slicer \cite{Kikinis2014} extension module designed to semi-automatically construct a 3D model of the aorta using CT scans from a patient's chest. We started by gathering requirements for the \progname{} from a domain expert, drafted our Software Requirements Specification (SRS), and Module Guide (MG). We researched and worked on the implementation of the software, while building the infrastructure for continuous integration, version control, and project managment using GitHub. When we have a functional prototype, we delved into our assurance cases, encompassing chosen arguments and supporting evidence. Assurance cases function as a method to provide assurance for a system by presenting arguments that substantiate claims about the system. These arguments are based on evidence related to the system's design, development, and tested behavior. By constructing assruance cases, we were able to follow the best practice including documentation review on SRS and MG to finalize our documentation, ensure the documentation's completeness and correctness. We have built a user documentation to define all operational assumptions, and guide user to use the valid inputs with a sequence of correct operations. Finally, our continuous integration tests, code review, and several algorithm reviews reinforced our confidence in the implementation of the software, which has strickly complying with the requirements that are complete and correct.
+
 \section{Thesis Outline} \label{TO}
 
-The thesis is organized into three broad parts. In Chapter 2, we introduce our program \progname{} by mentioning the existing methods, the AortaGeomRecon's algorithm overview and step by step  workflow. We explain necessary terms and information to understand how the software functionsfinally, and the 3D Slicer \cite{Kikinis2014} extension module that the user interacts with to get the segmentation result with our algorithm. In Chapter 3, we present our assurance case, some sections of our SRS, Design Documents, Module Guide, Algorithm Review, and a test case we developed for verifying and validating the correctness of program \progname{}. In Chapter 4, future work is proposed and conclusions are drawn based on the developed assurance case, SRS, segmentation algorithm and 3D Slicer module extension.
+The thesis is organized into three broad parts. In Chapter 2, we introduce our program \progname{} by mentioning the existing methods, the AortaGeomRecon's algorithm overview and step by step  workflow. We explain necessary terms and information to understand how the software functionsfinally, and the 3D Slicer \cite{Kikinis2014} extension module that the user interacts with to get the segmentation result with our algorithm. In Chapter 3, we present our assurance case, some sections of our SRS, Design Documents, Module Guide, Algorithm Review, and a test case we developed for verifying and validating the correctness of program \progname{}. In Chapter 4, future work is proposed and conclusions are drawn based on the developed SRS, segmentation algorithm, 3D Slicer module extension, and assurance case.
