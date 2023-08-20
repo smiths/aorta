@@ -1,13 +1,12 @@
 \chapter{Assurance Cases and Selected Evidence for AortaGeomRecon}
 
-In this chapter, we discuss the scope of our work and the assurance case for the correctness of \progname{}. To provide the necessary evidence for the assurance case the
-following material is also presented: the Software Requirements Specification, the Design Document, the Module Guide, the test cases, and the algorithm review.
+In this chapter, we discuss the scope of our work, which is building the evidence to support each claim of our AC  for \progname{}. The top level claims of the AC developed in previous work \cite{scs_ac} is correct and complete, thus we have a list of evidence that can support the arguments and the top level claims. Our work focus on providing the correct evidence for the assurance case, and the following material is presented: the Software Requirements Specification of \progname{}, the Design Document, the Module Guide, the Test Plan, the Algorithm Review,  the User Manual, the User Instruction Video, and a Warning  Message implemented  in \progname{}.
 
 \section{Assurance Case Development}
 
-Assurance Case is build with claims, subclaims, contexts and the evidences to ensure the goals are fulfilled. By using Astah System Safety presenting in Goal Structuring Notation (GSN) arguments \cite{Astah_2023}\cite{kelly2004goal}, we want to show that our software delivers correct outputs when used for its intended use/purpose in its intended environment, and within its assumed operating assumptions. The Figure~\ref{fig_agr_ac_top} shows the top level of the assurance cases. Having the goal of delivering correct outputs, we are decomposing the goal into 4 sub goals, GR, GI, GA and GBA, where GR stands for the goals to accomplish for the requirements of the software, GI stands for the goals of the implementation, GA is the goals of inputs satisfy the operational assumptions, and GBA are the goals of defining operational assumptions. 
+Assurance Case is build with claims, subclaims, contexts and the evidence. The parts of  the AC  add up  to an argument for why the top level claim is true. By using Astah System Safety software to present the Goal Structuring Notation (GSN) arguments \cite{Astah_2023}\cite{kelly2004goal}, we want to show that our software delivers correct outputs when used for its intended use/purpose in its intended environment, and within its assumed operating assumptions. The Figure~\ref{fig_agr_ac_top} shows the top level of the assurance cases. With the goal of arguing that the software delivers correct outputs, we decompose the goal into 4 sub goals: GR, GI, GA and GBA, where GR stands for the goal of correct requirements of the software, GI stands for the goal of the implementation  matching the requirements, GBA is the goal of  that all  operational assumptions have been defined, and GA is the goal that all operational assumptions are met.
 
-\begin{figure}[ht]
+\begin{figure}[H]
     \centering
     \fbox{\includegraphics[width=\textwidth]{figures/AC/Top_Level.png}}
     \caption[AortaGeomRecon Assurance Cases Top Level]{AortaGeomRecon Assurance Cases Top Level}
@@ -17,17 +16,14 @@ Assurance Case is build with claims, subclaims, contexts and the evidences to en
 
 \section{Assurance Case for Software Specification Requirements}
 
-The first goal of getting a trusted software is having a complete, unambiguous, correct, consistent, verifiable, modifiable and traceable SRS which shows the complete breakdown of the requirements with mathematical notation, data models and instance models. It's the foundation of the software development, and the design and the implementation will be based on the requirement document.
-
+The first goal of getting a trusted software is having a complete, unambiguous, correct, consistent, verifiable, modifiable and traceable SRS that shows the complete breakdown of the requirements with mathematical notation, data models and instance models. The SRS is the foundation of the software development, and the design and the implementation will be based on the requirement document.
 
 \begin{figure}[H]
     \centering
-    \fbox{\includegraphics[width=\textwidth]{figures/AC/SRS/GSN_GR.png}}
+    \fbox{\includegraphics[width=1.3\linewidth, angle=90]{figures/AC/SRS/GSN_GR.png}}
     \caption[AortaGeomRecon Assurance Cases GR]{AortaGeomRecon Assurance Cases GR}
     \label{fig_agr_ac_gr}
 \end{figure}
-
-
 
 As explains in the assurance case GR, one of  most important statement of SRS having these characteristics is using a standard template. This template is provided by the domain expert, and my professor, Dr. Spencer Smith, who has researched on Application of Software Engineering Principles, Methods, Techniques and Tools to Improve the Sustainability of Research Software.
 
