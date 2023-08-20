@@ -6,9 +6,9 @@ In this chapter, we discuss the scope of our work, which is building the evidenc
 
 Assurance Case is build with claims, subclaims, contexts and the evidence. The parts of  the AC  add up  to an argument for why the top level claim is true. By using Astah System Safety software to present the Goal Structuring Notation (GSN) arguments \cite{Astah_2023}\cite{kelly2004goal}, we want to show that our software delivers correct outputs when used for its intended use/purpose in its intended environment, and within its assumed operating assumptions. The Figure~\ref{fig_agr_ac_top} shows the top level of the assurance cases. With the goal of arguing that the software delivers correct outputs, we decompose the goal into 4 sub goals: GR, GI, GA and GBA, where GR stands for the goal of correct requirements of the software, GI stands for the goal of the implementation  matching the requirements, GBA is the goal of  that all  operational assumptions have been defined, and GA is the goal that all operational assumptions are met.
 
-\begin{figure}[H]
+\begin{figure}[hp]
     \centering
-    \fbox{\includegraphics[width=\textwidth]{figures/AC/Top_Level.png}}
+    \fbox{\includegraphics[width=0.99\textwidth]{figures/AC/Top_Level.png}}
     \caption[AortaGeomRecon Assurance Cases Top Level]{AortaGeomRecon Assurance Cases Top Level}
     \label{fig_agr_ac_top}
 \end{figure}
@@ -18,24 +18,26 @@ Assurance Case is build with claims, subclaims, contexts and the evidence. The p
 
 The first goal of getting a trusted software is having a complete, unambiguous, correct, consistent, verifiable, modifiable and traceable SRS that shows the complete breakdown of the requirements with mathematical notation, data models and instance models. The SRS is the foundation of the software development, and the design and the implementation will be based on the requirement document.
 
-\begin{figure}[H]
+The Figure~\ref{fig_agr_ac_gr} demonstrates the claims on the goal of correct requirements of \progname{}. On the left branch, GR\_3C implies the goal of a complete, correct, and consistent documentation. Under this claim, the goal is separated based on each characteristic, and the corresponding evidence is presented as the leaf node. The S\_Correctness and S\_Completeness.4 node require a domain expert to review the quality of the document to ensure the documentation met the goal of the claims. The other characteristics of the documentation are supported with evidence as shown in the other branches in GR.
+
+\begin{figure}[hp]
     \centering
     \fbox{\includegraphics[width=1.3\linewidth, angle=90]{figures/AC/SRS/GSN_GR.png}}
     \caption[AortaGeomRecon Assurance Cases GR]{AortaGeomRecon Assurance Cases GR}
     \label{fig_agr_ac_gr}
 \end{figure}
 
-As explains in the assurance case GR, one of  most important statement of SRS having these characteristics is using a standard template. This template is provided by the domain expert, and my professor, Dr. Spencer Smith, who has researched on Application of Software Engineering Principles, Methods, Techniques and Tools to Improve the Sustainability of Research Software.
+As explains in the assurance case GR, one of  most important statement of SRS having these characteristics is using a standard template. Using  a standard template means that all necessary requirements have been defined, and it allows a domain expert who has used this template to verify the quality of the document. We used a template tailored for research software \ref{Smith2006}, which is the standard template in the evidence E\_Completeness.1, and all other evidences where a template is included.
 
-The chapters in SRS and some of the most important sections in the chapter are explained below:
+The chapters in the SRS and some of the most important sections in the chapter are explained below:
 \begin{itemize}
 \item Reference Material
 
-In this section, a Table of Symbols and an Abbreviations and Acronyms table are used to explain every symbol and Abbreviations used in the SRS document. These tables ensure the consistency and the unambiguous characteristics of the document. They are located at the very beginning of the document, so the reader will firstly look at these tables before reading the entire document.
+In this section, a Table of Symbols and an Abbreviations and Acronyms table are used to explain every symbol and Abbreviations used in the SRS document. These tables ensure the consistency and the unambiguous characteristics of the document, as the evidences E\_Consistency.1 and E\_Unambiguous.1 shown in the Figure~\ref{fig_agr_ac_gr}. They are located at the very beginning of the document, so the reader will firstly look at these tables before reading the entire document. 
 
 \item Introduction
 
-In the introduction section, we introduced the problems and the scope of the document to the user by explaining the purpose of document, abstracting the scope of requirements and defining the characteristics of intended reader. 
+In the introduction section, we introduced the problems and the scope of the document to the user by explaining the purpose of document, abstracting the scope of requirements and defining the characteristics of intended reader. This is provided for the reader to eliminates unambiguous in reading the document.
 
 \item General System Description
 
@@ -45,8 +47,7 @@ The general system description includes a system context diagram which explains 
 
 In this section, we are presenting more details about the problem and the specific system to solve the problem. The first subsection Problem Description discussed on the definition of Organ Segmentation, Coordinate Systems used in medical image problem, Physical System Description which is not available, and Goal Statements which is extract the three-dimensional segmentation of the aorta.
 
-In the next subsection, Solution Characteristics Specification, we started with Assumptions to define clearly the scope of the requirement document. In the subsection Data Definitions, we defined Voxel, Image/Slice, and Volume with mathematical notation so that the developer can easily interpret. Next, in the subsection Instance Model, we showed the mathematical meaning of Region of Interest, and Segmentation, which are the two essential models that the developer must know in order to develop the solution.
-
+In the next subsection, Solution Characteristics Specification, we started with the assumptions to clearly define the scope of the requirement document, as shown in Figure~\ref{fig_agr_srs_a}. In the subsection Data Definitions, we defined Voxel, Image/Slice, and Volume with mathematical notation so that the developer can easily interpret. Next, in the subsection Instance Model, we showed the mathematical meaning of Region of Interest, and Segmentation, which are the two essential models that the developer must know in order to develop the solution.
 
 \begin{figure}[H]
     \centering
@@ -58,18 +59,18 @@ In the next subsection, Solution Characteristics Specification, we started with 
 
 \item Requirements
 
-With all the information in the document, we can now present the Functional Requirements and the Non-Functional Requirements for the program AortaGeomRecon. The Functional Requirements are defined By using the terms we presented in Data Definitions, Instance Model, and based on the other Functional Requirements. The Non-Functional Requirements usually have a measurement such as execution time, the effort of manual works, etc.
+With all the information in the document, we can now present the Functional Requirements and the Non-Functional Requirements for the program AortaGeomRecon. The Functional Requirements are defined by using the terms we presented in Data Definitions, Instance Model, and based on the other Functional Requirements, as shown in Figure~\ref{fig_agr_fr}. The Non-Functional Requirements usually have a measurement such as execution time, the effort of manual works, etc.
 
 \begin{figure}[H]
     \centering
-    \fbox{\includegraphics[width=\textwidth]{figures/AC/SRS/Functional_Requirements.png}}
+    \fbox{\includegraphics[width=0.75\textwidth]{figures/AC/SRS/Functional_Requirements.png}}
     \caption[AortaGeomRecon Functional Requirements]{AortaGeomRecon Functional Requirements}
     \label{fig_agr_fr}
 \end{figure}
 
 \begin{figure}[H]
     \centering
-    \fbox{\includegraphics[width=\textwidth]{figures/AC/SRS/NonFunctional_Requirements.png}}
+    \fbox{\includegraphics[width=0.75\textwidth]{figures/AC/SRS/NonFunctional_Requirements.png}}
     \caption[AortaGeomRecon Non- Functional Requirements]{AortaGeomRecon Non- Functional Requirements}
     \label{fig_agr_nfr}
 \end{figure}
