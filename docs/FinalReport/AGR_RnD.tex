@@ -1,9 +1,9 @@
 \chapter{AortaGeomRecon Research and Development}
 
-This chapter will discuss the research and development of the 3D Slicer plugin \progname{}.
+This chapter will discuss the research and development of the 3D Slicer plugin AGR.
 
 AortaGeomRecon stands for Aorta Geometry Reconstruction. The main objective of this software is to semi-automatically build the 3D geometry of the aorta from the patient's chest CT scans.  The existing methods often involved of extensive manual steps work interspersed with software assistance. An experienced user, who should be a medical domain expert typically needs to do a minimum of 10 minutes of manual work.
-Current \progname{} allows users who have taken the university level anatomy introduction courseto set the hyperparameters within half a minute,following by a maximum 2 minutes of execution time.
+Current AGR allows users who have taken the university level anatomy introduction courseto set the hyperparameters within half a minute,following by a maximum 2 minutes of execution time.
 
 In this chapter, we first introduce the existing methods with different softwares to perform the aorta segmentation, and discuss their advantages and disadvantages. Then, we demonstrate our segmentaiton algorithm, with a detailed step-by-step explanation of what the algorithm is doing and the result it generates. Finally, we discuss our experience using the platform 3D Slicer, and demonstrate our development result in 3D Slicer plugin.
 
@@ -98,14 +98,14 @@ Level Sets are an important category of modern image segmentation techniques bas
 
 \subsection{The steps to segment a single slice}
 In the following section, we will present each step to segment a single slice. These steps are applied in segmentations in both the superior and inferior directions. There is a difference in the stopping condition, which we will elaborate in the following section~\ref{stopping_condition}.
-\subsubsection{Create A Label Map}
+\subsubsection{Create A Label Map}\label{label_map}
 The algorithm uses SITK::BinaryDilateImageFilter to perform binary dilation to generate a circle-like shape around the center coordinates (user input’s for the first slice and calculated by the algorithm for the rest of the slices). Each pixel within this shape will be labeled as a white pixel (value of 1), and the rest of the pixels are labeled as black pixels (value of 0). 
 
 The generated result is the label map image, and we will use it in the next few steps. The size of the circle-like shape is determined by the kernel size (user's input). The Figure \ref{fig_label_map} shows an example of generated label map image (the green parts) overlay over the original slice.
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.5\textwidth]{figures/AGR/label_image.png}
+    \includegraphics[width=0.4\textwidth]{figures/AGR/label_image.png}
     \caption[A label image]{A Label Map}
     \label{fig_label_map}
 \end{figure}
@@ -115,7 +115,7 @@ With SITK::SignedMaurerDistanceMapImageFilter, the algorithm creates another ima
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.5\textwidth]{figures/AGR/Contour2D.png}
+    \includegraphics[width=0.45\textwidth]{figures/AGR/Contour2D.png}
     \caption[A Distance Map]{A Distance Map}
     \label{fig_distance_map}
 \end{figure}
@@ -125,12 +125,12 @@ By using SITK::LabelStatisticsImageFilter, the algorithm gets the mean and the s
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=\textwidth]{figures/AGR/threshold.png}
+    \includegraphics[width=0.7\textwidth]{figures/AGR/threshold.png}
     \caption[Code That Shows How To Calculate The Threshold Range]{Code That Shows How To Calculate The Threshold Range}
     \label{fig_threshold}
 \end{figure}
 
-\subsubsection{Segment A Single Slice}
+\subsubsection{Segment A Single Slice}\label{c}
 With SITK::ThresholdSegmentationLevelSetImageFilter, the seed image calculated in step \ref{distance_map}, and the lower and upper threshold value calculated in step \ref{threshold}, the algorithm performs segmentation and generates a segmented slice. The Figure~\ref{fig_segmented_image} shows an example of generated segmented slice (the green parts) overlay over the original slice.
 
 \begin{figure}[H]
@@ -188,7 +188,7 @@ Every ScriptLoadableModule in 3D Slicer have a Widget Class and a Logic Class. T
 
 \subsection{AortaGeomReconDisplayModule}
 
-In this section, we demonstrate the implementation details of the 3D Slicer plugin \progname{}. We first demonstrate the module's Graphical User Interface, then discuss on the module's logic and workflow.
+In this section, we demonstrate the implementation details of the 3D Slicer plugin AGR. We first demonstrate the module's Graphical User Interface, then discuss on the module's logic and workflow.
 
 \subsubsection{Graphical User Interface}
 
