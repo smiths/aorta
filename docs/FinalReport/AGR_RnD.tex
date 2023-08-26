@@ -14,7 +14,7 @@ Through many iterations, the voxels expand to fill the entire volume of the vess
 
 \begin{figure}[ht]
     \centering
-    \includegraphics[width=\textwidth]{figures/AGR/bubbles.png}
+    \includegraphics[width=0.8\textwidth]{figures/AGR/bubbles.png}
     \caption[ITK-Snap's Bubble Segmentation UI]{ITK-Snap's Bubble Segmentation UI \cite{py06nimg}}
     \label{fig_ITK}
 \end{figure}
@@ -28,13 +28,13 @@ The disadvantages of this method is that the operations described above are comp
 
 This method first lets users select a small area that belongs to the wanted area on a 2D plane (Axial, Sagittal, and Coronal). 3D Slicer read the pixels' intensity of the surrounding area, and segments based on the intensity threshold. Any pixel's intensity that is within the range will be segmented as the segmentation result, as demonstrated in Figure~\ref{fig_3D_Seg_Builtin}. 
 
-The advantage of this method is that the user can visualize the effect of chosing different intensity threshold in real-time. 3D Slicer can highlight the pixels that would be chosen as segmentation by increasing or decreasing the intensity threshold.
+The advantage of this method is that the user can visualize the effect of chosing different intensity threshold in real-time. 3D Slicer can highlight the pixels that would be chosen as a part of the segmentation with a increased or decreased intensity threshold.
 
-The disadvantage of this method is that it depends on the quality of the input data. If the input data is in low quality and does not have the proper intensity reading on the aorta, it could generates gaps on the wanted part, which would be less efficient as the user must use another intensity range for the missing pixels. A \href{https://www.youtube.com/watch?v=5_673cHMBiY}{YouTube video} shows an experienced user who gets the aorta 3D geometry with 8 minutes of manual works. 
+The disadvantage of this method is that it depends on the quality of the input data. If the input data does not have the proper intensity reading of the aorta, it could generates gaps on the wanted part. Then, this method is less efficient, because the user must use another intensity range for the missing pixels. A \href{https://www.youtube.com/watch?v=5_673cHMBiY}{YouTube video} shows an experienced user who gets the aorta 3D geometry with 8 minutes of manual works. 
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.8\textwidth]{figures/Sample/3D-Slicer-Segmentation.png}
+    \includegraphics[width=0.7\textwidth]{figures/Sample/3D-Slicer-Segmentation.png}
     \caption[3D Slicer Built-in Segmentation UI]{3D Slicer Built-in Segmentation Method \cite{Kikinis2014}}
     \label{fig_3D_Seg_Builtin}
 \end{figure}
