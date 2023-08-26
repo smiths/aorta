@@ -6,6 +6,13 @@
 \usepackage{setspace} % Allows double spacing but skips headers/footers
 \setcounter{tocdepth}{1} % Limits the TOC to chapter and section names
 
+\newenvironment{myEnumerate}
+{ \begin{enumerate}
+    \setlength{\itemsep}{0pt}
+    \setlength{\parskip}{0pt}
+    \setlength{\parsep}{0pt}     }
+{ \end{enumerate}                  } 
+
 % Additional packages
 \usepackage{graphicx} % Allows the inclusion of figures
 \usepackage{subcaption} % Allows captions to be added to subfigures
@@ -22,7 +29,7 @@
 \usepackage{amsfonts} % Extended fonts for mathematics
 \usepackage{pdfpages}
 \usepackage[hidelinks]{hyperref} % Linking to LaTeX labels and external URLs
-
+\setlist{noitemsep}
 \numberwithin{equation}{section} % Numbers equations based on their section
 \input{../Comments}
 \input{../Common}
