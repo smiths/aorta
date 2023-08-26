@@ -1,17 +1,13 @@
 \chapter{AortaGeomRecon Research and Development}
 
-This chapter will discuss the research and development of the 3D Slicer plugin AGR.
+This chapter will discuss the research and development of the 3D Slicer plugin AortaGeomRecon. AortaGeomRecon (AGR) stands for Aorta Geometry Reconstruction. The main objective of AGR is to semi-automatically build a 3D geometry of the aorta from the patient's chest CT scans.  The existing methods often involve extensive manual work interspersed with software assistance. An experienced user, who should be a medical domain expert, typically needs to do a minimum of 10 minutes of manual work. Currently AGR allows users who have taken the university level anatomy introduction courseto set the hyperparameters within half a minute, following by a maximum 2 minutes of execution time.
 
-AortaGeomRecon stands for Aorta Geometry Reconstruction. The main objective of this software is to semi-automatically build the 3D geometry of the aorta from the patient's chest CT scans.  The existing methods often involved of extensive manual steps work interspersed with software assistance. An experienced user, who should be a medical domain expert typically needs to do a minimum of 10 minutes of manual work.
-Current AGR allows users who have taken the university level anatomy introduction courseto set the hyperparameters within half a minute,following by a maximum 2 minutes of execution time.
-
-In this chapter, we first introduce the existing methods with different softwares to perform the aorta segmentation, and discuss their advantages and disadvantages. Then, we demonstrate our segmentaiton algorithm, with a detailed step-by-step explanation of what the algorithm is doing and the result it generates. Finally, we discuss our experience using the platform 3D Slicer, and demonstrate our development result in 3D Slicer plugin.
+In this chapter, we first introduce the existing methods for aorta segmentation with different software options , and discuss the advantages and disadvantages of these existing options. Next, we demonstrate our segmentation algorithm, with a detailed step-by-step explanation of what the algorithm is doing and the results it generates. Finally, we discuss our experience using the platform 3D Slicer, and demonstrate our development result in the 3D Slicer plugin.
 
 \section{Existing Methods}
-There are many segmentation software options available to users. We will discuss two popular software options: ITK-Snap and 3D Slicer.
+There are many segmentation software options available to users. We will discuss two popular software options: \href{https://www.itksnap.org/}{ITK-Snap} and \href{https://www.slicer.org/}{3D Slicer}.
 
 \subsection{ITK-Snap bubble method} 
-\indent
 ITK-Snap provides a segmentation method that first requires the user to select multiple voxels with a custom initial size and an expanding size within the volume. This method is referred to as the ``bubble method'' \cite{gerig}.
 
 Through many iterations, the voxels expand to fill the entire volume of the vessel. As a final step, the user will need to cut off the extra parts of the volume. Figure~\ref{fig_ITK} shows ITK-Snap UI executing a segmentation of an aorta.
@@ -23,7 +19,7 @@ Through many iterations, the voxels expand to fill the entire volume of the vess
     \label{fig_ITK}
 \end{figure}
 
-The advantages of the bubble method is that it is guaranted to produce a correct segmentation result for a valid image. A medical domain expert can manually control the wanted area, and visually observe the segmentation result expanding, shrinking. Moreover, the user can erase the unwanted parts.
+The advantages of the bubble method is that it is guaranted to produce a correct segmentation for a valid image. A medical domain expert can manually control the wanted area, and visually observe the segmentation result expanding, and shrinking. Moreover, the user can erase the unwanted parts.
 
 The disadvantages of this method is that the operations described above are complicated. They are easier to say then do. An operator who has previous experience building the geometry with this method still needs about 20 minutes of manual work to build a new aorta geometry. Plus, ITK-Snap software can only read VTK (The Visualization Toolkit) file; therefore, the chest CT scans that are usually Digital Imaging and Communications in Medicine (DICOM) format \cite{10.1007/978-1-4020-8752-3_13}, needed a manual conversion before using this software and its segmentation method.
 
@@ -32,7 +28,9 @@ The disadvantages of this method is that the operations described above are comp
 
 This method first lets users select a small area that belongs to the wanted area on a 2D plane (Axial, Sagittal, and Coronal). 3D Slicer read the pixels' intensity of the surrounding area, and segments based on the intensity threshold. Any pixel's intensity that is within the range will be segmented as the segmentation result, as demonstrated in Figure~\ref{fig_3D_Seg_Builtin}. 
 
-Like the bubble method, this method often reads extra volume, and requires the user to cut the unwanted parts. A \href{https://www.youtube.com/watch?v=5_673cHMBiY}{YouTube video} shows an experienced user who gets the aorta 3D geometry with 8 minutes of manual works. 
+The advantage of this method is that the user can visualize the effect of chosing different intensity threshold in real-time. 3D Slicer can highlight the pixels that would be chosen as segmentation by increasing or decreasing the intensity threshold.
+
+The disadvantage of this method is that it depends on the quality of the input data. If the input data is in low quality and does not have the proper intensity reading on the aorta, it could generates gaps on the wanted part, which would be less efficient as the user must use another intensity range for the missing pixels. A \href{https://www.youtube.com/watch?v=5_673cHMBiY}{YouTube video} shows an experienced user who gets the aorta 3D geometry with 8 minutes of manual works. 
 
 \begin{figure}[H]
     \centering
@@ -41,9 +39,9 @@ Like the bubble method, this method often reads extra volume, and requires the u
     \label{fig_3D_Seg_Builtin}
 \end{figure}
 
-\section{Segmentation Algorithm}
+\section{Our Segmentation Algorithm}
 
-This section introduces the key concepts of the implementation on the segmentation algorithm. The algorithm is developed in Python with the external libraries SimpleITK and NumPy. The algorithm builds the 3D Aorta geometry by doing segmentation on each axial slice. The logic behind segmenting each slice from the axial view, is that there is one or two circles that is edged bounded in each axial plane view. Using this information, and given an initial aorta center coordinate, the algorithm continuously segments each axial's slice circles closest to the previous aorta center coordinates. Finally, some hyperparameters tuning can let the algorithm pick up the pixels that were missing but belongs to the part of the aorta.
+This section introduces the key concepts for the implementation of our segmentation algorithm. The algorithm is developed in Python with the external libraries SimpleITK and NumPy. The algorithm builds the 3D aorta geometry by doing segmentation on each axial slice. The logic behind segmenting each slice from the axial view, is that there is one or two circles that is edged bounded in each axial plane view. Using this information, and given an initial aorta center coordinate, the algorithm continuously segments each axial slice's circles closest to the previous aorta center coordinates. Finally, some hyperparameters tuning can let the algorithm pick up the pixels that were missing but belongs to the part of the aorta.
 
 In this section, we first introduces the contexts for exertal libraries used in the implementation of the algorithm. We show the parameters and hyperparameters of the algorithm. Then we explain the algorithm workflow with a step-by-step demonstration.
 
@@ -51,7 +49,7 @@ In this section, we first introduces the contexts for exertal libraries used in 
 
 SimpleITK is an open-source multidimensional image analysis library developed by the Insight Toolkit community for the biomedical sciences and beyond \cite{JSSv086i08}\cite{10.3389/fninf.2013.00045}. NumPy is the fundamental package for scientific computing with Python, especially for the performance of multidimensional array processing \cite{harris2020array}. The algorithm will use functions from these two libraries for image processing and multidimensional array processing. For example, the algorithm segments each slice with ThresholdSegmentationLevelSetImageFilter from SITK.
 
-The algorithm works best with the chest volume cropped to a rectangular prism that contains the aorta and parts of the other organs such as the backbone, blood vessels, and the heart. This can be done with 3D Slicer and its built-in modules, Volume rendering and Crop Volume, or researched by the user to find the starting point and the size to crop.
+The algorithm works best with the chest volume cropped to a rectangular prism that contains the aorta and parts of the other organs such as the backbone, blood vessels, and the heart. This can be done with 3D Slicer and its built-in modules, Volume rendering and Crop Volume, or researched by another means familiar to the user for finding the starting point and the size to crop.
 
 \subsection{Parameters}
 
@@ -85,7 +83,7 @@ One of the most important parameters is the threshold coefficient. Since the alg
 
 When the user has selected the aorta seeds, the plane where the aorta seeds are located is the initial plane. From this plane towards the bottom (toward the feet) is the inferior direction. The upward direction (toward the head) is the superior direction. This algorithm segments each slice with SITK::ThresholdSegmentationLevelSetImageFilter. The principles of this image filter can be explained with two terms: Level sets segmentation method, and a threshold range that defines the intensity of the acceptable pixel.
 
-Level Sets are an important category of modern image segmentation techniques based on partial differential equations (PDE), i.e. progressive evaluation of the differences among neighboring pixels to find object boundaries. The pictures~\ref{LSS} demonstrate an example of how the Level Sets method work on finding the region of the heart. It starts with a seed contour that is within the region of interest, then by finding the gradient based on the contour line, the segmentation result will propagate towards the outside of the region, until the maximum difference between the neighboring pixels are reached.
+Level Sets are an important category of modern image segmentation techniques based on partial differential equations (PDE), i.e. progressive evaluation of the differences among neighboring pixels to find object boundaries. The pictures in Figure~\ref{LSS} demonstrate an example of how the Level Sets method work on finding the region of the heart. It starts with a seed contour that is within the region of interest, then by finding the gradient based on the contour line, the segmentation result will propagate towards the outside of the region, until the maximum difference between the neighboring pixels are reached.
 
 \begin{figure}[H] 
 \centering
@@ -97,7 +95,8 @@ Level Sets are an important category of modern image segmentation techniques bas
 \end{figure}
 
 \subsection{The steps to segment a single slice}
-In the following section, we will present each step to segment a single slice. These steps are applied in segmentations in both the superior and inferior directions. There is a difference in the stopping condition, which we will elaborate in the following section~\ref{stopping_condition}.
+In the following section, we will present each step to segment a single slice. These steps are applied for segmentations in both the superior and inferior directions. There is a difference in the stopping condition, which we will elaborate in Section~\ref{stopping_condition}.
+
 \subsubsection{Create A Label Map}\label{label_map}
 The algorithm uses SITK::BinaryDilateImageFilter to perform binary dilation to generate a circle-like shape around the center coordinates (user input’s for the first slice and calculated by the algorithm for the rest of the slices). Each pixel within this shape will be labeled as a white pixel (value of 1), and the rest of the pixels are labeled as black pixels (value of 0). 
 
@@ -131,7 +130,7 @@ By using SITK::LabelStatisticsImageFilter, the algorithm gets the mean and the s
 \end{figure}
 
 \subsubsection{Segment A Single Slice}\label{c}
-With SITK::ThresholdSegmentationLevelSetImageFilter, the seed image calculated in step \ref{distance_map}, and the lower and upper threshold value calculated in step \ref{threshold}, the algorithm performs segmentation and generates a segmented slice. The Figure~\ref{fig_segmented_image} shows an example of generated segmented slice (the green parts) overlay over the original slice.
+With SITK::ThresholdSegmentationLevelSetImageFilter, the seed image calculated in step \ref{distance_map}, and the lower and upper threshold value calculated in step \ref{threshold}, the algorithm performs segmentation and generates a segmented slice. Figure~\ref{fig_segmented_image} shows an example of generated segmented slice (the green parts) overlay over the original slice.
 
 \begin{figure}[H]
     \centering
@@ -141,27 +140,27 @@ With SITK::ThresholdSegmentationLevelSetImageFilter, the seed image calculated i
 \end{figure}
 
 \subsubsection{Calculate New Centroids}
-By comparing each pixel segmented as aorta to the previous descending centroid and the previous ascending centroid, the algorithm use the positions of the points closer to the previous descending centroid to calculate the new descending aorta centroid, and vice-versa for the ascending aorta centroid. However, at certain points during the segmentation in the inferior direction, the slice might reach the end of the ascending aorta, the aortic root, the algorithm will stop using and calculate ascending aorta centroid and only computes descending aorta centroid for the slices afterward.
+By comparing each pixel segmented as aorta to the previous descending centroid and the previous ascending centroid, the algorithm use the positions of the points closer to the previous descending centroid to calculate the new descending aorta centroid, and vice-versa for the ascending aorta centroid. However, at a certain point during the segmentation in the inferior direction, the slice will reach the end of the ascending aorta, the aortic root. At this point the algorithm will stop using, and calculating the ascending aorta centroid.  From this point in the algorithm only computes the descending aorta centroid for the slices.
 
 \subsubsection{Verify Segmentation Result}\label{stopping_condition}
-There are two main stopping conditions for verifying segmentation result, one condition for the segmentation in the inferior direction and the other one for the segmentation in the superior direction. Stopping limit is a user defined parameter to control the algorithm, to calculate the condition with the centroids position and the standard deviation.
+There are two main stopping conditions for verifying segmentation result, one condition for the segmentation in the inferior direction and the other one for the segmentation in the superior direction. The stopping limit is a user defined parameter to control the algorithm, that would affect the result in this step.
 
-In the inferior direction, if the new ascending aorta centroid that is closest to the previous ascending aorta center is reaching the distance limit, then the algorithm will stop and consider taking the new centroid closer to the ascending aorta. In other words, only 1 centroid will be used for descending aorta segmentation.
+In the inferior direction, if the new ascending aorta centroid that is closest to the previous ascending aorta center is reaching the distance limit, then the algorithm will stop and consider taking the new centroid closer to the ascending aorta. In other words, only one centroid will be used for the descending aorta segmentation.
 
 In the superior direction, if the standard deviation of the initial label map and the segmentation result label map have larger differences than the limit, the algorithm will stop processing segmentation for the rest of the slices. For example, assume that the standard deviation of the initial label image is 20, and the standard deviation of the segmentation label image is 40, with stop limit of 10, the program will halt immediately.
 
 \subsection{Algorithm Summary}
-Given two integer coordinates, ascending aorta centroid and descending aorta centroid, the algorithm set the inputted plane as the initial plane. From the initial plane to the bottom (toward the feet) plane, the algorithm calculates a label map with two centroid coordinates and kernel size, calculates a distance map with the label map, calculates a threshold range with the label map's selected pixels, performs segmentation, calculates new centroid coordinates, and verifies the segmentation result in case that it reaches the stop condition. Once the algorithm finishes the segmentation in the inferior direction, the algorithm works from the initial plane to the top (toward the head) plane, repeating the similar steps. Each segmentation result slice is stored in a SITK's image, which supports the conversion to VTK file or DICOM file. Figure~\ref{fig_sr} demonstrates a segmentation result, rendering in 3D Slicer.
+Given two integer coordinates, ascending aorta centroid and descending aorta centroid, the algorithm set the inputted plane as the initial plane. From the initial plane to the bottom (toward the feet) plane, the algorithm calculates a label map with two centroid coordinates and kernel size, calculates a distance map with the label map, calculates a threshold range with the label map's selected pixels, performs segmentation, calculates new centroid coordinates, and verifies the segmentation result in case that it reaches the stop condition. Once the algorithm finishes the segmentation in the inferior direction, the algorithm works from the initial plane to the top (toward the head) plane, repeating the similar steps. Each segmentation result slice is stored in a SITK's image, which supports the conversion to VTK file or DICOM file. Figure~\ref{fig_sr} demonstrates a segmentation result, rendered in 3D Slicer.
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.5\textwidth]{figures/AGR/segmentation_result.png}
+    \includegraphics[width=0.5\textwidth]{figures/AGR/segmentation_result.jpg}
     \caption[Segmentation Result]{Segmentation Result}
     \label{fig_sr}
 \end{figure}
 
 \section{3D Slicer Extension Development}
-The project has started with a simple segmentation program build in Jupyter Notebook \cite{Kluyver2016jupyter}. When getting a new patient's data, the user will need to investigate the chest CT scans using another software (3D Slicer, ITK-Snap), to get the readings such as coordinates and size to crop (the coordinates of the yellow dots shown in Figure~\ref{fig_aorta_seed}).
+The project has started from a simple segmentation program build in Jupyter Notebook \cite{Kluyver2016jupyter}, inherited from a prvious developer (Kailin Chu). With this program, the user will need to investigate the chest CT scans using another software (like 3D Slicer or ITK-Snap), to get the necessary input readings, such as coordinates and size to crop (the coordinates of the yellow dots shown in Figure~\ref{fig_aorta_seed}).
 
 \begin{figure}[H]
     \centering
@@ -170,9 +169,9 @@ The project has started with a simple segmentation program build in Jupyter Note
     \label{fig_jnr}
 \end{figure}
 
-Originally, the parameters entered by the users, and many other values are hard-coded in the Jupyter Notebook. To improve the usability of the \progname{} (reduce the amount of time for user inputs and execution), we implemented an extension module on 3D Slicer. 
+Originally, the parameters entered by the users, and many other values were hard-coded in the Jupyter Notebook. To improve the usability of the \progname{} (reduce the amount of time for user inputs and execution), we implemented an extension module on 3D Slicer. 
 
-3D Slicer is an open-sourced medical image processing software for research. 3D Slicer provides useful modules such as Crop Volume module and Volume Rendering module that easily crop any volume. 3D Slicer is highly modulable with Python scripting to control the extension module sequence, and QT designer to generate Graphical User Interfaces.
+3D Slicer is an open-sourced medical image processing software for research. 3D Slicer provides useful modules such as Crop Volume module and Volume Rendering module that easily crop any volume. 3D Slicer is highly modular with Python scripting to control the extension module sequence, and QT designer to generate Graphical User Interfaces.
 
 3D Slicer supports modularization with an extension. An extension can compose multiple modules, where each module is dedicated to solve a sub-problem.
 
@@ -180,15 +179,15 @@ Originally, the parameters entered by the users, and many other values are hard-
 
 3D Slicer's Data Structure can be divided into two categories. The Node data structure store large data such as DICOM with a Volume Node, Volume rendering Region of Interest Node, Label Map Volume Node. The parameters are stored as string from the UI component of the module. Every data stored in 3D Slicer can be accessed by the 3D Slicer's Widget Class and Logic Class for further processing. 
 
-3D Slicer stores all the above data in a scene object, which is also referred as MRMLscene file, on the higher level data format. 3D Slicer can load any MRMLscene file, this allowed user to retrieve all the data nodes and parameters. On the other hand, 3D Slicer has a special input module, the DICOM database allowed user to store DICOM metadata in 3D Slicer.
+3D Slicer stores all the above data in a scene object, which is also referred to as a MRMLscene file, on the higher level data format. 3D Slicer can load any MRMLscene file, this allows the user to retrieve all the data nodes and parameters. In addition, 3D Slicer has a special input module for the DICOM database that allows users to store DICOM metadata.
 
 \subsection{3D Slicer's scripted module}
 
-Every ScriptLoadableModule in 3D Slicer have a Widget Class and a Logic Class. The Widget Class is used to initialize the extension module's UI component, and the parameters tied to the UI component. The module's Logic Class is used to perform the processing of the data. In the Logic Class, we initialize an AortaGeomRecon Segmenter object with the attributes set to the parameters reading from UI component, which are inputs by the user. After completing the segmentation with Segmenter object, we convert the SimpleITK image object to a volume node corresponding in 3D Slicer, which allow the user to visualize the segmentation result. 
+Every ScriptLoadableModule in 3D Slicer have a Widget Class and a Logic Class. The Widget Class is used to initialize the extension module's UI component, and the parameters tied to the UI component. The module's Logic Class is used to perform the processing of the data. In the Logic Class, we initialize an AortaGeomRecon Segmenter object with the attributes set to the parameters reading from the UI component, which are inputs by the user. After completing the segmentation with the Segmenter object, we convert the SimpleITK image object to a volume node corresponding in 3D Slicer, which allow the user to visualize the segmentation result. 
 
 \subsection{AortaGeomReconDisplayModule}
 
-In this section, we demonstrate the implementation details of the 3D Slicer plugin AGR. We first demonstrate the module's Graphical User Interface, then discuss on the module's logic and workflow.
+In this section, we demonstrate the implementation details of the 3D Slicer plugin AGR. We first demonstrate the module's Graphical User Interface, then discuss the module's logic and workflow.
 
 \subsubsection{Graphical User Interface}
 
@@ -199,9 +198,9 @@ In this section, we demonstrate the implementation details of the 3D Slicer plug
     \label{fig_slicer_ui}
 \end{figure}
 
-3D Slicer separate the UI into two parts. From the Figure~\ref{fig_slicer_ui}, we can see that the four windows on the right side of the UI are used to visualize a volume. The left side shows the SubjectHierarchyTreeView which the module already stored many data nodes. The first node is the DICOM patient data with the chest CT scans stored as a volume, and the cropped volume I generated with Crop Volume Module. There is a Volume rendering ROI node and several ScalarVolumeNode which are the generated segmentation volume with different parameters.
+3D Slicer separate the UI into two parts. From Figure~\ref{fig_slicer_ui}, we can see that the four windows on the right side of the UI are used to visualize a volume. The left side shows the SubjectHierarchyTreeView where the module already stores many data nodes. The first node is the DICOM patient data with the chest CT scans stored as a volume, and the cropped volume as generated with Crop Volume Module. There is a Volume rendering Region of Interest (ROI) node and several ScalarVolumeNode, which are the generated segmentation volume with different parameters.
 
-The left side is the module UI. This part is designed and implemented differently based on the requirements of the modules. The Figure~\ref{fig_module_ui} shows the module UI that the AGR implemented, where each parameter stored to be passing to the algorithm class.
+The left side is the module UI. This part is designed and implemented differently based on the requirements of the modules. The Figure~\ref{fig_module_ui} shows the module UI that the AGR implements, where each parameter is stored to be passed to the algorithm class.
 
 \begin{figure}[H]
     \centering
@@ -212,7 +211,7 @@ The left side is the module UI. This part is designed and implemented differentl
 
 
 \subsubsection{Module's Workflow} \label{module_workflow}
-When the user first starting 3D Slicer and click on the AGR module, this warning message and Tips appears in the module UI. The user must click on the confirm button below to proceed into the next steps. This warning message is an evidence for the assurance case, which I will explain in the next chapter.
+When the user first starts 3D Slicer and clicks on the AGR module, the warning message and tips shown in Figure~\ref{fig_agr_warning} appear in the module's UI. The user must clicks on the confirm button below to proceed into the next steps. This warning message is a part of the evidence for the assurance case, as explained in the next chapter.
 
 \begin{figure}[H]
     \centering
@@ -221,6 +220,6 @@ When the user first starting 3D Slicer and click on the AGR module, this warning
     \label{fig_agr_warning}
 \end{figure}
 
-In the next step, assuming that the user has already read a DICOM image of the patient's chest, the user is asked to generate a cropped volume using the 3D Slicer's Volume Rendering module and the Crop Volume module. In this phase, the module UI displays only a SubjectHierarchyTreeView where the large data node are shown in this view. After generated a cropped volume, the apply button is enabled and the user can proceed to the next step.
+In the next step, assuming that the user has already read a DICOM image of the patient's chest, the user is asked to generate a cropped volume using the 3D Slicer's Volume Rendering module and the Crop Volume module. In this phase, the module UI displays only a SubjectHierarchyTreeView where the large data node are shown in this view. After generating a cropped volume, the apply button is enabled and the user can proceed to the next step.
 
-In phase 2 aorta segmentation, the user is asked to input the parameters to perform the segmentation. The module UI is same as the Figure~\ref{fig_module_ui}. The necessary inputs are the two aorta seeds. Without any value for these two inputs, the module will not allow the user to generate a segmentation result. One of the advantages of using 3D Slicer is the interactive UI that supports reading coordinates on the volume interactively. On the right side of the Figure~\ref{fig_slicer_ui}, we see a crossed intersection pointing to parts of the aorta, this intersection point allows the developer to read the coordinates. Moreover, we were able to automatically pick up the coordinates in real-time in the coordinate widget. As the user moving the intersection, we get the coordinate readings. The Figure~\ref{fig_module_ui} also demonstrates that the user can lock a seed, so the program stops picking up newest coordinate from the intersection point.
+In phase 2 aorta segmentation, the user is asked to input the parameters to perform the segmentation. The module UI is same as Figure~\ref{fig_module_ui}. The necessary inputs are the two aorta seeds. Without any value for these two inputs, the module will not allow the user to generate a segmentation result. One of the advantages of using 3D Slicer is the interactive UI that supports reading coordinates on the volume interactively. On the right side of the Figure~\ref{fig_slicer_ui}, we see a crossed intersection pointing to parts of the aorta, this intersection point allows the developer to read the coordinates. Moreover, we were able to automatically pick up the coordinates in real-time in the coordinate widget. As the user moving the intersection, we get the coordinate readings. Figure~\ref{fig_module_ui} also demonstrates that the user can lock a seed, so the program stops picking up newest coordinate from the intersection point.
