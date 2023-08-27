@@ -1,6 +1,6 @@
 \chapter{AortaGeomRecon Research and Development}
 
-This chapter will discuss the research and development of the 3D Slicer plugin AortaGeomRecon. AortaGeomRecon (AGR) stands for Aorta Geometry Reconstruction. The main objective of AGR is to semi-automatically build a 3D geometry of the aorta from the patient's chest CT scans.  The existing methods often involve extensive manual work interspersed with software assistance. An experienced user, who should be a medical domain expert, typically needs to do a minimum of 10 minutes of manual work. Currently AGR allows users who have taken the university level anatomy introduction courseto set the hyperparameters within half a minute, following by a maximum 2 minutes of execution time.
+This chapter will discuss the research and development of the 3D Slicer plugin AortaGeomRecon. AortaGeomRecon (AGR) stands for Aorta Geometry Reconstruction. The main objective of AGR is to semi-automatically build a 3D geometry of the aorta from the patient's chest CT scans.  The existing methods often involve extensive manual work interspersed with software assistance. An experienced user, who should be a medical domain expert, typically needs to do a minimum of 10 minutes of manual work. Currently, AGR allows users who have taken the university level anatomy introduction courseto set the hyperparameters within half a minute, following by a maximum 2 minutes of execution time.
 
 In this chapter, we first introduce the existing methods for aorta segmentation with different software options , and discuss the advantages and disadvantages of these existing options. Next, we demonstrate our segmentation algorithm, with a detailed step-by-step explanation of what the algorithm is doing and the results it generates. Finally, we discuss our experience using the platform 3D Slicer, and demonstrate our development result in the 3D Slicer plugin.
 
@@ -28,9 +28,9 @@ The disadvantages of this method is that the operations described above are comp
 
 This method first lets users select a small area that belongs to the wanted area on a 2D plane (Axial, Sagittal, and Coronal). 3D Slicer read the pixels' intensity of the surrounding area, and segments based on the intensity threshold. Any pixel's intensity that is within the range will be segmented as the segmentation result, as demonstrated in Figure~\ref{fig_3D_Seg_Builtin}. 
 
-The advantage of this method is that the user can visualize the effect of chosing different intensity threshold in real-time. 3D Slicer can highlight the pixels that would be chosen as a part of the segmentation with a increased or decreased intensity threshold.
+The advantage of this method is that the user can visualize the effect of chosing different intensity threshold in real-time. 3D Slicer can highlight the pixels that would be chosen as a part of the segmentation with an increased or decreased intensity threshold.
 
-The disadvantage of this method is that it depends on the quality of the input data. If the input data does not have the proper intensity reading of the aorta, it could generates gaps on the wanted part. Then, this method is less efficient, because the user must use another intensity range for the missing pixels. A \href{https://www.youtube.com/watch?v=5_673cHMBiY}{YouTube video} shows an experienced user who gets the aorta 3D geometry with 8 minutes of manual works. 
+The disadvantage of this method is that it depends on the quality of the input data. If the input data does not have the proper intensity reading of the aorta, it could generate gaps on the wanted part. Then, this method is less efficient, because the user must use another intensity range for the missing pixels. A \href{https://www.youtube.com/watch?v=5_673cHMBiY}{YouTube video} shows an experienced user who gets the aorta 3D geometry with 8 minutes of manual works. 
 
 \begin{figure}[H]
     \centering
@@ -43,7 +43,7 @@ The disadvantage of this method is that it depends on the quality of the input d
 
 This section introduces the key concepts for the implementation of our segmentation algorithm. The algorithm is developed in Python with the external libraries SimpleITK and NumPy. The algorithm builds the 3D aorta geometry by doing segmentation on each axial slice. The logic behind segmenting each slice from the axial view, is that there is one or two circles that is edged bounded in each axial plane view. Using this information, and given an initial aorta center coordinate, the algorithm continuously segments each axial slice's circles closest to the previous aorta center coordinates. Finally, some hyperparameters tuning can let the algorithm pick up the pixels that were missing but belongs to the part of the aorta.
 
-In this section, we first introduces the contexts for exertal libraries used in the implementation of the algorithm. We show the parameters and hyperparameters of the algorithm. Then we explain the algorithm workflow with a step-by-step demonstration.
+In this section, we first introduce the contexts for exertal libraries used in the implementation of the algorithm. We show the parameters and hyperparameters of the algorithm. Then we explain the algorithm workflow with a step-by-step demonstration.
 
 \subsection{Background} \label{algo_bg}
 
@@ -129,7 +129,7 @@ By using SITK::LabelStatisticsImageFilter, the algorithm gets the mean and the s
     \label{fig_threshold}
 \end{figure}
 
-\subsubsection{Segment A Single Slice}\label{c}
+\subsubsection{Segment A Single Slice}\label{segment}
 With SITK::ThresholdSegmentationLevelSetImageFilter, the seed image calculated in step \ref{distance_map}, and the lower and upper threshold value calculated in step \ref{threshold}, the algorithm performs segmentation and generates a segmented slice. Figure~\ref{fig_segmented_image} shows an example of generated segmented slice (the green parts) overlay over the original slice.
 
 \begin{figure}[H]
@@ -189,7 +189,7 @@ Every ScriptLoadableModule in 3D Slicer have a Widget Class and a Logic Class. T
 
 In this section, we demonstrate the implementation details of the 3D Slicer plugin AGR. We first demonstrate the module's Graphical User Interface, then discuss the module's logic and workflow.
 
-\subsubsection{Graphical User Interface}
+\subsubsection{Graphical User Interface}\label{GUI}
 
 \begin{figure}[H]
     \centering

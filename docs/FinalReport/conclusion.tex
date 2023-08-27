@@ -1,19 +1,32 @@
 \chapter{Conclusion and Future Works}
 
-In this chapter, we provide a summary of the thesis (section \ref{thesis_sum}), the challenges(section \ref{challenge}), and the future work (section \ref{fw}).
+In this chapter, we provide a summary of the thesis (Section \ref{thesis_sum}), the challenges(Section \ref{challenge}), and the future work (section \ref{fw}).
 
 \section{Thesis Summary}\label{thesis_sum}
 
-In this project, we developed a software as a 3D Slicer extension to semi-automatically extract the 3D geometry of the aorta. To build confidence in the software, we applied assurance case arguments. The project started from a Jupyter Notebook program as left by a previous student, with this as a starting point, we explored . 
+In this project, we developed a software as a 3D Slicer extension to semi-automatically extract the 3D geometry of the aorta. To build confidence in the software, we applied assurance case arguments. The project started from a Jupyter Notebook program as left by a previous student. With this as a starting point, we explored what changes to the documentation, design, implementation and verification activities are necessary for the assurance case. We did the following tasks in the chronological order for the evidence supporting our assurance case:
 
-%We have then developed an idea of developing a software that is first conveniant to use, at least on gathering parameters. This lead to developing a 3D Slicer extension module, because 3D Slicer already provides useful features such as Volume Rendering, Volume visualization, Crop Volume, etc. While building the software, we build the assurance cases in Goal Structuring Notation with the bottom-up approaches; we keep ask ourself what are the evidences that are necessary to support our claim in requirements, implementation, operational assumptions and inputs assumptions? Keep that question in mind, we have finalized our SRS document, Module Guide document, wrote user instructions, built design document in HTML and publish it on a website, and linking all assurance cases to support our arguments. Finally, we have used GitHub's features for Continuous Integration infrastructure, and project management. We have built 2 automated process that act as a linter and continuous integration tests, these processes helped a lot in detecting bugs and errors in implementation. As for project management, GitHub Issues, Discussions, and Pull requests were used throughout the development of the software. Me and Dr. Spencer Smith were able to keep up good communication through these features.
+\begin{enumerate}
+\item Build the continuous integration infrastructure with GitHub Actions for the algorithm. This allow us to update the algorithm, and making sure that the valid update is at least as good as the previous version. In addition, a linter is set up to help us strictly following the Google's Python style guide.
+\item Draft our softwrae requirements specification (SRS), and high-level designs (Module Guide).
+\item Build a graphical user interface (GUI) because the existing approach had poor usability since it required using other software to determine the necessary parameters and then editing the code.
+\item Use 3D Slicer as the platform to implement our GUI because it is modular, and it provides useful features such as Volume Rendering, volume visualization, Crop Volume and reading coordinate on a volume interactively.
+\item Build assurance cases in Goal Structuring Notation with the bottom-up approaches. We gather our existing evidence, and explore new implementation requirement for the new evidence.
+\item Write user insructions, and build a detailed design document and hosted on a web server.
+\item Scheduled Code Review with Kailin and Algorithm Review with Dr. Dean Inglis.
+\item Finalize our SRS, MG, and assurance case.
+\end{enumerate}
+
+It is worth mentioning that GitHub Issues, Discussions, and Pull requests are used throughout the development of the software for the project management. Me and Dr. Spencer Smith were able to keep up good communication through the use of the GitHub features, and weekly and bi-weekly meetings were scheduled to help us communicate efficiently.
 
 \section{Challenge}\label{challenge}
-In the course of this project, we have summarized a list of challenges and tasks that we could have done better. The first challenge was looking for an ideal platform to develop \progname{} software. Until the point where we see that it is nearly impossible to build from scratch a volume visualization system like the volume visualization provided by 3D Slicer, time and efforts have been wasted in design a UI, finding the right tool to build the UI, etc. 3D Slicer itself is a very complex software, the development resource is limited and difficult to understand.
+In the course of this project, we have summarized a list of challenges and the workable solution to solve the problem. The first challenge was looking for an ideal platform to develop \progname{} software. Until the point where we see that it is nearly impossible to build from scratch a volume visualization system like the volume visualization feature provided by 3D Slicer, time and efforts have been wasted in design a UI, finding the right tool to build the UI, etc. 
 
-Another obstacle that we have is having a domain expert to examine the quality of our segmentation result and other documentation. This medical software's intended user is a university student studying in medical science or medicine, who likes to get an aorta's image or quantified volume. Throughout the development of the \progname{}, we did not have an intended user or a domain expert to review our software. However, me and Dr. Spencer Smith were also lacking the knowledge and do not know the expectation of the intender user or domain expert, this causes ambiguity in understanding the true requirements of \progname{}.
+The second challenge is that 3D Slicer itself is a very complex software, the development resource is limited and difficult to understand. Some features provided by 3D Slicer 
 
-Finally, it is very challenging of understanding assurance cases with a limited time, and building the assurance cases for \progname{} was unclear for me. Gathering the evidences and support our arguments was not in my imagination at the beginning of the project, without truely understanding our goals of the project, I was not certain what I was really doing for this project. Until we have several pieces linking together, I was finally understanding and making more efforts in the right direction. 
+Another obstacle that we have is having a domain expert to examine the quality of our segmentation result and other documentation. This medical software's intended user is a university student studying in medical science or medicine, who likes to get an aorta's image or quantified volume. Throughout the development of the \progname{}, we did not have an intended user or a domain expert to review our software. However, me and Dr. Spencer Smith were also lacking the knowledge and do not know the expectation of the intended user, this causes ambiguity to specify the true requirements of AGR.
+
+Finally, it is very challenging of understanding assurance cases within a limited time, and building the assurance cases for AGR was unclear for me. Gathering the evidences and support our arguments was not in my imagination at the beginning of the project, without truely understanding our goals of the project, I was not certain what I was really doing for this project. Until we have several pieces linking together, I was finally understanding and making more efforts in the right direction. 
 
 \section{Future Works}\label{fw}
 
