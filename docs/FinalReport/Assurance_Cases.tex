@@ -145,7 +145,7 @@ With all the background information provided, the Functional Requirements and th
 
 \begin{figure}[H]
     \centering
-    \fbox{\includegraphics[width=0.75\textwidth]{figures/AC/SRS/Functional_Requirements.png}}
+    \fbox{\includegraphics[width=\textwidth]{figures/AC/SRS/Functional_Requirements.png}}
     \caption[AGR Functional Requirements]{AGR Functional Requirements}
     \label{fig_agr_fr}
 \end{figure}
@@ -247,13 +247,13 @@ This leads to our Continuous Integration infrastructure, implemented with a GitH
 
 For AGR there are two automated process that happens on each ``push" event and ``pull" event. A ``push" event implies that something is changed in one or multiple commits, therefore there is a need to verify whether the commits have introduced bugs. A ``pull" event happens when a feature branch is merged with the main branch. Since our main branch is protected, any update to the main branch must be merged by using a pull-request. Before a pull-request can be approved, the continuous integration tests are examined. 
 
-The first automated process is a linter. A linter is a tool for static code analysis to flag programming errors, bugs, stylistic errors and suspicious constructs  \cite{Linter}. We used Python \href{https://flake8.pycqa.org/en/latest/index.html#}{Flake8} as our linter to find bugs and errors, and ensurethethat program's readability by enforcing the PEP8 standard.
+The first automated process is a linter. A linter is a tool for static code analysis to flag programming errors, bugs, stylistic errors and suspicious constructs  \cite{Linter}. We used Python \href{https://flake8.pycqa.org/en/latest/index.html#}{Flake8} as our linter to find bugs and errors, and ensure the program's readability by enforcing the PEP8 standard.
 
 The second automated process is our continuous integration tests. By setting up \href{https://git-lfs.com/}{Git Large File Storage} (LFS) and uploading to pre-build six ground truth tests data in the repository, the algorithm can be verified whenever a change is made. The DSC value for the comparison of the six pair of images is set to a limit of larger than 0.95. The test failed if any of the six DSC value is lower than this limit. These tests provide our evidence E\_I.5\_1 in Figure~\ref{fig_agr_ac_gi}.
 
 \subsubsection{Test Procedure}
 
-This section introduces our test procedure for the Functional Requirements and Non-Functional Requirements.
+This section introduces our test procedure for the Functional Requirements (FR) and Non-Functional Requirements (NFR).
 
 The Functional Requirements can be tested by generating a segmentation result from scratch in 3D Slicer. Without loading a MRMLscene file on purpose, 3D Slicer is in its default state. The manual test procedure for testing the Functional Requirements is described as follows:
 
@@ -274,7 +274,7 @@ The Functional Requirements can be tested by generating a segmentation result fr
 \label{test_procedure}
 \end{figure}
 
-If step 1-4 did not proceed correctly, there is an error with 3D Slicer, which is out of the scope of this project. If an error happens in step 5-7, there might be an error with the plugin as a scripted module. Otherwise, step 8 generates a result is only concerns with the hyperparameters and the algorithm's implementation, and step 9 is affected by 3D Slicer and the result generated from step 8. This test procedure has all Functional Requirements shown in Figure~\ref{fig_agr_fr} match to a step, where R1 matches to step 2, R2 matches to step 3, R3 matches to step 8, and R4 matches to step 9. Thus, we have our evidence for E\_1.1.3. The Functional Requirement, R3, is also automatically tested when a change is made by our continuous integration process described in Section \ref{ci}.
+If step 1-4 did not proceed correctly, there is an error with 3D Slicer, which is out of the scope of this project. If an error happens in step 5-7, there might be an error with the plugin as a scripted module. Otherwise, step 8 generates a result is only concerns with the hyperparameters and the algorithm's implementation, and step 9 is affected by 3D Slicer and the result generated from step 8. This test procedure has all Functional Requirements shown in Figure~\ref{fig_agr_fr} match to a step, where FR1 matches to step 2, FR2 matches to step 3, FR3 matches to step 8, and FR4 matches to step 9. Thus, we have our evidence for E\_1.1.3. The Functional Requirement, R3, is also automatically tested when a change is made by our continuous integration process described in Section \ref{ci}.
 
 The Non-Functional Requirements are difficult to test, because each user with different experience could result in different learning time, to accomplish the tests of taking an image from scratch to generating a segmentation result. The test procedure used in Functional Requirement test (Figure~\ref{test_procedure}), can be used for Non-Functional Requirements test. Both NFR1 Usability and NFR3 Learability requires a measurement in time comparing to another software. NFR2 Safety, NFR4 Accuracy, and NFR5 Consitency requires a verification in the segmentation result. NFR4 Accuracy also requires a segmentation result generated by ITK-Snap. Although out of the scope of the current work, once these tests are performed all Non-Functional Requirements will be tested, which is evidence for E\_1.1.4.
 
@@ -467,4 +467,4 @@ As we initially planned, the references to sections Assumptions, Data Constraint
     \label{fig_agr_ac_wm}
 \end{figure}
 
-As mentioned in the section \ref{module_workflow}, when the user first starts 3D Slicer and click on the AGR module, this warning message appears, which is also referred as the appropriate message stated in E\_GA.4. The user must clicks on the Confirm button to continue to the next steps. With the warning message shown to the user, it is now the user's responsibility to use the valid inputs for AGR, so that the program will deliver the correct outputs if the other operations are performed correctly. 
+As mentioned in Section \ref{module_workflow}, when the user first starts 3D Slicer and click on the AGR module, this warning message appears, which is also referred as the appropriate message stated in E\_GA.4. The user must clicks on the Confirm button to continue to the next steps. With the warning message shown to the user, it is now the user's responsibility to use the valid inputs for AGR, so that the program will deliver the correct outputs if the other operations are performed correctly. 
