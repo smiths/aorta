@@ -41,9 +41,9 @@ The disadvantage of this method is that it depends on the quality of the input d
 
 \section{Our Segmentation Algorithm}
 
-This section introduces the key concepts for the implementation of our segmentation algorithm. The algorithm is developed in Python with the external libraries SimpleITK and NumPy. The algorithm builds the 3D aorta geometry by doing segmentation on each axial slice. The logic behind segmenting each slice from the axial view is that there is one or two circles that are edge bounded in each axial plane view. Using this information, and given an initial aorta center coordinate, the algorithm continuously segments each axial slice's circles closest to the previous aorta center coordinates. Finally, some hyperparameters tuning can let the algorithm pick up the pixels that were missing but belongs to the part of the aorta.
+This section introduces the key concepts for the implementation of our segmentation algorithm. The algorithm is developed in Python with the external libraries SimpleITK and NumPy. The algorithm builds the 3D aorta geometry by doing segmentation on each axial slice. The logic behind segmenting each slice from the axial view is that there is one or two circles that are edge bounded in each axial plane view. Using this information, and given an initial aorta center coordinate, the algorithm continuously segments the axial slice's circles that are closest to the previous aorta center coordinates. Finally, some hyperparameters tuning can let the algorithm pick up the pixels that were missing but belongs to the aorta.
 
-In this section, we first introduce the contexts for exertal libraries used in the implementation of the algorithm. We show the parameters and hyperparameters of the algorithm. Then we explain the algorithm workflow with a step-by-step demonstration.
+In this section, we first introduce the contexts for the exertal libraries used in the implementation of the algorithm. We show the parameters and hyperparameters of the algorithm. Then we explain the algorithm workflow with a step-by-step demonstration.
 
 \subsection{Background} \label{algo_bg}
 
@@ -98,9 +98,9 @@ Level Sets are an important category of modern image segmentation techniques bas
 In the following section, we will present each step to segment a single slice. These steps are applied for segmentations in both the superior and inferior directions. There is a difference in the stopping condition, which we will elaborate in Section~\ref{stopping_condition}.
 
 \subsubsection{Create A Label Map}\label{label_map}
-The algorithm uses SITK::BinaryDilateImageFilter to perform binary dilation to generate a circle-like shape around the center coordinates (user input’s for the first slice and calculated by the algorithm for the rest of the slices). Each pixel within this shape will be labeled as a white pixel (value of 1), and the rest of the pixels are labeled as black pixels (value of 0). 
+The algorithm uses SITK::BinaryDilateImageFilter to perform binary dilation to generate a circle-like shape around the center coordinates (user input’s for the first slice and calculated by the algorithm for the rest of the slices). The binary dilation helps to fill in and smooth out gaps where the image intensity drops. Each pixel within this shape will be labeled as a white pixel (value of 1), and the rest of the pixels are labeled as black pixels (value of 0). 
 
-The generated result is the label map image, and we will use it in the next few steps. The size of the circle-like shape is determined by the kernel size (user's input). The Figure \ref{fig_label_map} shows an example of generated label map image (the green parts) overlay over the original slice.
+The generated result is the label map image. We will use it in the next few steps. The size of the circle-like shape is determined by the kernel size (user's input). The Figure \ref{fig_label_map} shows an example of generated label map image (the green parts) overlay over the original slice.
 
 \begin{figure}[H]
     \centering
@@ -147,7 +147,7 @@ There are two main stopping conditions for verifying segmentation result, one co
 
 In the inferior direction, if the new ascending aorta centroid that is closest to the previous ascending aorta center is reaching the distance limit, then the algorithm will stop and consider taking the new centroid closer to the ascending aorta. In other words, only one centroid will be used for the descending aorta segmentation.
 
-In the superior direction, if the standard deviation of the initial label map and the segmentation result label map have larger differences than the limit, the algorithm will stop processing segmentation for the rest of the slices. For example, assume that the standard deviation of the initial label image is 20, and the standard deviation of the segmentation label image is 40, with stop limit of 10, the program will halt immediately.
+In the superior direction, if the standard deviation of the initial label map and the segmentation result label map have larger differences than the limit, the algorithm will stop processing segmentation for the rest of the slices. For example, if the standard deviation of the initial label image is 20, and the standard deviation of the segmentation label image is 40, with stop limit of 10, the program will halt immediately.
 
 \subsection{Algorithm Summary}
 Given two integer coordinates, ascending aorta centroid and descending aorta centroid, the algorithm set the inputted plane as the initial plane. From the initial plane to the bottom (toward the feet) plane, the algorithm calculates a label map with two centroid coordinates and kernel size, calculates a distance map with the label map, calculates a threshold range with the label map's selected pixels, performs segmentation, calculates new centroid coordinates, and verifies the segmentation result in case that it reaches the stop condition. Once the algorithm finishes the segmentation in the inferior direction, the algorithm works from the initial plane to the top (toward the head) plane, repeating the similar steps. Each segmentation result slice is stored in a SITK's image, which supports the conversion to VTK file or DICOM file. Figure~\ref{fig_sr} demonstrates a segmentation result, rendered in 3D Slicer.
@@ -160,7 +160,7 @@ Given two integer coordinates, ascending aorta centroid and descending aorta cen
 \end{figure}
 
 \section{3D Slicer Extension Development}
-The project has started from a simple segmentation program build in Jupyter Notebook \cite{Kluyver2016jupyter}, inherited from a prvious developer (Kailin Chu). With this program, the user will need to investigate the chest CT scans using another software (like 3D Slicer or ITK-Snap), to get the necessary input readings, such as coordinates and size to crop (the coordinates of the yellow dots shown in Figure~\ref{fig_aorta_seed}).
+The project has started from a simple segmentation program build in Jupyter Notebook \cite{Kluyver2016jupyter}, inherited from a prvious developer (Kailin Chu). With this program, the user needs to investigate the chest CT scans using another software (like 3D Slicer or ITK-Snap), to get the necessary input readings, such as coordinates and size to crop (the coordinates of the yellow dots shown in Figure~\ref{fig_aorta_seed}).
 
 \begin{figure}[H]
     \centering
@@ -177,7 +177,7 @@ Originally, the parameters entered by the users, and many other values were hard
 
 \subsection{3D Slicer's data structure}
 
-3D Slicer's Data Structure can be divided into two categories. The Node data structure store large data such as DICOM with a Volume Node, Volume rendering Region of Interest Node, Label Map Volume Node. The parameters are stored as string from the UI component of the module. Every data stored in 3D Slicer can be accessed by the 3D Slicer's Widget Class and Logic Class for further processing. 
+3D Slicer's Data Structure can be divided into two categories. The Node data structure stores large datas such as DICOM, with a Volume Node, Volume rendering Region of Interest Node, and Label Map Volume Node. The parameters are stored as strings from the UI component of the module. Every data stored in 3D Slicer can be accessed by the 3D Slicer's Widget Class and Logic Class for further processing. 
 
 3D Slicer stores all the above data in a scene object, which is also referred to as a MRMLscene file, on the higher level data format. 3D Slicer can load any MRMLscene file, this allows the user to retrieve all the data nodes and parameters. In addition, 3D Slicer has a special input module for the DICOM database that allows users to store DICOM metadata.
 
@@ -198,7 +198,7 @@ In this section, we demonstrate the implementation details of the 3D Slicer plug
     \label{fig_slicer_ui}
 \end{figure}
 
-3D Slicer separate the UI into two parts. From Figure~\ref{fig_slicer_ui}, we can see that the four windows on the right side of the UI are used to visualize a volume. The left side shows the SubjectHierarchyTreeView where the module already stores many data nodes. The first node is the DICOM patient data with the chest CT scans stored as a volume, and the cropped volume as generated with Crop Volume Module. There is a Volume rendering Region of Interest (ROI) node and several ScalarVolumeNode, which are the generated segmentation volume with different parameters.
+3D Slicer separate the UI into two parts. From Figure~\ref{fig_slicer_ui}, we can see that the four windows on the right side of the UI are used to visualize a volume. The left side shows the SubjectHierarchyTreeView where the module stores many data nodes. The first node is the DICOM patient data with the chest CT scans stored as a volume, and the cropped volume as generated with Crop Volume Module. There is a Volume rendering Region of Interest (ROI) node and several ScalarVolumeNode, which are the generated segmentation volume with different parameters.
 
 The left side is the module UI. This part is designed and implemented differently based on the requirements of the modules. The Figure~\ref{fig_module_ui} shows the module UI that the AGR implements, where each parameter is stored to be passed to the algorithm class.
 
