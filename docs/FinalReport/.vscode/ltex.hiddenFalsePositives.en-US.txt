@@ -1,0 +1,3 @@
+{"rule":"THE_SENT_END","sentence":"^\\QThis chapter will discuss the research and development of the .\\E$"}
+{"rule":"ENGLISH_WORD_REPEAT_BEGINNING_RULE","sentence":"^\\Q3D Slicer provides multiple segmentation methods, and one of the quickiest and easiest to use is the intensity based segmentation.\\E$"}
+{"rule":"COMMA_PARENTHESIS_WHITESPACE","sentence":"^\\Q[ Init image][ Expanding][ Result]Level Sets Segmentation\\E$"}

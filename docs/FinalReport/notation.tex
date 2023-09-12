@@ -1,0 +1,52 @@
+\prefacesection{Notation, Definitions, and Abbreviations}
+
+%\section*{Notation}
+%\begin{description}[font=\rmfamily\bfseries, leftmargin=3cm, style=nextline]
+%	\item[$A \leq B$] A is less than or equal to B
+%\end{description}
+
+\section*{Definitions}
+\begin{description}[font=\rmfamily\bfseries, leftmargin=3cm, style=nextline]
+	\item[Aorta] The aorta is the largest artery of the body and carries blood from the heart to the circulatory system. It has five sections: aortic root, ascending aorta, aortic arch, descending aorta and abdominal aorta. The aortic root is the transition point where blood first exits the heart. It functions as the water main of the body. The aortic arch is the curved segment that gives the aorta its cane-like shape. It bridges the ascending and descending aorta. Throughout this documentation, aorta means ascending aorta, aortic arch and descending aorta. The abdominal aorta and aortic root are outside of the scope of the current work.
+	\item[Ascending Aorta] The ascending aorta is like the starting point of the aorta. It comes out of the heart and sends blood through the aortic arch and down into the descending aorta \cite{professional_asc_2023}.
+	\item[Descending Aorta] The descending aorta begins after a branch called the left subclavian artery separates from the main road (aortic arch) and goes all the way down into your belly \cite{professiona_des_2023}.
+	\item[Organ Segmentation] Organ segmentation refers to the process of dividing or delineating an organ's internal structures or regions from medical images or scans. This segmentation is typically done using computer algorithms or manual techniques to distinguish different parts of an organ, such as tumors, blood vessels, or healthy tissue, for the purpose of analysis, diagnosis, or treatment planning in medical applications like radiology or surgery \cite{EMINAGA2021309}.
+	\item[DICOM] Digital Imaging and Communications in Medicine (DICOM) is the standard for the communication and management of medical imaging information and related data.
+	\item[Inferior] Inferior is the direction away from the head; Inferior means the lower parts of the body (e.g., the foot is part of the inferior extremity).
+	\item[Superior] Superior is the direction toward the head end of the body; Superior means the upper parts of the body (e.g., the hand is part of the superior extremity).
+	\item[Slice] A 2-dimensional image that is retrieved from a 3-dimensional volume.
+	\item[Binary Dilation] Binary dilation is a mathematical morphology operation that uses a structuring element (kernel) for expanding the shapes in an image.
+	\item[Label Map] A labeled map or a label image is an image that labels each pixel of a source image. 
+	\item[Euclidean Distance Transform] The Euclidean Distance Transform (EDT) is a mathematical technique used in image processing and computer vision to compute the distance of each pixel in a binary image to the nearest boundary or edge pixel.
+	\item[Contour Line] A contour line is a continuous curve on a two-dimensional map or graph that connects points of equal value.
+	\item[Level Sets] In Level Sets, an image is represented as a function, and the evolving contour or boundary is represented as an isosurface of this function \cite{Rueden_2021}. This contour evolves over time to converge toward the desired segmentation result. The key advantage of Level Sets is its ability to handle topological changes naturally, which makes it useful for tasks like segmenting objects with irregular shapes or objects that may split or merge during the segmentation process. The Figures \ref{LSS} demonstrate an example of how Level Sets method work on finding the region of the heart. It starts with a seed contour that is within the region of interest, then by finding the gradient based on the contour line, the segmentation result will propagate towards outside of the region until the maximum difference between the neighboring pixels are reached.	
+	\item[Segmented slice] A 2-dimensional image with the relevant pixels labeled as 1 and other pixels as 0.	
+	\item[Kernel Size] The size of the kernel for binary dilation.
+	\item[Stop Limit] This limit is used to stop the segmentation algorithm. It is used differently in segmentation in the inferior and suprior direction.
+	\item[Threshold Coefficient] This coefficient is used to compute the lower and upper threshold passing through the segmentation filter SITK's ThresholdSegmentationLevelSetImageFilter. The algorithm first uses SITK's LabelStatisticsImageFilter to get the mean and the standard deviation of the intensity values of the pixels that are labeled as the white pixel. Larger values with this coefficient imply a larger range of thresholds when performing the segmentation, which leads to a larger segmented region.
+	\item[RMS Error] Value of RMS change below which the filter should stop. This is a convergence criterion.
+	\item[Maximum Iteration] Maximum number of iterations to run
+	\item[Curvature Scaling] Weight of the curvature contribution to the speed term.
+	\item[Propagation Scaling] Weight of the propagation contribution to the speed term.
+
+\end{description}
+
+\section*{Abbreviations}
+\begin{description}[font=\rmfamily\bfseries, leftmargin=3cm, style=nextline]
+	\item[AC] Assurance Case
+	\item[AGR] AortaGeomRecon
+	\item[AortaGeomRecon] 3D Slicer's extension module, Aorta Geometry Reconstruction
+	\item[CT] Computerized Tomography
+	\item[DD] Design Document
+	\item[DICOM] Digital Imaging and Communications in Medicine
+	\item[GUI] Graphical User Interface
+	\item[MG] Module Guide
+	\item[NFR] Non-Functional Requirement
+	\item[FR] Functional Requirement
+	\item[SITK] SimpleITK
+	\item[SRS] Software Requirements Specification
+	\item[UI] User Interface
+	\item[VTK] The Visualization Toolkit
+
+
+\end{description}

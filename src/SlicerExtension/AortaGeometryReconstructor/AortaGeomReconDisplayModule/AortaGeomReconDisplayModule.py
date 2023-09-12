@@ -543,7 +543,6 @@ class AortaGeomReconDisplayModuleWidget(ScriptedLoadableModuleWidget, VTKObserva
     def onConfirmWarningButton(self):
         phase = self._parameterNode.GetParameter("phase")
         if not phase or phase == '1':
-            print(phase)
             self.showPhaseCropAorta()
         elif phase == '2':
             self.showPhaseAS()
