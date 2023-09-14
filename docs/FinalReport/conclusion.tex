@@ -4,7 +4,7 @@ This chapter provides a summary of the thesis (Section \ref{thesis_sum}), the ch
 
 \section{Thesis Summary}\label{thesis_sum}
 
-This project developes a software as a 3D Slicer extension to semi-automatically extract a 3D geometry of the aorta. To build confidence in the software, we applied assurance case arguments. The project started from a Jupyter Notebook program as left by a previous student. With this as a starting point, we explored what changes to the documentation, design, implementation and verification activities are necessary for the assurance case. We did the following tasks in the chronological order for the evidence supporting our assurance case:
+This project developed a software as a 3D Slicer extension to semi-automatically extract a 3D geometry of the aorta. To build confidence in the software, we applied assurance case arguments. The project started from a Jupyter Notebook program as left by a previous student. With this as a starting point, we explored what changes to the documentation, design, implementation and verification activities are necessary for the assurance case. We did the following tasks in the chronological order for the evidence supporting our assurance case:
 
 \begin{figure}[H]
 \fbox{\parbox{\textwidth}{
@@ -28,7 +28,7 @@ This project developes a software as a 3D Slicer extension to semi-automatically
     \label{fig_contributions}
 \end{figure}
 
-It is worth mentioning that GitHub Issues, Discussions, and Pull requests are used throughout the development of the software for the project management. Me and Dr. Spencer Smith were able to keep up good communication through the use of the GitHub features. Finally weekly and bi-weekly meetings were scheduled to help us communicate efficiently.
+It is worth mentioning that GitHub Issues, Discussions, and Pull requests are used throughout the development of the software for the project management. Me and Dr. Spencer Smith were able to keep up good communication through the use of the GitHub features. Finally, weekly and bi-weekly meetings were scheduled to help us communicate efficiently.
 
 \section{Challenge}\label{challenge}
 In the course of this project, we have summarized a list of challenges. The first challenge was looking for an ideal platform to develop \progname{} software. At the beginning of the project, we wanted to develop our own software without any external platform. Until the point where we see that it is nearly impossible to build from scratch a volume visualization system like the one provided by 3D Slicer, time and efforts have been wasted in design a UI, finding the right tool to build the UI, etc. 
@@ -37,7 +37,7 @@ The second challenge is that 3D Slicer itself is a very complex software, the de
 
 Another obstacle that we have is having a domain expert to examine the quality of our segmentation result. This medical software's intended user is a university student studying in medical science or medicine, who likes to get an aorta's image or quantified volume. Throughout the development of the \progname{}, we did not have an intended user or a domain expert to review our software. However, me and Dr. Spencer Smith were also lacking the knowledge and do not know the expectation of the intended user, this causes ambiguity to specify the true requirements of AGR.
 
-Finally, it is very challenging of understanding assurance cases within a limited time, and building the assurance cases for AGR was unclear for me. Gathering the evidences and support our arguments was not in my imagination at the beginning of the project, without truely understanding our goals of the project, I was not certain what I was really doing for this project. Until we have several pieces linking together, I was finally understanding and making more efforts in the right direction. 
+Finally, it is very challenging of understanding assurance cases within a limited time, and building the assurance cases for AGR was unclear for me. Gathering the evidences and support our arguments was not in my imagination at the beginning of the project, without truly understanding our goals of the project, I was not certain what I was really doing for this project. Until we have several pieces linking together, I was finally understanding and making more efforts in the right direction. 
 
 \section{Future Works}\label{fw}
 
@@ -46,9 +46,9 @@ In this section, we will discuss some possible future works that can continue to
 \subsection{Segmentation Algorithm}
 
 \subsubsection{3D Level Set Approach}
-An improved segmentation algorithm \cite{6346433} is available. Like the convention, this algorithm also needs a cropped volume and the aorta seeds to perform segmentation. However, it required less hyperparameters such as the parameters for SimpleITK's ThresholdSegmentationLevelSetsFilter. Using this algorithm will reduce the problem of user inputs, which help to build the evidence for E\_GA.1 discussed in Figure~\ref{fig_agr_ac_ga}.
+An improved segmentation algorithm \cite{6346433} is available. Like the convention, this algorithm also needs a cropped volume and the aorta seeds to perform segmentation. However, it required fewer hyperparameters such as the parameters for SimpleITK's ThresholdSegmentationLevelSetsFilter. Using this algorithm will reduce the problem of user inputs, which help to build the evidence for E\_GA.1 discussed in Figure~\ref{fig_agr_ac_ga}.
 
-\subsubsection{Oplique Plane Segmentation}
+\subsubsection{Oblique Plane Segmentation}
 This algorithm is proposed by Dr. Dean Inglis discussed during our Algorithm Review meeting. This algorithm is based on an assumption, which states that a healthy aorta should have a closer range of diameter. With an initial center coordinate seed and the corresponding diameter, the algorithm can segment the aortic arch through Oblique Plane. Figure~\ref{fig_oblique} shows the double oblique plane in the ascending aorta, and aortic arch.
 
 \begin{figure}[H]
@@ -60,4 +60,4 @@ This algorithm is proposed by Dr. Dean Inglis discussed during our Algorithm Rev
 
 \subsection{Assurance Case}
 
-There is room for improvements on the arguments of the requirements of \progname{}. The correctness of the document is reviewed and approved by a domain expert, where there should be evidences that can support the argument. The evidence for  E\_GA.1 discussed in Figure~\ref{fig_agr_ac_ga} is missing because we did not have the time to complete our Verification and Validation Plan (VnV). The VnV should include the test report, an evidence for E\_GA.1, that will indicate if \progname{} throws an exception when the inputs does not meet one or more of the assumptions, with a message that clearly states the reason.
+There is room for improvements on the arguments of the requirements of \progname{}. The correctness of the document is reviewed and approved by a domain expert, where there should be evidences that can support the argument. The evidence for  E\_GA.1 discussed in Figure~\ref{fig_agr_ac_ga} is missing because we did not have the time to complete our Verification and Validation Plan (VnV). The VnV should include the test report, an evidence for E\_GA.1, that will indicate if \progname{} throws an exception when the inputs do not meet one or more of the assumptions, with a message that clearly states the reason.
