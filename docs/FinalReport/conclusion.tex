@@ -36,7 +36,7 @@ Finally, it was very challenging to understand assurance cases within a limited 
 \section{Lessons Learned}\label{ll}
 After reviewing all available evidence and constructing the assurance case for AortaGeomRecon, we have compiled a list of lessons learned that could prove valuable to those seeking to develop assurance cases for research software.
 
-When crafting the Software Requirement Specification document, it is advisable to describe our data definitions and instance models using commonly accepted mathematical notation. Since our target audience includes domain experts who may not be software developers, it is crucial not to represent instance models using pseudo-code. Utilizing mathematical notation also facilitates the review process for domain experts, ensuring completeness, correctness, and consistency within the document.
+When crafting the Software Requirement Specification document, it is advisable to describe our data definitions and instance models using commonly accepted mathematical notation. Since our target audience includes domain experts who may not be software developers, it is crucial not to represent instance models using pseudocode. Utilizing mathematical notation also facilitates the review process for domain experts, ensuring completeness, correctness, and consistency within the document.
 
 The traceability matrix offers a transparent means for illustrating the relationships between various levels of abstractions. First and foremost, the traceability matrix enables other developers to verify whether the modules outlined in the Module Guide genuinely serve a purpose in fulfilling specific requirements. Furthermore, by establishing a correspondence between the modules and the source code, it allows for the verification of whether the implementation indeed provides the functionality described in the modules within the Module Guide.
 
@@ -44,7 +44,7 @@ Despite all the operational assumptions detailed in the documentation, it is ess
 
 Finally, we have learned how to conduct a code walkthrough, a code review, and an algorithm review to verify the implementation's correctness. To start this process effectively, it's advisable to conduct a code walkthrough alongside a software developer who recently worked on the same segment of the implementation. This ensures that the collaborator still holds a fresh memory of significant software decisions and expected output, allowing for meaningful discussions about how the implementation achieved these results.
 
-Code and algorithm reviews have quickly provided insights into which portions of the implementation can remain untouched and where improvements can be made. During our code review with Kailin Chu, we identified a step in the segmentation algorithm implemented through trial and error. Collaboratively, we brainstormed ways to enhance this step, resulting in a significant improvement in our segmentation algorithm. In our algorithm review with Dr. Dean Inglis, he shared industry-standard methodologies for image segmentation and introduced a new segmentation method, which can reduce the execution time and elimiate some hyperparameters when applied to our algorithm.
+Code and algorithm reviews have quickly provided insights into which portions of the implementation can remain untouched and where improvements can be made. During our code review with Kailin Chu, we identified a step in the segmentation algorithm implemented through trial and error. Collaboratively, we brainstormed ways to enhance this step, resulting in a significant improvement in our segmentation algorithm. In our algorithm review with Dr. Dean Inglis, he shared industry-standard methodologies for image segmentation and introduced a new segmentation method, which can reduce the execution time and eliminate some hyperparameters when applied to our algorithm.
 
 
 \section{Future Work}\label{fw}
@@ -53,7 +53,7 @@ In this section, we discuss some possible future work that can make \progname{} 
 
 \subsection{Segmentation Algorithm}
 
-In this section, we discuss the possible future work related to the segmentation algorithm. Section \ref{new_seg} discusses a similar segmentation algorithm that requires fewer hyperparameters. Section \ref{inglis_seg} discusses a method that eliminates the use of a verification step described in our segmentaiton algorithm.
+In this section, we discuss the possible future work related to the segmentation algorithm. Section \ref{new_seg} discusses a similar segmentation algorithm that requires fewer hyperparameters. Section \ref{inglis_seg} discusses a method that eliminates the use of a verification step described in our segmentation algorithm.
 
 \subsubsection{3D Level Set Approach}\label{new_seg}
 An improved segmentation algorithm \cite{6346433} is available. Like our segmentation algorithm, this algorithm also needs a cropped volume and the aorta seeds to perform segmentation. However, it requires fewer hyperparameters, such as the parameters for SimpleITK's ThresholdSegmentationLevelSetsFilter. Using this algorithm will reduce the problem of user inputs, which will help to build the evidence for E\_GA.1 discussed in Figure~\ref{fig_agr_ac_ga}.
