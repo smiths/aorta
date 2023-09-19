@@ -19,7 +19,7 @@ Through many iterations, the voxels expand to fill the entire volume of the vess
     \label{fig_ITK}
 \end{figure}
 
-The advantage of the bubble method is that it is guaranted to produce a correct segmentation for a valid image. A medical domain expert can manually control the desired area, and visually observe the segmentation result expanding, and shrinking. Moreover, the user can erase the unwanted parts.
+The advantage of the bubble method is that it is guaranteed to produce a correct segmentation for a valid image. A medical domain expert can manually control the desired area, and visually observe the segmentation result expanding, and shrinking. Moreover, the user can erase the unwanted parts.
 
 The disadvantage of this method is that the operations described above are complicated. They are easier to say then do. An operator who has previous experience building the geometry with this method still needs about 20 minutes of manual work to build a new aorta geometry. Plus, ITK-Snap software can only read VTK (The Visualization Toolkit) files; therefore, the chest CT scans that are usually Digital Imaging and Communications in Medicine (DICOM) format \cite{10.1007/978-1-4020-8752-3_13}, needed a manual conversion step before using this software and its segmentation method.
 
@@ -28,7 +28,7 @@ The disadvantage of this method is that the operations described above are compl
 
 This method first lets users select a small area that belongs to the wanted area on a 2D plane (Axial, Sagittal, and Coronal). 3D Slicer reads the pixel intensity of the surrounding area, and segments based on the intensity threshold. Any pixel's intensity that is within range will be segmented as the segmentation result, as demonstrated in Figure~\ref{fig_3D_Seg_Builtin}. 
 
-The advantage of this method is that the user can visualize the effect of chosing different intensity threshold in real-time. 3D Slicer can highlight the pixels that would be chosen as a part of the segmentation with an increased or decreased intensity threshold.
+The advantage of this method is that the user can visualize the effect of choosing different intensity threshold in real-time. 3D Slicer can highlight the pixels that would be chosen as a part of the segmentation with an increased or decreased intensity threshold.
 
 The disadvantage of this method is that it depends on the quality of the input data. If the input data does not have the proper intensity reading of the aorta, it could generate gaps on the wanted part. Then, this method is less efficient, because the user must use another intensity range for the missing pixels. A \href{https://www.youtube.com/watch?v=5_673cHMBiY}{YouTube video} shows an experienced user who gets the aorta 3D geometry with 8 minutes of manual work. 
 
@@ -43,7 +43,7 @@ The disadvantage of this method is that it depends on the quality of the input d
 
 This section introduces the key concepts for the implementation of our segmentation algorithm. The algorithm is developed in Python with the external libraries SimpleITK and NumPy. The algorithm builds the 3D aorta geometry by doing segmentation on each axial slice. The logic behind segmenting each slice from the axial view is that there is one or two circles that are edge bounded in each axial plane view. Using this information, and given an initial aorta center coordinate, the algorithm continuously segments the axial slice's circles that are closest to the previous aorta center coordinates. Finally, some hyperparameters tuning can let the algorithm pick up the pixels that were missing but belongs to the aorta.
 
-In this section, we first introduce the contexts for the exertal libraries used in the implementation of the algorithm. We show the parameters and hyperparameters of the algorithm. Then we explain the algorithm workflow with a step-by-step demonstration.
+In this section, we first introduce the contexts for the external libraries used in the implementation of the algorithm. We show the parameters and hyperparameters of the algorithm. Then we explain the algorithm workflow with a step-by-step demonstration.
 
 \subsection{Background} \label{algo_bg}
 
@@ -160,7 +160,7 @@ Given two integer coordinates, ascending aorta centroid and descending aorta cen
 \end{figure}
 
 \section{3D Slicer Extension Development}
-The project has started from a simple segmentation program build in Jupyter Notebook \cite{Kluyver2016jupyter}, inherited from a prvious developer (Kailin Chu). With this program, the user needs to investigate the chest CT scans using another software (like 3D Slicer or ITK-Snap), to get the necessary input readings, such as coordinates and size to crop (the coordinates of the yellow dots shown in Figure~\ref{fig_aorta_seed}).
+The project has started from a simple segmentation program build in Jupyter Notebook \cite{Kluyver2016jupyter}, inherited from a previous developer (Kailin Chu). With this program, the user needs to investigate the chest CT scans using another software (like 3D Slicer or ITK-Snap), to get the necessary input readings, such as coordinates and size to crop (the coordinates of the yellow dots shown in Figure~\ref{fig_aorta_seed}).
 
 \begin{figure}[H]
     \centering
@@ -177,7 +177,7 @@ Originally, the parameters entered by the users, and many other values were hard
 
 \subsection{3D Slicer's data structure}
 
-3D Slicer's Data Structure can be divided into two categories. The Node data structure stores large datas such as DICOM, with a Volume Node, Volume rendering Region of Interest Node, and Label Map Volume Node. The parameters are stored as strings from the UI component of the module. Every data stored in 3D Slicer can be accessed by the 3D Slicer's Widget Class and Logic Class for further processing. 
+3D Slicer's Data Structure can be divided into two categories. The Node data structure stores large data such as DICOM, with a Volume Node, Volume rendering Region of Interest Node, and Label Map Volume Node. The parameters are stored as strings from the UI component of the module. Every data stored in 3D Slicer can be accessed by the 3D Slicer's Widget Class and Logic Class for further processing. 
 
 3D Slicer stores all the above data in a scene object, which is also referred to as a MRMLscene file, on the higher level data format. 3D Slicer can load any MRMLscene file, this allows the user to retrieve all the data nodes and parameters. In addition, 3D Slicer has a special input module for the DICOM database that allows users to store DICOM metadata.
 

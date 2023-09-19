@@ -17,7 +17,7 @@
 \usepackage{pdflscape}
 \usepackage{afterpage}
 \usepackage{subfig}
-
+\usepackage{rotating}
 \usepackage[round]{natbib}
 
 %\usepackage{refcheck}
@@ -157,7 +157,9 @@
 \midrule
 2023-06-05 & 1.03 & Added Traceability Matrices \\
 \midrule
-2023-06-18 & 1.04 & Include the missing sections, modified the equations of DD, and IM. Added 4 new NFRs.\\
+2023-06-18 & 1.04 & Included the missing sections, modified the equations of DD, and IM. Added 4 new NFRs.\\
+\midrule
+2023-09-15 & 1.05 & Updated Traceability Matrix.\\
 \bottomrule
 \end{tabularx}
 
@@ -681,7 +683,7 @@ $Seed\_d$ & The seed of descending aorta centre coordinate (\iref{segmentation})
 
 \noindent \begin{itemize}
 
-\item[NFR\refstepcounter{nfrnum}\thenfrnum \label{NFR_GUI}:] \textbf{Usability}
+\item[NFR\refstepcounter{nfrnum}\thenfrnum \label{NFR_Usability}:] \textbf{Usability}
 \progname{} allows a user that meets the user characteristics (Section \ref{SecUserCharacteristics})  to import any DICOM files, input the required parameters, and begin the segmentation effortlessly. The number of steps it takes using \progname{} should be at least 30\% less than the number of steps it takes by using ITK-Snap  (bubble method mentioned in Section \ref{intro}).
 
 \item[NFR\refstepcounter{nfrnum}\thenfrnum \label{NFR_Safety}:] \textbf{Safety}
@@ -747,37 +749,15 @@ changed.
 \hline        
 	& \ddref{v} & \ddref{slice} & \ddref{volume} & \iref{roi} &  \iref{segmentation} \\
 \hline
-\ddref{v}     & &  & & & \\ \hline
-\ddref{slice}    & X & & & &\\ \hline
-\ddref{volume}    & & X & & & \\ \hline
-\iref{roi}        & & & X & & \\ \hline
-\iref{segmentation}      &  & & & X & \\
+\ddref{v}     & X &  & & & \\ \hline
+\ddref{slice}    & X & X & & &\\ \hline
+\ddref{volume}    & & X & X & & \\ \hline
+\iref{roi}        & & & X & X & \\ \hline
+\iref{segmentation}      &  & & & X & X \\
 \hline
 \end{tabular}
 \caption{Traceability Matrix Showing the Connections Between Items of Different Sections}
 \label{Table:trace}
-\end{table}
-
-\begin{table}[H]
-\centering
-\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|}
-\hline
-	& \iref{roi}& \iref{segmentation}& \rref{R_Inputs}& \rref{R_roi}& \rref{R_output} & \rref{R_visualize} & \nfrref{NFR_GUI} & \nfrref{NFR_Safety} & \nfrref{NFR_Learnability} & \nfrref{NFR_Accuracy} & \nfrref{NFR_Consistency} \\
-\hline
-\iref{roi}            & & & & X & & &  & & & &\\ \hline
-\iref{segmentation}  & & & & & X & &  & & & &\\ \hline
-\rref{R_Inputs}       & & X & & & & & & & & &\\ \hline
-\rref{R_roi}   & X & & & & & & & & & &\\ \hline
-\rref{R_output}  & & X & & & & & & & & &\\ \hline
-\rref{R_visualize}  & & & & & & & X & & & &\\ \hline
-\nfrref{NFR_GUI} & & & X & X & X & X & & & X & &\\ \hline
-\nfrref{NFR_Safety}   & & X &  &  &  &  & & & & &\\ \hline
-\nfrref{NFR_Learnability} & & & & X & X & X & X & & & & \\ \hline
-\nfrref{NFR_Accuracy} & & X & & & & & & & & &\\ \hline
-\nfrref{NFR_Consistency} & & X & & & & & & & & &\\ \hline
-\end{tabular}
-\caption{Traceability Matrix Showing the Connections Between Requirements and Instance Models}
-\label{Table:R_trace}
 \end{table}
 
 \begin{table}[H]
@@ -797,6 +777,36 @@ changed.
 \caption{Traceability Matrix Showing the Connections Between Assumptions and Other Items}
 \label{Table:A_trace}
 \end{table}
+
+
+\begin{sidewaystable}
+\centering
+
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}
+\hline
+	& \ddref{v} & \ddref{slice} & \ddref{volume} & \iref{roi}& \iref{segmentation}& \rref{R_Inputs}& \rref{R_roi}& \rref{R_output} & \rref{R_visualize} & \nfrref{NFR_Usability} & \nfrref{NFR_Safety} & \nfrref{NFR_Learnability} & \nfrref{NFR_Accuracy} & \nfrref{NFR_Consistency} \\
+\hline
+\ddref{v}           & X & & & & & & & & &  & & & & \\ \hline
+\ddref{slice}           & X & X & & & & &  & & &  & & & & \\ \hline
+\ddref{volume}           & & X & X & & & & & & &  & & & & \\ \hline
+\iref{roi}           & & & X & X & & & & & &  & & & & \\ \hline
+\iref{segmentation}  & & & & X & X & & & & &  & & & &\\ \hline
+\rref{R_Inputs}    & & & X & & X & X  &  & & & & & & &\\ \hline
+\rref{R_roi}  & & & X& X & & & X & & & & & & &\\ \hline
+\rref{R_output} & & & X & & X & & & X & & & & & &\\ \hline
+\rref{R_visualize} & & & X& & & & & & X & X & & & &\\ \hline
+\nfrref{NFR_Usability}  & & X & X & X & X & X & X & X & X & X & & X & &\\ \hline
+\nfrref{NFR_Safety}  & & & & X & X & X & X & X &  & & X & & &\\ \hline
+\nfrref{NFR_Learnability} & & & & X & X & X & X & X & X & X & & X & & \\ \hline
+\nfrref{NFR_Accuracy} & X & X & X & X & X & & & & & & & & X &\\ \hline
+\nfrref{NFR_Consistency} & X & X & X & X & X &  & X & X & X & & & & &X\\ \hline
+\end{tabular}
+\caption{Traceability Matrix Showing the Connections Between Requirements and Instance Models}
+\label{Table:R_trace}
+\end{sidewaystable}
+%\caption{Traceability Matrix Showing the Connections Between Requirements and Instance Models}
+%\label{Table:R_trace}
+%\end{table}
 
 \newpage
 
